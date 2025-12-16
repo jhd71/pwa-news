@@ -1,39 +1,35 @@
 {
   "version": 2,
+
   "builds": [
     {
       "src": "api/*.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "public_html/**/*",
-      "use": "@vercel/static"
     }
   ],
+
   "routes": [
     {
-      "src": "^/redirect/(.*)$",
-      "headers": {
-        "X-Robots-Tag": "noindex, nofollow"
-      },
-      "continue": true
-    },
-    {
-      "src": "/api/([^\\.]+)$",
+      "src": "^/api/([^\\.]+)$",
       "dest": "/api/$1.js"
     },
+
     {
-      "src": "/index$|/index\\.html$",
+      "src": "^/index$|^/index\\.html$",
       "status": 301,
-      "headers": { "Location": "/" }
+      "headers": {
+        "Location": "/"
+      }
     },
+
     {
       "src": "^/$",
       "dest": "/index.html"
     },
+
     {
       "src": "/(.*)",
-      "dest": "/public_html/$1"
+      "dest": "/$1"
     }
   ]
 }
