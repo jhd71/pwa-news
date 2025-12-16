@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "^/redirect/(.*)$",
+      "headers": {
+        "X-Robots-Tag": "noindex, nofollow"
+      },
+      "continue": true
+    },
+    {
+      "src": "/api/([^\\.]+)$",
+      "dest": "/api/$1.js"
+    },
+    {
+      "src": "/index$|/index\\.html$",
+      "status": 301,
+      "headers": { "Location": "/" }
+    }
+  ]
+}
