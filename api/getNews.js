@@ -1,8 +1,8 @@
 // api/getNews.js - API pour récupérer les actualités locales
 import Parser from 'rss-parser';
 
-// Durée du cache en millisecondes (10 minutes)
-const CACHE_DURATION = 10 * 60 * 1000;
+// Cache en mémoire
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 let cachedArticles = null;
 let lastFetchTime = null;
 
@@ -11,16 +11,16 @@ export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept');
     
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
 
-    // Vérifier si des données sont en cache et valides
+    // Vérifier le cache
     const now = Date.now();
     if (cachedArticles && lastFetchTime && (now - lastFetchTime < CACHE_DURATION)) {
-        console.log('📡 Retour des données locales en cache');
+        console.log('📡 Retour du cache');
         return res.status(200).json(cachedArticles);
     }
     
@@ -31,26 +31,26 @@ export default async function handler(req, res) {
             }
         });
         
-        // URLs des flux RSS
+        // Flux RSS
         const feeds = [
-            { name: 'Montceau News', url: 'https://montceau-news.com/rss', max: 2 },
+            { name: 'Montceau News', url: 'https://montceau-news.com/rss', max: 3 },
             { name: "L'Informateur", url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
-            { name: 'Le JSL', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 2 },
+            { name: 'Le JSL', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 3 },
             { name: 'Creusot Infos', url: 'https://raw.githubusercontent.com/jhd71/scraper-creusot/main/data/articles.json', max: 2, type: 'json' },
         ];
 
-        // Récupérer les articles de chaque flux
+        // Récupérer les articles
         const fetchPromises = feeds.map(feed => {
             return new Promise(async (resolve) => {
                 try {
-                    console.log(`📡 Tentative pour ${feed.name}...`);
+                    console.log(`📡 ${feed.name}...`);
                     
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 5000);
                     
                     const response = await fetch(feed.url, {
                         headers: {
-                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                            'User-Agent': 'Mozilla/5.0 (compatible; ActuMedia/2.0)'
                         },
                         signal: controller.signal
                     });
@@ -58,7 +58,7 @@ export default async function handler(req, res) {
                     clearTimeout(timeoutId);
                     
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        throw new Error(`HTTP ${response.status}`);
                     }
                     
                     if (feed.type === 'json') {
@@ -66,7 +66,7 @@ export default async function handler(req, res) {
                         const articles = json.slice(0, feed.max).map(item => ({
                             title: item.title,
                             link: item.link,
-                            image: item.image || "/images/icon-192.png",
+                            image: item.image || null,
                             date: item.date,
                             source: item.source || feed.name
                         }));
@@ -75,7 +75,7 @@ export default async function handler(req, res) {
                         const data = await response.text();
                         const feedData = await parser.parseString(data);
 
-                        console.log(`✅ ${feed.name}: ${feedData.items.length} articles trouvés`);
+                        console.log(`✅ ${feed.name}: ${feedData.items.length} articles`);
 
                         const articles = feedData.items.slice(0, feed.max).map(item => {
                             let image = item.enclosure?.url || item['media:content']?.url || null;
@@ -83,7 +83,6 @@ export default async function handler(req, res) {
                                 const imgMatch = item.content.match(/<img[^>]+src="([^">]+)"/);
                                 if (imgMatch) image = imgMatch[1];
                             }
-                            if (!image) image = "/images/icon-192.png";
 
                             return {
                                 title: item.title,
@@ -97,7 +96,7 @@ export default async function handler(req, res) {
                         return resolve(articles);
                     }
                 } catch (feedError) {
-                    console.error(`❌ Erreur avec ${feed.name}:`, feedError.message);
+                    console.error(`❌ ${feed.name}:`, feedError.message);
                     resolve([]);
                 }
             });
@@ -106,18 +105,16 @@ export default async function handler(req, res) {
         // Timeout global
         const timeoutPromise = new Promise((resolve) => {
             setTimeout(() => {
-                console.log('⚠️ Timeout global atteint');
+                console.log('⚠️ Timeout global');
                 resolve([]);
             }, 8000);
         });
         
-        // Exécuter toutes les promesses
         const results = await Promise.race([
             Promise.all(fetchPromises),
             timeoutPromise.then(() => feeds.map(() => []))
         ]);
         
-        // Aplatir les résultats
         const allArticles = results.flat();
         
         if (allArticles.length === 0) {
@@ -131,7 +128,7 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: "Aucun article récupéré" });
         }
         
-        // Trier par date et mélanger
+        // Trier par date
         const sortedArticles = allArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
         
         // Limiter à 10 articles
@@ -141,6 +138,7 @@ export default async function handler(req, res) {
         cachedArticles = finalArticles;
         lastFetchTime = now;
 
+        console.log(`✅ ${finalArticles.length} articles retournés`);
         return res.status(200).json(finalArticles);
         
     } catch (error) {

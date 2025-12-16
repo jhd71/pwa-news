@@ -1,5 +1,5 @@
 /* ============================================
-   ACTU & MÉDIA - Style Liquid Glass
+   ACTU & MÉDIA - Style Liquid Glass v2
    ============================================ */
 
 :root {
@@ -50,12 +50,6 @@ body {
         radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 70%),
         linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 50%, var(--bg-gradient-3) 100%);
     z-index: -1;
-    animation: gradientShift 20s ease infinite;
-}
-
-@keyframes gradientShift {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
 }
 
 /* ============================================
@@ -94,12 +88,6 @@ body {
 
 .logo {
     font-size: 1.75rem;
-    animation: bounce 2s ease infinite;
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
 }
 
 .header h1 {
@@ -122,65 +110,47 @@ body {
 .weather-widget {
     display: flex;
     align-items: center;
-    gap: 1rem; /* Espacement entre aujourd'hui et demain */
+    gap: 0.75rem;
     padding: 0.5rem 1rem;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 50px;
-    cursor: pointer;
     transition: all 0.3s ease;
-    backdrop-filter: blur(5px); /* Optionnel : effet flou sympa */
 }
 
-.weather-widget:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.02);
-}
-
-/* Groupe Aujourd'hui */
 .weather-today {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
 }
 
 .weather-icon {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
 }
 
 .weather-temp {
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
-/* Barre de séparation verticale */
 .weather-separator {
     width: 1px;
-    height: 25px;
+    height: 24px;
     background-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Groupe Demain */
 .weather-tomorrow {
     display: flex;
-    flex-direction: column; /* Pour mettre "Demain" au dessus de la temp */
+    flex-direction: column;
     align-items: center;
-    font-size: 0.8rem;
-    line-height: 1.1;
+    font-size: 0.75rem;
+    line-height: 1.2;
 }
 
-/* Ciblage des éléments créés par le JS dans weatherTomorrow */
 .weather-tomorrow span:first-child {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-#weatherTomorrow span:last-child {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px; /* Espace entre l'icône et le texte */
-    font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif; /* Force la police emoji */
+    letter-spacing: 0.5px;
+    opacity: 0.7;
 }
 
 /* ============================================
@@ -246,7 +216,6 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* News Items */
 .news-slides {
     display: flex;
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -272,7 +241,6 @@ body {
 .news-item:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: var(--glass-border);
-    transform: translateY(-2px);
 }
 
 .news-item-source {
@@ -304,7 +272,6 @@ body {
     color: var(--text-muted);
 }
 
-/* Navigation */
 .news-ticker-nav {
     display: flex;
     justify-content: center;
@@ -329,7 +296,6 @@ body {
 
 .ticker-nav-btn:hover {
     background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
 }
 
 .ticker-nav-btn:active {
@@ -399,9 +365,7 @@ body {
 
 .tile:hover {
     transform: translateY(-4px) scale(1.02);
-    box-shadow: 
-        0 12px 40px var(--glass-shadow),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: 0 12px 40px var(--glass-shadow);
 }
 
 .tile:active {
@@ -411,7 +375,6 @@ body {
 .tile-icon {
     font-size: 2.5rem;
     margin-bottom: 0.75rem;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
 .tile-name {
@@ -426,7 +389,7 @@ body {
 }
 
 /* ============================================
-   WIDGET CINÉMA
+   WIDGET CINÉMA - SCROLLABLE
    ============================================ */
 .cinema-section {
     margin: 1rem;
@@ -461,19 +424,14 @@ body {
     color: var(--primary-light);
     text-decoration: none;
     font-weight: 500;
-    transition: all 0.3s ease;
 }
 
 .cinema-link:hover {
     color: var(--text-primary);
 }
 
-.cinema-link .material-icons {
-    font-size: 1rem;
-}
-
 .cinema-content {
-    min-height: 100px;
+    position: relative;
 }
 
 .cinema-loading {
@@ -491,11 +449,45 @@ body {
     color: var(--danger);
 }
 
-/* Films */
+/* Films avec scroll limité */
 .cinema-films {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    scroll-behavior: smooth;
+}
+
+.cinema-films::-webkit-scrollbar {
+    width: 4px;
+}
+
+.cinema-films::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.cinema-films::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+}
+
+.cinema-scroll-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    animation: bounce 2s ease infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
 }
 
 .cinema-film {
@@ -506,11 +498,11 @@ body {
     text-decoration: none;
     color: inherit;
     transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
 .cinema-film:hover {
     background: rgba(255, 255, 255, 0.1);
-    transform: translateX(4px);
 }
 
 .cinema-film-title {
@@ -544,6 +536,164 @@ body {
 }
 
 /* ============================================
+   POPUP INSTALLATION PWA
+   ============================================ */
+.install-prompt {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, rgba(30, 30, 50, 0.98) 0%, rgba(20, 20, 40, 0.98) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--glass-border);
+    padding: 1.25rem;
+    z-index: 1000;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.install-prompt.show {
+    transform: translateY(0);
+}
+
+.install-prompt-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.install-prompt-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+}
+
+.install-prompt-text {
+    flex: 1;
+}
+
+.install-prompt-title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.install-prompt-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.install-prompt-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.install-btn {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.install-btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+}
+
+.install-btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+.install-btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+}
+
+/* iOS Install Modal */
+.ios-install-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.ios-install-modal.show {
+    display: flex;
+}
+
+.ios-install-content {
+    background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 2rem;
+    max-width: 340px;
+    text-align: center;
+}
+
+.ios-install-content h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.ios-install-step {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+}
+
+.ios-install-step-num {
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+.ios-install-step-text {
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.ios-install-close {
+    margin-top: 1.5rem;
+    padding: 0.75rem 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ============================================
    FOOTER
    ============================================ */
 .footer {
@@ -568,6 +718,18 @@ body {
 /* ============================================
    RESPONSIVE
    ============================================ */
+@media (max-width: 480px) {
+    .install-prompt-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .install-prompt-actions {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 @media (min-width: 768px) {
     .tiles-grid {
         grid-template-columns: repeat(4, 1fr);
@@ -586,27 +748,26 @@ body {
         max-width: 800px;
         margin-left: auto;
         margin-right: auto;
-        border-radius: 0 0 20px 20px;
+    }
+    
+    .cinema-films {
+        max-height: 350px;
     }
 }
 
-@media (min-width: 1024px) {
-    .tiles-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.5rem;
+/* Safe area pour iOS */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .footer {
+        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
     }
     
-    .tile {
-        padding: 2rem 1.5rem;
-    }
-    
-    .tile-icon {
-        font-size: 3rem;
+    .install-prompt {
+        padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
     }
 }
 
 /* ============================================
-   ANIMATIONS UTILITAIRES
+   ANIMATIONS
    ============================================ */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
@@ -615,11 +776,4 @@ body {
 
 .fade-in {
     animation: fadeIn 0.5s ease forwards;
-}
-
-/* Safe area pour iOS */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-    .footer {
-        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
-    }
 }

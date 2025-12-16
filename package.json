@@ -1,8 +1,15 @@
 {
-  "name": "actuetmedia",
-  "version": "1.0.0",
+  "name": "actu-et-media",
+  "version": "2.0.0",
   "private": true,
+  "description": "Actualités locales de Montceau-les-Mines",
+  "scripts": {
+    "start": "echo 'Static site - no build required'"
+  },
   "dependencies": {
     "rss-parser": "^3.13.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

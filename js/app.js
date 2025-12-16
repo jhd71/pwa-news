@@ -1,12 +1,12 @@
 // ============================================
-// ACTU & MÉDIA - Application JavaScript
+// ACTU & MÉDIA - Application JavaScript v2
 // ============================================
 
 // Configuration
 const CONFIG = {
     news: {
         apiUrl: '/api/getNews',
-        refreshInterval: 10 * 60 * 1000 // 10 minutes
+        refreshInterval: 10 * 60 * 1000
     },
     cinema: {
         dataUrl: 'https://raw.githubusercontent.com/jhd71/scraper-cinema/main/data/cinema.json'
@@ -17,6 +17,7 @@ const CONFIG = {
 let newsCurrentSlide = 0;
 let newsSlides = [];
 let newsAutoPlayInterval = null;
+let deferredPrompt = null;
 
 // ============================================
 // INITIALISATION
@@ -28,15 +29,18 @@ document.addEventListener('DOMContentLoaded', () => {
     initNews();
     initCinema();
     initServiceWorker();
+    initInstallPrompt();
 });
 
+// ============================================
+// MÉTÉO (Open-Meteo - sans clé API)
+// ============================================
 async function initWeather() {
     const weatherTemp = document.getElementById('weatherTemp');
     const weatherIcon = document.getElementById('weatherIcon');
     const weatherTomorrow = document.getElementById('weatherTomorrow');
 
     try {
-        // Vos coordonnées
         const latitude = 46.6667;
         const longitude = 4.3667;
 
@@ -48,20 +52,18 @@ async function initWeather() {
 
         const data = await response.json();
 
-        // --- Aujourd’hui ---
+        // Aujourd'hui
         const tempToday = Math.round(data.current_weather.temperature);
-        const iconToday = getWeatherEmojiFromCode(data.current_weather.weathercode);
+        const iconToday = getWeatherEmoji(data.current_weather.weathercode);
 
         weatherTemp.textContent = `${tempToday}°`;
         weatherIcon.textContent = iconToday;
 
-        // --- Demain (J+1) ---
-        // Vérification des données daily
+        // Demain (J+1)
         if (data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length > 1) {
-            const tempTomorrow = Math.round(data.daily.temperature_2m_max[1]); // Index 1 = Demain
-            const iconTomorrow = getWeatherEmojiFromCode(data.daily.weathercode[1]);
+            const tempTomorrow = Math.round(data.daily.temperature_2m_max[1]);
+            const iconTomorrow = getWeatherEmoji(data.daily.weathercode[1]);
             if (weatherTomorrow) {
-                // J'ai enlevé le style="opacity" car on le gère en CSS maintenant
                 weatherTomorrow.innerHTML = `
                     <span>Demain</span>
                     <span style="font-weight:600;">${iconTomorrow} ${tempTomorrow}°</span>
@@ -69,22 +71,18 @@ async function initWeather() {
             }
         }
 
-        console.log('🌤️ Météo chargée avec succès');
+        console.log('🌤️ Météo chargée');
 
     } catch (error) {
         console.error('❌ Erreur météo:', error);
-        if(weatherTemp) weatherTemp.textContent = '--';
+        if (weatherTemp) weatherTemp.textContent = '--°';
     }
 }
 
-function getWeatherEmojiFromCode(code) {
+function getWeatherEmoji(code) {
     if (code === 0) return '☀️';
     if ([1, 2, 3].includes(code)) return '⛅';
-    
-    // REMPLACEZ ICI : On utilise un nuage classique pour le brouillard (45, 48)
-    // au lieu de l'emoji complexe '🌫️' qui fait un carré chez vous.
-    if ([45, 48].includes(code)) return '☁️'; 
-    
+    if ([45, 48].includes(code)) return '☁️';
     if ([51, 53, 55, 61, 63, 65].includes(code)) return '🌧️';
     if ([66, 67].includes(code)) return '🌧️';
     if ([71, 73, 75, 77].includes(code)) return '❄️';
@@ -138,12 +136,10 @@ function renderNewsSlider(articles) {
         </div>
     `;
     
-    // Créer les points de navigation
     dotsContainer.innerHTML = articles.map((_, index) => 
         `<div class="ticker-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>`
     ).join('');
     
-    // Événements sur les points
     dotsContainer.querySelectorAll('.ticker-dot').forEach(dot => {
         dot.addEventListener('click', () => {
             goToNewsSlide(parseInt(dot.dataset.index));
@@ -176,10 +172,6 @@ function initNewsNavigation() {
     
     container.addEventListener('touchend', (e) => {
         touchEndX = e.changedTouches[0].screenX;
-        handleNewsSwipe();
-    }, { passive: true });
-    
-    function handleNewsSwipe() {
         const diff = touchStartX - touchEndX;
         if (Math.abs(diff) > 50) {
             if (diff > 0) {
@@ -189,7 +181,7 @@ function initNewsNavigation() {
             }
             resetNewsAutoPlay();
         }
-    }
+    }, { passive: true });
 }
 
 function goToNewsSlide(index) {
@@ -198,14 +190,12 @@ function goToNewsSlide(index) {
     
     if (!slides || !newsSlides.length) return;
     
-    // Boucle infinie
     if (index < 0) index = newsSlides.length - 1;
     if (index >= newsSlides.length) index = 0;
     
     newsCurrentSlide = index;
     slides.style.transform = `translateX(-${index * 100}%)`;
     
-    // Mise à jour des points
     dots.forEach((dot, i) => {
         dot.classList.toggle('active', i === index);
     });
@@ -214,7 +204,7 @@ function goToNewsSlide(index) {
 function startNewsAutoPlay() {
     newsAutoPlayInterval = setInterval(() => {
         goToNewsSlide(newsCurrentSlide + 1);
-    }, 6000); // Change toutes les 6 secondes
+    }, 6000);
 }
 
 function resetNewsAutoPlay() {
@@ -280,7 +270,7 @@ async function initCinema() {
         const data = await response.json();
         
         if (data.films && data.films.length > 0) {
-            renderCinema(data.films.slice(0, 14)); // Max 14 films
+            renderCinema(data.films);
             console.log(`🎬 ${data.films.length} films chargés`);
         } else {
             showCinemaFallback();
@@ -293,6 +283,7 @@ async function initCinema() {
 
 function renderCinema(films) {
     const container = document.getElementById('cinemaContent');
+    const hasMore = films.length > 4;
     
     container.innerHTML = `
         <div class="cinema-films">
@@ -300,20 +291,26 @@ function renderCinema(films) {
                 <a href="${film.lien || 'https://www.cinemacapitole-montceau.fr/horaires/'}" 
                    target="_blank" 
                    class="cinema-film fade-in" 
-                   style="animation-delay: ${index * 0.1}s">
+                   style="animation-delay: ${index * 0.05}s">
                     <div class="cinema-film-title">${film.titre}</div>
                     <div class="cinema-film-meta">
                         <span>🎭 ${film.genre || 'Film'}</span>
                         <span>⏱️ ${film.duree || 'N/A'}</span>
                     </div>
                     <div class="cinema-film-times">
-                        ${(film.horaires || []).slice(0, 4).map(time => 
+                        ${(film.horaires || []).slice(0, 5).map(time => 
                             `<span class="cinema-time">${time}</span>`
                         ).join('')}
                     </div>
                 </a>
             `).join('')}
         </div>
+        ${hasMore ? `
+            <div class="cinema-scroll-hint">
+                <span class="material-icons">swipe</span>
+                Scroll pour voir plus
+            </div>
+        ` : ''}
     `;
 }
 
@@ -331,13 +328,119 @@ function showCinemaFallback() {
                target="_blank"
                style="display: inline-flex; align-items: center; gap: 0.5rem; 
                       padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-                      color: white; border-radius: 50px; text-decoration: none; font-weight: 600;
-                      font-size: 0.875rem;">
+                      color: white; border-radius: 50px; text-decoration: none; font-weight: 600;">
                 <span class="material-icons" style="font-size: 1.25rem;">movie</span>
                 Voir le programme
             </a>
         </div>
     `;
+}
+
+// ============================================
+// INSTALLATION PWA
+// ============================================
+function initInstallPrompt() {
+    const installPrompt = document.getElementById('installPrompt');
+    const installBtn = document.getElementById('installBtn');
+    const dismissBtn = document.getElementById('dismissBtn');
+    const iosModal = document.getElementById('iosInstallModal');
+    const iosCloseBtn = document.getElementById('iosCloseBtn');
+    
+    // Vérifier si déjà installé
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        console.log('📱 App déjà installée');
+        return;
+    }
+    
+    // Vérifier si déjà refusé récemment
+    const dismissed = localStorage.getItem('installDismissed');
+    if (dismissed) {
+        const dismissedTime = parseInt(dismissed);
+        const daysPassed = (Date.now() - dismissedTime) / (1000 * 60 * 60 * 24);
+        if (daysPassed < 7) {
+            console.log('📱 Installation refusée il y a moins de 7 jours');
+            return;
+        }
+    }
+    
+    // Détecter iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isInStandaloneMode = window.navigator.standalone === true;
+    
+    if (isIOS && !isInStandaloneMode) {
+        // iOS - Afficher après 3 secondes
+        setTimeout(() => {
+            if (installPrompt) {
+                installPrompt.classList.add('show');
+            }
+        }, 3000);
+        
+        if (installBtn) {
+            installBtn.addEventListener('click', () => {
+                installPrompt.classList.remove('show');
+                if (iosModal) {
+                    iosModal.classList.add('show');
+                }
+            });
+        }
+        
+        if (iosCloseBtn) {
+            iosCloseBtn.addEventListener('click', () => {
+                iosModal.classList.remove('show');
+            });
+        }
+        
+        if (iosModal) {
+            iosModal.addEventListener('click', (e) => {
+                if (e.target === iosModal) {
+                    iosModal.classList.remove('show');
+                }
+            });
+        }
+    } else {
+        // Android / Chrome - Écouter l'événement beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('📱 Installation disponible');
+            
+            setTimeout(() => {
+                if (installPrompt) {
+                    installPrompt.classList.add('show');
+                }
+            }, 3000);
+        });
+        
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+                
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                console.log(`📱 Installation: ${outcome}`);
+                deferredPrompt = null;
+                installPrompt.classList.remove('show');
+            });
+        }
+    }
+    
+    // Bouton ignorer
+    if (dismissBtn) {
+        dismissBtn.addEventListener('click', () => {
+            installPrompt.classList.remove('show');
+            localStorage.setItem('installDismissed', Date.now().toString());
+        });
+    }
+    
+    // Écouter l'installation réussie
+    window.addEventListener('appinstalled', () => {
+        console.log('✅ App installée !');
+        if (installPrompt) {
+            installPrompt.classList.remove('show');
+        }
+        deferredPrompt = null;
+    });
 }
 
 // ============================================
@@ -352,10 +455,8 @@ function initServiceWorker() {
 }
 
 // ============================================
-// UTILITAIRES
+// RAFRAÎCHISSEMENT PÉRIODIQUE
 // ============================================
-
-// Rafraîchir les news périodiquement
 setInterval(() => {
     console.log('🔄 Rafraîchissement des actualités...');
     initNews();

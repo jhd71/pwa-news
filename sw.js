@@ -1,8 +1,8 @@
 // ============================================
-// ACTU & MÉDIA - Service Worker
+// ACTU & MÉDIA - Service Worker v2
 // ============================================
 
-const CACHE_NAME = 'actu-media-v1';
+const CACHE_NAME = 'actu-media-v2';
 
 const STATIC_ASSETS = [
     '/',
@@ -35,18 +35,19 @@ self.addEventListener('activate', event => {
     );
 });
 
+// Fetch
 self.addEventListener('fetch', event => {
     const request = event.request;
 
     // Ignorer les requêtes non GET
     if (request.method !== 'GET') return;
 
-    // Ignorer chrome-extension, data, blob, etc.
+    // Ignorer les requêtes hors origine
     if (!request.url.startsWith(self.location.origin)) return;
 
     const url = new URL(request.url);
 
-    // Ignorer les API
+    // Ignorer les API (toujours réseau)
     if (url.pathname.startsWith('/api/')) return;
 
     // HTML → Network First
@@ -54,10 +55,12 @@ self.addEventListener('fetch', event => {
         event.respondWith(
             fetch(request)
                 .then(response => {
-                    const clone = response.clone();
-                    caches.open(CACHE_NAME).then(cache => {
-                        cache.put(request, clone).catch(() => {});
-                    });
+                    if (response && response.status === 200) {
+                        const clone = response.clone();
+                        caches.open(CACHE_NAME).then(cache => {
+                            cache.put(request, clone).catch(() => {});
+                        });
+                    }
                     return response;
                 })
                 .catch(() => caches.match(request))

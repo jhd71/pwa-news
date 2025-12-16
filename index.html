@@ -9,8 +9,9 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1a1a2e">
     <meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Actu & Média">
     <link rel="apple-touch-icon" href="images/icon-192.png">
     
     <!-- Fonts & Icons -->
@@ -30,22 +31,15 @@
             <h1>Actu & Média</h1>
         </div>
         <div class="header-right">
-    <div class="weather-widget" id="weatherWidget">
-        <!-- Partie Aujourd'hui -->
-        <div class="weather-today">
-            <span class="weather-icon" id="weatherIcon">🌤️</span>
-            <span class="weather-temp" id="weatherTemp">--°</span>
+            <div class="weather-widget" id="weatherWidget">
+                <div class="weather-today">
+                    <span class="weather-icon" id="weatherIcon">🌤️</span>
+                    <span class="weather-temp" id="weatherTemp">--°</span>
+                </div>
+                <div class="weather-separator"></div>
+                <div class="weather-tomorrow" id="weatherTomorrow"></div>
+            </div>
         </div>
-        
-        <!-- Séparateur visuel -->
-        <div class="weather-separator"></div>
-
-        <!-- Partie Demain (C'est ce qu'il manquait) -->
-        <div class="weather-tomorrow" id="weatherTomorrow">
-            <!-- Le JS va injecter le contenu ici -->
-        </div>
-    </div>
-</div>
     </header>
 
     <!-- News Ticker / Swiper -->
@@ -126,6 +120,48 @@
         <p>© 2025 Actu & Média - Montceau-les-Mines</p>
         <p class="footer-sub">Fait avec ❤️ par ActuetMedia</p>
     </footer>
+
+    <!-- Popup Installation PWA -->
+    <div class="install-prompt" id="installPrompt">
+        <div class="install-prompt-content">
+            <div class="install-prompt-icon">📱</div>
+            <div class="install-prompt-text">
+                <div class="install-prompt-title">Installer Actu & Média</div>
+                <div class="install-prompt-desc">Accédez rapidement aux actus locales depuis votre écran d'accueil</div>
+            </div>
+            <div class="install-prompt-actions">
+                <button class="install-btn install-btn-secondary" id="dismissBtn">Plus tard</button>
+                <button class="install-btn install-btn-primary" id="installBtn">Installer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Instructions iOS -->
+    <div class="ios-install-modal" id="iosInstallModal">
+        <div class="ios-install-content">
+            <h3>📱 Installer sur iPhone/iPad</h3>
+            <div class="ios-install-step">
+                <div class="ios-install-step-num">1</div>
+                <div class="ios-install-step-text">
+                    Appuyez sur <strong>Partager</strong> 
+                    <span style="font-size: 1.2rem;">⬆️</span>
+                </div>
+            </div>
+            <div class="ios-install-step">
+                <div class="ios-install-step-num">2</div>
+                <div class="ios-install-step-text">
+                    Faites défiler et appuyez sur <strong>"Sur l'écran d'accueil"</strong>
+                </div>
+            </div>
+            <div class="ios-install-step">
+                <div class="ios-install-step-num">3</div>
+                <div class="ios-install-step-text">
+                    Appuyez sur <strong>Ajouter</strong>
+                </div>
+            </div>
+            <button class="ios-install-close" id="iosCloseBtn">Compris !</button>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="js/app.js"></script>
