@@ -4,11 +4,6 @@
 
 // Configuration
 const CONFIG = {
-    weather: {
-        apiKey: '7ee38342f016524c91bb22e9fdf37859', // OpenWeatherMap
-        city: 'Montceau-les-Mines',
-        units: 'metric'
-    },
     news: {
         apiUrl: '/api/getNews',
         refreshInterval: 10 * 60 * 1000 // 10 minutes
@@ -67,21 +62,6 @@ async function initWeather() {
         console.error('❌ Erreur météo:', error);
         weatherTemp.textContent = '--°';
     }
-}
-
-function getWeatherEmoji(iconCode) {
-    const iconMap = {
-        '01d': '☀️', '01n': '🌙',
-        '02d': '⛅', '02n': '☁️',
-        '03d': '☁️', '03n': '☁️',
-        '04d': '☁️', '04n': '☁️',
-        '09d': '🌧️', '09n': '🌧️',
-        '10d': '🌦️', '10n': '🌧️',
-        '11d': '⛈️', '11n': '⛈️',
-        '13d': '❄️', '13n': '❄️',
-        '50d': '🌫️', '50n': '🌫️'
-    };
-    return iconMap[iconCode] || '🌤️';
 }
 
 function getWeatherEmojiFromCode(code) {
