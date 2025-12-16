@@ -36,10 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // MÉTÉO (Open-Meteo - sans clé API)
 // ============================================
 async function initWeather() {
-    const weatherTemp = document.getElementById('weatherTemp');
-    const weatherIcon = document.getElementById('weatherIcon');
-    const weatherTomorrow = document.getElementById('weatherTomorrow');
-
     try {
         const latitude = 46.6667;
         const longitude = 4.3667;
@@ -52,31 +48,45 @@ async function initWeather() {
 
         const data = await response.json();
 
-        // Aujourd'hui
+        // Aujourd'hui (J+0)
         const tempToday = Math.round(data.current_weather.temperature);
         const iconToday = getWeatherEmoji(data.current_weather.weathercode);
-
-        weatherTemp.textContent = `${tempToday}°`;
-        weatherIcon.textContent = iconToday;
+        
+        document.getElementById('weatherIcon0').textContent = iconToday;
+        document.getElementById('weatherTemp0').textContent = `${tempToday}°`;
 
         // Demain (J+1)
         if (data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length > 1) {
-            const tempTomorrow = Math.round(data.daily.temperature_2m_max[1]);
-            const iconTomorrow = getWeatherEmoji(data.daily.weathercode[1]);
-            if (weatherTomorrow) {
-                weatherTomorrow.innerHTML = `
-                    <span>Demain</span>
-                    <span style="font-weight:600;">${iconTomorrow} ${tempTomorrow}°</span>
-                `;
-            }
+            const tempJ1 = Math.round(data.daily.temperature_2m_max[1]);
+            const iconJ1 = getWeatherEmoji(data.daily.weathercode[1]);
+            
+            document.getElementById('weatherIcon1').textContent = iconJ1;
+            document.getElementById('weatherTemp1').textContent = `${tempJ1}°`;
         }
 
-        console.log('🌤️ Météo chargée');
+        // Après-demain (J+2)
+        if (data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length > 2) {
+            const tempJ2 = Math.round(data.daily.temperature_2m_max[2]);
+            const iconJ2 = getWeatherEmoji(data.daily.weathercode[2]);
+            const dayNameJ2 = getDayName(2);
+            
+            document.getElementById('weatherLabel2').textContent = dayNameJ2;
+            document.getElementById('weatherIcon2').textContent = iconJ2;
+            document.getElementById('weatherTemp2').textContent = `${tempJ2}°`;
+        }
+
+        console.log('🌤️ Météo chargée (J+0, J+1, J+2)');
 
     } catch (error) {
         console.error('❌ Erreur météo:', error);
-        if (weatherTemp) weatherTemp.textContent = '--°';
     }
+}
+
+function getDayName(daysFromNow) {
+    const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+    const date = new Date();
+    date.setDate(date.getDate() + daysFromNow);
+    return days[date.getDay()];
 }
 
 function getWeatherEmoji(code) {
