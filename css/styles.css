@@ -503,37 +503,43 @@ body {
 
 .cinema-link {
     display: flex;
-    gap: 0.25rem;
-    font-size: 0.8rem;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
-    color: #363d5c;
-    background-color: #cdd0ef;
-    border-radius: 5px;
-    align-items: center;
+    padding: 0.4rem 0;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.cinema-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary);
+    transition: width 0.3s ease;
 }
 
 .cinema-link:hover {
-    color: var(--text-primary);
+    color: var(--primary-light);
 }
 
-.cinema-content {
-    position: relative;
+.cinema-link:hover::after {
+    width: 100%;
 }
 
-.cinema-loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100px;
-    gap: 0.75rem;
-    color: var(--text-muted);
+.cinema-link .material-icons {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
 }
 
-.cinema-loading .material-icons {
-    font-size: 2rem;
-    color: var(--danger);
+.cinema-link:hover .material-icons {
+    transform: translateX(3px);
 }
 
 /* Films avec scroll limité */
