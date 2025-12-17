@@ -253,7 +253,6 @@ body {
     font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 0.3px;
-    color: var(--text-muted);
     font-weight: 500;
 }
 
@@ -306,7 +305,7 @@ body {
 
 .news-ticker-header .material-icons {
     color: var(--danger);
-    font-size: 1.25rem;
+    font-size: 2rem;
 }
 
 .pulse {
@@ -377,7 +376,6 @@ body {
     align-items: center;
     gap: 0.25rem;
     font-size: 0.75rem;
-    color: var(--primary-light);
     font-weight: 500;
     margin-bottom: 0.5rem;
     padding: 0.25rem 0.75rem;
@@ -550,7 +548,7 @@ body {
     align-items: center;
     gap: 0.25rem;
     font-size: 0.8rem;
-    color: var(--primary-light);
+    color: #ffffff;
     text-decoration: none;
     font-weight: 500;
 }
@@ -644,7 +642,6 @@ body {
     display: flex;
     gap: 1rem;
     font-size: 0.75rem;
-    color: var(--text-muted);
     margin-bottom: 0.5rem;
 }
 
@@ -835,13 +832,12 @@ body {
 
 .footer p {
     font-size: 0.8rem;
-    color: var(--text-secondary);
 }
 
 .footer-sub {
     margin-top: 0.5rem;
-    font-size: 0.7rem !important;
-    color: var(--text-muted) !important;
+    font-size: 0.7rem;
+
 }
 
 /* ============================================
