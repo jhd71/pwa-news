@@ -372,7 +372,6 @@ body {
     border-color: var(--glass-border);
 }
 
-.news-item-image {
 .news-item-source {
     display: inline-flex;
     align-items: center;
