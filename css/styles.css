@@ -192,6 +192,49 @@ body {
 
 [data-theme="light"] .install-btn-secondary {
     background: rgba(0, 0, 0, 0.08);
+    color: var(--text-primary);
+}
+
+/* Popup installation - Mode clair */
+[data-theme="light"] .install-prompt {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 244, 248, 0.98) 100%);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .install-prompt-title {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .install-prompt-desc {
+    color: var(--text-secondary);
+}
+
+/* Modal iOS - Mode clair */
+[data-theme="light"] .ios-install-modal {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] .ios-install-content {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .ios-install-content h3 {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .ios-install-step {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .ios-install-step-text {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .ios-install-close {
+    background: rgba(0, 0, 0, 0.08);
+    color: var(--text-primary);
 }
 
 /* ============================================
