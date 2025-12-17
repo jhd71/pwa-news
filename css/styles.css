@@ -220,12 +220,11 @@ body {
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--text-muted);
     font-weight: 500;
 }
 
 .weather-day-icon {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
 }
 
 .weather-day-temp {
@@ -335,7 +334,6 @@ body {
     align-items: center;
     gap: 0.25rem;
     font-size: 0.75rem;
-    color: var(--primary-light);
     font-weight: 500;
     margin-bottom: 0.5rem;
     padding: 0.25rem 0.75rem;
@@ -508,7 +506,6 @@ body {
     align-items: center;
     gap: 0.25rem;
     font-size: 0.8rem;
-    color: var(--primary-light);
     text-decoration: none;
     font-weight: 500;
 }
@@ -793,7 +790,6 @@ body {
 
 .footer p {
     font-size: 0.8rem;
-    color: var(--text-secondary);
 }
 
 .footer-contact {
@@ -802,9 +798,9 @@ body {
     gap: 0.4rem;
     margin-top: 0.75rem;
     padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: #102b67;
     border-radius: 50px;
-    color: var(--text-secondary);
+    color: #e3e4e7;
     text-decoration: none;
     font-size: 0.8rem;
     transition: all 0.3s ease;
@@ -821,8 +817,7 @@ body {
 
 .footer-sub {
     margin-top: 0.75rem;
-    font-size: 0.7rem !important;
-    color: var(--text-muted) !important;
+    font-size: 0.7rem;
 }
 
 /* ============================================
