@@ -191,9 +191,16 @@ function renderNewsSlider(articles) {
             ${articles.map((article, index) => `
                 <div class="news-slide">
                     <a href="${article.link}" target="_blank" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
-                        <div class="news-item-source">${getSourceIcon(article.source)} ${article.source}</div>
-                        <div class="news-item-title">${article.title}</div>
-                        <div class="news-item-date">${formatDate(article.date)}</div>
+                        ${article.image ? `
+                            <div class="news-item-image">
+                                <img src="${article.image}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'">
+                            </div>
+                        ` : ''}
+                        <div class="news-item-content">
+                            <div class="news-item-source">${getSourceIcon(article.source)} ${article.source}</div>
+                            <div class="news-item-title">${article.title}</div>
+                            <div class="news-item-date">${formatDate(article.date)}</div>
+                        </div>
                     </a>
                 </div>
             `).join('')}
