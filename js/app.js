@@ -25,7 +25,6 @@ let deferredPrompt = null;
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Actu & Média - Initialisation');
     
-    initTheme();
     initWeather();
     initNews();
     initCinema();
@@ -37,6 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
 // MÉTÉO (Open-Meteo - sans clé API)
 // ============================================
 async function initWeather() {
+    const weatherTemp = document.getElementById('weatherTemp');
+    const weatherIcon = document.getElementById('weatherIcon');
+    const weatherTomorrow = document.getElementById('weatherTomorrow');
+
     try {
         const latitude = 46.6667;
         const longitude = 4.3667;
@@ -49,45 +52,31 @@ async function initWeather() {
 
         const data = await response.json();
 
-        // Aujourd'hui (J+0)
+        // Aujourd'hui
         const tempToday = Math.round(data.current_weather.temperature);
         const iconToday = getWeatherEmoji(data.current_weather.weathercode);
-        
-        document.getElementById('weatherIcon0').textContent = iconToday;
-        document.getElementById('weatherTemp0').textContent = `${tempToday}°`;
+
+        weatherTemp.textContent = `${tempToday}°`;
+        weatherIcon.textContent = iconToday;
 
         // Demain (J+1)
         if (data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length > 1) {
-            const tempJ1 = Math.round(data.daily.temperature_2m_max[1]);
-            const iconJ1 = getWeatherEmoji(data.daily.weathercode[1]);
-            
-            document.getElementById('weatherIcon1').textContent = iconJ1;
-            document.getElementById('weatherTemp1').textContent = `${tempJ1}°`;
+            const tempTomorrow = Math.round(data.daily.temperature_2m_max[1]);
+            const iconTomorrow = getWeatherEmoji(data.daily.weathercode[1]);
+            if (weatherTomorrow) {
+                weatherTomorrow.innerHTML = `
+                    <span>Demain</span>
+                    <span style="font-weight:600;">${iconTomorrow} ${tempTomorrow}°</span>
+                `;
+            }
         }
 
-        // Après-demain (J+2)
-        if (data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length > 2) {
-            const tempJ2 = Math.round(data.daily.temperature_2m_max[2]);
-            const iconJ2 = getWeatherEmoji(data.daily.weathercode[2]);
-            const dayNameJ2 = getDayName(2);
-            
-            document.getElementById('weatherLabel2').textContent = dayNameJ2;
-            document.getElementById('weatherIcon2').textContent = iconJ2;
-            document.getElementById('weatherTemp2').textContent = `${tempJ2}°`;
-        }
-
-        console.log('🌤️ Météo chargée (J+0, J+1, J+2)');
+        console.log('🌤️ Météo chargée');
 
     } catch (error) {
         console.error('❌ Erreur météo:', error);
+        if (weatherTemp) weatherTemp.textContent = '--°';
     }
-}
-
-function getDayName(daysFromNow) {
-    const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-    const date = new Date();
-    date.setDate(date.getDate() + daysFromNow);
-    return days[date.getDay()];
 }
 
 function getWeatherEmoji(code) {
@@ -100,59 +89,6 @@ function getWeatherEmoji(code) {
     if ([80, 81, 82].includes(code)) return '🌦️';
     if ([95, 96, 99].includes(code)) return '⛈️';
     return '🌤️';
-}
-
-// ============================================
-// THÈME CLAIR/SOMBRE
-// ============================================
-function initTheme() {
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    
-    // Charger le thème sauvegardé ou détecter la préférence système
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    // Appliquer le thème initial
-    if (savedTheme) {
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
-    } else if (!prefersDark) {
-        document.documentElement.setAttribute('data-theme', 'light');
-        updateThemeIcon('light');
-    } else {
-        updateThemeIcon('dark');
-    }
-    
-    // Écouter le clic sur le bouton
-    if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
-            
-            console.log(`🎨 Thème: ${newTheme}`);
-        });
-    }
-    
-    // Écouter les changements de préférence système
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme')) {
-            const newTheme = e.matches ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            updateThemeIcon(newTheme);
-        }
-    });
-}
-
-function updateThemeIcon(theme) {
-    const themeIcon = document.getElementById('themeIcon');
-    if (themeIcon) {
-        themeIcon.textContent = theme === 'light' ? 'dark_mode' : 'light_mode';
-    }
 }
 
 // ============================================

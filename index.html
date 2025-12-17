@@ -7,7 +7,7 @@
     
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2c3146">
+    <meta name="theme-color" content="#1a1a2e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -18,7 +18,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
+    <!-- CSS -->
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/quick-links.css">
+    <link rel="stylesheet" href="css/support.css">
 </head>
 <body>
     <!-- Fond animé -->
@@ -26,12 +29,22 @@
     
     <!-- Header -->
     <header class="header glass">
-        <div class="header-title">
-            <span class="logo">📰</span>
-            <h1>Actu & Média</h1>
-            <button class="theme-toggle" id="themeToggle" aria-label="Changer de thème">
-                <span class="material-icons" id="themeIcon">light_mode</span>
+        <div class="header-top">
+            <button class="header-btn" id="quickLinksBtn" aria-label="Menu liens rapides">
+                <span class="material-icons">menu</span>
             </button>
+            <div class="header-title">
+                <span class="logo">📰</span>
+                <h1>Actu & Média</h1>
+            </div>
+            <div class="header-right-btns">
+                <button class="theme-toggle" id="themeToggle" aria-label="Changer de thème">
+                    <span class="material-icons" id="themeIcon">light_mode</span>
+                </button>
+                <button class="header-btn support" id="supportBtn" aria-label="À propos et soutien">
+                    <span class="material-icons">favorite</span>
+                </button>
+            </div>
         </div>
         <div class="weather-bar" id="weatherBar">
             <div class="weather-day">
@@ -53,6 +66,143 @@
             </div>
         </div>
     </header>
+
+    <!-- Panel Liens Rapides (gauche) -->
+    <div class="quick-links-overlay" id="quickLinksOverlay"></div>
+    <aside class="quick-links-panel" id="quickLinksPanel">
+        <div class="quick-links-header">
+            <div class="quick-links-title">
+                <span class="material-icons">link</span>
+                Liens rapides
+            </div>
+            <button class="quick-links-close" id="quickLinksClose">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="quick-links-content">
+            <!-- Section Urgences -->
+            <div class="quick-links-section">
+                <div class="quick-links-section-title">Urgences</div>
+                <button class="quick-link-item" onclick="showEmergencyNumbers()">
+                    <div class="quick-link-icon emergency">🚨</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">Numéros d'urgence</div>
+                        <div class="quick-link-desc">15, 17, 18, 112...</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </button>
+            </div>
+            
+            <!-- Section Services locaux -->
+            <div class="quick-links-section">
+                <div class="quick-links-section-title">Services locaux</div>
+                <a href="https://www.montceaulesmines.fr/" target="_blank" class="quick-link-item">
+                    <div class="quick-link-icon local">🏛️</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">Mairie de Montceau</div>
+                        <div class="quick-link-desc">Site officiel</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </a>
+                <a href="https://www.cucm.fr/" target="_blank" class="quick-link-item">
+                    <div class="quick-link-icon local">🏢</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">CUCM</div>
+                        <div class="quick-link-desc">Communauté urbaine</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </a>
+                <a href="https://www.ch-montceau71.fr/" target="_blank" class="quick-link-item">
+                    <div class="quick-link-icon local">🏥</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">Hôpital</div>
+                        <div class="quick-link-desc">Centre hospitalier</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </a>
+            </div>
+            
+            <!-- Section Médias -->
+            <div class="quick-links-section">
+                <div class="quick-links-section-title">Médias régionaux</div>
+                <a href="https://www.francebleu.fr/bourgogne" target="_blank" class="quick-link-item">
+                    <div class="quick-link-icon media">🎙️</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">France Bleu</div>
+                        <div class="quick-link-desc">Bourgogne</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </a>
+                <a href="https://france3-regions.francetvinfo.fr/bourgogne-franche-comte/" target="_blank" class="quick-link-item">
+                    <div class="quick-link-icon media">📺</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">France 3</div>
+                        <div class="quick-link-desc">Bourgogne-Franche-Comté</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Panel Support (droite) -->
+    <div class="support-overlay" id="supportOverlay"></div>
+    <aside class="support-panel" id="supportPanel">
+        <div class="support-header">
+            <div class="support-title">
+                <span class="material-icons">info</span>
+                À propos
+            </div>
+            <button class="support-close" id="supportClose">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="support-content">
+            <!-- Section À propos -->
+            <div class="support-about">
+                <div class="support-logo">📰</div>
+                <div class="support-name">Actu & Média</div>
+                <div class="support-desc">
+                    Votre portail d'informations locales pour Montceau-les-Mines et sa région.
+                    Actualités, météo, cinéma et liens utiles.
+                </div>
+            </div>
+            
+            <!-- Bouton Tipeee -->
+            <div class="tipeee-section">
+                <a href="https://fr.tipeee.com/actuetmedia" target="_blank" class="tipeee-btn">
+                    <span class="material-icons">favorite</span>
+                    Soutenir sur Tipeee
+                </a>
+                <div class="tipeee-note">
+                    Votre soutien nous aide à maintenir ce service gratuit ❤️
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="support-actions">
+                <a href="mailto:contact@actuetmedia.fr" class="support-action">
+                    <div class="support-action-icon email">📧</div>
+                    <div class="support-action-text">
+                        <div class="support-action-name">Nous contacter</div>
+                        <div class="support-action-desc">contact@actuetmedia.fr</div>
+                    </div>
+                    <span class="material-icons arrow">chevron_right</span>
+                </a>
+                <button class="support-action" onclick="showEmergencyNumbers()">
+                    <div class="support-action-icon emergency">🚨</div>
+                    <div class="support-action-text">
+                        <div class="support-action-name">Numéros d'urgence</div>
+                        <div class="support-action-desc">15, 17, 18, 112...</div>
+                    </div>
+                    <span class="material-icons arrow">chevron_right</span>
+                </button>
+            </div>
+        </div>
+        <div class="support-footer">
+            <div class="support-version">Version 2.0 • Fait avec ❤️ à Montceau</div>
+        </div>
+    </aside>
 
     <!-- News Ticker / Swiper -->
     <section class="news-ticker-section glass">
@@ -181,5 +331,7 @@
 
     <!-- Scripts -->
     <script src="js/app.js"></script>
+    <script src="js/quick-links.js"></script>
+    <script src="js/support.js"></script>
 </body>
 </html>
