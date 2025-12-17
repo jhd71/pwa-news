@@ -503,11 +503,14 @@ body {
 
 .cinema-link {
     display: flex;
-    align-items: center;
     gap: 0.25rem;
     font-size: 0.8rem;
     text-decoration: none;
     font-weight: 500;
+    color: #363d5c;
+    background-color: #cdd0ef;
+    border-radius: 5px;
+    align-items: center;
 }
 
 .cinema-link:hover {
