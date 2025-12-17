@@ -2,6 +2,7 @@
    ACTU & MÉDIA - Style Liquid Glass v2
    ============================================ */
 
+/* Mode sombre (par défaut) */
 :root {
     --primary: #6366f1;
     --primary-light: #818cf8;
@@ -18,6 +19,46 @@
     --text-muted: rgba(255, 255, 255, 0.5);
     --danger: #ef4444;
     --success: #10b981;
+}
+
+/* Mode clair */
+[data-theme="light"] {
+    --primary: #4f46e5;
+    --primary-light: #6366f1;
+    --accent: #ec4899;
+    --bg-dark: #f0f4f8;
+    --bg-gradient-1: #e2e8f0;
+    --bg-gradient-2: #cbd5e1;
+    --bg-gradient-3: #94a3b8;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --glass-shadow: rgba(0, 0, 0, 0.1);
+    --text-primary: #1e293b;
+    --text-secondary: rgba(30, 41, 59, 0.8);
+    --text-muted: rgba(30, 41, 59, 0.5);
+}
+
+/* Mode clair - Fond de page */
+[data-theme="light"] body {
+    background: #f0f4f8;
+}
+
+/* Mode clair - Fond animé */
+[data-theme="light"] .background-gradient {
+    background: 
+        radial-gradient(ellipse at 20% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(244, 114, 182, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.04) 0%, transparent 70%),
+        linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 50%, #cbd5e1 100%);
+}
+
+/* Mode clair - Effet Glass */
+[data-theme="light"] .glass {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 * {
@@ -852,6 +893,231 @@ body {
     .install-prompt {
         padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
     }
+}
+
+/* ============================================
+   MODE CLAIR - STYLES COMPLETS
+   ============================================ */
+
+/* Header */
+[data-theme="light"] .header h1 {
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+[data-theme="light"] .header-btn {
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .header-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .theme-toggle {
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .theme-toggle:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* Météo */
+[data-theme="light"] .weather-bar {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .weather-separator {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .weather-day-label {
+    color: var(--text-muted);
+}
+
+[data-theme="light"] .weather-day-temp {
+    color: var(--text-primary);
+}
+
+/* News Section */
+[data-theme="light"] .news-ticker-section {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="light"] .news-ticker-header {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .news-item {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .news-item:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .news-item-source {
+    background: rgba(79, 70, 229, 0.12);
+    color: var(--primary);
+}
+
+[data-theme="light"] .news-item-title {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .news-item-date {
+    color: var(--text-muted);
+}
+
+[data-theme="light"] .ticker-nav-btn {
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .ticker-nav-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .ticker-dot {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .ticker-dot.active {
+    background: var(--primary);
+}
+
+/* Tuiles */
+[data-theme="light"] .section-title {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .tile {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="light"] .tile:hover {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .tile-name {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .tile-subtitle {
+    color: var(--text-muted);
+}
+
+/* Cinéma */
+[data-theme="light"] .cinema-section {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="light"] .cinema-title {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .cinema-link {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .cinema-link:hover {
+    color: var(--primary);
+}
+
+[data-theme="light"] .cinema-film {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .cinema-film:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .film-title {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .film-genre,
+[data-theme="light"] .film-duration {
+    color: var(--text-muted);
+}
+
+[data-theme="light"] .film-times span {
+    background: var(--primary);
+    color: white;
+}
+
+[data-theme="light"] .scroll-hint {
+    color: var(--text-muted);
+}
+
+/* Footer */
+[data-theme="light"] .footer {
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .footer p {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .footer-sub {
+    color: var(--text-muted);
+}
+
+/* Popup installation */
+[data-theme="light"] .install-prompt {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 244, 248, 0.98) 100%);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .install-prompt-title {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .install-prompt-desc {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .install-btn-secondary {
+    background: rgba(0, 0, 0, 0.08);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .install-btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+/* Modal iOS */
+[data-theme="light"] .ios-install-modal {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] .ios-install-content {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .ios-install-content h3 {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .ios-install-step {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .ios-install-step-text {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .ios-install-close {
+    background: rgba(0, 0, 0, 0.08);
+    color: var(--text-primary);
 }
 
 /* ============================================
