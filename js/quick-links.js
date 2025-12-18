@@ -175,3 +175,70 @@ function showEmergencyNumbers() {
 document.addEventListener('DOMContentLoaded', () => {
     window.quickLinksWidget = new QuickLinksWidget();
 });
+
+// ============================================
+// MODAL TV EN DIRECT
+// ============================================
+function showTVModal() {
+    const modal = document.getElementById('tvModal');
+    if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        
+        // Fermer le panel liens rapides
+        if (window.quickLinksWidget) {
+            window.quickLinksWidget.hide();
+        }
+    }
+}
+
+function closeTVModal() {
+    const modal = document.getElementById('tvModal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+}
+
+// Fermer modal TV en cliquant à l'extérieur
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('tvModal');
+    if (e.target === modal) {
+        closeTVModal();
+    }
+});
+
+// Fermer modal TV avec Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeTVModal();
+    }
+});
+
+// ============================================
+// PARTAGE DU SITE
+// ============================================
+function shareWebsite() {
+    const shareData = {
+        title: 'Actu & Média',
+        text: 'Découvrez Actu & Média, votre source d\'infos locales pour Montceau-les-Mines !',
+        url: 'https://actuetmedia.fr'
+    };
+    
+    // Si Web Share API disponible (mobile)
+    if (navigator.share) {
+        navigator.share(shareData)
+            .then(() => console.log('✅ Site partagé'))
+            .catch((err) => console.log('Partage annulé'));
+    } else {
+        // Fallback : copier le lien
+        navigator.clipboard.writeText(shareData.url)
+            .then(() => {
+                alert('🔗 Lien copié dans le presse-papiers !\n\nhttps://actuetmedia.fr');
+            })
+            .catch(() => {
+                // Fallback ultime
+                prompt('Copiez ce lien :', shareData.url);
+            });
+    }
+}

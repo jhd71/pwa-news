@@ -122,9 +122,30 @@
                 </a>
             </div>
             
+            <!-- Section Transport -->
+            <div class="quick-links-section">
+                <div class="quick-links-section-title">Transport & Routes</div>
+                <a href="https://www.inforoute71.fr/" target="_blank" class="quick-link-item">
+                    <div class="quick-link-icon transport">🚗</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">Info Routes 71</div>
+                        <div class="quick-link-desc">Trafic en temps réel</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </a>
+                <a href="https://www.ter.sncf.com/bourgogne-franche-comte" target="_blank" class="quick-link-item">
+                    <div class="quick-link-icon transport">🚆</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">TER SNCF</div>
+                        <div class="quick-link-desc">Horaires Bourgogne</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </a>
+            </div>
+            
             <!-- Section Médias -->
             <div class="quick-links-section">
-                <div class="quick-links-section-title">Médias régionaux</div>
+                <div class="quick-links-section-title">Médias</div>
                 <a href="https://www.francebleu.fr/bourgogne" target="_blank" class="quick-link-item">
                     <div class="quick-link-icon media">🎙️</div>
                     <div class="quick-link-text">
@@ -134,13 +155,21 @@
                     <span class="material-icons quick-link-arrow">chevron_right</span>
                 </a>
                 <a href="https://france3-regions.francetvinfo.fr/bourgogne-franche-comte/" target="_blank" class="quick-link-item">
-                    <div class="quick-link-icon media">📺</div>
+                    <div class="quick-link-icon media">📻</div>
                     <div class="quick-link-text">
                         <div class="quick-link-name">France 3</div>
                         <div class="quick-link-desc">Bourgogne-Franche-Comté</div>
                     </div>
                     <span class="material-icons quick-link-arrow">chevron_right</span>
                 </a>
+                <button class="quick-link-item" onclick="showTVModal()">
+                    <div class="quick-link-icon tv">📺</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">TV en direct</div>
+                        <div class="quick-link-desc">Chaînes d'info</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </button>
             </div>
         </div>
     </aside>
@@ -189,9 +218,26 @@
                     </div>
                     <span class="material-icons arrow">chevron_right</span>
                 </a>
+                <a href="https://www.swisstransfer.com/fr-fr" target="_blank" class="support-action">
+                    <div class="support-action-icon upload">📤</div>
+                    <div class="support-action-text">
+                        <div class="support-action-name">SwissTransfer</div>
+                        <div class="support-action-desc">Envoyer des fichiers volumineux</div>
+                    </div>
+                    <span class="material-icons arrow">chevron_right</span>
+                </a>
+                <button class="support-action" onclick="shareWebsite()">
+                    <div class="support-action-icon share">🔗</div>
+                    <div class="support-action-text">
+                        <div class="support-action-name">Partager le site</div>
+                        <div class="support-action-desc">Faire connaître Actu & Média</div>
+                    </div>
+                    <span class="material-icons arrow">share</span>
+                </button>
             </div>
         </div>
         <div class="support-footer">
+            <div class="support-copyright">© 2025 Actu & Média</div>
             <div class="support-version">Version 2.0 • Fait avec ❤️ à Montceau</div>
         </div>
     </aside>
@@ -268,6 +314,66 @@
             </div>
         </div>
     </section>
+
+    <!-- Section SEO -->
+    <section class="seo-section glass">
+        <h2>Actu & Média : L'information locale de Montceau-les-Mines</h2>
+        <p>Bienvenue sur Actu & Média, votre source d'<strong>actualités locales de Montceau-les-Mines</strong>, 
+        du Creusot et de la Saône-et-Loire (71). Retrouvez chaque jour les dernières infos de votre région, 
+        la météo locale, le programme du cinéma Le Capitole et bien plus.</p>
+        <p>Notre <strong>site d'information local</strong> est 100% gratuit, sans publicité et créé bénévolement 
+        pour la communauté de Montceau-les-Mines et ses environs : Blanzy, Saint-Vallier, Sanvignes, etc.</p>
+        <p><strong>Montceau-les-Mines aujourd'hui :</strong> suivez l'actu en temps réel, consultez les événements locaux et restez connecté à votre ville !</p>
+    </section>
+
+    <!-- Modal TV en direct -->
+    <div class="tv-modal" id="tvModal">
+        <div class="tv-modal-content">
+            <div class="tv-modal-header">
+                <h3>📺 TV en direct</h3>
+                <button class="tv-modal-close" onclick="closeTVModal()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="tv-modal-list">
+                <a href="https://www.francebleu.fr/tv/direct/bourgogne" target="_blank" class="tv-item">
+                    <span class="tv-icon">🔵</span>
+                    <div class="tv-info">
+                        <strong>France Bleu Bourgogne</strong>
+                        <span>Info régionale</span>
+                    </div>
+                </a>
+                <a href="https://www.francetvinfo.fr/en-direct/tv.html" target="_blank" class="tv-item">
+                    <span class="tv-icon">📺</span>
+                    <div class="tv-info">
+                        <strong>France Info</strong>
+                        <span>Info en continu</span>
+                    </div>
+                </a>
+                <a href="https://www.bfmtv.com/en-direct" target="_blank" class="tv-item">
+                    <span class="tv-icon">🔴</span>
+                    <div class="tv-info">
+                        <strong>BFM TV</strong>
+                        <span>Info en continu</span>
+                    </div>
+                </a>
+                <a href="https://www.cnews.fr/le-direct" target="_blank" class="tv-item">
+                    <span class="tv-icon">🟠</span>
+                    <div class="tv-info">
+                        <strong>CNews</strong>
+                        <span>Info en continu</span>
+                    </div>
+                </a>
+                <a href="https://www.tf1.fr/lci/direct" target="_blank" class="tv-item">
+                    <span class="tv-icon">⚪</span>
+                    <div class="tv-info">
+                        <strong>LCI</strong>
+                        <span>Info en continu</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer glass">
