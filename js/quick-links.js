@@ -212,6 +212,39 @@ document.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         closeTVModal();
+        closeSportsModal();
+    }
+});
+
+// ============================================
+// MODAL SPORTS
+// ============================================
+function showSportsModal() {
+    const modal = document.getElementById('sportsModal');
+    if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        
+        // Fermer le panel liens rapides
+        if (window.quickLinksWidget) {
+            window.quickLinksWidget.hide();
+        }
+    }
+}
+
+function closeSportsModal() {
+    const modal = document.getElementById('sportsModal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+}
+
+// Fermer modal Sports en cliquant à l'extérieur
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('sportsModal');
+    if (e.target === modal) {
+        closeSportsModal();
     }
 });
 

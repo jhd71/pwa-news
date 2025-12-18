@@ -167,6 +167,10 @@
     background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
 }
 
+.quick-link-icon.sports {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
 .quick-link-text {
     flex: 1;
     min-width: 0;
