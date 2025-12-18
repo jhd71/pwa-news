@@ -840,8 +840,7 @@ body {
 
 .footer-sub {
     margin-top: 0.5rem;
-    font-size: 0.7rem !important;
-    color: var(--text-muted) !important;
+    font-size: 0.7rem;
 }
 
 /* ============================================
