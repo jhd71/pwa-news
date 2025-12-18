@@ -613,7 +613,6 @@ body {
     gap: 0.5rem;
     margin-top: 0.75rem;
     font-size: 0.75rem;
-    color: var(--text-muted);
     animation: bounce 2s ease infinite;
 }
 
@@ -838,7 +837,6 @@ body {
 
 .footer p {
     font-size: 0.8rem;
-    color: var(--text-secondary);
 }
 
 .footer-sub {
