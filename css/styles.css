@@ -258,7 +258,7 @@ body {
 }
 
 .weather-day-icon {
-    font-size: 1rem;
+    font-size: 1.3rem;
 }
 
 .weather-day-temp {
@@ -932,10 +932,6 @@ body {
 
 [data-theme="light"] .weather-separator {
     background-color: rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .weather-day-label {
-    color: var(--text-muted);
 }
 
 [data-theme="light"] .weather-day-temp {
