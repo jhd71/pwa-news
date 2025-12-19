@@ -357,20 +357,32 @@
             box-shadow: 0 10px 40px rgba(239, 68, 68, 0.4);
         }
         
-		.contact-social {
-    display: flex;
-    width: 60px;
-    height: 60px;
-    background: var(--glass-bg) !important;
-    border: 1px solid var(--glass-border);
-    border-radius: 50%;
-    color: var(--text-primary);
-    text-decoration: none;
-    font-size: 0.7rem;
-    transition: all 0.3s ease;
-    align-items: center;
-    justify-content: center;
-}
+		.contact-socials {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .contact-social {
+			display: flex;
+			width: 60px;
+			height: 60px;
+			background: var(--glass-bg) !important;
+			border: 1px solid var(--glass-border);
+			border-radius: 50%;
+			color: var(--text-primary);
+			text-decoration: none;
+			font-size: 0.7rem;
+			transition: all 0.3s ease;
+			align-items: center;
+			justify-content: center;
+		}
+        
+        .contact-social:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
 
         @media (max-width: 400px) {
             .type-grid {
