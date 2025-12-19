@@ -10,6 +10,10 @@ const CONFIG = {
     },
     cinema: {
         dataUrl: 'https://raw.githubusercontent.com/jhd71/scraper-cinema/main/data/cinema.json'
+    },
+    supabase: {
+        url: 'https://tjbpfirqnbffhhvjbcop.supabase.co',
+        key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqYnBmaXJxbmJmZmhodmpiY29wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY3NzU1NTIsImV4cCI6MjA1MjM1MTU1Mn0.6jM9CDlzkgS7D_950up6vC-r1sJLhsM-5cONcdpXveg'
     }
 };
 
@@ -29,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initWeather();
     initNews();
     initCinema();
+    initCommunity();
     initServiceWorker();
     initInstallPrompt();
 });
@@ -525,6 +530,122 @@ function initServiceWorker() {
             .then(reg => console.log('✅ Service Worker enregistré'))
             .catch(err => console.error('❌ SW Error:', err));
     }
+}
+
+// ============================================
+// INFOS COMMUNAUTÉ (Supabase)
+// ============================================
+async function initCommunity() {
+    const contentEl = document.getElementById('communityContent');
+    const emptyEl = document.getElementById('communityEmpty');
+    const sectionEl = document.getElementById('communitySection');
+    
+    // Vérifier que les éléments existent
+    if (!contentEl || !emptyEl) {
+        console.log('⚠️ Section communauté non trouvée');
+        return;
+    }
+    
+    try {
+        // Vérifier que Supabase est chargé
+        if (typeof window.supabase === 'undefined') {
+            console.log('⚠️ Supabase non chargé, section communauté masquée');
+            if (sectionEl) sectionEl.style.display = 'none';
+            return;
+        }
+        
+        // Créer le client Supabase
+        const supabaseClient = window.supabase.createClient(CONFIG.supabase.url, CONFIG.supabase.key);
+        
+        // Charger les propositions approuvées
+        const { data, error } = await supabaseClient
+            .from('news_submissions')
+            .select('*')
+            .eq('status', 'approved')
+            .order('created_at', { ascending: false })
+            .limit(5);
+        
+        if (error) throw error;
+        
+        // Si aucune donnée
+        if (!data || data.length === 0) {
+            contentEl.style.display = 'none';
+            emptyEl.style.display = 'block';
+            console.log('📭 Aucune info communauté');
+            return;
+        }
+        
+        // Afficher les infos
+        contentEl.innerHTML = data.map(item => `
+            <div class="community-item">
+                <div class="community-item-icon ${item.type || 'actualite'}">
+                    ${getCommunityIcon(item.type)}
+                </div>
+                <div class="community-item-content">
+                    <div class="community-item-title">${escapeHtml(item.title)}</div>
+                    <div class="community-item-meta">
+                        ${item.location ? `<span class="community-item-location"><span class="material-icons">location_on</span>${escapeHtml(item.location)}</span>` : ''}
+                        <span><span class="material-icons">person</span>${escapeHtml(item.author || 'Anonyme')}</span>
+                        <span><span class="material-icons">schedule</span>${formatCommunityDate(item.created_at)}</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        
+        emptyEl.style.display = 'none';
+        console.log(`📢 ${data.length} infos communauté chargées`);
+        
+    } catch (error) {
+        console.error('❌ Erreur communauté:', error);
+        contentEl.innerHTML = '';
+        emptyEl.style.display = 'block';
+    }
+}
+
+function getCommunityIcon(type) {
+    const icons = {
+        'actualite': '📰',
+        'evenement': '🎪',
+        'pratique': '💡',
+        'insolite': '🤔',
+        'photo': '📸',
+        'autre': '📋'
+    };
+    return icons[type] || '📰';
+}
+
+function formatCommunityDate(dateStr) {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diff = now - date;
+    
+    // Moins d'une heure
+    if (diff < 3600000) {
+        const mins = Math.floor(diff / 60000);
+        return `Il y a ${mins} min`;
+    }
+    
+    // Moins d'un jour
+    if (diff < 86400000) {
+        const hours = Math.floor(diff / 3600000);
+        return `Il y a ${hours}h`;
+    }
+    
+    // Moins d'une semaine
+    if (diff < 604800000) {
+        const days = Math.floor(diff / 86400000);
+        return `Il y a ${days} jour${days > 1 ? 's' : ''}`;
+    }
+    
+    // Plus d'une semaine
+    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // ============================================
