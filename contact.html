@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Contact - Actu & Média</title>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <style>
+        /* Page Contact */
+        .contact-page {
+            min-height: 100vh;
+            padding: 1rem;
+            padding-top: 2rem;
+            padding-bottom: 100px;
+        }
+        
+        .contact-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .contact-back {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            color: var(--text-primary);
+            text-decoration: none;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-back:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
+        }
+        
+        .contact-logo {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        /* Formulaire */
+        .contact-form-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .contact-form {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .form-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23888' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 24px;
+            padding-right: 3rem;
+        }
+        
+        .form-select option {
+            background: var(--bg-gradient-1);
+            color: var(--text-primary);
+        }
+        
+        .form-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+        }
+        
+        /* Bouton submit */
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Message de succès */
+        .success-message {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .success-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+        
+        .success-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .success-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .success-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        
+        /* Infos complémentaires */
+        .contact-info {
+            max-width: 500px;
+            margin: 2rem auto 0;
+            text-align: center;
+        }
+        
+        .contact-info-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-socials {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .contact-social {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-social:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        /* Mode clair */
+        [data-theme="light"] .contact-form {
+            background: rgba(255, 255, 255, 0.85);
+        }
+        
+        [data-theme="light"] .contact-back {
+            background: rgba(255, 255, 255, 0.85);
+        }
+        
+        [data-theme="light"] .form-input,
+        [data-theme="light"] .form-textarea,
+        [data-theme="light"] .form-select {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        [data-theme="light"] .form-input:focus,
+        [data-theme="light"] .form-textarea:focus,
+        [data-theme="light"] .form-select:focus {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        [data-theme="light"] .contact-social {
+            background: rgba(255, 255, 255, 0.85);
+        }
+        
+        /* Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fond animé -->
+    <div class="background-gradient"></div>
+    
+    <!-- Bouton retour -->
+    <a href="index.html" class="contact-back" title="Retour à l'accueil">
+        <span class="material-icons">arrow_back</span>
+    </a>
+    
+    <div class="contact-page">
+        <!-- Header -->
+        <div class="contact-header">
+            <div class="contact-logo">📬</div>
+            <h1 class="contact-title">Contactez-nous</h1>
+            <p class="contact-subtitle">Une question, une suggestion, un partenariat ?<br>Nous vous répondons rapidement !</p>
+        </div>
+        
+        <!-- Formulaire -->
+        <div class="contact-form-container">
+            <form class="contact-form" id="contactForm">
+                <!-- Sujet -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons" style="font-size: 1.1rem;">category</span>
+                        Sujet
+                    </label>
+                    <select class="form-select" name="subject" id="subject" required>
+                        <option value="">Choisir un sujet...</option>
+                        <option value="question">❓ Question générale</option>
+                        <option value="suggestion">💡 Suggestion / Idée</option>
+                        <option value="bug">🐛 Signaler un problème</option>
+                        <option value="partenariat">🤝 Partenariat / Collaboration</option>
+                        <option value="presse">📰 Presse / Média</option>
+                        <option value="autre">📋 Autre</option>
+                    </select>
+                </div>
+                
+                <!-- Nom -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons" style="font-size: 1.1rem;">person</span>
+                        Votre nom
+                    </label>
+                    <input type="text" class="form-input" name="name" id="name" placeholder="Jean Dupont" required>
+                </div>
+                
+                <!-- Email -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons" style="font-size: 1.1rem;">email</span>
+                        Votre email
+                    </label>
+                    <input type="email" class="form-input" name="email" id="email" placeholder="jean.dupont@email.fr" required>
+                    <div class="form-hint">Nous ne partagerons jamais votre email</div>
+                </div>
+                
+                <!-- Message -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons" style="font-size: 1.1rem;">message</span>
+                        Votre message
+                    </label>
+                    <textarea class="form-textarea" name="message" id="message" placeholder="Écrivez votre message ici..." required maxlength="2000"></textarea>
+                    <div class="form-hint">Maximum 2000 caractères</div>
+                </div>
+                
+                <!-- Bouton -->
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="material-icons">send</span>
+                    Envoyer le message
+                </button>
+            </form>
+            
+            <!-- Message de succès (caché par défaut) -->
+            <div class="contact-form success-message" id="successMessage" style="display: none;">
+                <div class="success-icon">✅</div>
+                <h2 class="success-title">Message envoyé !</h2>
+                <p class="success-text">
+                    Merci de nous avoir contactés.<br>
+                    Nous vous répondrons dans les plus brefs délais.
+                </p>
+                <a href="index.html" class="success-btn">
+                    <span class="material-icons">home</span>
+                    Retour à l'accueil
+                </a>
+            </div>
+        </div>
+        
+        <!-- Réseaux sociaux -->
+        <div class="contact-info">
+            <div class="contact-info-title">Suivez-nous aussi sur</div>
+            <div class="contact-socials">
+                <a href="https://www.facebook.com/actuetmedia" target="_blank" class="contact-social" title="Facebook">
+                    📘
+                </a>
+                <a href="https://fr.tipeee.com/actuetmedia" target="_blank" class="contact-social" title="Tipeee">
+                    ❤️
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // Initialiser Supabase
+        const SUPABASE_URL = 'https://tjbpfirqnbffhhvjbcop.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqYnBmaXJxbmJmZmhodmpiY29wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY3NzU1NTIsImV4cCI6MjA1MjM1MTU1Mn0.6jM9CDlzkgS7D_950up6vC-r1sJLhsM-5cONcdpXveg';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // Gestion du formulaire
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalContent = submitBtn.innerHTML;
+            
+            // Désactiver le bouton
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="spinner"></div> Envoi en cours...';
+            
+            try {
+                // Récupérer les données
+                const formData = {
+                    subject: document.getElementById('subject').value,
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    message: document.getElementById('message').value,
+                    created_at: new Date().toISOString()
+                };
+                
+                // Envoyer vers Supabase
+                const { data, error } = await supabase
+                    .from('contact_messages')
+                    .insert([formData]);
+                
+                if (error) throw error;
+                
+                // Afficher succès
+                document.getElementById('contactForm').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+                
+                console.log('✅ Message envoyé');
+                
+            } catch (error) {
+                console.error('❌ Erreur:', error);
+                alert('Une erreur est survenue. Veuillez réessayer.');
+                
+                // Restaurer le bouton
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalContent;
+            }
+        });
+        
+        // Appliquer le thème sauvegardé
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+    </script>
+</body>
+</html>
