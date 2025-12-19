@@ -124,6 +124,13 @@
     transition: all 0.3s ease;
     margin-bottom: 0.4rem;
     background: rgba(255, 255, 255, 0.03);
+    /* Pour uniformiser boutons et liens */
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    text-align: left;
 }
 
 .quick-link-item:hover {
