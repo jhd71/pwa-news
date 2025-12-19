@@ -1600,3 +1600,15 @@ body {
 .facebook-btn:hover {
     color: #0f5dc4;
 }
+
+.header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-left-btns {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
