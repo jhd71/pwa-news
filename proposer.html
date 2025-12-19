@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Proposer une actualité - Actu & Média</title>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <style>
+        /* Page Proposer */
+        .propose-page {
+            min-height: 100vh;
+            padding: 1rem;
+            padding-top: 2rem;
+            padding-bottom: 100px;
+        }
+        
+        .propose-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .propose-back {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            color: var(--text-primary);
+            text-decoration: none;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .propose-back:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
+        }
+        
+        .propose-logo {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .propose-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .propose-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        /* Formulaire */
+        .propose-form-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .propose-form {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-label .required {
+            color: #ef4444;
+        }
+        
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .form-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23888' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 24px;
+            padding-right: 3rem;
+        }
+        
+        .form-select option {
+            background: var(--bg-gradient-1);
+            color: var(--text-primary);
+        }
+        
+        .form-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+        }
+        
+        /* Types d'actualité */
+        .type-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .type-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.75rem 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--glass-border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .type-option:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .type-option.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.15);
+        }
+        
+        .type-option input {
+            display: none;
+        }
+        
+        .type-icon {
+            font-size: 1.5rem;
+        }
+        
+        .type-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+        
+        /* Bouton submit */
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Message de succès */
+        .success-message {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .success-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+        
+        .success-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .success-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .success-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        
+        /* Mode clair */
+        [data-theme="light"] .propose-form {
+            background: rgba(255, 255, 255, 0.85);
+        }
+        
+        [data-theme="light"] .propose-back {
+            background: rgba(255, 255, 255, 0.85);
+        }
+        
+        [data-theme="light"] .form-input,
+        [data-theme="light"] .form-textarea,
+        [data-theme="light"] .form-select {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        [data-theme="light"] .form-input:focus,
+        [data-theme="light"] .form-textarea:focus,
+        [data-theme="light"] .form-select:focus {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        [data-theme="light"] .type-option {
+            background: rgba(0, 0, 0, 0.02);
+        }
+        
+        [data-theme="light"] .type-option:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        .toast.error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 10px 40px rgba(239, 68, 68, 0.4);
+        }
+        
+        @media (max-width: 400px) {
+            .type-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fond animé -->
+    <div class="background-gradient"></div>
+    
+    <!-- Bouton retour -->
+    <a href="index.html" class="propose-back" title="Retour à l'accueil">
+        <span class="material-icons">arrow_back</span>
+    </a>
+    
+    <div class="propose-page">
+        <!-- Header -->
+        <div class="propose-header">
+            <div class="propose-logo">📰</div>
+            <h1 class="propose-title">Proposer une actualité</h1>
+            <p class="propose-subtitle">Vous avez une info locale à partager ?<br>Envoyez-la nous, elle pourrait être publiée !</p>
+        </div>
+        
+        <!-- Formulaire -->
+        <div class="propose-form-container">
+            <form class="propose-form" id="proposeForm">
+                <!-- Type -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons" style="font-size: 1.1rem;">category</span>
+                        Type d'actualité <span class="required">*</span>
+                    </label>
+                    <div class="type-grid">
+                        <label class="type-option selected" data-type="actualite">
+                            <input type="radio" name="type" value="actualite" checked>
+                            <span class="type-icon">📰</span>
+                            <span class="type-label">Actualité</span>
+                        </label>
+                        <label class="type-option" data-type="evenement">
+                            <input type="radio" name="type" value="evenement">
+                            <span class="type-icon">🎪</span>
+                            <span class="type-label">Événement</span>
+                        </label>
+                        <label class="type-option" data-type="pratique">
+                            <input type="radio" name="type" value="pratique">
+                            <span class="type-icon">💡</span>
+                            <span class="type-label">Info pratique</span>
+                        </label>
+                        <label class="type-option" data-type="insolite">
+                            <input type="radio" name="type" value="insolite">
+                            <span class="type-icon">🤔</span>
+                            <span class="type-label">Insolite</span>
+                        </label>
+                        <label class="type-option" data-type="photo">
+                            <input type="radio" name="type" value="photo">
+                            <span class="type-icon">📸</span>
+                            <span class="type-label">Photo/Vidéo</span>
+                        </label>
+                        <label class="type-option" data-type="autre">
+                            <input type="radio" name="type" value="autre">
+                            <span class="type-icon">📋</span>
+                            <span class="type-label">Autre</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Titre -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons" style="font-size: 1.1rem;">title</span>
+                        Titre <span class="required">*</span>
+                    </label>
+                    <input type="text" class="form-input" name="title" id="title" placeholder="Ex: Brocante ce dimanche à Blanzy" required maxlength="150">
+                </div>
+                
+                <!-- Contenu -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons" style="font-size: 1.1rem;">description</span>
+                        Description <span class="required">*</span>
+                    </label>
+                    <textarea class="form-textarea" name="content" id="content" placeholder="Décrivez l'actualité en détail : quoi, où, quand, qui..." required maxlength="2000"></textarea>
+                    <div class="form-hint">Maximum 2000 caractères</div>
+                </div>
+                
+                <!-- Lieu -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons" style="font-size: 1.1rem;">location_on</span>
+                        Lieu
+                    </label>
+                    <input type="text" class="form-input" name="location" id="location" placeholder="Ex: Place du marché, Montceau">
+                </div>
+                
+                <!-- Votre nom -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons" style="font-size: 1.1rem;">person</span>
+                        Votre nom/pseudo
+                    </label>
+                    <input type="text" class="form-input" name="author" id="author" placeholder="Ex: Jean D. (ou laisser vide pour Anonyme)">
+                </div>
+                
+                <!-- Email -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons" style="font-size: 1.1rem;">email</span>
+                        Votre email <span class="required">*</span>
+                    </label>
+                    <input type="email" class="form-input" name="email" id="email" placeholder="votre@email.fr" required>
+                    <div class="form-hint">Pour vous recontacter si besoin (non affiché)</div>
+                </div>
+                
+                <!-- Bouton -->
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="material-icons">send</span>
+                    Envoyer ma proposition
+                </button>
+            </form>
+            
+            <!-- Message de succès -->
+            <div class="propose-form success-message" id="successMessage" style="display: none;">
+                <div class="success-icon">🎉</div>
+                <h2 class="success-title">Merci pour votre contribution !</h2>
+                <p class="success-text">
+                    Votre proposition a bien été envoyée.<br>
+                    Elle sera examinée et publiée si elle correspond à nos critères.
+                </p>
+                <a href="index.html" class="success-btn">
+                    <span class="material-icons">home</span>
+                    Retour à l'accueil
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon">✅</span>
+        <span class="toast-text">Proposition envoyée !</span>
+    </div>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // Supabase
+        const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // Gestion des types
+        document.querySelectorAll('.type-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+            });
+        });
+        
+        // Toast
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastIcon = toast.querySelector('.toast-icon');
+            const toastText = toast.querySelector('.toast-text');
+            
+            toastIcon.textContent = isError ? '❌' : '✅';
+            toastText.textContent = message;
+            toast.classList.toggle('error', isError);
+            toast.classList.add('show');
+            
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+        
+        // Formulaire
+        document.getElementById('proposeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalContent = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="spinner"></div> Envoi en cours...';
+            
+            try {
+                const formData = {
+                    type: document.querySelector('input[name="type"]:checked').value,
+                    title: document.getElementById('title').value,
+                    content: document.getElementById('content').value,
+                    location: document.getElementById('location').value || null,
+                    author: document.getElementById('author').value || null,
+                    contact_email: document.getElementById('email').value,
+                    status: 'pending',
+                    created_at: new Date().toISOString()
+                };
+                
+                const { data, error } = await supabaseClient
+                    .from('news_submissions')
+                    .insert([formData]);
+                
+                if (error) throw error;
+                
+                showToast('Proposition envoyée avec succès ! 🎉');
+                
+                document.getElementById('proposeForm').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+                
+            } catch (error) {
+                console.error('❌ Erreur:', error);
+                showToast('Erreur lors de l\'envoi. Réessayez.', true);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalContent;
+            }
+        });
+        
+        // Thème
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+    </script>
+</body>
+</html>

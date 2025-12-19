@@ -226,6 +226,14 @@
                     </div>
                     <span class="material-icons arrow">chevron_right</span>
                 </a>
+                <a href="proposer.html" class="support-action">
+                    <div class="support-action-icon propose">📰</div>
+                    <div class="support-action-text">
+                        <div class="support-action-name">Proposer une actualité</div>
+                        <div class="support-action-desc">Partager une info locale</div>
+                    </div>
+                    <span class="material-icons arrow">chevron_right</span>
+                </a>
                 <a href="https://www.swisstransfer.com/fr-fr" target="_blank" class="support-action">
                     <div class="support-action-icon upload">📤</div>
                     <div class="support-action-text">
@@ -242,6 +250,15 @@
                     </div>
                     <span class="material-icons arrow">share</span>
                 </button>
+            </div>
+            
+            <!-- Admin link (discret) -->
+            <div id="adminSection" class="admin-section" style="display: none;">
+                <a href="admin.html" class="admin-link">
+                    <span class="material-icons">admin_panel_settings</span>
+                    Administration
+                    <span class="admin-badge" id="adminBadge" style="display: none;">0</span>
+                </a>
             </div>
         </div>
         <div class="support-footer">
@@ -330,7 +347,7 @@
                 <span class="material-icons">campaign</span>
                 <span>Infos de la communauté</span>
             </div>
-            <button class="community-propose-btn" onclick="window.location.href='index.html#submitNews'">
+            <button class="community-propose-btn" onclick="window.location.href='proposer.html'">
                 <span class="material-icons">add</span>
                 Proposer
             </button>
@@ -517,5 +534,120 @@
     <script src="js/app.js"></script>
     <script src="js/quick-links.js"></script>
     <script src="js/support.js"></script>
+    
+    <!-- Notification toast pour admin -->
+    <div class="notification-toast" id="adminNotification">
+        <span class="notification-toast-icon">📬</span>
+        <div class="notification-toast-content">
+            <div class="notification-toast-title">Nouveaux messages !</div>
+            <div class="notification-toast-text" id="notificationText">Vous avez des messages non lus</div>
+        </div>
+        <button class="notification-toast-close" onclick="closeAdminNotification()">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    
+    <!-- Script Admin Notifications -->
+    <script>
+        // Vérifier la session admin
+        const ADMIN_SESSION_KEY = 'admin_session';
+        
+        async function checkAdminNotifications() {
+            const session = JSON.parse(localStorage.getItem(ADMIN_SESSION_KEY));
+            
+            // Si pas connecté en admin, ne rien faire
+            if (!session || !session.logged || session.expires < Date.now()) {
+                return;
+            }
+            
+            // Afficher la section admin
+            const adminSection = document.getElementById('adminSection');
+            if (adminSection) {
+                adminSection.style.display = 'block';
+            }
+            
+            try {
+                // Vérifier les messages non lus
+                const supabaseClient = window.supabase.createClient(CONFIG.supabase.url, CONFIG.supabase.key);
+                
+                // Compter les messages de contact non lus
+                const { data: contactData, error: contactError } = await supabaseClient
+                    .from('contact_messages')
+                    .select('id', { count: 'exact' })
+                    .eq('is_read', false);
+                
+                // Compter les propositions en attente
+                const { data: newsData, error: newsError } = await supabaseClient
+                    .from('news_submissions')
+                    .select('id', { count: 'exact' })
+                    .eq('status', 'pending');
+                
+                const unreadContacts = contactData ? contactData.length : 0;
+                const pendingNews = newsData ? newsData.length : 0;
+                const totalUnread = unreadContacts + pendingNews;
+                
+                // Mettre à jour le badge
+                const adminBadge = document.getElementById('adminBadge');
+                if (adminBadge && totalUnread > 0) {
+                    adminBadge.textContent = totalUnread;
+                    adminBadge.style.display = 'flex';
+                }
+                
+                // Afficher la notification si nouveaux messages
+                const lastNotified = localStorage.getItem('admin_last_notified') || '0';
+                const now = Date.now();
+                
+                // Ne notifier que toutes les 30 minutes max
+                if (totalUnread > 0 && (now - parseInt(lastNotified)) > 30 * 60 * 1000) {
+                    showAdminNotification(unreadContacts, pendingNews);
+                    localStorage.setItem('admin_last_notified', now.toString());
+                }
+                
+                console.log(`📬 Admin: ${unreadContacts} messages, ${pendingNews} propositions`);
+                
+            } catch (error) {
+                console.error('Erreur vérification admin:', error);
+            }
+        }
+        
+        function showAdminNotification(contacts, news) {
+            const notification = document.getElementById('adminNotification');
+            const text = document.getElementById('notificationText');
+            
+            let message = '';
+            if (contacts > 0 && news > 0) {
+                message = `${contacts} message${contacts > 1 ? 's' : ''} et ${news} proposition${news > 1 ? 's' : ''}`;
+            } else if (contacts > 0) {
+                message = `${contacts} nouveau${contacts > 1 ? 'x' : ''} message${contacts > 1 ? 's' : ''} de contact`;
+            } else if (news > 0) {
+                message = `${news} nouvelle${news > 1 ? 's' : ''} proposition${news > 1 ? 's' : ''} d'actu`;
+            }
+            
+            text.textContent = message;
+            notification.classList.add('show');
+            
+            // Cacher après 10 secondes
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 10000);
+            
+            // Clic pour aller à l'admin
+            notification.onclick = (e) => {
+                if (!e.target.closest('.notification-toast-close')) {
+                    window.location.href = 'admin.html';
+                }
+            };
+        }
+        
+        function closeAdminNotification() {
+            document.getElementById('adminNotification').classList.remove('show');
+        }
+        
+        // Vérifier au chargement de la page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Attendre que Supabase soit chargé
+            setTimeout(checkAdminNotifications, 2000);
+        });
+    </script>
 </body>
 </html>
