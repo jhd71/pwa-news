@@ -316,6 +316,40 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        .toast.error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 10px 40px rgba(239, 68, 68, 0.4);
+        }
+        
+        .toast-icon {
+            font-size: 1.5rem;
+        }
     </style>
 </head>
 <body>
@@ -420,15 +454,45 @@
         </div>
     </div>
     
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon">✅</span>
+        <span class="toast-text">Message envoyé avec succès !</span>
+    </div>
+    
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
         // Initialiser Supabase
-        const SUPABASE_URL = 'https://tjbpfirqnbffhhvjbcop.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqYnBmaXJxbmJmZmhodmpiY29wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY3NzU1NTIsImV4cCI6MjA1MjM1MTU1Mn0.6jM9CDlzkgS7D_950up6vC-r1sJLhsM-5cONcdpXveg';
+        const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // Fonction pour afficher le toast
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastIcon = toast.querySelector('.toast-icon');
+            const toastText = toast.querySelector('.toast-text');
+            
+            toastIcon.textContent = isError ? '❌' : '✅';
+            toastText.textContent = message;
+            
+            if (isError) {
+                toast.classList.add('error');
+            } else {
+                toast.classList.remove('error');
+            }
+            
+            // Afficher
+            toast.classList.add('show');
+            
+            // Cacher après 4 secondes
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
         
         // Gestion du formulaire
         document.getElementById('contactForm').addEventListener('submit', async (e) => {
@@ -452,13 +516,16 @@
                 };
                 
                 // Envoyer vers Supabase
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('contact_messages')
                     .insert([formData]);
                 
                 if (error) throw error;
                 
-                // Afficher succès
+                // Afficher le toast de succès
+                showToast('Message envoyé avec succès ! ✉️');
+                
+                // Afficher la section succès
                 document.getElementById('contactForm').style.display = 'none';
                 document.getElementById('successMessage').style.display = 'block';
                 
@@ -466,7 +533,9 @@
                 
             } catch (error) {
                 console.error('❌ Erreur:', error);
-                alert('Une erreur est survenue. Veuillez réessayer.');
+                
+                // Afficher le toast d'erreur
+                showToast('Erreur lors de l\'envoi. Réessayez.', true);
                 
                 // Restaurer le bouton
                 submitBtn.disabled = false;

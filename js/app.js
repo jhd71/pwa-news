@@ -12,8 +12,8 @@ const CONFIG = {
         dataUrl: 'https://raw.githubusercontent.com/jhd71/scraper-cinema/main/data/cinema.json'
     },
     supabase: {
-        url: 'https://tjbpfirqnbffhhvjbcop.supabase.co',
-        key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqYnBmaXJxbmJmZmhodmpiY29wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY3NzU1NTIsImV4cCI6MjA1MjM1MTU1Mn0.6jM9CDlzkgS7D_950up6vC-r1sJLhsM-5cONcdpXveg'
+        url: 'https://ekjgfiyhkythqcnmhzea.supabase.co',
+        key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4'
     }
 };
 
