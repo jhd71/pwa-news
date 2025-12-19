@@ -624,13 +624,13 @@
     
     <script>
         // === CONFIG ===
-        const ADMIN_PASSWORD = 'fc35$wL72iZA^'; // ⚠️ CHANGE CE MOT DE PASSE !
+        const ADMIN_PASSWORD = 'fc35$wL72iZA^'; // Mot de passe admin
         const SESSION_KEY = 'admin_session';
         
         // Supabase
         const SUPABASE_URL = 'https://tjbpfirqnbffhhvjbcop.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqYnBmaXJxbmJmZmhodmpiY29wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY3NzU1NTIsImV4cCI6MjA1MjM1MTU1Mn0.6jM9CDlzkgS7D_950up6vC-r1sJLhsM-5cONcdpXveg';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         // === LOGIN ===
         document.getElementById('loginForm').addEventListener('submit', (e) => {
@@ -690,7 +690,7 @@
             container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
             
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('contact_messages')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -756,7 +756,7 @@
         
         async function markAsRead(id) {
             try {
-                await supabase
+                await supabaseClient
                     .from('contact_messages')
                     .update({ is_read: true })
                     .eq('id', id);
@@ -770,7 +770,7 @@
             if (!confirm('Supprimer ce message ?')) return;
             
             try {
-                await supabase
+                await supabaseClient
                     .from('contact_messages')
                     .delete()
                     .eq('id', id);
@@ -786,7 +786,7 @@
             container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
             
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('news_submissions')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -862,7 +862,7 @@
         
         async function updatePropositionStatus(id, status) {
             try {
-                await supabase
+                await supabaseClient
                     .from('news_submissions')
                     .update({ status: status })
                     .eq('id', id);
@@ -876,7 +876,7 @@
             if (!confirm('Supprimer cette proposition ?')) return;
             
             try {
-                await supabase
+                await supabaseClient
                     .from('news_submissions')
                     .delete()
                     .eq('id', id);
