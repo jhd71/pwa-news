@@ -865,6 +865,8 @@ body {
     
     .news-ticker-section,
     .cinema-section,
+    .community-section,
+    .seo-section,
     .tiles-section,
     .footer {
         max-width: 800px;
@@ -1367,11 +1369,11 @@ body {
     border-radius: 12px;
     border: 1px solid var(--glass-border);
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .community-item:hover {
     background: rgba(255, 255, 255, 0.06);
-    transform: translateX(4px);
 }
 
 .community-item-icon {
@@ -1412,10 +1414,22 @@ body {
     font-size: 0.95rem;
     color: var(--text-primary);
     margin-bottom: 0.35rem;
+}
+
+.community-item-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+.community-item.expanded .community-item-desc {
+    display: block;
+    -webkit-line-clamp: unset;
 }
 
 .community-item-meta {

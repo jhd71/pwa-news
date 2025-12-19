@@ -577,12 +577,13 @@ async function initCommunity() {
         
         // Afficher les infos
         contentEl.innerHTML = data.map(item => `
-            <div class="community-item">
+            <div class="community-item" onclick="toggleCommunityDetail(this)">
                 <div class="community-item-icon ${item.type || 'actualite'}">
                     ${getCommunityIcon(item.type)}
                 </div>
                 <div class="community-item-content">
                     <div class="community-item-title">${escapeHtml(item.title)}</div>
+                    <div class="community-item-desc">${escapeHtml(item.content)}</div>
                     <div class="community-item-meta">
                         ${item.location ? `<span class="community-item-location"><span class="material-icons">location_on</span>${escapeHtml(item.location)}</span>` : ''}
                         <span><span class="material-icons">person</span>${escapeHtml(item.author || 'Anonyme')}</span>
@@ -646,6 +647,11 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// Fonction pour afficher/masquer le détail d'une info communauté
+function toggleCommunityDetail(element) {
+    element.classList.toggle('expanded');
 }
 
 // ============================================

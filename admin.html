@@ -154,6 +154,31 @@
             font-size: 1.5rem;
         }
         
+        .admin-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .home-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid var(--primary);
+            border-radius: 50%;
+            color: var(--primary-light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .home-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
         .logout-btn {
             display: flex;
             align-items: center;
@@ -552,10 +577,15 @@
                 <span>📊</span>
                 Administration
             </div>
-            <button class="logout-btn" onclick="logout()">
-                <span class="material-icons">logout</span>
-                Déconnexion
-            </button>
+            <div class="admin-header-actions">
+                <a href="index.html" class="home-btn" title="Retour à l'accueil">
+                    <span class="material-icons">home</span>
+                </a>
+                <button class="logout-btn" onclick="logout()">
+                    <span class="material-icons">logout</span>
+                    Déconnexion
+                </button>
+            </div>
         </header>
         
         <!-- Stats -->
