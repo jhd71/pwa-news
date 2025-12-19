@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Actu & Média</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Pas d'indexation -->
+    <meta name="robots" content="noindex, nofollow">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --bg-dark: #0f0f1a;
+            --bg-card: #1a1a2e;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        /* === LOGIN === */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        .login-box {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .login-logo {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .login-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+        
+        .login-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        
+        .login-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+        
+        .login-error {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        /* === DASHBOARD === */
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+        }
+        
+        .dashboard.show {
+            display: block;
+        }
+        
+        /* Header */
+        .admin-header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .admin-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .admin-title span {
+            font-size: 1.5rem;
+        }
+        
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--danger);
+            border-radius: 8px;
+            color: var(--danger);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+        
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+        
+        .stat-card.unread .stat-value {
+            color: var(--warning);
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .tab {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .tab:hover {
+            color: var(--text-primary);
+        }
+        
+        .tab.active {
+            color: var(--primary-light);
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px 3px 0 0;
+        }
+        
+        .tab-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            background: var(--danger);
+            border-radius: 10px;
+            font-size: 0.7rem;
+            margin-left: 0.5rem;
+        }
+        
+        /* Content */
+        .tab-content {
+            padding: 1.5rem;
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Messages list */
+        .messages-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .message-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+        }
+        
+        .message-card.unread {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .message-subject {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            color: var(--primary-light);
+        }
+        
+        .message-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .message-from {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .message-email {
+            font-size: 0.85rem;
+            color: var(--primary-light);
+            margin-bottom: 0.75rem;
+        }
+        
+        .message-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .message-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.5rem 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn .material-icons {
+            font-size: 1rem;
+        }
+        
+        .action-btn.mark-read {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+        
+        .action-btn.mark-read:hover {
+            background: var(--success);
+            color: white;
+        }
+        
+        .action-btn.reply {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-light);
+        }
+        
+        .action-btn.reply:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .action-btn.delete {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+        
+        .action-btn.delete:hover {
+            background: var(--danger);
+            color: white;
+        }
+        
+        /* Propositions */
+        .proposition-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+        }
+        
+        .proposition-type.actualite { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .proposition-type.evenement { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+        .proposition-type.pratique { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .proposition-type.insolite { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .proposition-type.photo { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
+        .proposition-type.autre { background: rgba(107, 114, 128, 0.2); color: #6b7280; }
+        
+        .proposition-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .proposition-location {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        .proposition-file {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 8px;
+            color: var(--primary-light);
+            text-decoration: none;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        
+        .proposition-file:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Refresh */
+        .refresh-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            color: var(--primary-light);
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            .admin-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+            
+            .tab {
+                padding: 0.75rem 1rem;
+                white-space: nowrap;
+            }
+            
+            .message-header {
+                flex-direction: column;
+            }
+            
+            .message-actions {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <div class="login-logo">🔐</div>
+            <h1 class="login-title">Administration</h1>
+            <p class="login-subtitle">Actu & Média - Espace réservé</p>
+            
+            <form id="loginForm">
+                <input 
+                    type="password" 
+                    class="login-input" 
+                    id="passwordInput" 
+                    placeholder="••••••••"
+                    autocomplete="current-password"
+                    required
+                >
+                <button type="submit" class="login-btn">
+                    <span class="material-icons" style="vertical-align: middle; margin-right: 0.5rem;">login</span>
+                    Connexion
+                </button>
+            </form>
+            
+            <p class="login-error" id="loginError">Mot de passe incorrect</p>
+        </div>
+    </div>
+    
+    <!-- DASHBOARD -->
+    <div class="dashboard" id="dashboard">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="admin-title">
+                <span>📊</span>
+                Administration
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <span class="material-icons">logout</span>
+                Déconnexion
+            </button>
+        </header>
+        
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="statTotalMessages">-</div>
+                <div class="stat-label">Messages total</div>
+            </div>
+            <div class="stat-card unread">
+                <div class="stat-value" id="statUnreadMessages">-</div>
+                <div class="stat-label">Non lus</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statTotalPropositions">-</div>
+                <div class="stat-label">Propositions</div>
+            </div>
+            <div class="stat-card unread">
+                <div class="stat-value" id="statPendingPropositions">-</div>
+                <div class="stat-label">En attente</div>
+            </div>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="messages">
+                📬 Messages
+                <span class="tab-badge" id="badgeMessages" style="display: none;">0</span>
+            </button>
+            <button class="tab" data-tab="propositions">
+                📰 Propositions
+                <span class="tab-badge" id="badgePropositions" style="display: none;">0</span>
+            </button>
+        </div>
+        
+        <!-- Content: Messages -->
+        <div class="tab-content active" id="tabMessages">
+            <button class="refresh-btn" onclick="loadMessages()">
+                <span class="material-icons">refresh</span>
+                Actualiser
+            </button>
+            <div class="messages-list" id="messagesList">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Chargement...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content: Propositions -->
+        <div class="tab-content" id="tabPropositions">
+            <button class="refresh-btn" onclick="loadPropositions()">
+                <span class="material-icons">refresh</span>
+                Actualiser
+            </button>
+            <div class="messages-list" id="propositionsList">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Chargement...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // === CONFIG ===
+        const ADMIN_PASSWORD = 'fc35$wL72iZA^'; // ⚠️ CHANGE CE MOT DE PASSE !
+        const SESSION_KEY = 'admin_session';
+        
+        // Supabase
+        const SUPABASE_URL = 'https://tjbpfirqnbffhhvjbcop.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqYnBmaXJxbmJmZmhodmpiY29wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY3NzU1NTIsImV4cCI6MjA1MjM1MTU1Mn0.6jM9CDlzkgS7D_950up6vC-r1sJLhsM-5cONcdpXveg';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // === LOGIN ===
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = document.getElementById('passwordInput').value;
+            
+            if (password === ADMIN_PASSWORD) {
+                // Créer session (expire dans 24h)
+                const session = {
+                    logged: true,
+                    expires: Date.now() + (24 * 60 * 60 * 1000)
+                };
+                localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+                showDashboard();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+            }
+        });
+        
+        function checkSession() {
+            const session = JSON.parse(localStorage.getItem(SESSION_KEY));
+            if (session && session.logged && session.expires > Date.now()) {
+                showDashboard();
+            }
+        }
+        
+        function showDashboard() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('dashboard').classList.add('show');
+            loadMessages();
+            loadPropositions();
+        }
+        
+        function logout() {
+            localStorage.removeItem(SESSION_KEY);
+            location.reload();
+        }
+        
+        // === TABS ===
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Update tabs
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update content
+                const tabName = tab.dataset.tab;
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById('tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).classList.add('active');
+            });
+        });
+        
+        // === MESSAGES ===
+        async function loadMessages() {
+            const container = document.getElementById('messagesList');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
+            
+            try {
+                const { data, error } = await supabase
+                    .from('contact_messages')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                // Update stats
+                const unread = data.filter(m => !m.is_read).length;
+                document.getElementById('statTotalMessages').textContent = data.length;
+                document.getElementById('statUnreadMessages').textContent = unread;
+                
+                if (unread > 0) {
+                    document.getElementById('badgeMessages').textContent = unread;
+                    document.getElementById('badgeMessages').style.display = 'inline-flex';
+                } else {
+                    document.getElementById('badgeMessages').style.display = 'none';
+                }
+                
+                // Render
+                if (data.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <p>Aucun message pour le moment</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = data.map(msg => `
+                    <div class="message-card ${msg.is_read ? '' : 'unread'}" data-id="${msg.id}">
+                        <div class="message-header">
+                            <span class="message-subject">${getSubjectLabel(msg.subject)}</span>
+                            <span class="message-date">${formatDate(msg.created_at)}</span>
+                        </div>
+                        <div class="message-from">${escapeHtml(msg.name)}</div>
+                        <div class="message-email">${escapeHtml(msg.email)}</div>
+                        <div class="message-text">${escapeHtml(msg.message)}</div>
+                        <div class="message-actions">
+                            ${!msg.is_read ? `
+                                <button class="action-btn mark-read" onclick="markAsRead(${msg.id})">
+                                    <span class="material-icons">done</span>
+                                    Marquer lu
+                                </button>
+                            ` : ''}
+                            <a href="mailto:${msg.email}?subject=Re: ${msg.subject}" class="action-btn reply">
+                                <span class="material-icons">reply</span>
+                                Répondre
+                            </a>
+                            <button class="action-btn delete" onclick="deleteMessage(${msg.id})">
+                                <span class="material-icons">delete</span>
+                                Supprimer
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                container.innerHTML = `<div class="empty-state"><p>❌ Erreur de chargement</p></div>`;
+            }
+        }
+        
+        async function markAsRead(id) {
+            try {
+                await supabase
+                    .from('contact_messages')
+                    .update({ is_read: true })
+                    .eq('id', id);
+                loadMessages();
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+        
+        async function deleteMessage(id) {
+            if (!confirm('Supprimer ce message ?')) return;
+            
+            try {
+                await supabase
+                    .from('contact_messages')
+                    .delete()
+                    .eq('id', id);
+                loadMessages();
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+        
+        // === PROPOSITIONS ===
+        async function loadPropositions() {
+            const container = document.getElementById('propositionsList');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
+            
+            try {
+                const { data, error } = await supabase
+                    .from('news_submissions')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                // Update stats
+                const pending = data.filter(p => p.status === 'pending').length;
+                document.getElementById('statTotalPropositions').textContent = data.length;
+                document.getElementById('statPendingPropositions').textContent = pending;
+                
+                if (pending > 0) {
+                    document.getElementById('badgePropositions').textContent = pending;
+                    document.getElementById('badgePropositions').style.display = 'inline-flex';
+                } else {
+                    document.getElementById('badgePropositions').style.display = 'none';
+                }
+                
+                // Render
+                if (data.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📰</div>
+                            <p>Aucune proposition pour le moment</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = data.map(prop => `
+                    <div class="message-card ${prop.status === 'pending' ? 'unread' : ''}" data-id="${prop.id}">
+                        <div class="message-header">
+                            <div>
+                                <span class="proposition-type ${prop.type}">${getTypeLabel(prop.type)}</span>
+                                ${prop.status === 'pending' ? '<span class="message-subject">⏳ En attente</span>' : ''}
+                            </div>
+                            <span class="message-date">${formatDate(prop.created_at)}</span>
+                        </div>
+                        <div class="proposition-title">${escapeHtml(prop.title)}</div>
+                        ${prop.location ? `<div class="proposition-location"><span class="material-icons" style="font-size: 1rem;">location_on</span> ${escapeHtml(prop.location)}</div>` : ''}
+                        <div class="message-from">De: ${escapeHtml(prop.author || 'Anonyme')}</div>
+                        <div class="message-email">${escapeHtml(prop.contact_email)}</div>
+                        <div class="message-text">${escapeHtml(prop.content)}</div>
+                        ${prop.file_url ? `<a href="${prop.file_url}" target="_blank" class="proposition-file"><span class="material-icons" style="font-size: 1rem;">attachment</span> Voir le fichier</a>` : ''}
+                        <div class="message-actions" style="margin-top: 1rem;">
+                            ${prop.status === 'pending' ? `
+                                <button class="action-btn mark-read" onclick="updatePropositionStatus(${prop.id}, 'approved')">
+                                    <span class="material-icons">check</span>
+                                    Approuver
+                                </button>
+                                <button class="action-btn" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;" onclick="updatePropositionStatus(${prop.id}, 'rejected')">
+                                    <span class="material-icons">close</span>
+                                    Refuser
+                                </button>
+                            ` : ''}
+                            <a href="mailto:${prop.contact_email}?subject=Re: ${prop.title}" class="action-btn reply">
+                                <span class="material-icons">reply</span>
+                                Répondre
+                            </a>
+                            <button class="action-btn delete" onclick="deleteProposition(${prop.id})">
+                                <span class="material-icons">delete</span>
+                                Supprimer
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                container.innerHTML = `<div class="empty-state"><p>❌ Erreur de chargement</p></div>`;
+            }
+        }
+        
+        async function updatePropositionStatus(id, status) {
+            try {
+                await supabase
+                    .from('news_submissions')
+                    .update({ status: status })
+                    .eq('id', id);
+                loadPropositions();
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+        
+        async function deleteProposition(id) {
+            if (!confirm('Supprimer cette proposition ?')) return;
+            
+            try {
+                await supabase
+                    .from('news_submissions')
+                    .delete()
+                    .eq('id', id);
+                loadPropositions();
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+        
+        // === HELPERS ===
+        function getSubjectLabel(subject) {
+            const labels = {
+                'question': '❓ Question',
+                'suggestion': '💡 Suggestion',
+                'bug': '🐛 Problème',
+                'partenariat': '🤝 Partenariat',
+                'presse': '📰 Presse',
+                'autre': '📋 Autre'
+            };
+            return labels[subject] || subject;
+        }
+        
+        function getTypeLabel(type) {
+            const labels = {
+                'actualite': '📰 Actualité',
+                'evenement': '🎪 Événement',
+                'pratique': '💡 Info pratique',
+                'insolite': '🤔 Insolite',
+                'photo': '📸 Photo/Vidéo',
+                'autre': '📋 Autre'
+            };
+            return labels[type] || type;
+        }
+        
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diff = now - date;
+            
+            // Moins d'une heure
+            if (diff < 3600000) {
+                const mins = Math.floor(diff / 60000);
+                return `Il y a ${mins} min`;
+            }
+            
+            // Moins d'un jour
+            if (diff < 86400000) {
+                const hours = Math.floor(diff / 3600000);
+                return `Il y a ${hours}h`;
+            }
+            
+            // Plus d'un jour
+            return date.toLocaleDateString('fr-FR', {
+                day: 'numeric',
+                month: 'short',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // === INIT ===
+        checkSession();
+    </script>
+</body>
+</html>
