@@ -44,6 +44,14 @@
     font-size: 1.3rem;
 }
 
+.radio-cast-btn.casting {
+    color: #4285f4;
+}
+
+.radio-cast-btn.casting:hover {
+    background: rgba(66, 133, 244, 0.15);
+}
+
 .radio-widget-btn.cast {
     width: 32px;
     height: 32px;
@@ -51,6 +59,14 @@
 
 .radio-widget-btn.cast .material-icons {
     font-size: 1.1rem;
+}
+
+.radio-widget-btn.cast.casting {
+    color: #4285f4;
+}
+
+.radio-widget-btn.cast.casting:hover {
+    background: rgba(66, 133, 244, 0.15);
 }
 
 /* ============================================
@@ -614,7 +630,7 @@
     }
     
     #radioWidget {
-        bottom: 20px !important;
+        bottom: 5px !important;
         max-width: 400px;
     }
     
@@ -630,7 +646,7 @@
 /* Mobile */
 @media (max-width: 767px) {
     #radioWidget {
-        bottom: 16px !important;
+        bottom: 5px !important;
         width: calc(100% - 1.5rem);
     }
     

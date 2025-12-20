@@ -563,6 +563,21 @@
                         receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
                         autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
                     });
+                    
+                    // Écouter les changements de session
+                    castContext.addEventListener(
+                        cast.framework.CastContextEventType.SESSION_STATE_CHANGED,
+                        function(event) {
+                            if (event.sessionState === cast.framework.SessionState.SESSION_ENDED) {
+                                // Session terminée, mettre à jour l'UI
+                                if (window.radioPlayer) {
+                                    window.radioPlayer.updateCastUI(false);
+                                    console.log('📺 Session Cast terminée');
+                                }
+                            }
+                        }
+                    );
+                    
                     console.log('✅ Cast Framework initialisé');
                 }
             };
