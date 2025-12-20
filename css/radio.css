@@ -375,9 +375,11 @@
    WIDGET COMPACT (quand la radio joue)
    ============================================ */
 .radio-widget {
-    position: fixed;
-    bottom: 16px;
-    left: 50%;
+    position: fixed !important;
+    bottom: 16px !important;
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
     transform: translateX(-50%);
     width: calc(100% - 2rem);
     max-width: 420px;
@@ -395,7 +397,7 @@
 }
 
 .radio-widget.show {
-    display: flex;
+    display: flex !important;
 }
 
 .radio-widget-logo {
@@ -603,7 +605,7 @@
     }
     
     .radio-widget {
-        bottom: 20px;
+        bottom: 20px !important;
         max-width: 400px;
     }
     
@@ -619,7 +621,7 @@
 /* Mobile */
 @media (max-width: 767px) {
     .radio-widget {
-        bottom: 16px;
+        bottom: 16px !important;
         width: calc(100% - 1.5rem);
     }
     
