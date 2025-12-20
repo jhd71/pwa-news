@@ -434,8 +434,8 @@
 }
 
 .radio-widget-info {
-    flex: 1;
-    min-width: 0;
+    flex: none;
+    min-width: 0px;
     cursor: pointer;
 }
 
@@ -631,7 +631,7 @@
     
     #radioWidget {
         bottom: 5px !important;
-        max-width: 400px;
+        max-width: 480px;
     }
     
     .radio-widget-volume-slider {
@@ -647,7 +647,7 @@
 @media (max-width: 767px) {
     #radioWidget {
         bottom: 5px !important;
-        width: calc(100% - 1.5rem);
+        width: calc(100% - 0.5rem);
     }
     
     .radio-widget-volume-slider {
