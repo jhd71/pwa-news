@@ -23,23 +23,6 @@
     <link rel="stylesheet" href="css/quick-links.css">
     <link rel="stylesheet" href="css/support.css">
     <link rel="stylesheet" href="css/radio.css">
-	
-	<!-- Charger Cast UNIQUEMENT sur Desktop/Android (pas iOS) -->
-<script>
-    // Détecter iOS
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    
-    // Ne charger Cast QUE sur non-iOS
-    if (!isIOS) {
-        const castScript = document.createElement('script');
-        castScript.src = 'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1';
-        document.head.appendChild(castScript);
-        console.log('✅ SDK Cast chargé (Desktop/Android)');
-    } else {
-        console.log('📱 SDK Cast non chargé (iOS/Safari)');
-    }
-</script>
-
 </head>
 <body>
     <!-- Fond animé -->
