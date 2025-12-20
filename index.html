@@ -554,6 +554,18 @@
             castScript.src = 'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1';
             document.head.appendChild(castScript);
             console.log('✅ SDK Cast chargé (Desktop/Android)');
+            
+            // Initialiser Cast quand le framework est prêt
+            window['__onGCastApiAvailable'] = function(isAvailable) {
+                if (isAvailable) {
+                    const castContext = cast.framework.CastContext.getInstance();
+                    castContext.setOptions({
+                        receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+                        autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+                    });
+                    console.log('✅ Cast Framework initialisé');
+                }
+            };
         } else {
             console.log('📱 SDK Cast non chargé (iOS/Safari)');
         }

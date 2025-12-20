@@ -647,26 +647,39 @@ class RadioPlayer {
     }
 
     startCast() {
-        // Vérifier si Cast est disponible
+        // Vérifier si Cast est disponible et initialisé
         if (typeof cast === 'undefined' || !cast.framework) {
             this.showToast('Chromecast non disponible');
             return;
         }
 
-        const castContext = cast.framework.CastContext.getInstance();
-        const sessionState = castContext.getSessionState();
+        // Vérifier si une station est sélectionnée
+        if (!this.currentStation) {
+            this.showToast('Sélectionnez une radio d\'abord');
+            return;
+        }
 
-        if (sessionState === cast.framework.SessionState.SESSION_STARTED ||
-            sessionState === cast.framework.SessionState.SESSION_RESUMED) {
-            // Déjà connecté, lancer le média
-            this.castMedia();
-        } else {
-            // Ouvrir le sélecteur de Chromecast
-            castContext.requestSession().then(() => {
+        try {
+            const castContext = cast.framework.CastContext.getInstance();
+            const sessionState = castContext.getSessionState();
+
+            if (sessionState === cast.framework.SessionState.SESSION_STARTED ||
+                sessionState === cast.framework.SessionState.SESSION_RESUMED) {
+                // Déjà connecté, lancer le média
                 this.castMedia();
-            }).catch(err => {
-                console.log('Cast annulé ou erreur:', err);
-            });
+            } else {
+                // Ouvrir le sélecteur de Chromecast
+                castContext.requestSession().then(() => {
+                    this.castMedia();
+                }).catch(err => {
+                    if (err.code !== 'cancel') {
+                        console.log('Cast annulé ou erreur:', err);
+                    }
+                });
+            }
+        } catch (err) {
+            console.error('Erreur Cast:', err);
+            this.showToast('Erreur Chromecast');
         }
     }
 

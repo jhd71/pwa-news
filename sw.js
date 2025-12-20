@@ -2,7 +2,7 @@
 // ACTU & MÉDIA - Service Worker v2
 // ============================================
 
-const CACHE_NAME = 'actu-media-v9';
+const CACHE_NAME = 'actu-media-v10';
 
 const STATIC_ASSETS = [
     '/',
