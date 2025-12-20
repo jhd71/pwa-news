@@ -180,47 +180,107 @@ class RadioPopupWidget {
         });
     }
 
-    // === CRÉATION DE LA TUILE RADIO ===
-    createRadioTile() {
-        if (document.querySelector('.radio-app-tile')) {
-            console.log('Tuile Radio déjà présente');
-            return;
-        }
-
-        const radioSeparator = Array.from(document.querySelectorAll('.separator'))
-            .find(sep => sep.textContent.includes('Espace+'));
-        
-        if (!radioSeparator) {
-            const observer = new MutationObserver(() => {
-                const separator = Array.from(document.querySelectorAll('.separator'))
-                    .find(sep => sep.textContent.includes('Espace+'));
-                if (separator) {
-                    observer.disconnect();
-                    this.createRadioTile();
-                }
-            });
-            observer.observe(document.body, { childList: true, subtree: true });
-            return;
-        }
-
-        const tileElement = document.createElement('div');
-        tileElement.className = 'tile radio-app-tile';
-        tileElement.setAttribute('data-category', 'Espace+');
-        tileElement.innerHTML = `
-            <div class="tile-content">
-                <div class="tile-title">Lecteur Radio</div>
+// ============================================
+    // CRÉATION DU HTML
+    // ============================================
+    createHTML() {
+        // Modal Radio
+        const modalHTML = `
+            <div class="radio-modal-overlay" id="radioModal">
+                <div class="radio-modal">
+                    <div class="radio-modal-header">
+                        <div class="radio-modal-title">
+                            <span class="material-icons">radio</span>
+                            Radio
+                        </div>
+                        <button class="radio-modal-close" id="radioModalClose">
+                            <span class="material-icons">close</span>
+                        </button>
+                    </div>
+                    
+                    <div class="radio-now-playing hidden" id="radioNowPlaying">
+                        <div class="radio-current-station">
+                            <img class="radio-current-logo" id="radioCurrentLogo" src="" alt="">
+                            <div class="radio-current-info">
+                                <div class="radio-current-name" id="radioCurrentName">-</div>
+                                <div class="radio-current-desc" id="radioCurrentDesc">-</div>
+                                <div class="radio-current-status">
+                                    <span class="live-dot"></span>
+                                    <span>En direct</span>
+                                </div>
+                            </div>
+                            <div class="radio-equalizer" id="radioEqualizer">
+                                <div class="radio-equalizer-bar"></div>
+                                <div class="radio-equalizer-bar"></div>
+                                <div class="radio-equalizer-bar"></div>
+                                <div class="radio-equalizer-bar"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="radio-controls">
+                            <button class="radio-play-btn" id="radioPlayBtn">
+                                <span class="material-icons">play_arrow</span>
+                            </button>
+                            <div class="radio-volume-container">
+                                <span class="material-icons radio-volume-icon" id="radioVolumeIcon">volume_up</span>
+                                <input type="range" class="radio-volume-slider" id="radioVolumeSlider" min="0" max="100" value="50">
+                                <span class="radio-volume-value" id="radioVolumeValue">50%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="radio-stations-container">
+                        <div class="radio-stations-title">📍 Radios locales</div>
+                        <div class="radio-stations-grid" id="radioStationsLocal"></div>
+                        
+                        <div class="radio-stations-title" style="margin-top: 1.25rem;">📰 Infos</div>
+                        <div class="radio-stations-grid" id="radioStationsInfo"></div>
+                        
+                        <div class="radio-stations-title" style="margin-top: 1.25rem;">🎵 Musique</div>
+                        <div class="radio-stations-grid" id="radioStationsMusic"></div>
+                    </div>
+                </div>
             </div>
-            <div class="radio-tile-indicator" id="radioTileIndicator" style="display: none;"></div>
-            <div class="radio-tile-status" id="radioTileStatus" style="display: none;"></div>
         `;
 
-        tileElement.addEventListener('click', () => {
-            this.openPopup();
-        });
+        // Widget compact
+        const widgetHTML = `
+            <div class="radio-widget" id="radioWidget">
+                <img class="radio-widget-logo" id="radioWidgetLogo" src="" alt="">
+                <div class="radio-widget-info" id="radioWidgetInfo">
+                    <div class="radio-widget-name" id="radioWidgetName">-</div>
+                    <div class="radio-widget-status">
+                        <span class="live-dot"></span>
+                        <span>En direct</span>
+                    </div>
+                </div>
+                <div class="radio-widget-controls">
+                    <button class="radio-widget-btn play-pause" id="radioWidgetPlayBtn">
+                        <span class="material-icons">pause</span>
+                    </button>
+                    <div class="radio-widget-volume">
+                        <button class="radio-widget-btn" id="radioWidgetVolumeBtn">
+                            <span class="material-icons">volume_up</span>
+                        </button>
+                        <input type="range" class="radio-widget-volume-slider" id="radioWidgetVolumeSlider" min="0" max="100" value="30">
+                        <span class="radio-widget-volume-value" id="radioWidgetVolumeValue">30%</span>
+                    </div>
+                    <button class="radio-widget-btn close" id="radioWidgetCloseBtn">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+            </div>
+        `;
 
-        radioSeparator.insertAdjacentElement('afterend', tileElement);
+        // Toast
+        const toastHTML = `<div class="radio-toast" id="radioToast"></div>`;
+
+        // Ajouter au DOM
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        document.body.insertAdjacentHTML('beforeend', widgetHTML);
+        document.body.insertAdjacentHTML('beforeend', toastHTML);
     }
-
+	
     // === GESTION DES INDICATEURS DE LA TUILE ===
     showTileIndicator(stationName) {
         const indicator = document.getElementById('radioTileIndicator');
