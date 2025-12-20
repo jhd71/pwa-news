@@ -125,6 +125,7 @@ class RadioPlayer {
         this.audio = null;
         this.currentStation = null;
         this.isPlaying = false;
+        this.stoppingManually = false;
         this.volume = parseFloat(localStorage.getItem('radio_volume')) || 0.3; // 30% par défaut
         this.lastStationId = localStorage.getItem('radio_last_station');
 
@@ -406,6 +407,8 @@ class RadioPlayer {
         });
 
         this.audio.addEventListener('error', (e) => {
+            // Ignorer l'erreur si on arrête volontairement la radio
+            if (this.stoppingManually) return;
             console.error('❌ Erreur radio:', e);
             this.showToast('Erreur de connexion à la radio');
             this.isPlaying = false;
@@ -457,14 +460,24 @@ class RadioPlayer {
     // ============================================
     stop() {
         if (this.audio) {
+            // Marquer qu'on arrête volontairement pour éviter le toast d'erreur
+            this.stoppingManually = true;
             this.audio.pause();
             this.audio.src = '';
             this.audio = null;
+            // Réinitialiser le flag après un court délai
+            setTimeout(() => {
+                this.stoppingManually = false;
+            }, 100);
         }
         this.isPlaying = false;
         this.currentStation = null;
         this.updateUI();
         this.hideWidget();
+        
+        // Mettre à jour le bouton du header
+        const radioBtn = document.getElementById('radioBtn');
+        if (radioBtn) radioBtn.classList.remove('playing');
     }
 
     // ============================================

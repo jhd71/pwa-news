@@ -34,15 +34,15 @@
             <button class="header-btn" id="quickLinksBtn" aria-label="Menu liens rapides">
                 <span class="material-icons">menu</span>
             </button>
-			<button class="radio-btn" id="radioBtn" onclick="openRadio()" aria-label="Écouter la radio">
-                    <span class="material-icons">radio</span>
-                </button>
             <div class="header-title">
                 <h1>Actu & Média</h1>
             </div>
             <div class="header-right-btns">
                 <button class="theme-toggle" id="themeToggle" aria-label="Changer de thème">
                     <span class="material-icons" id="themeIcon">light_mode</span>
+                </button>
+                <button class="radio-btn" id="radioBtn" onclick="openRadio()" aria-label="Écouter la radio">
+                    <span class="material-icons">radio</span>
                 </button>
                 <button class="header-btn support" id="supportBtn" aria-label="À propos et soutien">
                     <span class="material-icons">favorite</span>
@@ -541,6 +541,21 @@
     </div>
 
     <!-- Scripts -->
+    <!-- Charger Cast UNIQUEMENT sur Desktop/Android (pas iOS) -->
+    <script>
+        // Détecter iOS
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        
+        // Ne charger Cast QUE sur non-iOS
+        if (!isIOS) {
+            const castScript = document.createElement('script');
+            castScript.src = 'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1';
+            document.head.appendChild(castScript);
+            console.log('✅ SDK Cast chargé (Desktop/Android)');
+        } else {
+            console.log('📱 SDK Cast non chargé (iOS/Safari)');
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/app.js"></script>
     <script src="js/quick-links.js"></script>
