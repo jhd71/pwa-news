@@ -11,7 +11,7 @@ class RadioPlayer {
                 id: 'ici-bourgogne',
                 name: 'Ici Bourgogne',
                 url: 'https://icecast.radiofrance.fr/fbbourgogne-midfi.mp3',
-                logo: 'images/radio-logos/Ici-Bourgogne.png',
+                logo: 'images/radio-logos/ici-bourgogne.png',
                 description: 'Info Bourgogne',
                 category: 'local'
             },
@@ -19,7 +19,7 @@ class RadioPlayer {
                 id: 'radio-prevert',
                 name: 'Radio Prévert',
                 url: 'https://vps.cbad.fr:8443/prevert',
-                logo: 'images/radio-logos/Radio-Prevert.png',
+                logo: 'images/radio-logos/radio-prevert.png',
                 description: 'Chalon-sur-Saône',
                 category: 'local'
             },
@@ -27,7 +27,7 @@ class RadioPlayer {
                 id: 'frequence-plus',
                 name: 'Fréquence Plus',
                 url: 'https://fplus-chalonsursaone.ice.infomaniak.ch/fplus-chalonsursaone-128.mp3',
-                logo: 'images/radio-logos/Frequence-Plus.png',
+                logo: 'images/radio-logos/frequence-plus.png',
                 description: 'Chalon-sur-Saône',
                 category: 'local'
             },
@@ -75,7 +75,7 @@ class RadioPlayer {
                 id: 'fun-radio',
                 name: 'Fun Radio',
                 url: 'https://streamer-02.rtl.fr/fun-1-44-128',
-                logo: 'images/radio-logos/Fun-Radio.png',
+                logo: 'images/radio-logos/fun-radio.png',
                 description: 'Le son Dancefloor',
                 category: 'music'
             },
@@ -83,7 +83,7 @@ class RadioPlayer {
                 id: 'skyrock',
                 name: 'Skyrock',
                 url: 'https://icecast.skyrock.net/s/natio_mp3_128k',
-                logo: 'images/radio-logos/Skyrock.png',
+                logo: 'images/radio-logos/skyrock.png',
                 description: 'Premier sur le Rap',
                 category: 'music'
             },
@@ -107,7 +107,7 @@ class RadioPlayer {
                 id: 'rtl2',
                 name: 'RTL2',
                 url: 'https://streamer-02.rtl.fr/rtl2-1-44-128',
-                logo: 'images/radio-logos/RTL2.png',
+                logo: 'images/radio-logos/rtl2.png',
                 description: 'Le son Pop-Rock',
                 category: 'music'
             },
@@ -115,7 +115,7 @@ class RadioPlayer {
                 id: 'm-radio',
                 name: 'M Radio',
                 url: 'https://mradio.ice.infomaniak.ch/mradio.mp3',
-                logo: 'images/radio-logos/M-Radio.png',
+                logo: 'images/radio-logos/m-radio.png',
                 description: 'La chanson française',
                 category: 'music'
             }
@@ -230,6 +230,7 @@ class RadioPlayer {
                             <span class="material-icons">volume_up</span>
                         </button>
                         <input type="range" class="radio-widget-volume-slider" id="radioWidgetVolumeSlider" min="0" max="100" value="30">
+                        <span class="radio-widget-volume-value" id="radioWidgetVolumeValue">30%</span>
                     </div>
                     <button class="radio-widget-btn close" id="radioWidgetCloseBtn">
                         <span class="material-icons">close</span>
@@ -273,6 +274,7 @@ class RadioPlayer {
             widgetPlayBtn: document.getElementById('radioWidgetPlayBtn'),
             widgetVolumeBtn: document.getElementById('radioWidgetVolumeBtn'),
             widgetVolumeSlider: document.getElementById('radioWidgetVolumeSlider'),
+            widgetVolumeValue: document.getElementById('radioWidgetVolumeValue'),
             widgetCloseBtn: document.getElementById('radioWidgetCloseBtn'),
             toast: document.getElementById('radioToast')
         };
@@ -281,6 +283,7 @@ class RadioPlayer {
         this.elements.volumeSlider.value = this.volume * 100;
         this.elements.volumeValue.textContent = Math.round(this.volume * 100) + '%';
         this.elements.widgetVolumeSlider.value = this.volume * 100;
+        this.elements.widgetVolumeValue.textContent = Math.round(this.volume * 100) + '%';
         this.updateVolumeIcon();
     }
 
@@ -469,6 +472,7 @@ class RadioPlayer {
         this.elements.volumeSlider.value = this.volume * 100;
         this.elements.volumeValue.textContent = Math.round(this.volume * 100) + '%';
         this.elements.widgetVolumeSlider.value = this.volume * 100;
+        this.elements.widgetVolumeValue.textContent = Math.round(this.volume * 100) + '%';
         this.updateVolumeIcon();
     }
 
@@ -556,10 +560,12 @@ class RadioPlayer {
     // ============================================
     showWidget() {
         this.elements.widget.classList.add('show');
+        document.body.classList.add('radio-playing');
     }
 
     hideWidget() {
         this.elements.widget.classList.remove('show');
+        document.body.classList.remove('radio-playing');
     }
 
     // ============================================

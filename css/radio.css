@@ -376,10 +376,11 @@
    ============================================ */
 .radio-widget {
     position: fixed;
-    bottom: 100px;
-    left: 1rem;
-    right: 1rem;
-    max-width: 400px;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%) translateY(150%);
+    width: calc(100% - 2rem);
+    max-width: 420px;
     background: var(--glass-bg);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
@@ -391,12 +392,11 @@
     align-items: center;
     gap: 0.75rem;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    transform: translateY(150%);
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .radio-widget.show {
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
 }
 
 .radio-widget-logo {
@@ -485,7 +485,7 @@
 }
 
 .radio-widget-volume-slider {
-    width: 60px;
+    width: 50px;
     height: 4px;
     -webkit-appearance: none;
     appearance: none;
@@ -511,6 +511,13 @@
     border-radius: 50%;
     cursor: pointer;
     border: none;
+}
+
+.radio-widget-volume-value {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    min-width: 28px;
+    text-align: center;
 }
 
 /* ============================================
@@ -597,10 +604,12 @@
     }
     
     .radio-widget {
-        left: 1.5rem;
-        right: auto;
-        bottom: 24px;
-        max-width: 380px;
+        bottom: 20px;
+        max-width: 400px;
+    }
+    
+    .radio-widget-volume-slider {
+        width: 70px;
     }
     
     .radio-stations-grid {
@@ -608,17 +617,20 @@
     }
 }
 
-/* Mobile - espacement footer */
+/* Mobile - en bas de l'écran */
 @media (max-width: 767px) {
     .radio-widget {
-        bottom: 100px;
-        left: 0.75rem;
-        right: 0.75rem;
-        margin-bottom: 10px;
+        bottom: 12px;
+        width: calc(100% - 1rem);
     }
     
     .radio-widget-volume-slider {
-        width: 50px;
+        width: 40px;
+    }
+    
+    .radio-widget-volume-value {
+        min-width: 24px;
+        font-size: 0.6rem;
     }
 }
 
@@ -627,7 +639,7 @@
    ============================================ */
 .radio-toast {
     position: fixed;
-    bottom: 140px;
+    bottom: 80px;
     left: 50%;
     transform: translateX(-50%) translateY(20px);
     padding: 0.75rem 1.25rem;
@@ -652,6 +664,17 @@
 
 @media (min-width: 768px) {
     .radio-toast {
-        bottom: 100px;
+        bottom: 90px;
+    }
+}
+
+/* Padding en bas quand la radio joue */
+body.radio-playing {
+    padding-bottom: 80px;
+}
+
+@media (min-width: 768px) {
+    body.radio-playing {
+        padding-bottom: 90px;
     }
 }

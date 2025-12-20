@@ -10,9 +10,11 @@ const STATIC_ASSETS = [
     '/css/styles.css',
     '/css/quick-links.css',
     '/css/support.css',
+    '/css/radio.css',
     '/js/app.js',
     '/js/quick-links.js',
     '/js/support.js',
+    '/js/radio.js',
     '/manifest.json'
 ];
 
