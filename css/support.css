@@ -218,6 +218,14 @@
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
 
+.support-action-icon.propose {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.support-action-icon.radio {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
 .support-action-icon.emergency {
     background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
 }

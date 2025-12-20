@@ -98,3 +98,10 @@ class SupportWidget {
 document.addEventListener('DOMContentLoaded', () => {
     window.supportWidget = new SupportWidget();
 });
+
+// Fonction globale pour fermer le widget support
+function closeSupportWidget() {
+    if (window.supportWidget) {
+        window.supportWidget.hide();
+    }
+}
