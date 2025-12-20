@@ -389,6 +389,10 @@ class RadioPlayer {
             this.isPlaying = true;
             this.updatePlayButton();
             this.elements.equalizer.classList.remove('paused');
+            this.showWidget(); // Afficher le widget quand la radio joue
+            // Mettre à jour le bouton du header
+            const radioBtn = document.getElementById('radioBtn');
+            if (radioBtn) radioBtn.classList.add('playing');
             console.log(`📻 En lecture: ${station.name}`);
         });
 
@@ -396,6 +400,9 @@ class RadioPlayer {
             this.isPlaying = false;
             this.updatePlayButton();
             this.elements.equalizer.classList.add('paused');
+            // Mettre à jour le bouton du header
+            const radioBtn = document.getElementById('radioBtn');
+            if (radioBtn) radioBtn.classList.remove('playing');
         });
 
         this.audio.addEventListener('error', (e) => {
@@ -505,12 +512,9 @@ class RadioPlayer {
             this.elements.currentDesc.textContent = this.currentStation.description;
             this.elements.nowPlaying.classList.remove('hidden');
 
-            // Widget
+            // Widget - toujours mettre à jour les infos
             this.elements.widgetLogo.src = this.currentStation.logo;
             this.elements.widgetName.textContent = this.currentStation.name;
-            if (this.isPlaying) {
-                this.showWidget();
-            }
 
             // Marquer la station active
             document.querySelectorAll('.radio-station').forEach(el => {

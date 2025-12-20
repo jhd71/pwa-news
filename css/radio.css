@@ -374,7 +374,7 @@
 /* ============================================
    WIDGET COMPACT (quand la radio joue)
    ============================================ */
-.radio-widget {
+#radioWidget {
     position: fixed !important;
     bottom: 16px !important;
     left: 50% !important;
@@ -396,7 +396,7 @@
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
-.radio-widget.show {
+#radioWidget.show {
     display: flex !important;
 }
 
@@ -604,7 +604,7 @@
         opacity: 1;
     }
     
-    .radio-widget {
+    #radioWidget {
         bottom: 20px !important;
         max-width: 400px;
     }
@@ -620,7 +620,7 @@
 
 /* Mobile */
 @media (max-width: 767px) {
-    .radio-widget {
+    #radioWidget {
         bottom: 16px !important;
         width: calc(100% - 1.5rem);
     }
@@ -671,11 +671,11 @@
 
 /* Espace en bas quand la radio joue */
 body.radio-playing .footer {
-    margin-bottom: 90px;
+    margin-bottom: 80px !important;
 }
 
 @media (min-width: 768px) {
     body.radio-playing .footer {
-        margin-bottom: 100px;
+        margin-bottom: 90px !important;
     }
 }
