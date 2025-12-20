@@ -10,8 +10,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -20,6 +20,11 @@
     color: var(--text-primary);
     cursor: pointer;
     transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.radio-btn .material-icons {
+    font-size: 1.2rem;
 }
 
 .radio-btn:hover {
@@ -371,7 +376,7 @@
    ============================================ */
 .radio-widget {
     position: fixed;
-    bottom: 80px;
+    bottom: 100px;
     left: 1rem;
     right: 1rem;
     max-width: 400px;
@@ -436,7 +441,7 @@
 .radio-widget-controls {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.25rem;
 }
 
 .radio-widget-btn {
@@ -470,6 +475,42 @@
 .radio-widget-btn.close:hover {
     background: rgba(239, 68, 68, 0.2);
     color: #ef4444;
+}
+
+/* Volume slider dans le widget */
+.radio-widget-volume {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.radio-widget-volume-slider {
+    width: 60px;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    outline: none;
+}
+
+.radio-widget-volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--primary);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.radio-widget-volume-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--primary);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
 }
 
 /* ============================================
@@ -556,14 +597,28 @@
     }
     
     .radio-widget {
-        left: auto;
-        right: 1.5rem;
-        bottom: 1.5rem;
-        max-width: 350px;
+        left: 1.5rem;
+        right: auto;
+        bottom: 24px;
+        max-width: 380px;
     }
     
     .radio-stations-grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Mobile - espacement footer */
+@media (max-width: 767px) {
+    .radio-widget {
+        bottom: 100px;
+        left: 0.75rem;
+        right: 0.75rem;
+        margin-bottom: 10px;
+    }
+    
+    .radio-widget-volume-slider {
+        width: 50px;
     }
 }
 

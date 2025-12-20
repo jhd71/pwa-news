@@ -11,7 +11,7 @@ class RadioPlayer {
                 id: 'ici-bourgogne',
                 name: 'Ici Bourgogne',
                 url: 'https://icecast.radiofrance.fr/fbbourgogne-midfi.mp3',
-                logo: 'https://chfrequence.ouest-france.fr/rc/img/logo/france-bleu-logo.svg',
+                logo: 'images/radio-logos/Ici-Bourgogne.png',
                 description: 'Info Bourgogne',
                 category: 'local'
             },
@@ -19,7 +19,7 @@ class RadioPlayer {
                 id: 'radio-prevert',
                 name: 'Radio Prévert',
                 url: 'https://vps.cbad.fr:8443/prevert',
-                logo: 'https://www.radioprevert.com/wp-content/uploads/2020/09/Logo-Radio-Prevert-300x300.png',
+                logo: 'images/radio-logos/Radio-Prevert.png',
                 description: 'Chalon-sur-Saône',
                 category: 'local'
             },
@@ -27,7 +27,7 @@ class RadioPlayer {
                 id: 'frequence-plus',
                 name: 'Fréquence Plus',
                 url: 'https://fplus-chalonsursaone.ice.infomaniak.ch/fplus-chalonsursaone-128.mp3',
-                logo: 'https://www.frequenceplus.com/wp-content/uploads/2021/09/logo-frequenceplus.png',
+                logo: 'images/radio-logos/Frequence-Plus.png',
                 description: 'Chalon-sur-Saône',
                 category: 'local'
             },
@@ -35,7 +35,7 @@ class RadioPlayer {
                 id: 'france-info',
                 name: 'France Info',
                 url: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/b/b6/France_Info_2024.svg/512px-France_Info_2024.svg.png',
+                logo: 'images/radio-logos/france-info.png',
                 description: 'Info en continu',
                 category: 'info'
             },
@@ -43,7 +43,7 @@ class RadioPlayer {
                 id: 'rtl',
                 name: 'RTL',
                 url: 'https://streamer-03.rtl.fr/rtl-1-44-128',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/2/26/RTL_logo_2015.svg/512px-RTL_logo_2015.svg.png',
+                logo: 'images/radio-logos/rtl.png',
                 description: 'Info & divertissement',
                 category: 'info'
             },
@@ -51,7 +51,7 @@ class RadioPlayer {
                 id: 'europe1',
                 name: 'Europe 1',
                 url: 'https://europe1.lmn.fm/europe1.mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/c/c0/Europe_1_logo_%282024%29.svg/512px-Europe_1_logo_%282024%29.svg.png',
+                logo: 'images/radio-logos/europe1.png',
                 description: 'Talk & actualités',
                 category: 'info'
             },
@@ -59,7 +59,7 @@ class RadioPlayer {
                 id: 'rmc',
                 name: 'RMC',
                 url: 'https://audio.bfmtv.com/rmcradio_128.mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/c/ce/RMC_logo_2022.svg/512px-RMC_logo_2022.svg.png',
+                logo: 'images/radio-logos/rmc.png',
                 description: 'Sport & info',
                 category: 'info'
             },
@@ -67,7 +67,7 @@ class RadioPlayer {
                 id: 'nrj',
                 name: 'NRJ',
                 url: 'https://scdn.nrjaudio.fm/adwz1/fr/30001/mp3_128.mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/3/33/NRJ_logo_2023.svg/512px-NRJ_logo_2023.svg.png',
+                logo: 'images/radio-logos/nrj.png',
                 description: 'Hit Music Only',
                 category: 'music'
             },
@@ -75,7 +75,7 @@ class RadioPlayer {
                 id: 'fun-radio',
                 name: 'Fun Radio',
                 url: 'https://streamer-02.rtl.fr/fun-1-44-128',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/4/4e/Fun_Radio_2022.svg/512px-Fun_Radio_2022.svg.png',
+                logo: 'images/radio-logos/Fun-Radio.png',
                 description: 'Le son Dancefloor',
                 category: 'music'
             },
@@ -83,7 +83,7 @@ class RadioPlayer {
                 id: 'skyrock',
                 name: 'Skyrock',
                 url: 'https://icecast.skyrock.net/s/natio_mp3_128k',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/0/01/Skyrock_logo_2011.svg/512px-Skyrock_logo_2011.svg.png',
+                logo: 'images/radio-logos/Skyrock.png',
                 description: 'Premier sur le Rap',
                 category: 'music'
             },
@@ -91,7 +91,7 @@ class RadioPlayer {
                 id: 'nostalgie',
                 name: 'Nostalgie',
                 url: 'https://scdn.nrjaudio.fm/adwz1/fr/30601/mp3_128.mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/0/0b/Nostalgie_logo_2023.svg/512px-Nostalgie_logo_2023.svg.png',
+                logo: 'images/radio-logos/nostalgie.png',
                 description: 'Les plus grands tubes',
                 category: 'music'
             },
@@ -99,7 +99,7 @@ class RadioPlayer {
                 id: 'cherie-fm',
                 name: 'Chérie FM',
                 url: 'https://scdn.nrjaudio.fm/adwz1/fr/30201/mp3_128.mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/0/05/Cherie_fm_2022.svg/512px-Cherie_fm_2022.svg.png',
+                logo: 'images/radio-logos/cherie-fm.png',
                 description: 'Vos plus belles émotions',
                 category: 'music'
             },
@@ -107,7 +107,7 @@ class RadioPlayer {
                 id: 'rtl2',
                 name: 'RTL2',
                 url: 'https://streamer-02.rtl.fr/rtl2-1-44-128',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/a/af/RTL2_logo_2015.svg/512px-RTL2_logo_2015.svg.png',
+                logo: 'images/radio-logos/RTL2.png',
                 description: 'Le son Pop-Rock',
                 category: 'music'
             },
@@ -115,7 +115,7 @@ class RadioPlayer {
                 id: 'm-radio',
                 name: 'M Radio',
                 url: 'https://mradio.ice.infomaniak.ch/mradio.mp3',
-                logo: 'https://upload.wikimedia.org/wikipedia/fr/thumb/f/f0/M_Radio_logo_2020.svg/512px-M_Radio_logo_2020.svg.png',
+                logo: 'images/radio-logos/M-Radio.png',
                 description: 'La chanson française',
                 category: 'music'
             }
@@ -125,7 +125,7 @@ class RadioPlayer {
         this.audio = null;
         this.currentStation = null;
         this.isPlaying = false;
-        this.volume = parseFloat(localStorage.getItem('radio_volume')) || 0.5;
+        this.volume = parseFloat(localStorage.getItem('radio_volume')) || 0.3; // 30% par défaut
         this.lastStationId = localStorage.getItem('radio_last_station');
 
         // Éléments DOM (seront initialisés après création du HTML)
@@ -225,9 +225,12 @@ class RadioPlayer {
                     <button class="radio-widget-btn play-pause" id="radioWidgetPlayBtn">
                         <span class="material-icons">pause</span>
                     </button>
-                    <button class="radio-widget-btn" id="radioWidgetVolumeBtn">
-                        <span class="material-icons">volume_up</span>
-                    </button>
+                    <div class="radio-widget-volume">
+                        <button class="radio-widget-btn" id="radioWidgetVolumeBtn">
+                            <span class="material-icons">volume_up</span>
+                        </button>
+                        <input type="range" class="radio-widget-volume-slider" id="radioWidgetVolumeSlider" min="0" max="100" value="30">
+                    </div>
                     <button class="radio-widget-btn close" id="radioWidgetCloseBtn">
                         <span class="material-icons">close</span>
                     </button>
@@ -269,6 +272,7 @@ class RadioPlayer {
             widgetInfo: document.getElementById('radioWidgetInfo'),
             widgetPlayBtn: document.getElementById('radioWidgetPlayBtn'),
             widgetVolumeBtn: document.getElementById('radioWidgetVolumeBtn'),
+            widgetVolumeSlider: document.getElementById('radioWidgetVolumeSlider'),
             widgetCloseBtn: document.getElementById('radioWidgetCloseBtn'),
             toast: document.getElementById('radioToast')
         };
@@ -276,6 +280,7 @@ class RadioPlayer {
         // Initialiser le volume slider
         this.elements.volumeSlider.value = this.volume * 100;
         this.elements.volumeValue.textContent = Math.round(this.volume * 100) + '%';
+        this.elements.widgetVolumeSlider.value = this.volume * 100;
         this.updateVolumeIcon();
     }
 
@@ -303,6 +308,9 @@ class RadioPlayer {
         this.elements.widgetInfo.addEventListener('click', () => this.openModal());
         this.elements.widgetPlayBtn.addEventListener('click', () => this.togglePlay());
         this.elements.widgetVolumeBtn.addEventListener('click', () => this.toggleMute());
+        this.elements.widgetVolumeSlider.addEventListener('input', (e) => {
+            this.setVolume(e.target.value / 100);
+        });
         this.elements.widgetCloseBtn.addEventListener('click', () => this.stop());
 
         // Touche Echap pour fermer
@@ -460,6 +468,7 @@ class RadioPlayer {
         localStorage.setItem('radio_volume', this.volume.toString());
         this.elements.volumeSlider.value = this.volume * 100;
         this.elements.volumeValue.textContent = Math.round(this.volume * 100) + '%';
+        this.elements.widgetVolumeSlider.value = this.volume * 100;
         this.updateVolumeIcon();
     }
 
@@ -468,7 +477,7 @@ class RadioPlayer {
             this.previousVolume = this.volume;
             this.setVolume(0);
         } else {
-            this.setVolume(this.previousVolume || 0.5);
+            this.setVolume(this.previousVolume || 0.3);
         }
     }
 
