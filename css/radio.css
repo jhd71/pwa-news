@@ -605,8 +605,8 @@
     }
     
     #radioWidget {
-        bottom: 20px !important;
-        max-width: 400px;
+        bottom: 10px !important;
+        max-width: 440px;
     }
     
     .radio-widget-volume-slider {
@@ -621,7 +621,7 @@
 /* Mobile */
 @media (max-width: 767px) {
     #radioWidget {
-        bottom: 16px !important;
+        bottom: 5px !important;
         width: calc(100% - 1.5rem);
     }
     
