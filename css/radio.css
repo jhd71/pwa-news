@@ -376,9 +376,9 @@
    ============================================ */
 .radio-widget {
     position: fixed;
-    bottom: 70px;
+    bottom: 16px;
     left: 50%;
-    transform: translateX(-50%) translateY(150%);
+    transform: translateX(-50%);
     width: calc(100% - 2rem);
     max-width: 420px;
     background: var(--glass-bg);
@@ -387,16 +387,15 @@
     border: 1px solid var(--glass-border);
     border-radius: 16px;
     padding: 0.75rem 1rem;
-    z-index: 9000;
-    display: flex;
+    z-index: 9999;
+    display: none;
     align-items: center;
     gap: 0.75rem;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .radio-widget.show {
-    transform: translateX(-50%) translateY(0);
+    display: flex;
 }
 
 .radio-widget-logo {
@@ -617,11 +616,11 @@
     }
 }
 
-/* Mobile - en bas de l'écran */
+/* Mobile */
 @media (max-width: 767px) {
     .radio-widget {
-        bottom: 12px;
-        width: calc(100% - 1rem);
+        bottom: 16px;
+        width: calc(100% - 1.5rem);
     }
     
     .radio-widget-volume-slider {
@@ -668,13 +667,13 @@
     }
 }
 
-/* Padding en bas quand la radio joue */
-body.radio-playing {
-    padding-bottom: 80px;
+/* Espace en bas quand la radio joue */
+body.radio-playing .footer {
+    margin-bottom: 90px;
 }
 
 @media (min-width: 768px) {
-    body.radio-playing {
-        padding-bottom: 90px;
+    body.radio-playing .footer {
+        margin-bottom: 100px;
     }
 }

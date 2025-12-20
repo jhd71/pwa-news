@@ -559,11 +559,15 @@ class RadioPlayer {
     // WIDGET
     // ============================================
     showWidget() {
+        console.log('📻 showWidget() appelé');
         this.elements.widget.classList.add('show');
         document.body.classList.add('radio-playing');
+        console.log('📻 Widget classes:', this.elements.widget.className);
+        console.log('📻 Body classes:', document.body.className);
     }
 
     hideWidget() {
+        console.log('📻 hideWidget() appelé');
         this.elements.widget.classList.remove('show');
         document.body.classList.remove('radio-playing');
     }
