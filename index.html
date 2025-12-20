@@ -31,18 +31,20 @@
     <!-- Header -->
     <header class="header glass">
         <div class="header-top">
-            <button class="header-btn" id="quickLinksBtn" aria-label="Menu liens rapides">
-                <span class="material-icons">menu</span>
-            </button>
+            <div class="header-left-btns">
+                <button class="header-btn" id="quickLinksBtn" aria-label="Menu liens rapides">
+                    <span class="material-icons">menu</span>
+                </button>
+                <button class="header-btn" id="radioBtn" onclick="openRadio()" aria-label="Écouter la radio">
+                    <span class="material-icons">radio</span>
+                </button>
+            </div>
             <div class="header-title">
                 <h1>Actu & Média</h1>
             </div>
             <div class="header-right-btns">
                 <button class="theme-toggle" id="themeToggle" aria-label="Changer de thème">
                     <span class="material-icons" id="themeIcon">light_mode</span>
-                </button>
-                <button class="radio-btn" id="radioBtn" onclick="openRadio()" aria-label="Écouter la radio">
-                    <span class="material-icons">radio</span>
                 </button>
                 <button class="header-btn support" id="supportBtn" aria-label="À propos et soutien">
                     <span class="material-icons">favorite</span>

@@ -126,6 +126,7 @@ class RadioPlayer {
         this.currentStation = null;
         this.isPlaying = false;
         this.stoppingManually = false;
+        this.changingStation = false;
         this.volume = parseFloat(localStorage.getItem('radio_volume')) || 0.3; // 30% par défaut
         this.lastStationId = localStorage.getItem('radio_last_station');
 
@@ -194,6 +195,9 @@ class RadioPlayer {
                                 <input type="range" class="radio-volume-slider" id="radioVolumeSlider" min="0" max="100" value="50">
                                 <span class="radio-volume-value" id="radioVolumeValue">50%</span>
                             </div>
+                            <button class="radio-cast-btn" id="radioCastBtn" title="Diffuser sur Chromecast">
+                                <span class="material-icons">cast</span>
+                            </button>
                         </div>
                     </div>
                     
@@ -233,6 +237,9 @@ class RadioPlayer {
                         <input type="range" class="radio-widget-volume-slider" id="radioWidgetVolumeSlider" min="0" max="100" value="30">
                         <span class="radio-widget-volume-value" id="radioWidgetVolumeValue">30%</span>
                     </div>
+                    <button class="radio-widget-btn cast" id="radioWidgetCastBtn" title="Chromecast">
+                        <span class="material-icons">cast</span>
+                    </button>
                     <button class="radio-widget-btn close" id="radioWidgetCloseBtn">
                         <span class="material-icons">close</span>
                     </button>
@@ -262,6 +269,7 @@ class RadioPlayer {
             currentDesc: document.getElementById('radioCurrentDesc'),
             equalizer: document.getElementById('radioEqualizer'),
             playBtn: document.getElementById('radioPlayBtn'),
+            castBtn: document.getElementById('radioCastBtn'),
             volumeSlider: document.getElementById('radioVolumeSlider'),
             volumeValue: document.getElementById('radioVolumeValue'),
             volumeIcon: document.getElementById('radioVolumeIcon'),
@@ -276,6 +284,7 @@ class RadioPlayer {
             widgetVolumeBtn: document.getElementById('radioWidgetVolumeBtn'),
             widgetVolumeSlider: document.getElementById('radioWidgetVolumeSlider'),
             widgetVolumeValue: document.getElementById('radioWidgetVolumeValue'),
+            widgetCastBtn: document.getElementById('radioWidgetCastBtn'),
             widgetCloseBtn: document.getElementById('radioWidgetCloseBtn'),
             toast: document.getElementById('radioToast')
         };
@@ -286,6 +295,9 @@ class RadioPlayer {
         this.elements.widgetVolumeSlider.value = this.volume * 100;
         this.elements.widgetVolumeValue.textContent = Math.round(this.volume * 100) + '%';
         this.updateVolumeIcon();
+        
+        // Cacher les boutons Cast sur iOS
+        this.updateCastButtons();
     }
 
     // ============================================
@@ -316,6 +328,10 @@ class RadioPlayer {
             this.setVolume(e.target.value / 100);
         });
         this.elements.widgetCloseBtn.addEventListener('click', () => this.stop());
+
+        // Cast
+        this.elements.castBtn.addEventListener('click', () => this.startCast());
+        this.elements.widgetCastBtn.addEventListener('click', () => this.startCast());
 
         // Touche Echap pour fermer
         document.addEventListener('keydown', (e) => {
@@ -374,6 +390,9 @@ class RadioPlayer {
         const station = this.stations.find(s => s.id === stationId);
         if (!station) return;
 
+        // Marquer qu'on change de station
+        this.changingStation = true;
+
         // Arrêter l'audio actuel si existe
         if (this.audio) {
             this.audio.pause();
@@ -381,12 +400,23 @@ class RadioPlayer {
             this.audio = null;
         }
 
+        // Réinitialiser le flag après un court délai
+        setTimeout(() => {
+            this.changingStation = false;
+        }, 500);
+
         // Créer nouvel audio
         this.audio = new Audio();
         this.audio.volume = this.volume;
+        
+        // Flag pour ignorer les erreurs pendant le chargement
+        let loadingTimeout = null;
+        let hasStartedPlaying = false;
 
         // Événements audio
         this.audio.addEventListener('playing', () => {
+            hasStartedPlaying = true;
+            if (loadingTimeout) clearTimeout(loadingTimeout);
             this.isPlaying = true;
             this.updatePlayButton();
             this.elements.equalizer.classList.remove('paused');
@@ -407,12 +437,20 @@ class RadioPlayer {
         });
 
         this.audio.addEventListener('error', (e) => {
-            // Ignorer l'erreur si on arrête volontairement la radio
-            if (this.stoppingManually) return;
-            console.error('❌ Erreur radio:', e);
-            this.showToast('Erreur de connexion à la radio');
-            this.isPlaying = false;
-            this.updatePlayButton();
+            // Ignorer l'erreur si on arrête volontairement ou si on change de station
+            if (this.stoppingManually || this.changingStation) return;
+            // Ignorer si la radio a déjà commencé à jouer (erreur temporaire)
+            if (hasStartedPlaying) return;
+            // Afficher l'erreur seulement après un délai (pour ignorer les erreurs de chargement)
+            if (loadingTimeout) clearTimeout(loadingTimeout);
+            loadingTimeout = setTimeout(() => {
+                if (!hasStartedPlaying && !this.stoppingManually) {
+                    console.error('❌ Erreur radio:', station.name);
+                    this.showToast('Erreur de connexion à la radio');
+                    this.isPlaying = false;
+                    this.updatePlayButton();
+                }
+            }, 3000); // Attendre 3 secondes avant d'afficher l'erreur
         });
 
         this.audio.addEventListener('waiting', () => {
@@ -594,6 +632,72 @@ class RadioPlayer {
         setTimeout(() => {
             this.elements.toast.classList.remove('show');
         }, 3000);
+    }
+
+    // ============================================
+    // CHROMECAST
+    // ============================================
+    updateCastButtons() {
+        // Cacher les boutons Cast sur iOS
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (isIOS) {
+            this.elements.castBtn.style.display = 'none';
+            this.elements.widgetCastBtn.style.display = 'none';
+        }
+    }
+
+    startCast() {
+        // Vérifier si Cast est disponible
+        if (typeof cast === 'undefined' || !cast.framework) {
+            this.showToast('Chromecast non disponible');
+            return;
+        }
+
+        const castContext = cast.framework.CastContext.getInstance();
+        const sessionState = castContext.getSessionState();
+
+        if (sessionState === cast.framework.SessionState.SESSION_STARTED ||
+            sessionState === cast.framework.SessionState.SESSION_RESUMED) {
+            // Déjà connecté, lancer le média
+            this.castMedia();
+        } else {
+            // Ouvrir le sélecteur de Chromecast
+            castContext.requestSession().then(() => {
+                this.castMedia();
+            }).catch(err => {
+                console.log('Cast annulé ou erreur:', err);
+            });
+        }
+    }
+
+    castMedia() {
+        if (!this.currentStation) {
+            this.showToast('Sélectionnez une radio d\'abord');
+            return;
+        }
+
+        const castSession = cast.framework.CastContext.getInstance().getCurrentSession();
+        if (!castSession) return;
+
+        const mediaInfo = new chrome.cast.media.MediaInfo(this.currentStation.url, 'audio/mpeg');
+        mediaInfo.metadata = new chrome.cast.media.MusicTrackMediaMetadata();
+        mediaInfo.metadata.title = this.currentStation.name;
+        mediaInfo.metadata.subtitle = this.currentStation.description;
+        mediaInfo.metadata.images = [{ url: this.currentStation.logo }];
+
+        const request = new chrome.cast.media.LoadRequest(mediaInfo);
+        request.autoplay = true;
+
+        castSession.loadMedia(request).then(() => {
+            this.showToast(`📺 ${this.currentStation.name} sur Chromecast`);
+            // Mettre en pause l'audio local
+            if (this.audio) {
+                this.audio.pause();
+            }
+        }).catch(err => {
+            console.error('Erreur Cast:', err);
+            this.showToast('Erreur de diffusion');
+        });
     }
 }
 
