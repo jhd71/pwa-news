@@ -23,6 +23,8 @@
     <link rel="stylesheet" href="css/quick-links.css">
     <link rel="stylesheet" href="css/support.css">
     <link rel="stylesheet" href="css/radio.css">
+	
+	<meta name="google-site-verification" content="74sCYbSwcWjU7BQ8Mxhboe9IiRzajIbyy6C1hyuAr3U" />
 </head>
 <body>
     <!-- Fond animé -->
@@ -707,5 +709,64 @@
             setTimeout(checkAdminNotifications, 2000);
         });
     </script>
+	
+	<script>
+(function () {
+    var ua = navigator.userAgent || navigator.vendor || window.opera;
+
+    // Détection navigateur interne Facebook
+    if (ua.includes("FBAN") || ua.includes("FBAV")) {
+
+        document.documentElement.style.height = "100%";
+        document.body.style.height = "100%";
+        document.body.style.margin = "0";
+
+        document.body.innerHTML = `
+            <div style="
+                display:flex;
+                flex-direction:column;
+                justify-content:center;
+                align-items:center;
+                height:100%;
+                background:#ffffff;
+                text-align:center;
+                font-family:Inter, Arial, sans-serif;
+                padding:20px;
+            ">
+                <h2 style="margin-bottom:10px;">⚠️ Ouverture depuis Facebook</h2>
+
+                <p style="max-width:320px; margin-bottom:20px;">
+                    Facebook utilise un navigateur interne qui ne fonctionne pas correctement
+                    avec <strong>Actu & Média</strong>.
+                </p>
+
+                <p><strong>Veuillez ouvrir le site dans votre navigateur</strong></p>
+
+                <button onclick="openExternal()" style="
+                    margin-top:20px;
+                    padding:14px 22px;
+                    font-size:16px;
+                    background:#1877f2;
+                    color:white;
+                    border:none;
+                    border-radius:8px;
+                    cursor:pointer;
+                ">
+                    Ouvrir dans le navigateur
+                </button>
+
+                <p style="margin-top:15px; font-size:13px; opacity:0.7;">
+                    Astuce : appuyez sur ⋮ en haut à droite si besoin
+                </p>
+            </div>
+        `;
+
+        window.openExternal = function () {
+            window.location.href = window.location.href;
+        };
+    }
+})();
+</script>
+
 </body>
 </html>
