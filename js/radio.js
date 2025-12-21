@@ -1,18 +1,19 @@
-/* ============================================
-   RADIO PLAYER - JavaScript
-   Mini-lecteur radio pour Actu & Média
-   ============================================ */
+// ============================================
+// RADIO PLAYER - Actu & Média
+// Widget avec état déplié/replié, minuteur sommeil, now playing
+// ============================================
 
 class RadioPlayer {
     constructor() {
         // Liste des stations
         this.stations = [
+            // Locales
             {
-                id: 'ici-bourgogne',
-                name: 'Ici Bourgogne',
-                url: 'https://icecast.radiofrance.fr/fbbourgogne-midfi.mp3',
-                logo: 'images/radio-logos/ici-bourgogne.png',
-                description: 'Info Bourgogne',
+                id: 'frequence-plus',
+                name: 'Fréquence Plus',
+                url: 'https://fplus-chalonsursaone.ice.infomaniak.ch/fplus-chalonsursaone-128.mp3',
+                logo: 'images/radio-logos/frequence-plus.png',
+                description: 'Chalon-sur-Saône',
                 category: 'local'
             },
             {
@@ -23,20 +24,21 @@ class RadioPlayer {
                 description: 'Chalon-sur-Saône',
                 category: 'local'
             },
-            {
-                id: 'frequence-plus',
-                name: 'Fréquence Plus',
-                url: 'https://fplus-chalonsursaone.ice.infomaniak.ch/fplus-chalonsursaone-128.mp3',
-                logo: 'images/radio-logos/frequence-plus.png',
-                description: 'Chalon-sur-Saône',
-                category: 'local'
-            },
+            // Info
             {
                 id: 'france-info',
                 name: 'France Info',
                 url: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3',
                 logo: 'images/radio-logos/france-info.png',
                 description: 'Info en continu',
+                category: 'info'
+            },
+            {
+                id: 'france-inter',
+                name: 'France Inter',
+                url: 'https://icecast.radiofrance.fr/franceinter-midfi.mp3',
+                logo: 'images/radio-logos/france-inter.png',
+                description: 'Généraliste',
                 category: 'info'
             },
             {
@@ -63,12 +65,13 @@ class RadioPlayer {
                 description: 'Sport & info',
                 category: 'info'
             },
+            // Musique
             {
                 id: 'nrj',
                 name: 'NRJ',
                 url: 'https://scdn.nrjaudio.fm/adwz1/fr/30001/mp3_128.mp3',
                 logo: 'images/radio-logos/nrj.png',
-                description: 'Hit Music Only',
+                description: 'Hit music only',
                 category: 'music'
             },
             {
@@ -76,7 +79,7 @@ class RadioPlayer {
                 name: 'Fun Radio',
                 url: 'https://streamer-02.rtl.fr/fun-1-44-128',
                 logo: 'images/radio-logos/fun-radio.png',
-                description: 'Le son Dancefloor',
+                description: 'Le son dancefloor',
                 category: 'music'
             },
             {
@@ -84,23 +87,7 @@ class RadioPlayer {
                 name: 'Skyrock',
                 url: 'https://icecast.skyrock.net/s/natio_mp3_128k',
                 logo: 'images/radio-logos/skyrock.png',
-                description: 'Premier sur le Rap',
-                category: 'music'
-            },
-            {
-                id: 'nostalgie',
-                name: 'Nostalgie',
-                url: 'https://scdn.nrjaudio.fm/adwz1/fr/30601/mp3_128.mp3',
-                logo: 'images/radio-logos/nostalgie.png',
-                description: 'Les plus grands tubes',
-                category: 'music'
-            },
-            {
-                id: 'cherie-fm',
-                name: 'Chérie FM',
-                url: 'https://scdn.nrjaudio.fm/adwz1/fr/30201/mp3_128.mp3',
-                logo: 'images/radio-logos/cherie-fm.png',
-                description: 'Vos plus belles émotions',
+                description: 'Premier sur le rap',
                 category: 'music'
             },
             {
@@ -118,6 +105,30 @@ class RadioPlayer {
                 logo: 'images/radio-logos/m-radio.png',
                 description: 'La chanson française',
                 category: 'music'
+            },
+            {
+                id: 'nostalgie',
+                name: 'Nostalgie',
+                url: 'https://scdn.nrjaudio.fm/adwz1/fr/30601/mp3_128.mp3',
+                logo: 'images/radio-logos/nostalgie.png',
+                description: 'Les plus grandes chansons',
+                category: 'music'
+            },
+            {
+                id: 'cherie-fm',
+                name: 'Chérie FM',
+                url: 'https://scdn.nrjaudio.fm/adwz1/fr/30201/mp3_128.mp3',
+                logo: 'images/radio-logos/cherie-fm.png',
+                description: 'Vos plus belles émotions',
+                category: 'music'
+            },
+            {
+                id: 'rfm',
+                name: 'RFM',
+                url: 'https://rfm.lmn.fm/rfm.mp3',
+                logo: 'images/radio-logos/rfm.png',
+                description: 'Le meilleur de la musique',
+                category: 'music'
             }
         ];
 
@@ -127,56 +138,55 @@ class RadioPlayer {
         this.isPlaying = false;
         this.stoppingManually = false;
         this.changingStation = false;
-        this.volume = parseFloat(localStorage.getItem('radio_volume')) || 0.3; // 30% par défaut
+        this.volume = parseFloat(localStorage.getItem('radio_volume')) || 0.3;
+        this.previousVolume = 0.3;
         this.lastStationId = localStorage.getItem('radio_last_station');
+        this.isExpanded = true;
 
-        // Éléments DOM (seront initialisés après création du HTML)
+        // Minuteur sommeil
+        this.sleepTimerId = null;
+        this.sleepTimerEndTime = null;
+
+        // Now Playing
+        this.nowPlayingInterval = null;
+        this.lastNowPlaying = '';
+
+        // Éléments DOM
         this.elements = {};
 
         // Initialisation
         this.init();
     }
 
-    // ============================================
-    // INITIALISATION
-    // ============================================
     init() {
         this.createHTML();
         this.cacheElements();
         this.bindEvents();
         this.renderStations();
         this.restoreLastStation();
+        this.restoreSleepTimer();
+        this.updateCastButtons();
         console.log('📻 Radio Player initialisé');
     }
 
-    // ============================================
-    // CRÉATION DU HTML
-    // ============================================
     createHTML() {
-        // Modal Radio
+        // Modal des stations
         const modalHTML = `
             <div class="radio-modal-overlay" id="radioModal">
-                <div class="radio-modal">
+                <div class="radio-modal glass">
                     <div class="radio-modal-header">
-                        <div class="radio-modal-title">
-                            <span class="material-icons">radio</span>
-                            Radio
-                        </div>
+                        <h2>📻 Radio en direct</h2>
                         <button class="radio-modal-close" id="radioModalClose">
                             <span class="material-icons">close</span>
                         </button>
                     </div>
                     
-                    <div class="radio-now-playing hidden" id="radioNowPlaying">
-                        <div class="radio-current-station">
+                    <div class="radio-modal-content">
+                        <div class="radio-now-playing hidden" id="radioNowPlaying">
                             <img class="radio-current-logo" id="radioCurrentLogo" src="" alt="">
                             <div class="radio-current-info">
                                 <div class="radio-current-name" id="radioCurrentName">-</div>
                                 <div class="radio-current-desc" id="radioCurrentDesc">-</div>
-                                <div class="radio-current-status">
-                                    <span class="live-dot"></span>
-                                    <span>En direct</span>
-                                </div>
                             </div>
                             <div class="radio-equalizer" id="radioEqualizer">
                                 <div class="radio-equalizer-bar"></div>
@@ -215,50 +225,106 @@ class RadioPlayer {
             </div>
         `;
 
-        // Widget compact
+        // Widget avec état déplié/replié
         const widgetHTML = `
             <div class="radio-widget" id="radioWidget">
-                <img class="radio-widget-logo" id="radioWidgetLogo" src="" alt="">
-                <div class="radio-widget-info" id="radioWidgetInfo">
-                    <div class="radio-widget-name" id="radioWidgetName">-</div>
-                    <div class="radio-widget-status">
-                        <span class="live-dot"></span>
-                        <span>En direct</span>
+                <!-- Header toujours visible -->
+                <div class="radio-widget-header" id="radioWidgetHeader">
+                    <img class="radio-widget-logo" id="radioWidgetLogo" src="" alt="">
+                    <div class="radio-widget-info">
+                        <div class="radio-widget-name" id="radioWidgetName">-</div>
+                        <div class="radio-widget-status">
+                            <span class="live-dot"></span>
+                            <span>En direct</span>
+                        </div>
+                        <div class="radio-widget-nowplaying" id="radioWidgetNowPlaying">
+                            <span class="material-icons">music_note</span>
+                            <span id="radioWidgetNowPlayingText">-</span>
+                        </div>
                     </div>
-                </div>
-                <div class="radio-widget-controls">
-                    <button class="radio-widget-btn play-pause" id="radioWidgetPlayBtn">
-                        <span class="material-icons">pause</span>
+                    <button class="radio-widget-toggle" id="radioWidgetToggle" title="Déplier/Replier">
+                        <span class="material-icons">expand_less</span>
                     </button>
-                    <div class="radio-widget-volume">
-                        <button class="radio-widget-btn" id="radioWidgetVolumeBtn">
+                </div>
+                
+                <!-- Partie dépliable -->
+                <div class="radio-widget-expanded" id="radioWidgetExpanded">
+                    <!-- Visualiseur -->
+                    <div class="radio-widget-visualizer" id="radioWidgetVisualizer">
+                        <div class="radio-widget-bar"></div>
+                        <div class="radio-widget-bar"></div>
+                        <div class="radio-widget-bar"></div>
+                        <div class="radio-widget-bar"></div>
+                        <div class="radio-widget-bar"></div>
+                    </div>
+                    
+                    <!-- Contrôles principaux -->
+                    <div class="radio-widget-main-controls">
+                        <button class="radio-widget-btn large" id="radioWidgetPlayBtn" title="Lecture/Pause">
+                            <span class="material-icons">pause</span>
+                        </button>
+                        <button class="radio-widget-btn" id="radioWidgetMuteBtn" title="Muet">
                             <span class="material-icons">volume_up</span>
                         </button>
+                        <button class="radio-widget-btn" id="radioWidgetStopBtn" title="Arrêter">
+                            <span class="material-icons">stop</span>
+                        </button>
+                        <button class="radio-widget-btn" id="radioWidgetListBtn" title="Liste des radios">
+                            <span class="material-icons">list</span>
+                        </button>
+                        <button class="radio-widget-btn cast" id="radioWidgetCastBtn" title="Chromecast">
+                            <span class="material-icons">cast</span>
+                        </button>
+                        <button class="radio-widget-btn sleep" id="radioWidgetSleepBtn" title="Minuteur sommeil">
+                            <span class="material-icons">bedtime</span>
+                            <span class="sleep-badge" id="radioWidgetSleepBadge"></span>
+                        </button>
+                    </div>
+                    
+                    <!-- Volume slider grand -->
+                    <div class="radio-widget-volume-section">
                         <input type="range" class="radio-widget-volume-slider" id="radioWidgetVolumeSlider" min="0" max="100" value="30">
                         <span class="radio-widget-volume-value" id="radioWidgetVolumeValue">30%</span>
                     </div>
-                    <button class="radio-widget-btn cast" id="radioWidgetCastBtn" title="Chromecast">
-                        <span class="material-icons">cast</span>
-                    </button>
-                    <button class="radio-widget-btn close" id="radioWidgetCloseBtn">
+                </div>
+            </div>
+            
+            <!-- Popup Minuteur Sommeil -->
+            <div class="sleep-timer-popup" id="sleepTimerPopup">
+                <div class="sleep-timer-popup-header">
+                    <span class="material-icons">bedtime</span>
+                    <span>Minuteur sommeil</span>
+                </div>
+                <div class="sleep-timer-popup-grid">
+                    <button class="sleep-timer-option" data-minutes="15">15 min</button>
+                    <button class="sleep-timer-option" data-minutes="30">30 min</button>
+                    <button class="sleep-timer-option" data-minutes="45">45 min</button>
+                    <button class="sleep-timer-option" data-minutes="60">1 heure</button>
+                    <button class="sleep-timer-option" data-minutes="90">1h30</button>
+                    <button class="sleep-timer-option" data-minutes="120">2 heures</button>
+                </div>
+                <button class="sleep-timer-time-btn" id="sleepTimerTimeBtn">
+                    <span class="material-icons">schedule</span>
+                    <span>Heure précise...</span>
+                </button>
+                <input type="time" class="sleep-timer-time-input" id="sleepTimerTimeInput">
+                <div class="sleep-timer-status" id="sleepTimerStatus">
+                    <span class="material-icons">timer</span>
+                    <span id="sleepTimerStatusText">Arrêt à --:--</span>
+                    <button class="sleep-timer-cancel" id="sleepTimerCancel" title="Annuler">
                         <span class="material-icons">close</span>
                     </button>
                 </div>
             </div>
         `;
 
-        // Toast
         const toastHTML = `<div class="radio-toast" id="radioToast"></div>`;
 
-        // Ajouter au DOM
         document.body.insertAdjacentHTML('beforeend', modalHTML);
         document.body.insertAdjacentHTML('beforeend', widgetHTML);
         document.body.insertAdjacentHTML('beforeend', toastHTML);
     }
 
-    // ============================================
-    // CACHE DES ÉLÉMENTS DOM
-    // ============================================
     cacheElements() {
         this.elements = {
             modal: document.getElementById('radioModal'),
@@ -276,74 +342,134 @@ class RadioPlayer {
             stationsLocal: document.getElementById('radioStationsLocal'),
             stationsInfo: document.getElementById('radioStationsInfo'),
             stationsMusic: document.getElementById('radioStationsMusic'),
+            
             widget: document.getElementById('radioWidget'),
+            widgetHeader: document.getElementById('radioWidgetHeader'),
+            widgetToggle: document.getElementById('radioWidgetToggle'),
+            widgetExpanded: document.getElementById('radioWidgetExpanded'),
             widgetLogo: document.getElementById('radioWidgetLogo'),
             widgetName: document.getElementById('radioWidgetName'),
-            widgetInfo: document.getElementById('radioWidgetInfo'),
+            widgetNowPlaying: document.getElementById('radioWidgetNowPlaying'),
+            widgetNowPlayingText: document.getElementById('radioWidgetNowPlayingText'),
+            widgetVisualizer: document.getElementById('radioWidgetVisualizer'),
             widgetPlayBtn: document.getElementById('radioWidgetPlayBtn'),
-            widgetVolumeBtn: document.getElementById('radioWidgetVolumeBtn'),
+            widgetMuteBtn: document.getElementById('radioWidgetMuteBtn'),
+            widgetStopBtn: document.getElementById('radioWidgetStopBtn'),
+            widgetListBtn: document.getElementById('radioWidgetListBtn'),
+            widgetCastBtn: document.getElementById('radioWidgetCastBtn'),
+            widgetSleepBtn: document.getElementById('radioWidgetSleepBtn'),
+            widgetSleepBadge: document.getElementById('radioWidgetSleepBadge'),
             widgetVolumeSlider: document.getElementById('radioWidgetVolumeSlider'),
             widgetVolumeValue: document.getElementById('radioWidgetVolumeValue'),
-            widgetCastBtn: document.getElementById('radioWidgetCastBtn'),
-            widgetCloseBtn: document.getElementById('radioWidgetCloseBtn'),
+            
+            sleepTimerPopup: document.getElementById('sleepTimerPopup'),
+            sleepTimerTimeBtn: document.getElementById('sleepTimerTimeBtn'),
+            sleepTimerTimeInput: document.getElementById('sleepTimerTimeInput'),
+            sleepTimerStatus: document.getElementById('sleepTimerStatus'),
+            sleepTimerStatusText: document.getElementById('sleepTimerStatusText'),
+            sleepTimerCancel: document.getElementById('sleepTimerCancel'),
+            
             toast: document.getElementById('radioToast')
         };
 
-        // Initialiser le volume slider
         this.elements.volumeSlider.value = this.volume * 100;
         this.elements.volumeValue.textContent = Math.round(this.volume * 100) + '%';
         this.elements.widgetVolumeSlider.value = this.volume * 100;
         this.elements.widgetVolumeValue.textContent = Math.round(this.volume * 100) + '%';
         this.updateVolumeIcon();
-        
-        // Cacher les boutons Cast sur iOS
-        this.updateCastButtons();
     }
 
-    // ============================================
-    // BINDAGE DES ÉVÉNEMENTS
-    // ============================================
     bindEvents() {
-        // Fermer la modal
+        // Modal
         this.elements.modalClose.addEventListener('click', () => this.closeModal());
         this.elements.modal.addEventListener('click', (e) => {
             if (e.target === this.elements.modal) this.closeModal();
         });
 
-        // Bouton play/pause principal
         this.elements.playBtn.addEventListener('click', () => this.togglePlay());
-
-        // Volume
+        this.elements.castBtn.addEventListener('click', () => this.startCast());
         this.elements.volumeSlider.addEventListener('input', (e) => {
             this.setVolume(e.target.value / 100);
         });
-
         this.elements.volumeIcon.addEventListener('click', () => this.toggleMute());
 
-        // Widget
-        this.elements.widgetInfo.addEventListener('click', () => this.openModal());
+        // Widget header - clic pour ouvrir modal
+        this.elements.widgetHeader.addEventListener('click', (e) => {
+            if (!e.target.closest('.radio-widget-toggle')) {
+                this.openModal();
+            }
+        });
+        
+        this.elements.widgetToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleWidgetExpand();
+        });
+
+        // Widget controls
         this.elements.widgetPlayBtn.addEventListener('click', () => this.togglePlay());
-        this.elements.widgetVolumeBtn.addEventListener('click', () => this.toggleMute());
+        this.elements.widgetMuteBtn.addEventListener('click', () => this.toggleMute());
+        this.elements.widgetStopBtn.addEventListener('click', () => this.stop());
+        this.elements.widgetListBtn.addEventListener('click', () => this.openModal());
+        this.elements.widgetCastBtn.addEventListener('click', () => this.startCast());
+        
         this.elements.widgetVolumeSlider.addEventListener('input', (e) => {
             this.setVolume(e.target.value / 100);
         });
-        this.elements.widgetCloseBtn.addEventListener('click', () => this.stop());
 
-        // Cast
-        this.elements.castBtn.addEventListener('click', () => this.startCast());
-        this.elements.widgetCastBtn.addEventListener('click', () => this.startCast());
+        // Minuteur sommeil
+        this.elements.widgetSleepBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleSleepPopup();
+        });
 
-        // Touche Echap pour fermer
+        document.querySelectorAll('.sleep-timer-option[data-minutes]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const minutes = parseInt(btn.dataset.minutes, 10);
+                this.startSleepTimer(minutes);
+            });
+        });
+
+        this.elements.sleepTimerTimeBtn.addEventListener('click', () => {
+            const input = this.elements.sleepTimerTimeInput;
+            if (input.style.display === 'none' || !input.style.display) {
+                const now = new Date();
+                now.setHours(now.getHours() + 1);
+                input.value = now.toTimeString().slice(0, 5);
+                input.style.display = 'block';
+            } else {
+                input.style.display = 'none';
+            }
+        });
+
+        this.elements.sleepTimerTimeInput.addEventListener('change', () => {
+            const timeValue = this.elements.sleepTimerTimeInput.value;
+            if (timeValue) {
+                this.startSleepTimerAtTime(timeValue);
+            }
+        });
+
+        this.elements.sleepTimerCancel.addEventListener('click', () => {
+            this.cancelSleepTimer();
+        });
+
+        document.addEventListener('click', (e) => {
+            const popup = this.elements.sleepTimerPopup;
+            const sleepBtn = this.elements.widgetSleepBtn;
+            if (!popup.contains(e.target) && !sleepBtn.contains(e.target)) {
+                popup.classList.remove('show');
+            }
+        });
+
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.elements.modal.classList.contains('show')) {
-                this.closeModal();
+            if (e.key === 'Escape') {
+                if (this.elements.modal.classList.contains('show')) {
+                    this.closeModal();
+                }
+                this.elements.sleepTimerPopup.classList.remove('show');
             }
         });
     }
 
-    // ============================================
-    // RENDU DES STATIONS
-    // ============================================
     renderStations() {
         const categories = {
             local: this.elements.stationsLocal,
@@ -363,67 +489,53 @@ class RadioPlayer {
                 <div class="radio-station-name">${station.name}</div>
                 <div class="radio-station-desc">${station.description}</div>
             `;
-
             stationEl.addEventListener('click', () => this.playStation(station.id));
             container.appendChild(stationEl);
         });
     }
 
-    // ============================================
-    // RESTAURER LA DERNIÈRE STATION
-    // ============================================
     restoreLastStation() {
         if (this.lastStationId) {
             const station = this.stations.find(s => s.id === this.lastStationId);
             if (station) {
                 this.currentStation = station;
                 this.updateUI();
-                // Ne pas jouer automatiquement, juste préparer l'UI
             }
         }
     }
 
-    // ============================================
-    // JOUER UNE STATION
-    // ============================================
     playStation(stationId) {
         const station = this.stations.find(s => s.id === stationId);
         if (!station) return;
 
-        // Marquer qu'on change de station
         this.changingStation = true;
 
-        // Arrêter l'audio actuel si existe
         if (this.audio) {
             this.audio.pause();
             this.audio.src = '';
             this.audio = null;
         }
 
-        // Réinitialiser le flag après un court délai
-        setTimeout(() => {
-            this.changingStation = false;
-        }, 500);
+        setTimeout(() => { this.changingStation = false; }, 500);
 
-        // Créer nouvel audio
         this.audio = new Audio();
         this.audio.volume = this.volume;
         
-        // Flag pour ignorer les erreurs pendant le chargement
         let loadingTimeout = null;
         let hasStartedPlaying = false;
 
-        // Événements audio
         this.audio.addEventListener('playing', () => {
             hasStartedPlaying = true;
             if (loadingTimeout) clearTimeout(loadingTimeout);
             this.isPlaying = true;
             this.updatePlayButton();
             this.elements.equalizer.classList.remove('paused');
-            this.showWidget(); // Afficher le widget quand la radio joue
-            // Mettre à jour le bouton du header
+            this.elements.widgetVisualizer.classList.add('active');
+            this.showWidget();
+            
             const radioBtn = document.getElementById('radioBtn');
             if (radioBtn) radioBtn.classList.add('playing');
+            
             console.log(`📻 En lecture: ${station.name}`);
         });
 
@@ -431,17 +543,16 @@ class RadioPlayer {
             this.isPlaying = false;
             this.updatePlayButton();
             this.elements.equalizer.classList.add('paused');
-            // Mettre à jour le bouton du header
+            this.elements.widgetVisualizer.classList.remove('active');
+            
             const radioBtn = document.getElementById('radioBtn');
             if (radioBtn) radioBtn.classList.remove('playing');
         });
 
         this.audio.addEventListener('error', (e) => {
-            // Ignorer l'erreur si on arrête volontairement ou si on change de station
             if (this.stoppingManually || this.changingStation) return;
-            // Ignorer si la radio a déjà commencé à jouer (erreur temporaire)
             if (hasStartedPlaying) return;
-            // Afficher l'erreur seulement après un délai (pour ignorer les erreurs de chargement)
+            
             if (loadingTimeout) clearTimeout(loadingTimeout);
             loadingTimeout = setTimeout(() => {
                 if (!hasStartedPlaying && !this.stoppingManually) {
@@ -450,38 +561,34 @@ class RadioPlayer {
                     this.isPlaying = false;
                     this.updatePlayButton();
                 }
-            }, 3000); // Attendre 3 secondes avant d'afficher l'erreur
+            }, 3000);
         });
 
         this.audio.addEventListener('waiting', () => {
             this.elements.equalizer.classList.add('paused');
+            this.elements.widgetVisualizer.classList.remove('active');
         });
 
-        // Jouer
         this.audio.src = station.url;
         this.audio.play().catch(err => {
             console.error('Erreur lecture:', err);
             this.showToast('Impossible de lancer la radio');
         });
 
-        // Mettre à jour l'état
         this.currentStation = station;
         localStorage.setItem('radio_last_station', station.id);
         this.updateUI();
         this.showToast(`📻 ${station.name}`);
         
-        // Si on est en train de caster, mettre à jour le média sur le Chromecast
+        this.startNowPlayingPolling();
+
         if (this.isCasting()) {
             this.castMedia();
         }
     }
 
-    // ============================================
-    // TOGGLE PLAY/PAUSE
-    // ============================================
     togglePlay() {
         if (!this.audio || !this.currentStation) {
-            // Si pas d'audio, jouer la dernière station ou la première
             const stationId = this.lastStationId || this.stations[0].id;
             this.playStation(stationId);
             return;
@@ -492,54 +599,44 @@ class RadioPlayer {
         } else {
             this.audio.play().catch(err => {
                 console.error('Erreur lecture:', err);
-                // Essayer de recharger
                 this.playStation(this.currentStation.id);
             });
         }
     }
 
-    // ============================================
-    // STOP
-    // ============================================
     stop() {
-        // Arrêter le cast si actif
         if (this.isCasting()) {
             this.stopCast();
         }
         
         if (this.audio) {
-            // Marquer qu'on arrête volontairement pour éviter le toast d'erreur
             this.stoppingManually = true;
             this.audio.pause();
             this.audio.src = '';
             this.audio = null;
-            // Réinitialiser le flag après un court délai
-            setTimeout(() => {
-                this.stoppingManually = false;
-            }, 100);
+            setTimeout(() => { this.stoppingManually = false; }, 100);
         }
+        
         this.isPlaying = false;
         this.currentStation = null;
         this.updateUI();
         this.hideWidget();
+        this.stopNowPlayingPolling();
         
-        // Mettre à jour le bouton du header
         const radioBtn = document.getElementById('radioBtn');
         if (radioBtn) radioBtn.classList.remove('playing');
     }
 
-    // ============================================
-    // VOLUME
-    // ============================================
     setVolume(value) {
         this.volume = Math.max(0, Math.min(1, value));
         if (this.audio) {
             this.audio.volume = this.volume;
         }
-        // Mettre à jour le volume du Chromecast si en cours de cast
+        
         if (this.isCasting()) {
             this.setCastVolume(this.volume);
         }
+        
         localStorage.setItem('radio_volume', this.volume.toString());
         this.elements.volumeSlider.value = this.volume * 100;
         this.elements.volumeValue.textContent = Math.round(this.volume * 100) + '%';
@@ -563,30 +660,51 @@ class RadioPlayer {
         else if (this.volume < 0.5) icon = 'volume_down';
 
         this.elements.volumeIcon.textContent = icon;
-        this.elements.widgetVolumeBtn.querySelector('.material-icons').textContent = icon;
+        this.elements.widgetMuteBtn.querySelector('.material-icons').textContent = icon;
     }
 
-    // ============================================
-    // MISE À JOUR DE L'UI
-    // ============================================
+    openModal() {
+        this.elements.modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    closeModal() {
+        this.elements.modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    showWidget() {
+        this.elements.widget.classList.add('show');
+        document.body.classList.add('radio-playing');
+    }
+
+    hideWidget() {
+        this.elements.widget.classList.remove('show');
+        document.body.classList.remove('radio-playing');
+    }
+
+    toggleWidgetExpand() {
+        this.isExpanded = !this.isExpanded;
+        this.elements.widget.classList.toggle('collapsed', !this.isExpanded);
+        
+        const icon = this.elements.widgetToggle.querySelector('.material-icons');
+        icon.textContent = this.isExpanded ? 'expand_less' : 'expand_more';
+    }
+
     updateUI() {
         if (this.currentStation) {
-            // Modal
             this.elements.currentLogo.src = this.currentStation.logo;
             this.elements.currentName.textContent = this.currentStation.name;
             this.elements.currentDesc.textContent = this.currentStation.description;
             this.elements.nowPlaying.classList.remove('hidden');
 
-            // Widget - toujours mettre à jour les infos
             this.elements.widgetLogo.src = this.currentStation.logo;
             this.elements.widgetName.textContent = this.currentStation.name;
 
-            // Marquer la station active
             document.querySelectorAll('.radio-station').forEach(el => {
                 el.classList.toggle('active', el.dataset.id === this.currentStation.id);
             });
 
-            // Bouton radio dans le header
             const radioBtn = document.getElementById('radioBtn');
             if (radioBtn) {
                 radioBtn.classList.toggle('playing', this.isPlaying);
@@ -608,38 +726,9 @@ class RadioPlayer {
     updatePlayButton() {
         const icon = this.isPlaying ? 'pause' : 'play_arrow';
         this.elements.playBtn.querySelector('.material-icons').textContent = icon;
-        this.elements.widgetPlayBtn.querySelector('.material-icons').textContent = this.isPlaying ? 'pause' : 'play_arrow';
+        this.elements.widgetPlayBtn.querySelector('.material-icons').textContent = icon;
     }
 
-    // ============================================
-    // MODAL
-    // ============================================
-    openModal() {
-        this.elements.modal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-    }
-
-    closeModal() {
-        this.elements.modal.classList.remove('show');
-        document.body.style.overflow = '';
-    }
-
-    // ============================================
-    // WIDGET
-    // ============================================
-    showWidget() {
-        this.elements.widget.classList.add('show');
-        document.body.classList.add('radio-playing');
-    }
-
-    hideWidget() {
-        this.elements.widget.classList.remove('show');
-        document.body.classList.remove('radio-playing');
-    }
-
-    // ============================================
-    // TOAST
-    // ============================================
     showToast(message) {
         this.elements.toast.textContent = message;
         this.elements.toast.classList.add('show');
@@ -648,11 +737,209 @@ class RadioPlayer {
         }, 3000);
     }
 
-    // ============================================
-    // CHROMECAST
-    // ============================================
+    // Minuteur sommeil
+    toggleSleepPopup() {
+        const popup = this.elements.sleepTimerPopup;
+        popup.classList.toggle('show');
+        
+        if (popup.classList.contains('show')) {
+            this.updateSleepTimerUI();
+        }
+    }
+
+    startSleepTimer(minutes) {
+        this.cancelSleepTimer();
+
+        const now = Date.now();
+        this.sleepTimerEndTime = now + minutes * 60 * 1000;
+        localStorage.setItem('radio_sleep_timer', this.sleepTimerEndTime.toString());
+
+        this.sleepTimerId = setTimeout(() => {
+            this.stop();
+            this.sleepTimerId = null;
+            this.sleepTimerEndTime = null;
+            localStorage.removeItem('radio_sleep_timer');
+            this.updateSleepTimerUI();
+            this.showToast('⏰ Minuteur terminé - Radio arrêtée');
+        }, minutes * 60 * 1000);
+
+        this.updateSleepTimerUI();
+        this.showToast(`⏱️ Arrêt dans ${minutes} min`);
+        
+        setTimeout(() => {
+            this.elements.sleepTimerPopup.classList.remove('show');
+        }, 300);
+    }
+
+    startSleepTimerAtTime(timeString) {
+        this.cancelSleepTimer();
+
+        const [hours, minutes] = timeString.split(':').map(Number);
+        const now = new Date();
+        const target = new Date();
+        
+        target.setHours(hours, minutes, 0, 0);
+        
+        if (target <= now) {
+            target.setDate(target.getDate() + 1);
+        }
+
+        this.sleepTimerEndTime = target.getTime();
+        localStorage.setItem('radio_sleep_timer', this.sleepTimerEndTime.toString());
+
+        const remainingMs = this.sleepTimerEndTime - now.getTime();
+
+        this.sleepTimerId = setTimeout(() => {
+            this.stop();
+            this.sleepTimerId = null;
+            this.sleepTimerEndTime = null;
+            localStorage.removeItem('radio_sleep_timer');
+            this.updateSleepTimerUI();
+            this.showToast('⏰ Minuteur terminé - Radio arrêtée');
+        }, remainingMs);
+
+        this.updateSleepTimerUI();
+        
+        const isToday = target.getDate() === now.getDate();
+        const dayText = isToday ? "aujourd'hui" : "demain";
+        this.showToast(`⏰ Arrêt ${dayText} à ${timeString}`);
+        
+        this.elements.sleepTimerTimeInput.style.display = 'none';
+        setTimeout(() => {
+            this.elements.sleepTimerPopup.classList.remove('show');
+        }, 300);
+    }
+
+    cancelSleepTimer() {
+        if (this.sleepTimerId) {
+            clearTimeout(this.sleepTimerId);
+        }
+        this.sleepTimerId = null;
+        this.sleepTimerEndTime = null;
+        localStorage.removeItem('radio_sleep_timer');
+        this.updateSleepTimerUI();
+        this.showToast('Minuteur annulé');
+    }
+
+    restoreSleepTimer() {
+        const storedEndTime = localStorage.getItem('radio_sleep_timer');
+        if (!storedEndTime) return;
+
+        const endTime = parseInt(storedEndTime, 10);
+        if (isNaN(endTime)) {
+            localStorage.removeItem('radio_sleep_timer');
+            return;
+        }
+
+        const remainingMs = endTime - Date.now();
+        if (remainingMs <= 0) {
+            localStorage.removeItem('radio_sleep_timer');
+            return;
+        }
+
+        this.sleepTimerEndTime = endTime;
+        this.sleepTimerId = setTimeout(() => {
+            this.stop();
+            this.sleepTimerId = null;
+            this.sleepTimerEndTime = null;
+            localStorage.removeItem('radio_sleep_timer');
+            this.updateSleepTimerUI();
+            this.showToast('⏰ Minuteur terminé - Radio arrêtée');
+        }, remainingMs);
+
+        this.updateSleepTimerUI();
+    }
+
+    updateSleepTimerUI() {
+        const badge = this.elements.widgetSleepBadge;
+        const sleepBtn = this.elements.widgetSleepBtn;
+        const status = this.elements.sleepTimerStatus;
+        const statusText = this.elements.sleepTimerStatusText;
+
+        if (this.sleepTimerEndTime) {
+            const remainingMs = this.sleepTimerEndTime - Date.now();
+            const remainingMinutes = Math.round(remainingMs / 60000);
+            const endDate = new Date(this.sleepTimerEndTime);
+            const endTimeStr = endDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+            sleepBtn.classList.add('active');
+            badge.style.display = 'block';
+            if (remainingMinutes >= 60) {
+                const hours = Math.floor(remainingMinutes / 60);
+                const mins = remainingMinutes % 60;
+                badge.textContent = `${hours}h${mins > 0 ? mins : ''}`;
+            } else {
+                badge.textContent = `${remainingMinutes}m`;
+            }
+
+            status.style.display = 'flex';
+            statusText.textContent = `Arrêt à ${endTimeStr}`;
+        } else {
+            sleepBtn.classList.remove('active');
+            badge.style.display = 'none';
+            status.style.display = 'none';
+        }
+
+        if (this.sleepTimerEndTime) {
+            setTimeout(() => this.updateSleepTimerUI(), 30000);
+        }
+    }
+
+    // Now Playing
+    async fetchNowPlaying() {
+        if (!this.currentStation || !this.isPlaying) {
+            this.hideNowPlaying();
+            return;
+        }
+
+        try {
+            const encodedUrl = encodeURIComponent(this.currentStation.url);
+            // Utiliser l'API locale
+            const response = await fetch(`/api/nowplaying?url=${encodedUrl}`);
+            const data = await response.json();
+
+            if (data.success && data.nowPlaying) {
+                this.showNowPlaying(data.nowPlaying);
+            } else {
+                this.hideNowPlaying();
+            }
+        } catch (error) {
+            console.log('Erreur récupération titre:', error.message);
+            this.hideNowPlaying();
+        }
+    }
+
+    showNowPlaying(title) {
+        if (title !== this.lastNowPlaying) {
+            this.lastNowPlaying = title;
+            this.elements.widgetNowPlayingText.textContent = title;
+            this.elements.widgetNowPlaying.style.display = 'flex';
+        }
+    }
+
+    hideNowPlaying() {
+        this.elements.widgetNowPlaying.style.display = 'none';
+        this.lastNowPlaying = '';
+    }
+
+    startNowPlayingPolling() {
+        this.stopNowPlayingPolling();
+        this.fetchNowPlaying();
+        this.nowPlayingInterval = setInterval(() => {
+            this.fetchNowPlaying();
+        }, 15000);
+    }
+
+    stopNowPlayingPolling() {
+        if (this.nowPlayingInterval) {
+            clearInterval(this.nowPlayingInterval);
+            this.nowPlayingInterval = null;
+        }
+        this.hideNowPlaying();
+    }
+
+    // Chromecast
     updateCastButtons() {
-        // Cacher les boutons Cast sur iOS
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (isIOS) {
             this.elements.castBtn.style.display = 'none';
@@ -672,19 +959,16 @@ class RadioPlayer {
     }
 
     startCast() {
-        // Vérifier si Cast est disponible et initialisé
         if (typeof cast === 'undefined' || !cast.framework) {
             this.showToast('Chromecast non disponible');
             return;
         }
 
-        // Si déjà en cast, arrêter
         if (this.isCasting()) {
             this.stopCast();
             return;
         }
 
-        // Vérifier si une station est sélectionnée
         if (!this.currentStation) {
             this.showToast('Sélectionnez une radio d\'abord');
             return;
@@ -693,7 +977,6 @@ class RadioPlayer {
         try {
             const castContext = cast.framework.CastContext.getInstance();
             
-            // Ouvrir le sélecteur de Chromecast
             castContext.requestSession().then(() => {
                 this.castMedia();
                 this.updateCastUI(true);
@@ -723,10 +1006,7 @@ class RadioPlayer {
     }
 
     castMedia() {
-        if (!this.currentStation) {
-            this.showToast('Sélectionnez une radio d\'abord');
-            return;
-        }
+        if (!this.currentStation) return;
 
         const castSession = cast.framework.CastContext.getInstance().getCurrentSession();
         if (!castSession) return;
@@ -744,11 +1024,9 @@ class RadioPlayer {
 
         castSession.loadMedia(request).then(() => {
             this.showToast(`📺 ${this.currentStation.name} sur Chromecast`);
-            // Mettre en pause l'audio local
             if (this.audio) {
                 this.audio.pause();
             }
-            // Appliquer le volume actuel au Chromecast
             this.setCastVolume(this.volume);
         }).catch(err => {
             console.error('Erreur Cast:', err);
@@ -762,7 +1040,6 @@ class RadioPlayer {
         try {
             const castSession = cast.framework.CastContext.getInstance().getCurrentSession();
             if (castSession) {
-                // Le volume Cast est entre 0 et 1
                 castSession.setVolume(value);
             }
         } catch (err) {
@@ -771,7 +1048,6 @@ class RadioPlayer {
     }
 
     updateCastUI(isCasting) {
-        // Mettre à jour l'apparence des boutons Cast
         const castBtns = [this.elements.castBtn, this.elements.widgetCastBtn];
         castBtns.forEach(btn => {
             if (btn) {
@@ -787,23 +1063,15 @@ class RadioPlayer {
     }
 }
 
-// ============================================
-// INITIALISATION GLOBALE
-// ============================================
+// Initialisation globale
 let radioPlayer = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Créer l'instance du lecteur
     radioPlayer = new RadioPlayer();
-
-    // Exposer globalement pour le bouton
     window.openRadio = () => radioPlayer.openModal();
     window.radioPlayer = radioPlayer;
 });
 
-// ============================================
-// FONCTION POUR OUVRIR LA RADIO (appelée depuis le HTML)
-// ============================================
 function openRadio() {
     if (radioPlayer) {
         radioPlayer.openModal();
