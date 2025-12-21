@@ -729,8 +729,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 (function () {
     var ua = navigator.userAgent || navigator.vendor || window.opera;
 
-    // Détection navigateur interne Facebook
     if (ua.includes("FBAN") || ua.includes("FBAV")) {
+
+        var currentUrl = window.location.href;
 
         document.documentElement.style.height = "100%";
         document.body.style.height = "100%";
@@ -750,35 +751,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             ">
                 <h2 style="margin-bottom:10px;">⚠️ Ouverture depuis Facebook</h2>
 
-                <p style="max-width:320px; margin-bottom:20px;">
-                    Facebook utilise un navigateur interne qui ne fonctionne pas correctement
-                    avec <strong>Actu & Média</strong>.
+                <p style="max-width:320px; margin-bottom:15px;">
+                    Facebook ouvre les liens dans un navigateur interne
+                    qui ne fonctionne pas avec <strong>Actu & Média</strong>.
                 </p>
 
-                <p><strong>Veuillez ouvrir le site dans votre navigateur</strong></p>
+                <p style="margin-bottom:20px;">
+                    👉 <strong>Ouvrez le site dans votre navigateur</strong>
+                </p>
 
-                <button onclick="openExternal()" style="
-                    margin-top:20px;
+                <a href="${currentUrl}" target="_blank" rel="noopener"
+                   style="
+                    display:inline-block;
                     padding:14px 22px;
                     font-size:16px;
                     background:#1877f2;
                     color:white;
-                    border:none;
                     border-radius:8px;
-                    cursor:pointer;
-                ">
+                    text-decoration:none;
+                   ">
                     Ouvrir dans le navigateur
-                </button>
+                </a>
 
                 <p style="margin-top:15px; font-size:13px; opacity:0.7;">
-                    Astuce : appuyez sur ⋮ en haut à droite si besoin
+                    Si rien ne s’ouvre, appuyez sur ⋮ en haut à droite<br>
+                    puis <strong>« Ouvrir dans le navigateur »</strong>
                 </p>
             </div>
         `;
-
-        window.openExternal = function () {
-            window.location.href = window.location.href;
-        };
     }
 })();
 </script>
