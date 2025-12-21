@@ -818,7 +818,7 @@
    ESPACE FOOTER QUAND RADIO JOUE
    ============================================ */
 body.radio-playing .footer {
-    margin-bottom: 200px !important;
+    margin-bottom: 110px !important;
 }
 
 /* ============================================
