@@ -441,7 +441,7 @@
 }
 
 /* Now Playing dans le widget */
-.radio-widget-now-playing {
+.radio-widget-nowplaying {
     font-size: 0.75rem;
     color: var(--primary);
     margin-top: 0.25rem;
@@ -457,8 +457,8 @@
     font-size: 0.9rem;
 }
 
-/* Equalizer widget */
-.radio-widget-equalizer {
+/* Visualizer widget */
+.radio-widget-visualizer {
     display: flex;
     align-items: flex-end;
     gap: 2px;
@@ -513,7 +513,7 @@
 }
 
 /* Corps du widget (dépliable) */
-.radio-widget-body {
+.radio-widget-expanded {
     padding: 0 1rem 1rem;
     display: flex;
     flex-direction: column;
