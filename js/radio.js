@@ -70,6 +70,14 @@ class RadioPlayer {
                 description: '100% Hits 24/24',
                 category: 'generaliste'
             },
+			{
+                id: 'M-Radio',
+                name: 'M Radio',
+                url: 'https://mradio-lyon.ice.infomaniak.ch/mradio-lyon.mp3',
+                logo: 'images/radios-logos/M-Radio.png',
+                description: 'Numéro 1 sur la chanson française',
+                category: 'generaliste'
+            },
             {
                 id: 'NRJ',
                 name: 'NRJ',
@@ -100,6 +108,14 @@ class RadioPlayer {
                 url: 'https://streamer-02.rtl.fr/fun-1-44-128',
                 logo: 'images/radios-logos/Fun-Radio.png',
                 description: 'Le son dancefloor',
+                category: 'generaliste'
+            },
+			{
+                id: 'Cherie-FM',
+                name: 'Chérie FM',
+                url: 'https://streaming.nrjaudio.fm/ouuku85n3nje?origine=fluxradios',
+                logo: 'images/radios-logos/cherie-fm.png',
+                description: 'Love songs',
                 category: 'generaliste'
             },
             {
@@ -149,15 +165,7 @@ class RadioPlayer {
 
             // =====================================================
             // THÉMATIQUES
-            // =====================================================
-			{
-                id: 'M-Radio',
-                name: 'M Radio',
-                url: 'https://mradio-lyon.ice.infomaniak.ch/mradio-lyon.mp3',
-                logo: 'images/radios-logos/M-Radio.png',
-                description: 'Numéro 1 sur la chanson française',
-                category: 'thematique'
-            },
+            // =====================================================			
             {
                 id: 'Nostalgie',
                 name: 'Nostalgie',
@@ -165,15 +173,7 @@ class RadioPlayer {
                 logo: 'images/radios-logos/nostalgie.png',
                 description: 'Oldies & classics',
                 category: 'thematique'
-            },
-            {
-                id: 'Cherie-FM',
-                name: 'Chérie FM',
-                url: 'https://streaming.nrjaudio.fm/ouuku85n3nje?origine=fluxradios',
-                logo: 'images/radios-logos/cherie-fm.png',
-                description: 'Love songs',
-                category: 'thematique'
-            },
+            },           
             {
                 id: 'Voltage-80s',
                 name: 'Voltage 80s',
