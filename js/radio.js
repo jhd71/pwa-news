@@ -14,7 +14,7 @@ class RadioPlayer {
                 id: 'Ici-Bourgogne',
                 name: 'Ici-Bourgogne',
                 url: 'https://icecast.radiofrance.fr/fbbourgogne-midfi.mp3',
-                logo: 'images/radio-logos/Ici-Bourgogne.png',
+                logo: 'images/radios-logos/Ici-Bourgogne.png',
                 description: 'Info locale Bourgogne',
                 category: 'locale'
             },
@@ -22,7 +22,7 @@ class RadioPlayer {
                 id: 'Radio-Prevert',
                 name: 'Radio Prevert',
                 url: 'https://vps.cbad.fr:8443/prevert',
-                logo: 'images/radio-logos/Radio-Prevert.png',
+                logo: 'images/radios-logos/Radio-Prevert.png',
                 description: 'Chalon Sur Saône',
                 category: 'locale'
             },
@@ -30,7 +30,7 @@ class RadioPlayer {
                 id: 'Frequence-Plus',
                 name: 'Fréquence Plus',
                 url: 'https://fplus-chalonsursaone.ice.infomaniak.ch/fplus-chalonsursaone-128.mp3',
-                logo: 'images/radio-logos/Frequence-Plus.png',
+                logo: 'images/radios-logos/Frequence-Plus.png',
                 description: 'A plein tubes, Chalon',
                 category: 'locale'
             },
@@ -38,7 +38,7 @@ class RadioPlayer {
                 id: 'Cerise-FM',
                 name: 'Cerise FM',
                 url: 'https://stream.rcs.revma.com/q90fb3dwnwzuv.mp3',
-                logo: 'images/radio-logos/Cerise-FM.png',
+                logo: 'images/radios-logos/Cerise-FM.png',
                 description: 'Les tubes d\'hier, les hits d\'aujourd\'hui',
                 category: 'locale'
             },
@@ -46,7 +46,7 @@ class RadioPlayer {
                 id: 'Alouette-FM',
                 name: 'Alouette FM',
                 url: 'https://alouette-poitiers.ice.infomaniak.ch/alouette-poitiers-128.mp3',
-                logo: 'images/radio-logos/Alouette-FM.png',
+                logo: 'images/radios-logos/Alouette-FM.png',
                 description: 'Toujours plus de Hits',
                 category: 'locale'
             },
@@ -54,7 +54,7 @@ class RadioPlayer {
                 id: 'Alouette-Nouveaux-Talents',
                 name: 'Alouette Nouveaux Talents',
                 url: 'https://alouettenouveauxtalents.ice.infomaniak.ch/alouettenouveauxtalents-128.mp3',
-                logo: 'images/radio-logos/Alouette-Nouveaux-Talents.png',
+                logo: 'images/radios-logos/Alouette-Nouveaux-Talents.png',
                 description: '1ère Radio Régionale de France',
                 category: 'locale'
             },
@@ -66,7 +66,7 @@ class RadioPlayer {
                 id: 'La-Radio-Sans-pub',
                 name: 'La Radio Sans pub',
                 url: 'https://live1.jupinfo.fr:8443/play',
-                logo: 'images/radio-logos/La-Radio-Sans-pub.png',
+                logo: 'images/radios-logos/La-Radio-Sans-pub.png',
                 description: '100% Hits 24/24',
                 category: 'generaliste'
             },
@@ -74,7 +74,7 @@ class RadioPlayer {
                 id: 'NRJ',
                 name: 'NRJ',
                 url: 'https://streaming.nrjaudio.fm/oumvmk8fnozc?origine=fluxurlradio',
-                logo: 'images/radio-logos/nrj.png',
+                logo: 'images/radios-logos/nrj.png',
                 description: 'Hits & musique',
                 category: 'generaliste'
             },
@@ -82,7 +82,7 @@ class RadioPlayer {
                 id: 'RFM',
                 name: 'RFM',
                 url: 'https://rfm.lmn.fm/rfm.mp3',
-                logo: 'images/radio-logos/RFM.png',
+                logo: 'images/radios-logos/RFM.png',
                 description: 'Le meilleur de la musique',
                 category: 'generaliste'
             },
@@ -90,7 +90,7 @@ class RadioPlayer {
                 id: 'Skyrock',
                 name: 'Skyrock',
                 url: 'https://icecast.skyrock.net/s/natio_aac_128k?tvr_name=tunein16&tvr_section1=64aac',
-                logo: 'images/radio-logos/Skyrock.png',
+                logo: 'images/radios-logos/Skyrock.png',
                 description: 'Skyrock 1er sur le rap',
                 category: 'generaliste'
             },
@@ -98,7 +98,7 @@ class RadioPlayer {
                 id: 'Fun-Radio',
                 name: 'Fun Radio',
                 url: 'https://streamer-02.rtl.fr/fun-1-44-128',
-                logo: 'images/radio-logos/Fun-Radio.png',
+                logo: 'images/radios-logos/Fun-Radio.png',
                 description: 'Le son dancefloor',
                 category: 'generaliste'
             },
@@ -106,7 +106,7 @@ class RadioPlayer {
                 id: 'Vibration',
                 name: 'Vibration',
                 url: 'https://vibration.ice.infomaniak.ch/vibration-high.mp3',
-                logo: 'images/radio-logos/Vibration.png',
+                logo: 'images/radios-logos/Vibration.png',
                 description: 'Hits & variétés',
                 category: 'generaliste'
             },
@@ -114,7 +114,7 @@ class RadioPlayer {
                 id: 'Voltage',
                 name: 'Voltage',
                 url: 'https://start-voltage.ice.infomaniak.ch/start-voltage-high.mp3',
-                logo: 'images/radio-logos/Voltage.png',
+                logo: 'images/radios-logos/Voltage.png',
                 description: 'Pop-rock français',
                 category: 'generaliste'
             },
@@ -126,7 +126,7 @@ class RadioPlayer {
                 id: 'RTL2',
                 name: 'RTL2',
                 url: 'https://streamer-02.rtl.fr/rtl2-1-44-128',
-                logo: 'images/radio-logos/RTL2.png',
+                logo: 'images/radios-logos/RTL2.png',
                 description: 'Le Son Pop-Rock',
                 category: 'rock'
             },
@@ -134,7 +134,7 @@ class RadioPlayer {
                 id: 'Virage-Radio',
                 name: 'Virage Radio',
                 url: 'https://virageradio.ice.infomaniak.ch/virageradio-high.mp3',
-                logo: 'images/radio-logos/Virage-Radio.png',
+                logo: 'images/radios-logos/Virage-Radio.png',
                 description: 'Rock & pop',
                 category: 'rock'
             },
@@ -142,7 +142,7 @@ class RadioPlayer {
                 id: 'OUI-FM',
                 name: 'OUI FM',
                 url: 'https://ouifm.ice.infomaniak.ch/ouifm-high.mp3',
-                logo: 'images/radio-logos/OUI-FM.png',
+                logo: 'images/radios-logos/OUI-FM.png',
                 description: 'Rock indé & alternatif',
                 category: 'rock'
             },
@@ -154,7 +154,7 @@ class RadioPlayer {
                 id: 'M-Radio',
                 name: 'M Radio',
                 url: 'https://mradio-lyon.ice.infomaniak.ch/mradio-lyon.mp3',
-                logo: 'images/radio-logos/M-Radio.png',
+                logo: 'images/radios-logos/M-Radio.png',
                 description: 'Numéro 1 sur la chanson française',
                 category: 'thematique'
             },
@@ -162,7 +162,7 @@ class RadioPlayer {
                 id: 'Nostalgie',
                 name: 'Nostalgie',
                 url: 'https://streaming.nrjaudio.fm/oug7girb92oc?origine=fluxradios',
-                logo: 'images/radio-logos/nostalgie.png',
+                logo: 'images/radios-logos/nostalgie.png',
                 description: 'Oldies & classics',
                 category: 'thematique'
             },
@@ -170,7 +170,7 @@ class RadioPlayer {
                 id: 'Cherie-FM',
                 name: 'Chérie FM',
                 url: 'https://streaming.nrjaudio.fm/ouuku85n3nje?origine=fluxradios',
-                logo: 'images/radio-logos/cherie-fm.png',
+                logo: 'images/radios-logos/cherie-fm.png',
                 description: 'Love songs',
                 category: 'thematique'
             },
@@ -178,7 +178,7 @@ class RadioPlayer {
                 id: 'Voltage-80s',
                 name: 'Voltage 80s',
                 url: 'https://voltage80s.ice.infomaniak.ch/voltage80s-128.mp3',
-                logo: 'images/radio-logos/Voltage-80s.png',
+                logo: 'images/radios-logos/Voltage-80s.png',
                 description: 'Hits années 80',
                 category: 'thematique'
             },
@@ -186,7 +186,7 @@ class RadioPlayer {
                 id: 'Voltage-90s',
                 name: 'Voltage 90s',
                 url: 'https://voltage90s.ice.infomaniak.ch/voltage90s-128.mp3',
-                logo: 'images/radio-logos/Voltage-90s.png',
+                logo: 'images/radios-logos/Voltage-90s.png',
                 description: 'Hits années 90',
                 category: 'thematique'
             },
@@ -194,7 +194,7 @@ class RadioPlayer {
                 id: 'Voltage-2000',
                 name: 'Voltage 2000',
                 url: 'https://voltage2000.ice.infomaniak.ch/voltage2000-128.mp3',
-                logo: 'images/radio-logos/Voltage-2000.png',
+                logo: 'images/radios-logos/Voltage-2000.png',
                 description: 'Hits années 2000',
                 category: 'thematique'
             },
@@ -202,7 +202,7 @@ class RadioPlayer {
                 id: 'Kiss-FM',
                 name: 'Kiss FM',
                 url: 'https://kissfm2.ice.infomaniak.ch/kissfm2-128.mp3',
-                logo: 'images/radio-logos/Kiss-fm.png',
+                logo: 'images/radios-logos/Kiss-fm.png',
                 description: 'Urban & R&B',
                 category: 'thematique'
             },
@@ -210,7 +210,7 @@ class RadioPlayer {
                 id: 'FIP',
                 name: 'FIP',
                 url: 'https://icecast.radiofrance.fr/fip-midfi.mp3',
-                logo: 'images/radio-logos/Radio-Fip.png',
+                logo: 'images/radios-logos/Radio-Fip.png',
                 description: 'Éclectique & sans pub',
                 category: 'thematique'
             },
@@ -218,7 +218,7 @@ class RadioPlayer {
                 id: 'Mouv',
                 name: 'Mouv\'',
                 url: 'https://icecast.radiofrance.fr/mouv-midfi.mp3',
-                logo: 'images/radio-logos/Radio-mouv.png',
+                logo: 'images/radios-logos/Radio-mouv.png',
                 description: 'Hip-hop & urbain',
                 category: 'thematique'
             },
@@ -226,7 +226,7 @@ class RadioPlayer {
                 id: 'Radio-Nova',
                 name: 'Radio Nova',
                 url: 'https://novazz.ice.infomaniak.ch/novazz-128.mp3',
-                logo: 'images/radio-logos/Radio-nova.png',
+                logo: 'images/radios-logos/Radio-nova.png',
                 description: 'Soul Funk World',
                 category: 'thematique'
             },
@@ -238,7 +238,7 @@ class RadioPlayer {
                 id: 'France-Inter',
                 name: 'France Inter',
                 url: 'https://icecast.radiofrance.fr/franceinter-midfi.mp3',
-                logo: 'images/radio-logos/France-Inter.png',
+                logo: 'images/radios-logos/France-Inter.png',
                 description: 'Service public radio',
                 category: 'info'
             },
@@ -246,7 +246,7 @@ class RadioPlayer {
                 id: 'RTL',
                 name: 'RTL',
                 url: 'https://streamer-03.rtl.fr/rtl-1-44-128',
-                logo: 'images/radio-logos/rtl.png',
+                logo: 'images/radios-logos/rtl.png',
                 description: 'Info & divertissement',
                 category: 'info'
             },
@@ -254,7 +254,7 @@ class RadioPlayer {
                 id: 'Europe-1',
                 name: 'Europe 1',
                 url: 'https://europe1.lmn.fm/europe1.mp3',
-                logo: 'images/radio-logos/europe1.png',
+                logo: 'images/radios-logos/europe1.png',
                 description: 'Talk & actualités',
                 category: 'info'
             },
@@ -262,7 +262,7 @@ class RadioPlayer {
                 id: 'RMC',
                 name: 'RMC',
                 url: 'https://audio.bfmtv.com/rmcradio_128.mp3',
-                logo: 'images/radio-logos/rmc.png',
+                logo: 'images/radios-logos/rmc.png',
                 description: 'Sport & info',
                 category: 'info'
             },
@@ -270,7 +270,7 @@ class RadioPlayer {
                 id: 'France-Info',
                 name: 'France Info',
                 url: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3',
-                logo: 'images/radio-logos/france-info.png',
+                logo: 'images/radios-logos/france-info.png',
                 description: 'Info en continu',
                 category: 'info'
             },
@@ -278,7 +278,7 @@ class RadioPlayer {
                 id: 'BFM-Radio',
                 name: 'BFM Radio',
                 url: 'https://audio.bfmtv.com/bfmradio_128.mp3',
-                logo: 'images/radio-logos/BFM-Radio.png',
+                logo: 'images/radios-logos/BFM-Radio.png',
                 description: 'Info en continu',
                 category: 'info'
             },
@@ -286,7 +286,7 @@ class RadioPlayer {
                 id: 'Sud-Radio',
                 name: 'Sud Radio',
                 url: 'https://live.sudradio.fr/sudradio-mp3-128',
-                logo: 'images/radio-logos/Sud-Radio.png',
+                logo: 'images/radios-logos/Sud-Radio.png',
                 description: 'Talk & débats',
                 category: 'info'
             }
