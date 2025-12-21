@@ -453,7 +453,7 @@
     white-space: nowrap;
 }
 
-.radio-widget-now-playing .material-icons {
+.radio-widget-nowplaying .material-icons {
     font-size: 0.9rem;
 }
 
@@ -461,9 +461,10 @@
 .radio-widget-visualizer {
     display: flex;
     align-items: flex-end;
-    gap: 2px;
-    height: 36px;
-    padding: 0 0.5rem;
+    justify-content: center;
+    gap: 3px;
+    height: 40px;
+    padding: 0.5rem 0;
 }
 
 .radio-widget-bar {
@@ -523,7 +524,7 @@
     transition: all 0.3s ease;
 }
 
-#radioWidget.collapsed .radio-widget-body {
+#radioWidget.collapsed .radio-widget-expanded {
     max-height: 0;
     padding-top: 0;
     padding-bottom: 0;
@@ -855,8 +856,8 @@ body.radio-playing .footer {
     }
     
     .radio-station-logo {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
     }
     
     .radio-station-name {
@@ -896,7 +897,7 @@ body.radio-playing .footer {
     }
     
     .radio-modal {
-        max-width: 850px;
+        max-width: 480px;
         max-height: 80vh;
         border-radius: 24px;
         animation: modalFadeIn 0.3s ease;
@@ -917,8 +918,8 @@ body.radio-playing .footer {
     }
     
     .radio-station-logo {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
     }
     
     .radio-station-name {
