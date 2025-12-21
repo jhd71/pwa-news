@@ -897,7 +897,7 @@ body.radio-playing .footer {
     }
     
     .radio-modal {
-        max-width: 480px;
+        max-width: 850px;
         max-height: 80vh;
         border-radius: 24px;
         animation: modalFadeIn 0.3s ease;
