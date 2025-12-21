@@ -9,57 +9,87 @@
         height: 100%;
         overflow: hidden;
         background: #ffffff;
+        font-family: Inter, Arial, sans-serif;
+    }
+
+    .fb-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .fb-arrow {
+        font-size: 36px;
+        margin-top: 15px;
+        animation: arrowMove 1.2s infinite;
+    }
+
+    @keyframes arrowMove {
+        0% { transform: translateY(0); opacity: 0.4; }
+        50% { transform: translateY(-6px); opacity: 1; }
+        100% { transform: translateY(0); opacity: 0.4; }
+    }
+
+    .fb-box {
+        margin-top: 20px;
+        padding: 16px 18px;
+        background: #1877f2;
+        color: #fff;
+        border-radius: 10px;
+        max-width: 280px;
+        font-size: 16px;
+        line-height: 1.4;
     }
 </style>
 
 <script>
-    (function () {
-        var ua = navigator.userAgent || navigator.vendor || window.opera;
+(function () {
+    var ua = navigator.userAgent || "";
+    var isFacebook = ua.includes("FBAN") || ua.includes("FBAV");
+    var isIOS = /iPhone|iPad|iPod/i.test(ua);
 
-        if (ua.includes("FBAN") || ua.includes("FBAV")) {
-            document.documentElement.classList.add("fb-block");
-            document.addEventListener("DOMContentLoaded", function () {
-                var currentUrl = window.location.href;
+    if (!isFacebook) return;
 
-                document.body.innerHTML = `
-                    <div style="
-                        display:flex;
-                        flex-direction:column;
-                        justify-content:center;
-                        align-items:center;
-                        height:100%;
-                        text-align:center;
-                        font-family:Inter, Arial, sans-serif;
-                        padding:20px;
-                    ">
-                        <h2>⚠️ Ouverture depuis Facebook</h2>
+    document.documentElement.classList.add("fb-block");
 
-                        <p style="max-width:320px;">
-                            Facebook utilise un navigateur interne
-                            incompatible avec <strong>Actu & Média</strong>.
-                        </p>
+    document.addEventListener("DOMContentLoaded", function () {
 
-                        <a href="${currentUrl}" target="_blank" rel="noopener"
-                           style="
-                            margin-top:20px;
-                            padding:14px 22px;
-                            font-size:16px;
-                            background:#1877f2;
-                            color:white;
-                            border-radius:8px;
-                            text-decoration:none;
-                           ">
-                            Ouvrir dans le navigateur
-                        </a>
+        var message = isIOS
+            ? `
+                <h2>📱 iPhone / iPad</h2>
+                <p>Ce site ne peut pas s’ouvrir ici.</p>
+                <div class="fb-arrow">⬆️</div>
+                <div class="fb-box">
+                    Appuyez sur <strong>Partager</strong><br>
+                    puis sur<br>
+                    <strong>« Ouvrir dans Safari »</strong>
+                </div>
+              `
+            : `
+                <h2>📱 Android</h2>
+                <p>Ce site ne peut pas s’ouvrir ici.</p>
+                <div class="fb-arrow">⬆️</div>
+                <div class="fb-box">
+                    Appuyez sur <strong>⋮</strong> en haut à droite<br>
+                    puis sur<br>
+                    <strong>« Ouvrir dans le navigateur »</strong>
+                </div>
+              `;
 
-                        <p style="margin-top:15px; font-size:13px; opacity:0.7;">
-                            Ou utilisez le menu ⋮ en haut à droite
-                        </p>
-                    </div>
-                `;
-            });
-        }
-    })();
+        document.body.innerHTML = `
+            <div class="fb-wrapper">
+                ${message}
+                <p style="margin-top:20px; font-size:13px; opacity:0.7;">
+                    Ensuite, le site s’ouvrira normalement 👍
+                </p>
+            </div>
+        `;
+    });
+})();
 </script>
 
     <title>Actu & Média - Montceau-les-Mines</title>
