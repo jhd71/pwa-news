@@ -3,6 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<style>
+    html.fb-block, body.fb-block {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #ffffff;
+    }
+</style>
+
+<script>
+    (function () {
+        var ua = navigator.userAgent || navigator.vendor || window.opera;
+
+        if (ua.includes("FBAN") || ua.includes("FBAV")) {
+            document.documentElement.classList.add("fb-block");
+            document.addEventListener("DOMContentLoaded", function () {
+                var currentUrl = window.location.href;
+
+                document.body.innerHTML = `
+                    <div style="
+                        display:flex;
+                        flex-direction:column;
+                        justify-content:center;
+                        align-items:center;
+                        height:100%;
+                        text-align:center;
+                        font-family:Inter, Arial, sans-serif;
+                        padding:20px;
+                    ">
+                        <h2>⚠️ Ouverture depuis Facebook</h2>
+
+                        <p style="max-width:320px;">
+                            Facebook utilise un navigateur interne
+                            incompatible avec <strong>Actu & Média</strong>.
+                        </p>
+
+                        <a href="${currentUrl}" target="_blank" rel="noopener"
+                           style="
+                            margin-top:20px;
+                            padding:14px 22px;
+                            font-size:16px;
+                            background:#1877f2;
+                            color:white;
+                            border-radius:8px;
+                            text-decoration:none;
+                           ">
+                            Ouvrir dans le navigateur
+                        </a>
+
+                        <p style="margin-top:15px; font-size:13px; opacity:0.7;">
+                            Ou utilisez le menu ⋮ en haut à droite
+                        </p>
+                    </div>
+                `;
+            });
+        }
+    })();
+</script>
+
     <title>Actu & Média - Montceau-les-Mines</title>
     
     <!-- PWA -->
@@ -724,64 +783,5 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             setTimeout(checkAdminNotifications, 2000);
         });
     </script>
-	
-	<script>
-(function () {
-    var ua = navigator.userAgent || navigator.vendor || window.opera;
-
-    if (ua.includes("FBAN") || ua.includes("FBAV")) {
-
-        var currentUrl = window.location.href;
-
-        document.documentElement.style.height = "100%";
-        document.body.style.height = "100%";
-        document.body.style.margin = "0";
-
-        document.body.innerHTML = `
-            <div style="
-                display:flex;
-                flex-direction:column;
-                justify-content:center;
-                align-items:center;
-                height:100%;
-                background:#ffffff;
-                text-align:center;
-                font-family:Inter, Arial, sans-serif;
-                padding:20px;
-            ">
-                <h2 style="margin-bottom:10px;">⚠️ Ouverture depuis Facebook</h2>
-
-                <p style="max-width:320px; margin-bottom:15px;">
-                    Facebook ouvre les liens dans un navigateur interne
-                    qui ne fonctionne pas avec <strong>Actu & Média</strong>.
-                </p>
-
-                <p style="margin-bottom:20px;">
-                    👉 <strong>Ouvrez le site dans votre navigateur</strong>
-                </p>
-
-                <a href="${currentUrl}" target="_blank" rel="noopener"
-                   style="
-                    display:inline-block;
-                    padding:14px 22px;
-                    font-size:16px;
-                    background:#1877f2;
-                    color:white;
-                    border-radius:8px;
-                    text-decoration:none;
-                   ">
-                    Ouvrir dans le navigateur
-                </a>
-
-                <p style="margin-top:15px; font-size:13px; opacity:0.7;">
-                    Si rien ne s’ouvre, appuyez sur ⋮ en haut à droite<br>
-                    puis <strong>« Ouvrir dans le navigateur »</strong>
-                </p>
-            </div>
-        `;
-    }
-})();
-</script>
-
 </body>
 </html>
