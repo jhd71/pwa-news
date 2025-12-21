@@ -79,14 +79,6 @@ class RadioPlayer {
                 category: 'generaliste'
             },
 			{
-                id: 'RFM',
-                name: 'RFM',
-                url: 'https://rfm.lmn.fm/rfm.mp3',
-                logo: 'images/radios-logos/RFM.png',
-                description: 'Le meilleur de la musique',
-                category: 'generaliste'
-            },
-			{
                 id: 'Skyrock',
                 name: 'Skyrock',
                 url: 'https://icecast.skyrock.net/s/natio_aac_128k?tvr_name=tunein16&tvr_section1=64aac',
@@ -94,6 +86,14 @@ class RadioPlayer {
                 description: 'Skyrock 1er sur le rap',
                 category: 'generaliste'
             },
+			{
+                id: 'RFM',
+                name: 'RFM',
+                url: 'https://rfm.lmn.fm/rfm.mp3',
+                logo: 'images/radios-logos/RFM.png',
+                description: 'Le meilleur de la musique',
+                category: 'generaliste'
+            },			
             {
                 id: 'Fun-Radio',
                 name: 'Fun Radio',
