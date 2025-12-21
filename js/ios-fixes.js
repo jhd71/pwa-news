@@ -75,7 +75,7 @@
                 }
                 
                 .ios-device.radio-playing .footer {
-                    margin-bottom: calc(200px + var(--ios-safe-area-bottom)) !important;
+                    margin-bottom: calc(110px + var(--ios-safe-area-bottom)) !important;
                 }
                 
                 /* ========== MODAL RADIO ========== */
