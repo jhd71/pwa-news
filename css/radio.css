@@ -995,7 +995,7 @@ body.radio-playing .footer {
     }
     
     body.radio-playing .footer {
-        margin-bottom: calc(200px + env(safe-area-inset-bottom)) !important;
+        margin-bottom: calc(110px + env(safe-area-inset-bottom)) !important;
     }
     
     .radio-modal {
