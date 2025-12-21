@@ -697,6 +697,7 @@ body {
 
 .install-prompt.show {
     transform: translateY(0);
+	z-index: 10000;
 }
 
 .install-prompt-content {
