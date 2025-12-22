@@ -985,182 +985,229 @@ body.radio-playing .footer {
    THÈME CLAIR - Styles spécifiques
    ============================================ */
 
-/* Mode clair pour le widget */
+/* === WIDGET EN MODE CLAIR === */
 [data-theme="light"] #radioWidget,
 [data-theme="bleuciel"] #radioWidget {
-    background: rgba(30, 41, 59, 0.95);
-    border-color: rgba(255, 255, 255, 0.15);
-}
-
-[data-theme="light"] .radio-widget-header,
-[data-theme="bleuciel"] .radio-widget-header {
-    color: #fff;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
 
 [data-theme="light"] .radio-widget-name,
 [data-theme="bleuciel"] .radio-widget-name {
-    color: #fff;
+    color: #1e293b;
 }
 
 [data-theme="light"] .radio-widget-status,
 [data-theme="bleuciel"] .radio-widget-status {
-    color: rgba(255, 255, 255, 0.7);
+    color: #64748b;
+}
+
+[data-theme="light"] .radio-widget-nowplaying,
+[data-theme="bleuciel"] .radio-widget-nowplaying {
+    color: var(--primary);
 }
 
 [data-theme="light"] .radio-widget-btn,
 [data-theme="bleuciel"] .radio-widget-btn {
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.05);
+    color: #1e293b;
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="light"] .radio-widget-btn:hover,
 [data-theme="bleuciel"] .radio-widget-btn:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="light"] .radio-widget-btn.large,
 [data-theme="bleuciel"] .radio-widget-btn.large {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
     border: none;
 }
 
 [data-theme="light"] .radio-widget-toggle,
 [data-theme="bleuciel"] .radio-widget-toggle {
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
+    background: rgba(0, 0, 0, 0.05);
+    color: #1e293b;
 }
 
 [data-theme="light"] .radio-widget-toggle:hover,
 [data-theme="bleuciel"] .radio-widget-toggle:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .radio-widget-bar,
+[data-theme="bleuciel"] .radio-widget-bar {
+    background: var(--primary);
 }
 
 [data-theme="light"] .radio-widget-volume-slider,
 [data-theme="bleuciel"] .radio-widget-volume-slider {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .radio-widget-volume-slider::-webkit-slider-thumb,
+[data-theme="bleuciel"] .radio-widget-volume-slider::-webkit-slider-thumb {
+    background: var(--primary);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
 }
 
 [data-theme="light"] .radio-widget-volume-value,
 [data-theme="bleuciel"] .radio-widget-volume-value {
-    color: rgba(255, 255, 255, 0.9);
+    color: #1e293b;
 }
 
-/* Mode clair pour la modal */
+/* === MODAL EN MODE CLAIR === */
 [data-theme="light"] .radio-modal,
 [data-theme="bleuciel"] .radio-modal {
-    background: rgba(30, 41, 59, 0.98);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="light"] .radio-modal-header,
 [data-theme="bleuciel"] .radio-modal-header {
-    border-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    border-color: rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="light"] .radio-modal-header h2,
 [data-theme="bleuciel"] .radio-modal-header h2 {
-    color: #fff;
+    color: #1e293b;
 }
 
 [data-theme="light"] .radio-modal-close,
 [data-theme="bleuciel"] .radio-modal-close {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: rgba(0, 0, 0, 0.05);
+    color: #64748b;
 }
 
 [data-theme="light"] .radio-modal-close:hover,
 [data-theme="bleuciel"] .radio-modal-close:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.1);
+    color: #1e293b;
 }
 
 [data-theme="light"] .radio-now-playing,
 [data-theme="bleuciel"] .radio-now-playing {
-    background: rgba(99, 102, 241, 0.2);
+    background: rgba(99, 102, 241, 0.1);
 }
 
 [data-theme="light"] .radio-current-name,
 [data-theme="bleuciel"] .radio-current-name {
-    color: #fff;
+    color: #1e293b;
 }
 
 [data-theme="light"] .radio-current-desc,
 [data-theme="bleuciel"] .radio-current-desc {
-    color: rgba(255, 255, 255, 0.7);
+    color: #64748b;
+}
+
+[data-theme="light"] .radio-play-btn,
+[data-theme="bleuciel"] .radio-play-btn {
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+}
+
+[data-theme="light"] .radio-volume-slider,
+[data-theme="bleuciel"] .radio-volume-slider {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .radio-volume-value,
+[data-theme="bleuciel"] .radio-volume-value {
+    color: #64748b;
+}
+
+[data-theme="light"] .radio-volume-icon,
+[data-theme="bleuciel"] .radio-volume-icon {
+    color: #64748b;
 }
 
 [data-theme="light"] .radio-stations-title,
 [data-theme="bleuciel"] .radio-stations-title {
-    color: rgba(255, 255, 255, 0.7);
+    color: #64748b;
 }
 
 [data-theme="light"] .radio-station,
 [data-theme="bleuciel"] .radio-station {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 [data-theme="light"] .radio-station:hover,
 [data-theme="bleuciel"] .radio-station:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="light"] .radio-station.active,
 [data-theme="bleuciel"] .radio-station.active {
-    background: rgba(99, 102, 241, 0.3);
+    background: rgba(99, 102, 241, 0.1);
     border-color: var(--primary);
 }
 
 [data-theme="light"] .radio-station-name,
 [data-theme="bleuciel"] .radio-station-name {
-    color: #fff;
+    color: #1e293b;
 }
 
 [data-theme="light"] .radio-station-desc,
 [data-theme="bleuciel"] .radio-station-desc {
-    color: rgba(255, 255, 255, 0.6);
+    color: #64748b;
 }
 
-[data-theme="light"] .radio-volume-slider,
-[data-theme="bleuciel"] .radio-volume-slider {
-    background: rgba(255, 255, 255, 0.2);
+[data-theme="light"] .radio-stations-container::-webkit-scrollbar-thumb,
+[data-theme="bleuciel"] .radio-stations-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
 }
 
-[data-theme="light"] .radio-volume-value,
-[data-theme="bleuciel"] .radio-volume-value {
-    color: rgba(255, 255, 255, 0.8);
-}
-
-[data-theme="light"] .radio-volume-icon,
-[data-theme="bleuciel"] .radio-volume-icon {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-/* Popup minuteur en mode clair */
+/* === POPUP MINUTEUR EN MODE CLAIR === */
 [data-theme="light"] .sleep-timer-popup,
 [data-theme="bleuciel"] .sleep-timer-popup {
-    background: rgba(30, 41, 59, 0.98);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .sleep-timer-popup-header,
+[data-theme="bleuciel"] .sleep-timer-popup-header {
+    color: #d97706;
 }
 
 [data-theme="light"] .sleep-timer-option,
 [data-theme="bleuciel"] .sleep-timer-option {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: #fff;
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #1e293b;
 }
 
 [data-theme="light"] .sleep-timer-option:hover,
 [data-theme="bleuciel"] .sleep-timer-option:hover {
-    background: rgba(251, 191, 36, 0.2);
+    background: rgba(251, 191, 36, 0.15);
+    border-color: #d97706;
 }
 
-/* Toast en mode clair */
+[data-theme="light"] .sleep-timer-time-btn,
+[data-theme="bleuciel"] .sleep-timer-time-btn {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.3);
+    color: var(--primary);
+}
+
+[data-theme="light"] .sleep-timer-status,
+[data-theme="bleuciel"] .sleep-timer-status {
+    background: rgba(251, 191, 36, 0.1);
+    border-color: rgba(251, 191, 36, 0.3);
+    color: #d97706;
+}
+
+/* === TOAST EN MODE CLAIR === */
 [data-theme="light"] .radio-toast,
 [data-theme="bleuciel"] .radio-toast {
-    background: rgba(30, 41, 59, 0.95);
-    color: #fff;
+    background: rgba(255, 255, 255, 0.95);
+    color: #1e293b;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* ============================================
