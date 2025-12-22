@@ -981,3 +981,205 @@ body.radio-playing .footer {
         gap: 0.4rem;
     }
 }
+/* ============================================
+   THÈME CLAIR - Styles spécifiques
+   ============================================ */
+
+/* Mode clair pour le widget */
+[data-theme="light"] #radioWidget,
+[data-theme="bleuciel"] #radioWidget {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="light"] .radio-widget-header,
+[data-theme="bleuciel"] .radio-widget-header {
+    color: #fff;
+}
+
+[data-theme="light"] .radio-widget-name,
+[data-theme="bleuciel"] .radio-widget-name {
+    color: #fff;
+}
+
+[data-theme="light"] .radio-widget-status,
+[data-theme="bleuciel"] .radio-widget-status {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="light"] .radio-widget-btn,
+[data-theme="bleuciel"] .radio-widget-btn {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="light"] .radio-widget-btn:hover,
+[data-theme="bleuciel"] .radio-widget-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+[data-theme="light"] .radio-widget-btn.large,
+[data-theme="bleuciel"] .radio-widget-btn.large {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    border: none;
+}
+
+[data-theme="light"] .radio-widget-toggle,
+[data-theme="bleuciel"] .radio-widget-toggle {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+[data-theme="light"] .radio-widget-toggle:hover,
+[data-theme="bleuciel"] .radio-widget-toggle:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+[data-theme="light"] .radio-widget-volume-slider,
+[data-theme="bleuciel"] .radio-widget-volume-slider {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="light"] .radio-widget-volume-value,
+[data-theme="bleuciel"] .radio-widget-volume-value {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Mode clair pour la modal */
+[data-theme="light"] .radio-modal,
+[data-theme="bleuciel"] .radio-modal {
+    background: rgba(30, 41, 59, 0.98);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] .radio-modal-header,
+[data-theme="bleuciel"] .radio-modal-header {
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+[data-theme="light"] .radio-modal-header h2,
+[data-theme="bleuciel"] .radio-modal-header h2 {
+    color: #fff;
+}
+
+[data-theme="light"] .radio-modal-close,
+[data-theme="bleuciel"] .radio-modal-close {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+[data-theme="light"] .radio-modal-close:hover,
+[data-theme="bleuciel"] .radio-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="light"] .radio-now-playing,
+[data-theme="bleuciel"] .radio-now-playing {
+    background: rgba(99, 102, 241, 0.2);
+}
+
+[data-theme="light"] .radio-current-name,
+[data-theme="bleuciel"] .radio-current-name {
+    color: #fff;
+}
+
+[data-theme="light"] .radio-current-desc,
+[data-theme="bleuciel"] .radio-current-desc {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="light"] .radio-stations-title,
+[data-theme="bleuciel"] .radio-stations-title {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="light"] .radio-station,
+[data-theme="bleuciel"] .radio-station {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="light"] .radio-station:hover,
+[data-theme="bleuciel"] .radio-station:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="light"] .radio-station.active,
+[data-theme="bleuciel"] .radio-station.active {
+    background: rgba(99, 102, 241, 0.3);
+    border-color: var(--primary);
+}
+
+[data-theme="light"] .radio-station-name,
+[data-theme="bleuciel"] .radio-station-name {
+    color: #fff;
+}
+
+[data-theme="light"] .radio-station-desc,
+[data-theme="bleuciel"] .radio-station-desc {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .radio-volume-slider,
+[data-theme="bleuciel"] .radio-volume-slider {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="light"] .radio-volume-value,
+[data-theme="bleuciel"] .radio-volume-value {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .radio-volume-icon,
+[data-theme="bleuciel"] .radio-volume-icon {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Popup minuteur en mode clair */
+[data-theme="light"] .sleep-timer-popup,
+[data-theme="bleuciel"] .sleep-timer-popup {
+    background: rgba(30, 41, 59, 0.98);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] .sleep-timer-option,
+[data-theme="bleuciel"] .sleep-timer-option {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+[data-theme="light"] .sleep-timer-option:hover,
+[data-theme="bleuciel"] .sleep-timer-option:hover {
+    background: rgba(251, 191, 36, 0.2);
+}
+
+/* Toast en mode clair */
+[data-theme="light"] .radio-toast,
+[data-theme="bleuciel"] .radio-toast {
+    background: rgba(30, 41, 59, 0.95);
+    color: #fff;
+}
+
+/* ============================================
+   FIX iOS SAFE AREAS
+   ============================================ */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    #radioWidget {
+        bottom: calc(16px + env(safe-area-inset-bottom)) !important;
+    }
+    
+    body.radio-playing .footer {
+        margin-bottom: calc(110px + env(safe-area-inset-bottom)) !important;
+    }
+    
+    .radio-modal {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .sleep-timer-popup {
+        bottom: calc(200px + env(safe-area-inset-bottom));
+    }
+}
