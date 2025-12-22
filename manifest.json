@@ -1,28 +1,57 @@
 {
+    "id": "/",
     "name": "Actu & Média - Montceau-les-Mines",
     "short_name": "Actu & Média",
-    "description": "Actualités locales de Montceau-les-Mines",
+    "description": "Actualités locales de Montceau-les-Mines, météo, cinéma et radios. 100% gratuit !",
     "start_url": "/",
     "scope": "/",
     "display": "standalone",
     "background_color": "#0f0f1a",
     "theme_color": "#1a1a2e",
     "orientation": "portrait-primary",
+    "lang": "fr-FR",
+    "dir": "ltr",
+    "categories": ["news", "lifestyle"],
     "icons": [
         {
             "src": "images/icon-192.png",
             "sizes": "192x192",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
+        },
+        {
+            "src": "images/icon-192-maskable.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
         },
         {
             "src": "images/icon-512.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
+        },
+        {
+            "src": "images/icon-512-maskable.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
         }
     ],
-    "categories": ["news", "lifestyle"],
-    "lang": "fr-FR",
-    "dir": "ltr"
+    "screenshots": [
+        {
+            "src": "images/screenshot-mobile.png",
+            "sizes": "1080x1920",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Actu & Média sur mobile"
+        },
+        {
+            "src": "images/screenshot-desktop.png",
+            "sizes": "1920x1080",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Actu & Média sur desktop"
+        }
+    ]
 }
