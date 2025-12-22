@@ -70,20 +70,20 @@ class RadioPlayer {
                 description: '100% Hits 24/24',
                 category: 'generaliste'
             },
-			{
-                id: 'M-Radio',
-                name: 'M Radio',
-                url: 'https://mradio-lyon.ice.infomaniak.ch/mradio-lyon.mp3',
-                logo: 'images/radios-logos/M-Radio.png',
-                description: 'Numéro 1 sur la chanson française',
-                category: 'generaliste'
-            },
             {
                 id: 'NRJ',
                 name: 'NRJ',
                 url: 'https://streaming.nrjaudio.fm/oumvmk8fnozc?origine=fluxurlradio',
                 logo: 'images/radios-logos/nrj.png',
                 description: 'Hits & musique',
+                category: 'generaliste'
+            },
+			{
+                id: 'RFM',
+                name: 'RFM',
+                url: 'https://rfm.lmn.fm/rfm.mp3',
+                logo: 'images/radios-logos/RFM.png',
+                description: 'Le meilleur de la musique',
                 category: 'generaliste'
             },
 			{
@@ -94,28 +94,12 @@ class RadioPlayer {
                 description: 'Skyrock 1er sur le rap',
                 category: 'generaliste'
             },
-			{
-                id: 'RFM',
-                name: 'RFM',
-                url: 'https://rfm.lmn.fm/rfm.mp3',
-                logo: 'images/radios-logos/RFM.png',
-                description: 'Le meilleur de la musique',
-                category: 'generaliste'
-            },			
             {
                 id: 'Fun-Radio',
                 name: 'Fun Radio',
                 url: 'https://streamer-02.rtl.fr/fun-1-44-128',
                 logo: 'images/radios-logos/Fun-Radio.png',
                 description: 'Le son dancefloor',
-                category: 'generaliste'
-            },
-			{
-                id: 'Cherie-FM',
-                name: 'Chérie FM',
-                url: 'https://streaming.nrjaudio.fm/ouuku85n3nje?origine=fluxradios',
-                logo: 'images/radios-logos/cherie-fm.png',
-                description: 'Love songs',
                 category: 'generaliste'
             },
             {
@@ -165,7 +149,15 @@ class RadioPlayer {
 
             // =====================================================
             // THÉMATIQUES
-            // =====================================================			
+            // =====================================================
+			{
+                id: 'M-Radio',
+                name: 'M Radio',
+                url: 'https://mradio-lyon.ice.infomaniak.ch/mradio-lyon.mp3',
+                logo: 'images/radios-logos/M-Radio.png',
+                description: 'Numéro 1 sur la chanson française',
+                category: 'thematique'
+            },
             {
                 id: 'Nostalgie',
                 name: 'Nostalgie',
@@ -173,7 +165,15 @@ class RadioPlayer {
                 logo: 'images/radios-logos/nostalgie.png',
                 description: 'Oldies & classics',
                 category: 'thematique'
-            },           
+            },
+            {
+                id: 'Cherie-FM',
+                name: 'Chérie FM',
+                url: 'https://streaming.nrjaudio.fm/ouuku85n3nje?origine=fluxradios',
+                logo: 'images/radios-logos/cherie-fm.png',
+                description: 'Love songs',
+                category: 'thematique'
+            },
             {
                 id: 'Voltage-80s',
                 name: 'Voltage 80s',
@@ -409,7 +409,7 @@ class RadioPlayer {
                         </div>
                     </div>
                     <button class="radio-widget-toggle" id="radioWidgetToggle" title="Déplier/Replier">
-                        <span class="material-icons">expand_less</span>
+                        <span class="material-icons">expand_more</span>
                     </button>
                 </div>
                 
@@ -858,7 +858,8 @@ class RadioPlayer {
         this.elements.widget.classList.toggle('collapsed', !this.isExpanded);
         
         const icon = this.elements.widgetToggle.querySelector('.material-icons');
-        icon.textContent = this.isExpanded ? 'expand_less' : 'expand_more';
+        // Flèche vers le bas (v) quand déplié, vers le haut (^) quand minimisé
+        icon.textContent = this.isExpanded ? 'expand_more' : 'expand_less';
     }
 
     updateUI() {
