@@ -508,10 +508,6 @@
     transition: transform 0.3s ease;
 }
 
-#radioWidget.collapsed .radio-widget-toggle .material-icons {
-    transform: rotate(180deg);
-}
-
 /* Corps du widget (dépliable) */
 .radio-widget-expanded {
     padding: 0 1rem 1rem;
