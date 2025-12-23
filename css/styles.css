@@ -1477,6 +1477,8 @@ body {
     display: flex;
     align-items: center;
     gap: 0.2rem;
+    color: var(--primary-light);
+    font-weight: 600;
 }
 
 .community-item-meta .material-icons {
