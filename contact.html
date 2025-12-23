@@ -39,23 +39,59 @@
             left: 1rem;
             display: flex;
             align-items: center;
-            justify-content: center;
-            width: 44px;
-            height: 44px;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            border-radius: 50%;
+            border-radius: 50px;
             color: var(--text-primary);
             text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
             z-index: 100;
             transition: all 0.3s ease;
         }
         
         .contact-back:hover {
             background: rgba(255, 255, 255, 0.15);
-            transform: scale(1.05);
+            transform: scale(1.02);
+        }
+        
+        .contact-back .material-icons {
+            font-size: 1.1rem;
+        }
+        
+        /* Bouton retour en bas */
+        .back-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            max-width: 500px;
+            margin: 2rem auto 0;
+            padding: 1rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .back-bottom:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .back-bottom .material-icons {
+            font-size: 1.2rem;
         }
         
         .contact-logo {
@@ -257,19 +293,19 @@
         }
         
         .contact-social {
-			display: flex;
-			width: 60px;
-			height: 60px;
-			background: var(--glass-bg) !important;
-			border: 1px solid var(--glass-border);
-			border-radius: 50%;
-			color: var(--text-primary);
-			text-decoration: none;
-			font-size: 0.7rem;
-			transition: all 0.3s ease;
-			align-items: center;
-			justify-content: center;
-		}
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
         
         .contact-social:hover {
             background: var(--primary);
@@ -357,8 +393,10 @@
     <div class="background-gradient"></div>
     
     <!-- Bouton retour -->
-    <a href="index.html" class="contact-back" title="Retour à l'accueil">
+    <!-- Bouton retour en haut -->
+    <a href="index.html" class="contact-back">
         <span class="material-icons">arrow_back</span>
+        Retour à l'accueil
     </a>
     
     <div class="contact-page">
@@ -444,14 +482,20 @@
         <div class="contact-info">
             <div class="contact-info-title">Suivez-nous aussi sur</div>
             <div class="contact-socials">
-                <a href="https://www.facebook.com/actuetmedia.fr/" target="_blank" class="contact-social" title="Facebook">
-                    Facebook
+                <a href="https://www.facebook.com/actuetmedia" target="_blank" class="contact-social" title="Facebook">
+                    📘
                 </a>
                 <a href="https://fr.tipeee.com/actuetmedia" target="_blank" class="contact-social" title="Tipeee">
-                    Tipeee
+                    ❤️
                 </a>
             </div>
         </div>
+        
+        <!-- Bouton retour en bas -->
+        <a href="index.html" class="back-bottom">
+            <span class="material-icons">home</span>
+            Retour à l'accueil
+        </a>
     </div>
     
     <!-- Toast notification -->
