@@ -1505,7 +1505,7 @@ body {
     align-items: center;
     gap: 0.35rem;
     padding: 0.5rem 1rem;
-    background: rgba(99, 102, 241, 0.15);
+    background: rgb(130 138 235);
     border-radius: 8px;
     color: var(--text-primary);
     text-decoration: none;
