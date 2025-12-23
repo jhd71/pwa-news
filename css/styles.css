@@ -1599,6 +1599,7 @@ body {
 @media (min-width: 1025px) {
     .community-item-image {
         max-height: 300px;
+		width: 70%;
     }
     
     .image-modal-content {
