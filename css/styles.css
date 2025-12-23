@@ -1507,7 +1507,7 @@ body {
     padding: 0.5rem 1rem;
     background: rgba(99, 102, 241, 0.15);
     border-radius: 8px;
-    color: var(--primary-light);
+    color: var(--text-primary);
     text-decoration: none;
     font-size: 0.85rem;
     font-weight: 500;
