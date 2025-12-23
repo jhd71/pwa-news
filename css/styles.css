@@ -1452,7 +1452,6 @@ body {
 
 .community-item-desc {
     font-size: 0.85rem;
-    color: var(--text-secondary);
     line-height: 1.5;
     margin-bottom: 0.5rem;
     display: -webkit-box;
@@ -1483,10 +1482,6 @@ body {
 
 .community-item-meta .material-icons {
     font-size: 0.9rem;
-}
-
-.community-item-location {
-    color: var(--primary-light);
 }
 
 /* Image dans les items communauté */
