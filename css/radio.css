@@ -824,6 +824,7 @@ body.radio-playing .footer {
     .radio-modal {
         max-height: 90vh;
         border-radius: 20px 20px 0 0;
+		background: rgb(48 56 83);
     }
     
     .radio-modal-header {
@@ -897,6 +898,7 @@ body.radio-playing .footer {
         max-height: 80vh;
         border-radius: 24px;
         animation: modalFadeIn 0.3s ease;
+		background: rgb(48 56 83);
     }
     
     @keyframes modalFadeIn {
