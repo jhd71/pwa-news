@@ -1476,9 +1476,7 @@ body {
 .community-item-meta span {
     display: flex;
     gap: 0.2rem;
-    font-weight: 900;
     align-items: center;
-    color: var(--primary-light);
 }
 
 .community-item-meta .material-icons {
