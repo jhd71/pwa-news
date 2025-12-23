@@ -503,9 +503,64 @@
         .article-image {
     width: 100%;
     height: auto;
+    max-height: 150px;
     object-fit: cover;
     display: block;
     border-radius: 12px 12px 0 0;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.article-image:hover {
+    opacity: 0.8;
+}
+
+/* Modal pour agrandir les images */
+.image-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.9);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.image-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.image-modal img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+.image-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.image-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
         .article-content { padding: 1rem; }
         .article-title { font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem; }
@@ -653,6 +708,14 @@
     </div>
     
     <div class="toast" id="toast"><span class="toast-icon">✅</span><span class="toast-text">Message</span></div>
+    
+    <!-- Modal pour agrandir les images -->
+    <div class="image-modal" id="imageModal" onclick="closeImageModal()">
+        <button class="image-modal-close" onclick="closeImageModal()">
+            <span class="material-icons">close</span>
+        </button>
+        <img id="modalImage" src="" alt="Image agrandie" onclick="event.stopPropagation()">
+    </div>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -863,7 +926,7 @@
                         <div class="message-from">De: ${escapeHtml(prop.author || 'Anonyme')}</div>
                         <div class="message-email">${escapeHtml(prop.contact_email)}</div>
                         <div class="message-text">${escapeHtml(prop.content)}</div>
-                        ${prop.image_url ? `<img src="${prop.image_url}" style="width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin:0.5rem 0;">` : ''}
+                        ${prop.image_url ? `<img src="${prop.image_url}" style="width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin:0.5rem 0;cursor:pointer;" onclick="openImageModal('${prop.image_url}')" title="Cliquez pour agrandir">` : ''}
                         ${prop.link_url ? `<a href="${prop.link_url}" target="_blank" class="proposition-file"><span class="material-icons" style="font-size:1rem;">link</span> Lien</a>` : ''}
                         <div class="message-actions" style="margin-top:1rem;">
                             <button class="action-btn mark-read" onclick="updateStatus(${prop.id},'approved')"><span class="material-icons">check</span>Approuver</button>
@@ -898,7 +961,7 @@
                 
                 container.innerHTML = data.map(a => `
                     <div class="article-card published">
-                        ${a.image_url ? `<img src="${a.image_url}" class="article-image">` : ''}
+                        ${a.image_url ? `<img src="${a.image_url}" class="article-image" onclick="openImageModal('${a.image_url}')" title="Cliquez pour agrandir">` : ''}
                         <div class="article-content">
                             <div style="margin-bottom:0.5rem;"><span class="proposition-type ${a.type}">${getTypeLabel(a.type)}</span></div>
                             <div class="article-title">${escapeHtml(a.title)}</div>
@@ -921,6 +984,23 @@
         function getTypeLabel(t) { return { actualite:'📰 Actualité', evenement:'🎪 Événement', pratique:'💡 Info pratique', insolite:'🤔 Insolite', photo:'📸 Photo/Vidéo', autre:'📋 Autre' }[t] || t; }
         function formatDate(d) { const date = new Date(d), diff = Date.now() - date; if (diff < 3600000) return `Il y a ${Math.floor(diff/60000)} min`; if (diff < 86400000) return `Il y a ${Math.floor(diff/3600000)}h`; return date.toLocaleDateString('fr-FR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }); }
         function escapeHtml(t) { if (!t) return ''; const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+        
+        // === IMAGE MODAL ===
+        function openImageModal(imageUrl) {
+            document.getElementById('modalImage').src = imageUrl;
+            document.getElementById('imageModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+        
+        // Fermer avec Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeImageModal();
+        });
         
         checkSession();
     </script>
