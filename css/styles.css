@@ -697,7 +697,6 @@ body {
 
 .install-prompt.show {
     transform: translateY(0);
-	z-index: 10000;
 }
 
 .install-prompt-content {
@@ -1489,6 +1488,115 @@ body {
     color: var(--primary-light);
 }
 
+/* Image dans les items communauté */
+.community-item-image {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin: 0.75rem 0;
+    cursor: pointer;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.community-item-image:hover {
+    transform: scale(1.02);
+    opacity: 0.9;
+}
+
+/* Lien dans les items communauté */
+.community-item-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 1rem;
+    background: rgba(99, 102, 241, 0.15);
+    border-radius: 8px;
+    color: var(--primary-light);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin: 0.5rem 0;
+    transition: all 0.3s ease;
+}
+
+.community-item-link:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.community-item-link .material-icons {
+    font-size: 1rem;
+}
+
+/* Modal pour agrandir les images */
+.image-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.image-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.image-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.image-modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    z-index: 1;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.image-modal.show .image-modal-content {
+    transform: scale(1);
+}
+
+.image-modal-content img {
+    max-width: 90vw;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+.image-modal-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.image-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
 /* État vide */
 .community-empty {
     text-align: center;
@@ -1520,6 +1628,10 @@ body {
 
 [data-theme="light"] .community-item:hover {
     background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .community-item-link {
+    background: rgba(99, 102, 241, 0.1);
 }
 
 /* ============================================

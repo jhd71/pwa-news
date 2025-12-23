@@ -59,22 +59,9 @@
             text-align: center;
         }
         
-        .login-logo {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        
-        .login-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        
-        .login-subtitle {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 2rem;
-        }
+        .login-logo { font-size: 3rem; margin-bottom: 1rem; }
+        .login-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .login-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
         
         .login-input {
             width: 100%;
@@ -89,10 +76,7 @@
             letter-spacing: 2px;
         }
         
-        .login-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
+        .login-input:focus { outline: none; border-color: var(--primary); }
         
         .login-btn {
             width: 100%;
@@ -107,29 +91,13 @@
             transition: all 0.3s ease;
         }
         
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
-        }
-        
-        .login-error {
-            color: var(--danger);
-            font-size: 0.85rem;
-            margin-top: 1rem;
-            display: none;
-        }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4); }
+        .login-error { color: var(--danger); font-size: 0.85rem; margin-top: 1rem; display: none; }
         
         /* === DASHBOARD === */
-        .dashboard {
-            display: none;
-            min-height: 100vh;
-        }
+        .dashboard { display: none; min-height: 100vh; }
+        .dashboard.show { display: block; }
         
-        .dashboard.show {
-            display: block;
-        }
-        
-        /* Header */
         .admin-header {
             background: var(--bg-card);
             border-bottom: 1px solid var(--glass-border);
@@ -142,23 +110,9 @@
             z-index: 100;
         }
         
-        .admin-title {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.25rem;
-            font-weight: 700;
-        }
-        
-        .admin-title span {
-            font-size: 1.5rem;
-        }
-        
-        .admin-header-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
+        .admin-title { display: flex; align-items: center; gap: 0.75rem; font-size: 1.25rem; font-weight: 700; }
+        .admin-title span { font-size: 1.5rem; }
+        .admin-header-actions { display: flex; align-items: center; gap: 0.75rem; }
         
         .home-btn {
             display: flex;
@@ -174,10 +128,7 @@
             transition: all 0.3s ease;
         }
         
-        .home-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
+        .home-btn:hover { background: var(--primary); color: white; }
         
         .logout-btn {
             display: flex;
@@ -193,70 +144,53 @@
             transition: all 0.3s ease;
         }
         
-        .logout-btn:hover {
-            background: var(--danger);
-            color: white;
-        }
+        .logout-btn:hover { background: var(--danger); color: white; }
         
         /* Stats */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            padding: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.75rem;
+            padding: 1rem;
         }
         
         .stat-card {
             background: var(--bg-card);
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 1.25rem;
+            border-radius: 12px;
+            padding: 1rem;
             text-align: center;
         }
         
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary-light);
-        }
-        
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
-        }
-        
-        .stat-card.unread .stat-value {
-            color: var(--warning);
-        }
+        .stat-value { font-size: 1.75rem; font-weight: 700; color: var(--primary-light); }
+        .stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .stat-card.unread .stat-value { color: var(--warning); }
+        .stat-card.success .stat-value { color: var(--success); }
         
         /* Tabs */
         .tabs {
             display: flex;
-            gap: 0.5rem;
-            padding: 0 1.5rem;
+            gap: 0.25rem;
+            padding: 0 1rem;
             border-bottom: 1px solid var(--glass-border);
+            overflow-x: auto;
         }
         
         .tab {
-            padding: 1rem 1.5rem;
+            padding: 0.875rem 1rem;
             background: none;
             border: none;
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             position: relative;
             transition: all 0.3s ease;
+            white-space: nowrap;
         }
         
-        .tab:hover {
-            color: var(--text-primary);
-        }
-        
-        .tab.active {
-            color: var(--primary-light);
-        }
+        .tab:hover { color: var(--text-primary); }
+        .tab.active { color: var(--primary-light); }
         
         .tab.active::after {
             content: '';
@@ -273,31 +207,21 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 20px;
-            height: 20px;
-            padding: 0 6px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
             background: var(--danger);
-            border-radius: 10px;
-            font-size: 0.7rem;
-            margin-left: 0.5rem;
+            border-radius: 9px;
+            font-size: 0.65rem;
+            margin-left: 0.35rem;
         }
         
         /* Content */
-        .tab-content {
-            padding: 1.5rem;
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
+        .tab-content { padding: 1rem; display: none; }
+        .tab-content.active { display: block; }
         
         /* Messages list */
-        .messages-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
+        .messages-list { display: flex; flex-direction: column; gap: 1rem; }
         
         .message-card {
             background: var(--bg-card);
@@ -307,9 +231,7 @@
             transition: all 0.3s ease;
         }
         
-        .message-card.unread {
-            border-left: 4px solid var(--warning);
-        }
+        .message-card.unread { border-left: 4px solid var(--warning); }
         
         .message-header {
             display: flex;
@@ -329,21 +251,9 @@
             color: var(--primary-light);
         }
         
-        .message-date {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-        
-        .message-from {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-        
-        .message-email {
-            font-size: 0.85rem;
-            color: var(--primary-light);
-            margin-bottom: 0.75rem;
-        }
+        .message-date { font-size: 0.75rem; color: var(--text-muted); }
+        .message-from { font-weight: 600; margin-bottom: 0.25rem; }
+        .message-email { font-size: 0.85rem; color: var(--primary-light); margin-bottom: 0.75rem; }
         
         .message-text {
             color: var(--text-secondary);
@@ -358,11 +268,7 @@
             overflow-y: auto;
         }
         
-        .message-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
+        .message-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         
         .action-btn {
             display: flex;
@@ -374,41 +280,16 @@
             font-size: 0.8rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            text-decoration: none;
         }
         
-        .action-btn .material-icons {
-            font-size: 1rem;
-        }
-        
-        .action-btn.mark-read {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--success);
-        }
-        
-        .action-btn.mark-read:hover {
-            background: var(--success);
-            color: white;
-        }
-        
-        .action-btn.reply {
-            background: rgba(99, 102, 241, 0.2);
-            color: var(--primary-light);
-        }
-        
-        .action-btn.reply:hover {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .action-btn.delete {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--danger);
-        }
-        
-        .action-btn.delete:hover {
-            background: var(--danger);
-            color: white;
-        }
+        .action-btn .material-icons { font-size: 1rem; }
+        .action-btn.mark-read { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .action-btn.mark-read:hover { background: var(--success); color: white; }
+        .action-btn.reply { background: rgba(99, 102, 241, 0.2); color: var(--primary-light); }
+        .action-btn.reply:hover { background: var(--primary); color: white; }
+        .action-btn.delete { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .action-btn.delete:hover { background: var(--danger); color: white; }
         
         /* Propositions */
         .proposition-type {
@@ -426,20 +307,8 @@
         .proposition-type.photo { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
         .proposition-type.autre { background: rgba(107, 114, 128, 0.2); color: #6b7280; }
         
-        .proposition-title {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .proposition-location {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-        }
+        .proposition-title { font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .proposition-location { display: flex; align-items: center; gap: 0.25rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; }
         
         .proposition-file {
             display: inline-flex;
@@ -454,30 +323,12 @@
             margin-top: 0.5rem;
         }
         
-        .proposition-file:hover {
-            background: var(--primary);
-            color: white;
-        }
+        .proposition-file:hover { background: var(--primary); color: white; }
         
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: var(--text-muted);
-        }
-        
-        .empty-state-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-        
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-muted);
-        }
+        /* Empty & Loading */
+        .empty-state { text-align: center; padding: 3rem; color: var(--text-muted); }
+        .empty-state-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
+        .loading { text-align: center; padding: 2rem; color: var(--text-muted); }
         
         .spinner {
             display: inline-block;
@@ -489,11 +340,8 @@
             animation: spin 0.8s linear infinite;
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* Refresh */
         .refresh-btn {
             display: flex;
             align-items: center;
@@ -509,36 +357,178 @@
             transition: all 0.3s ease;
         }
         
-        .refresh-btn:hover {
-            background: var(--primary);
+        .refresh-btn:hover { background: var(--primary); color: white; }
+        
+        /* === FORMULAIRE PUBLICATION === */
+        .publish-form { max-width: 600px; margin: 0 auto; }
+        .form-group { margin-bottom: 1.25rem; }
+        
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-label .required { color: var(--danger); }
+        
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .form-input::placeholder, .form-textarea::placeholder { color: var(--text-muted); }
+        .form-textarea { min-height: 120px; resize: vertical; }
+        
+        .form-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23888' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 24px;
+            padding-right: 3rem;
+        }
+        
+        .form-select option { background: var(--bg-dark); color: var(--text-primary); }
+        .form-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem; }
+        
+        /* Image Upload */
+        .image-upload-zone {
+            border: 2px dashed var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .image-upload-zone:hover { border-color: var(--primary); background: rgba(99, 102, 241, 0.05); }
+        .image-upload-zone.dragover { border-color: var(--primary); background: rgba(99, 102, 241, 0.1); }
+        .image-upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+        .upload-icon { font-size: 3rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .upload-text { color: var(--text-secondary); font-size: 0.9rem; }
+        .upload-hint { color: var(--text-muted); font-size: 0.75rem; margin-top: 0.5rem; }
+        
+        .image-preview { display: none; position: relative; margin-top: 1rem; }
+        .image-preview.show { display: block; }
+        .image-preview img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 12px; }
+        
+        .image-preview-remove {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 36px;
+            height: 36px;
+            background: var(--danger);
+            border: none;
+            border-radius: 50%;
             color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .toast.success { border-color: var(--success); }
+        .toast.error { border-color: var(--danger); }
+        
+        /* Article Card */
+        .article-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        
+        .article-card.published { border-left: 4px solid var(--success); }
+        .article-image { width: 100%; height: 150px; object-fit: cover; }
+        .article-content { padding: 1rem; }
+        .article-title { font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem; }
+        
+        .article-excerpt {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
         }
         
         /* Responsive */
         @media (max-width: 600px) {
-            .admin-header {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-            
-            .tabs {
-                overflow-x: auto;
-                padding-bottom: 0.5rem;
-            }
-            
-            .tab {
-                padding: 0.75rem 1rem;
-                white-space: nowrap;
-            }
-            
-            .message-header {
-                flex-direction: column;
-            }
-            
-            .message-actions {
-                justify-content: flex-start;
-            }
+            .admin-header { flex-direction: column; gap: 1rem; text-align: center; }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+            .stat-card { padding: 0.75rem; }
+            .stat-value { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -549,432 +539,383 @@
             <div class="login-logo">🔐</div>
             <h1 class="login-title">Administration</h1>
             <p class="login-subtitle">Actu & Média - Espace réservé</p>
-            
             <form id="loginForm">
-                <input 
-                    type="password" 
-                    class="login-input" 
-                    id="passwordInput" 
-                    placeholder="••••••••"
-                    autocomplete="current-password"
-                    required
-                >
+                <input type="password" class="login-input" id="passwordInput" placeholder="••••••••" autocomplete="current-password" required>
                 <button type="submit" class="login-btn">
                     <span class="material-icons" style="vertical-align: middle; margin-right: 0.5rem;">login</span>
                     Connexion
                 </button>
             </form>
-            
             <p class="login-error" id="loginError">Mot de passe incorrect</p>
         </div>
     </div>
     
     <!-- DASHBOARD -->
     <div class="dashboard" id="dashboard">
-        <!-- Header -->
         <header class="admin-header">
-            <div class="admin-title">
-                <span>📊</span>
-                Administration
-            </div>
+            <div class="admin-title"><span>📊</span> Administration</div>
             <div class="admin-header-actions">
-                <a href="index.html" class="home-btn" title="Retour à l'accueil">
-                    <span class="material-icons">home</span>
-                </a>
-                <button class="logout-btn" onclick="logout()">
-                    <span class="material-icons">logout</span>
-                    Déconnexion
-                </button>
+                <a href="index.html" class="home-btn" title="Accueil"><span class="material-icons">home</span></a>
+                <button class="logout-btn" onclick="logout()"><span class="material-icons">logout</span> Déco</button>
             </div>
         </header>
         
-        <!-- Stats -->
         <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-value" id="statTotalMessages">-</div>
-                <div class="stat-label">Messages total</div>
-            </div>
-            <div class="stat-card unread">
-                <div class="stat-value" id="statUnreadMessages">-</div>
-                <div class="stat-label">Non lus</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="statTotalPropositions">-</div>
-                <div class="stat-label">Propositions</div>
-            </div>
-            <div class="stat-card unread">
-                <div class="stat-value" id="statPendingPropositions">-</div>
-                <div class="stat-label">En attente</div>
-            </div>
+            <div class="stat-card"><div class="stat-value" id="statTotalMessages">-</div><div class="stat-label">Messages</div></div>
+            <div class="stat-card unread"><div class="stat-value" id="statUnreadMessages">-</div><div class="stat-label">Non lus</div></div>
+            <div class="stat-card unread"><div class="stat-value" id="statPendingPropositions">-</div><div class="stat-label">En attente</div></div>
+            <div class="stat-card success"><div class="stat-value" id="statPublished">-</div><div class="stat-label">Publiées</div></div>
         </div>
         
-        <!-- Tabs -->
         <div class="tabs">
-            <button class="tab active" data-tab="messages">
-                📬 Messages
-                <span class="tab-badge" id="badgeMessages" style="display: none;">0</span>
-            </button>
-            <button class="tab" data-tab="propositions">
-                📰 Propositions
-                <span class="tab-badge" id="badgePropositions" style="display: none;">0</span>
-            </button>
+            <button class="tab active" data-tab="publish">✏️ Publier</button>
+            <button class="tab" data-tab="messages">📬 Messages <span class="tab-badge" id="badgeMessages" style="display:none;">0</span></button>
+            <button class="tab" data-tab="propositions">📰 Propositions <span class="tab-badge" id="badgePropositions" style="display:none;">0</span></button>
+            <button class="tab" data-tab="published">✅ Publiées</button>
         </div>
         
-        <!-- Content: Messages -->
-        <div class="tab-content active" id="tabMessages">
-            <button class="refresh-btn" onclick="loadMessages()">
-                <span class="material-icons">refresh</span>
-                Actualiser
-            </button>
-            <div class="messages-list" id="messagesList">
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Chargement...</p>
-                </div>
+        <!-- PUBLIER -->
+        <div class="tab-content active" id="tabPublish">
+            <div class="publish-form">
+                <h2 style="margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;">
+                    <span class="material-icons" style="color:var(--success);">edit_note</span> Publier une actualité
+                </h2>
+                <form id="publishForm">
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">category</span> Type <span class="required">*</span></label>
+                        <select class="form-select" id="pubType" required>
+                            <option value="actualite">📰 Actualité</option>
+                            <option value="evenement">🎪 Événement</option>
+                            <option value="pratique">💡 Info pratique</option>
+                            <option value="insolite">🤔 Insolite</option>
+                            <option value="photo">📸 Photo/Vidéo</option>
+                            <option value="autre">📋 Autre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">title</span> Titre <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="pubTitle" placeholder="Titre de l'actualité" required maxlength="150">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">description</span> Description <span class="required">*</span></label>
+                        <textarea class="form-textarea" id="pubContent" placeholder="Décrivez l'actualité..." required maxlength="2000"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">location_on</span> Lieu</label>
+                        <input type="text" class="form-input" id="pubLocation" placeholder="Ex: Montceau-les-Mines">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">link</span> Lien externe</label>
+                        <input type="url" class="form-input" id="pubLink" placeholder="https://...">
+                        <div class="form-hint">Lien vers un article, une page Facebook, etc.</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">image</span> Image</label>
+                        <div class="image-upload-zone" id="imageUploadZone">
+                            <input type="file" id="pubImage" accept="image/*">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">Cliquez ou glissez une image</div>
+                            <div class="upload-hint">JPG, PNG, WEBP (max 5 Mo)</div>
+                        </div>
+                        <div class="image-preview" id="imagePreview">
+                            <img id="previewImg" src="" alt="Aperçu">
+                            <button type="button" class="image-preview-remove" onclick="removeImage()"><span class="material-icons">close</span></button>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn" id="publishBtn"><span class="material-icons">publish</span> Publier maintenant</button>
+                </form>
             </div>
         </div>
         
-        <!-- Content: Propositions -->
+        <!-- MESSAGES -->
+        <div class="tab-content" id="tabMessages">
+            <button class="refresh-btn" onclick="loadMessages()"><span class="material-icons">refresh</span> Actualiser</button>
+            <div class="messages-list" id="messagesList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
+        </div>
+        
+        <!-- PROPOSITIONS -->
         <div class="tab-content" id="tabPropositions">
-            <button class="refresh-btn" onclick="loadPropositions()">
-                <span class="material-icons">refresh</span>
-                Actualiser
-            </button>
-            <div class="messages-list" id="propositionsList">
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Chargement...</p>
-                </div>
-            </div>
+            <button class="refresh-btn" onclick="loadPropositions()"><span class="material-icons">refresh</span> Actualiser</button>
+            <div class="messages-list" id="propositionsList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
+        </div>
+        
+        <!-- PUBLIÉES -->
+        <div class="tab-content" id="tabPublished">
+            <button class="refresh-btn" onclick="loadPublishedArticles()"><span class="material-icons">refresh</span> Actualiser</button>
+            <div class="messages-list" id="publishedList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
         </div>
     </div>
     
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <div class="toast" id="toast"><span class="toast-icon">✅</span><span class="toast-text">Message</span></div>
     
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // === CONFIG ===
-        const ADMIN_PASSWORD = 'fc35$wL72iZA^'; // Mot de passe admin
-        const SESSION_KEY = 'admin_session';
-        
-        // Supabase
         const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const ADMIN_PASSWORD = 'montceau71';
+        const ADMIN_SESSION_KEY = 'admin_session';
+        const SESSION_DURATION = 24 * 60 * 60 * 1000;
         
-        // === LOGIN ===
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const password = document.getElementById('passwordInput').value;
-            
-            if (password === ADMIN_PASSWORD) {
-                // Créer session (expire dans 24h)
-                const session = {
-                    logged: true,
-                    expires: Date.now() + (24 * 60 * 60 * 1000)
-                };
-                localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-                showDashboard();
-            } else {
-                document.getElementById('loginError').style.display = 'block';
-                document.getElementById('passwordInput').value = '';
-            }
-        });
+        let supabaseClient;
+        let selectedImageFile = null;
         
+        // === AUTH ===
         function checkSession() {
-            const session = JSON.parse(localStorage.getItem(SESSION_KEY));
+            const session = JSON.parse(localStorage.getItem(ADMIN_SESSION_KEY));
             if (session && session.logged && session.expires > Date.now()) {
                 showDashboard();
+            } else {
+                localStorage.removeItem(ADMIN_SESSION_KEY);
             }
         }
+        
+        function login(password) {
+            if (password === ADMIN_PASSWORD) {
+                localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({ logged: true, expires: Date.now() + SESSION_DURATION }));
+                showDashboard();
+                return true;
+            }
+            return false;
+        }
+        
+        function logout() { localStorage.removeItem(ADMIN_SESSION_KEY); location.reload(); }
         
         function showDashboard() {
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('dashboard').classList.add('show');
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             loadMessages();
             loadPropositions();
-        }
-        
-        function logout() {
-            localStorage.removeItem(SESSION_KEY);
-            location.reload();
+            loadPublishedArticles();
         }
         
         // === TABS ===
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
-                // Update tabs
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                
-                // Update content
-                const tabName = tab.dataset.tab;
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                document.getElementById('tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).classList.add('active');
+                tab.classList.add('active');
+                document.getElementById('tab' + tab.dataset.tab.charAt(0).toUpperCase() + tab.dataset.tab.slice(1)).classList.add('active');
             });
+        });
+        
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!login(document.getElementById('passwordInput').value)) {
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+            }
+        });
+        
+        // === TOAST ===
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.querySelector('.toast-icon').textContent = isError ? '❌' : '✅';
+            toast.querySelector('.toast-text').textContent = message;
+            toast.classList.remove('success', 'error');
+            toast.classList.add(isError ? 'error' : 'success', 'show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+        
+        // === IMAGE ===
+        const imageInput = document.getElementById('pubImage');
+        const uploadZone = document.getElementById('imageUploadZone');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        
+        uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+        uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            if (e.dataTransfer.files[0]?.type.startsWith('image/')) handleImageSelect(e.dataTransfer.files[0]);
+        });
+        imageInput.addEventListener('change', (e) => { if (e.target.files[0]) handleImageSelect(e.target.files[0]); });
+        
+        function handleImageSelect(file) {
+            if (file.size > 5 * 1024 * 1024) { showToast('Image trop volumineuse (max 5 Mo)', true); return; }
+            selectedImageFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => { previewImg.src = e.target.result; imagePreview.classList.add('show'); uploadZone.style.display = 'none'; };
+            reader.readAsDataURL(file);
+        }
+        
+        function removeImage() {
+            selectedImageFile = null;
+            imageInput.value = '';
+            imagePreview.classList.remove('show');
+            uploadZone.style.display = 'block';
+        }
+        
+        async function uploadImage(file) {
+            const ext = file.name.split('.').pop();
+            const path = `community/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${ext}`;
+            const { error } = await supabaseClient.storage.from('images').upload(path, file, { cacheControl: '3600', upsert: false });
+            if (error) throw error;
+            return supabaseClient.storage.from('images').getPublicUrl(path).data.publicUrl;
+        }
+        
+        // === PUBLISH ===
+        document.getElementById('publishForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('publishBtn');
+            const original = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;"></div> Publication...';
+            
+            try {
+                let imageUrl = null;
+                if (selectedImageFile) imageUrl = await uploadImage(selectedImageFile);
+                
+                const { error } = await supabaseClient.from('news_submissions').insert([{
+                    type: document.getElementById('pubType').value,
+                    title: document.getElementById('pubTitle').value,
+                    content: document.getElementById('pubContent').value,
+                    location: document.getElementById('pubLocation').value || null,
+                    link_url: document.getElementById('pubLink').value || null,
+                    image_url: imageUrl,
+                    author: 'Actu & Média',
+                    contact_email: 'admin@actuetmedia.fr',
+                    status: 'approved',
+                    created_at: new Date().toISOString()
+                }]);
+                
+                if (error) throw error;
+                showToast('Actualité publiée ! 🎉');
+                document.getElementById('publishForm').reset();
+                removeImage();
+                loadPublishedArticles();
+            } catch (error) {
+                console.error(error);
+                showToast('Erreur lors de la publication', true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = original;
+            }
         });
         
         // === MESSAGES ===
         async function loadMessages() {
             const container = document.getElementById('messagesList');
             container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
-            
             try {
-                const { data, error } = await supabaseClient
-                    .from('contact_messages')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-                
+                const { data, error } = await supabaseClient.from('contact_messages').select('*').order('created_at', { ascending: false });
                 if (error) throw error;
                 
-                // Update stats
                 const unread = data.filter(m => !m.is_read).length;
                 document.getElementById('statTotalMessages').textContent = data.length;
                 document.getElementById('statUnreadMessages').textContent = unread;
+                document.getElementById('badgeMessages').textContent = unread;
+                document.getElementById('badgeMessages').style.display = unread > 0 ? 'inline-flex' : 'none';
                 
-                if (unread > 0) {
-                    document.getElementById('badgeMessages').textContent = unread;
-                    document.getElementById('badgeMessages').style.display = 'inline-flex';
-                } else {
-                    document.getElementById('badgeMessages').style.display = 'none';
-                }
-                
-                // Render
-                if (data.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📭</div>
-                            <p>Aucun message pour le moment</p>
-                        </div>
-                    `;
-                    return;
-                }
+                if (data.length === 0) { container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p>Aucun message</p></div>'; return; }
                 
                 container.innerHTML = data.map(msg => `
-                    <div class="message-card ${msg.is_read ? '' : 'unread'}" data-id="${msg.id}">
+                    <div class="message-card ${!msg.is_read ? 'unread' : ''}">
                         <div class="message-header">
-                            <span class="message-subject">${getSubjectLabel(msg.subject)}</span>
+                            <div><span class="message-subject">${getSubjectLabel(msg.subject)}</span>${!msg.is_read ? '<span style="color:var(--warning);font-size:0.75rem;margin-left:0.5rem;">● Non lu</span>' : ''}</div>
                             <span class="message-date">${formatDate(msg.created_at)}</span>
                         </div>
                         <div class="message-from">${escapeHtml(msg.name)}</div>
                         <div class="message-email">${escapeHtml(msg.email)}</div>
                         <div class="message-text">${escapeHtml(msg.message)}</div>
                         <div class="message-actions">
-                            ${!msg.is_read ? `
-                                <button class="action-btn mark-read" onclick="markAsRead(${msg.id})">
-                                    <span class="material-icons">done</span>
-                                    Marquer lu
-                                </button>
-                            ` : ''}
-                            <a href="mailto:${msg.email}?subject=Re: ${msg.subject}" class="action-btn reply">
-                                <span class="material-icons">reply</span>
-                                Répondre
-                            </a>
-                            <button class="action-btn delete" onclick="deleteMessage(${msg.id})">
-                                <span class="material-icons">delete</span>
-                                Supprimer
-                            </button>
+                            ${!msg.is_read ? `<button class="action-btn mark-read" onclick="markAsRead(${msg.id})"><span class="material-icons">done</span>Lu</button>` : ''}
+                            <a href="mailto:${msg.email}?subject=Re: ${msg.subject}" class="action-btn reply"><span class="material-icons">reply</span>Répondre</a>
+                            <button class="action-btn delete" onclick="deleteMessage(${msg.id})"><span class="material-icons">delete</span>Suppr</button>
                         </div>
                     </div>
                 `).join('');
-                
-            } catch (error) {
-                console.error('Erreur:', error);
-                container.innerHTML = `<div class="empty-state"><p>❌ Erreur de chargement</p></div>`;
-            }
+            } catch (error) { container.innerHTML = '<div class="empty-state"><p>❌ Erreur</p></div>'; }
         }
         
-        async function markAsRead(id) {
-            try {
-                await supabaseClient
-                    .from('contact_messages')
-                    .update({ is_read: true })
-                    .eq('id', id);
-                loadMessages();
-            } catch (error) {
-                console.error('Erreur:', error);
-            }
-        }
-        
-        async function deleteMessage(id) {
-            if (!confirm('Supprimer ce message ?')) return;
-            
-            try {
-                await supabaseClient
-                    .from('contact_messages')
-                    .delete()
-                    .eq('id', id);
-                loadMessages();
-            } catch (error) {
-                console.error('Erreur:', error);
-            }
-        }
+        async function markAsRead(id) { await supabaseClient.from('contact_messages').update({ is_read: true }).eq('id', id); loadMessages(); }
+        async function deleteMessage(id) { if (confirm('Supprimer ?')) { await supabaseClient.from('contact_messages').delete().eq('id', id); loadMessages(); } }
         
         // === PROPOSITIONS ===
         async function loadPropositions() {
             const container = document.getElementById('propositionsList');
             container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
-            
             try {
-                const { data, error } = await supabaseClient
-                    .from('news_submissions')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-                
+                const { data, error } = await supabaseClient.from('news_submissions').select('*').eq('status', 'pending').order('created_at', { ascending: false });
                 if (error) throw error;
                 
-                // Update stats
-                const pending = data.filter(p => p.status === 'pending').length;
-                document.getElementById('statTotalPropositions').textContent = data.length;
-                document.getElementById('statPendingPropositions').textContent = pending;
+                document.getElementById('statPendingPropositions').textContent = data.length;
+                document.getElementById('badgePropositions').textContent = data.length;
+                document.getElementById('badgePropositions').style.display = data.length > 0 ? 'inline-flex' : 'none';
                 
-                if (pending > 0) {
-                    document.getElementById('badgePropositions').textContent = pending;
-                    document.getElementById('badgePropositions').style.display = 'inline-flex';
-                } else {
-                    document.getElementById('badgePropositions').style.display = 'none';
-                }
-                
-                // Render
-                if (data.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📰</div>
-                            <p>Aucune proposition pour le moment</p>
-                        </div>
-                    `;
-                    return;
-                }
+                if (data.length === 0) { container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📰</div><p>Aucune proposition en attente</p></div>'; return; }
                 
                 container.innerHTML = data.map(prop => `
-                    <div class="message-card ${prop.status === 'pending' ? 'unread' : ''}" data-id="${prop.id}">
+                    <div class="message-card unread">
                         <div class="message-header">
-                            <div>
-                                <span class="proposition-type ${prop.type}">${getTypeLabel(prop.type)}</span>
-                                ${prop.status === 'pending' ? '<span class="message-subject">⏳ En attente</span>' : ''}
-                            </div>
+                            <div><span class="proposition-type ${prop.type}">${getTypeLabel(prop.type)}</span><span class="message-subject">⏳ En attente</span></div>
                             <span class="message-date">${formatDate(prop.created_at)}</span>
                         </div>
                         <div class="proposition-title">${escapeHtml(prop.title)}</div>
-                        ${prop.location ? `<div class="proposition-location"><span class="material-icons" style="font-size: 1rem;">location_on</span> ${escapeHtml(prop.location)}</div>` : ''}
+                        ${prop.location ? `<div class="proposition-location"><span class="material-icons" style="font-size:1rem;">location_on</span> ${escapeHtml(prop.location)}</div>` : ''}
                         <div class="message-from">De: ${escapeHtml(prop.author || 'Anonyme')}</div>
                         <div class="message-email">${escapeHtml(prop.contact_email)}</div>
                         <div class="message-text">${escapeHtml(prop.content)}</div>
-                        ${prop.file_url ? `<a href="${prop.file_url}" target="_blank" class="proposition-file"><span class="material-icons" style="font-size: 1rem;">attachment</span> Voir le fichier</a>` : ''}
-                        <div class="message-actions" style="margin-top: 1rem;">
-                            ${prop.status === 'pending' ? `
-                                <button class="action-btn mark-read" onclick="updatePropositionStatus(${prop.id}, 'approved')">
-                                    <span class="material-icons">check</span>
-                                    Approuver
-                                </button>
-                                <button class="action-btn" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;" onclick="updatePropositionStatus(${prop.id}, 'rejected')">
-                                    <span class="material-icons">close</span>
-                                    Refuser
-                                </button>
-                            ` : ''}
-                            <a href="mailto:${prop.contact_email}?subject=Re: ${prop.title}" class="action-btn reply">
-                                <span class="material-icons">reply</span>
-                                Répondre
-                            </a>
-                            <button class="action-btn delete" onclick="deleteProposition(${prop.id})">
-                                <span class="material-icons">delete</span>
-                                Supprimer
-                            </button>
+                        ${prop.image_url ? `<img src="${prop.image_url}" style="width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin:0.5rem 0;">` : ''}
+                        ${prop.link_url ? `<a href="${prop.link_url}" target="_blank" class="proposition-file"><span class="material-icons" style="font-size:1rem;">link</span> Lien</a>` : ''}
+                        <div class="message-actions" style="margin-top:1rem;">
+                            <button class="action-btn mark-read" onclick="updateStatus(${prop.id},'approved')"><span class="material-icons">check</span>Approuver</button>
+                            <button class="action-btn" style="background:rgba(245,158,11,0.2);color:#f59e0b;" onclick="updateStatus(${prop.id},'rejected')"><span class="material-icons">close</span>Refuser</button>
+                            <button class="action-btn delete" onclick="deleteProp(${prop.id})"><span class="material-icons">delete</span>Suppr</button>
                         </div>
                     </div>
                 `).join('');
+            } catch (error) { container.innerHTML = '<div class="empty-state"><p>❌ Erreur</p></div>'; }
+        }
+        
+        async function updateStatus(id, status) {
+            await supabaseClient.from('news_submissions').update({ status }).eq('id', id);
+            showToast(status === 'approved' ? 'Approuvé ✅' : 'Refusé');
+            loadPropositions();
+            loadPublishedArticles();
+        }
+        
+        async function deleteProp(id) { if (confirm('Supprimer ?')) { await supabaseClient.from('news_submissions').delete().eq('id', id); loadPropositions(); loadPublishedArticles(); } }
+        
+        // === PUBLIÉES ===
+        async function loadPublishedArticles() {
+            const container = document.getElementById('publishedList');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
+            try {
+                const { data, error } = await supabaseClient.from('news_submissions').select('*').eq('status', 'approved').order('created_at', { ascending: false });
+                if (error) throw error;
                 
-            } catch (error) {
-                console.error('Erreur:', error);
-                container.innerHTML = `<div class="empty-state"><p>❌ Erreur de chargement</p></div>`;
-            }
-        }
-        
-        async function updatePropositionStatus(id, status) {
-            try {
-                await supabaseClient
-                    .from('news_submissions')
-                    .update({ status: status })
-                    .eq('id', id);
-                loadPropositions();
-            } catch (error) {
-                console.error('Erreur:', error);
-            }
-        }
-        
-        async function deleteProposition(id) {
-            if (!confirm('Supprimer cette proposition ?')) return;
-            
-            try {
-                await supabaseClient
-                    .from('news_submissions')
-                    .delete()
-                    .eq('id', id);
-                loadPropositions();
-            } catch (error) {
-                console.error('Erreur:', error);
-            }
+                document.getElementById('statPublished').textContent = data.length;
+                
+                if (data.length === 0) { container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📰</div><p>Aucune actualité publiée</p></div>'; return; }
+                
+                container.innerHTML = data.map(a => `
+                    <div class="article-card published">
+                        ${a.image_url ? `<img src="${a.image_url}" class="article-image">` : ''}
+                        <div class="article-content">
+                            <div style="margin-bottom:0.5rem;"><span class="proposition-type ${a.type}">${getTypeLabel(a.type)}</span></div>
+                            <div class="article-title">${escapeHtml(a.title)}</div>
+                            <div class="article-excerpt">${escapeHtml(a.content)}</div>
+                            ${a.location ? `<div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem;"><span class="material-icons" style="font-size:1rem;vertical-align:middle;">location_on</span> ${escapeHtml(a.location)}</div>` : ''}
+                            ${a.link_url ? `<a href="${a.link_url}" target="_blank" class="proposition-file" style="margin-bottom:0.75rem;"><span class="material-icons" style="font-size:1rem;">link</span> Lien</a>` : ''}
+                            <div class="article-meta"><span>${formatDate(a.created_at)}</span><span>${escapeHtml(a.author || 'Actu & Média')}</span></div>
+                            <div class="message-actions" style="margin-top:1rem;">
+                                <button class="action-btn" style="background:rgba(245,158,11,0.2);color:#f59e0b;" onclick="updateStatus(${a.id},'pending')"><span class="material-icons">undo</span>Dépublier</button>
+                                <button class="action-btn delete" onclick="deleteProp(${a.id})"><span class="material-icons">delete</span>Suppr</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) { container.innerHTML = '<div class="empty-state"><p>❌ Erreur</p></div>'; }
         }
         
         // === HELPERS ===
-        function getSubjectLabel(subject) {
-            const labels = {
-                'question': '❓ Question',
-                'suggestion': '💡 Suggestion',
-                'bug': '🐛 Problème',
-                'partenariat': '🤝 Partenariat',
-                'presse': '📰 Presse',
-                'autre': '📋 Autre'
-            };
-            return labels[subject] || subject;
-        }
+        function getSubjectLabel(s) { return { question:'❓ Question', suggestion:'💡 Suggestion', bug:'🐛 Problème', partenariat:'🤝 Partenariat', presse:'📰 Presse', autre:'📋 Autre' }[s] || s; }
+        function getTypeLabel(t) { return { actualite:'📰 Actualité', evenement:'🎪 Événement', pratique:'💡 Info pratique', insolite:'🤔 Insolite', photo:'📸 Photo/Vidéo', autre:'📋 Autre' }[t] || t; }
+        function formatDate(d) { const date = new Date(d), diff = Date.now() - date; if (diff < 3600000) return `Il y a ${Math.floor(diff/60000)} min`; if (diff < 86400000) return `Il y a ${Math.floor(diff/3600000)}h`; return date.toLocaleDateString('fr-FR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }); }
+        function escapeHtml(t) { if (!t) return ''; const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
         
-        function getTypeLabel(type) {
-            const labels = {
-                'actualite': '📰 Actualité',
-                'evenement': '🎪 Événement',
-                'pratique': '💡 Info pratique',
-                'insolite': '🤔 Insolite',
-                'photo': '📸 Photo/Vidéo',
-                'autre': '📋 Autre'
-            };
-            return labels[type] || type;
-        }
-        
-        function formatDate(dateStr) {
-            const date = new Date(dateStr);
-            const now = new Date();
-            const diff = now - date;
-            
-            // Moins d'une heure
-            if (diff < 3600000) {
-                const mins = Math.floor(diff / 60000);
-                return `Il y a ${mins} min`;
-            }
-            
-            // Moins d'un jour
-            if (diff < 86400000) {
-                const hours = Math.floor(diff / 3600000);
-                return `Il y a ${hours}h`;
-            }
-            
-            // Plus d'un jour
-            return date.toLocaleDateString('fr-FR', {
-                day: 'numeric',
-                month: 'short',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-        
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        // === INIT ===
         checkSession();
     </script>
 </body>

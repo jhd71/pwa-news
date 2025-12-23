@@ -583,7 +583,9 @@ async function initCommunity() {
                 </div>
                 <div class="community-item-content">
                     <div class="community-item-title">${escapeHtml(item.title)}</div>
+                    ${item.image_url ? `<img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image" onclick="event.stopPropagation(); openImageModal('${item.image_url}')">` : ''}
                     <div class="community-item-desc">${escapeHtml(item.content)}</div>
+                    ${item.link_url ? `<a href="${item.link_url}" target="_blank" class="community-item-link" onclick="event.stopPropagation()"><span class="material-icons">link</span>Voir plus</a>` : ''}
                     <div class="community-item-meta">
                         ${item.location ? `<span class="community-item-location"><span class="material-icons">location_on</span>${escapeHtml(item.location)}</span>` : ''}
                         <span><span class="material-icons">person</span>${escapeHtml(item.author || 'Anonyme')}</span>
@@ -652,6 +654,39 @@ function escapeHtml(text) {
 // Fonction pour afficher/masquer le détail d'une info communauté
 function toggleCommunityDetail(element) {
     element.classList.toggle('expanded');
+}
+
+// Fonction pour ouvrir une image en grand
+function openImageModal(imageUrl) {
+    // Créer le modal s'il n'existe pas
+    let modal = document.getElementById('imageModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'imageModal';
+        modal.className = 'image-modal';
+        modal.innerHTML = `
+            <div class="image-modal-backdrop" onclick="closeImageModal()"></div>
+            <div class="image-modal-content">
+                <button class="image-modal-close" onclick="closeImageModal()">
+                    <span class="material-icons">close</span>
+                </button>
+                <img id="modalImage" src="" alt="Image">
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    document.getElementById('modalImage').src = imageUrl;
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
 }
 
 // ============================================
