@@ -500,7 +500,13 @@
         }
         
         .article-card.published { border-left: 4px solid var(--success); }
-        .article-image { width: 100%; height: 150px; object-fit: cover; }
+        .article-image {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: cover;
+    display: block;
+}
         .article-content { padding: 1rem; }
         .article-title { font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem; }
         
