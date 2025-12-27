@@ -715,8 +715,15 @@ body {
     color: rgba(255, 255, 255, 0.5);
 }
 
+.news-item-image.no-image::after {
+    content: "article";
+    font-family: "Material Icons";
+    font-size: 2.5rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
 .news-item-image.no-image .news-item-placeholder {
-    display: flex;
+    display: none;
 }
 
 /* Image par défaut quand aucune image n'est fournie */
