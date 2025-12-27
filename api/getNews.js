@@ -85,75 +85,54 @@ export default async function handler(req, res) {
                         const articles = feedData.items.slice(0, feed.max).map(item => {
                             let image = null;
 
-                            // --- STRATÉGIE 1 : Les champs RSS officiels ---
-                            if (item.enclosure && item.enclosure.url) {
-                                image = item.enclosure.url;
-                            } 
-                            else if (item['media:content']) {
-                                if (item['media:content'].url) image = item['media:content'].url;
-                                else if (item['media:content'].$ && item['media:content'].$.url) image = item['media:content'].$.url;
-                            }
-                            else if (item['media:thumbnail']) {
-                                if (item['media:thumbnail'].url) image = item['media:thumbnail'].url;
-                                else if (item['media:thumbnail'].$ && item['media:thumbnail'].$.url) image = item['media:thumbnail'].$.url;
+                            // 1. On rassemble TOUT le texte disponible dans une seule grosse variable
+                            // Cela permet de chercher l'image partout à la fois
+                            const allText = [
+                                item['content:encoded'],
+                                item.content,
+                                item.description,
+                                item.summary,
+                                item['media:description'] // Parfois utilisé
+                            ].filter(Boolean).join(' ');
+
+                            // --- STRATÉGIE 1 : Le "data-orig-file" (C'est ce qui manque pour L'Informateur) ---
+                            // Votre exemple montre : data-orig-file="...jpg"
+                            const origFileMatch = allText.match(/data-orig-file=["']([^"']+)["']/i);
+                            if (origFileMatch) {
+                                image = origFileMatch[1];
                             }
 
-                            // --- STRATÉGIE 2 : Scanner le HTML (Amélioré pour Lazy Load) ---
+                            // --- STRATÉGIE 2 : Les balises RSS standards (si pas trouvé en 1) ---
                             if (!image) {
-                                // On assemble tout le contenu textuel
-                                const fullContent = [
-                                    item['content:encoded'],
-                                    item.content,
-                                    item.description,
-                                    item.summary
-                                ].filter(Boolean).join(' ');
+                                if (item.enclosure && item.enclosure.url) image = item.enclosure.url;
+                                else if (item['media:content']?.url) image = item['media:content'].url;
+                                else if (item['media:content']?.$?.url) image = item['media:content'].$.url;
+                                else if (item['media:thumbnail']?.url) image = item['media:thumbnail'].url;
+                            }
 
-                                // A. Chercher d'abord une balise img standard ou lazy-load
-                                // On capture tout ce qui est dans <img ... >
-                                const imgTagMatch = fullContent.match(/<img[^>]+>/i);
-                                
+                            // --- STRATÉGIE 3 : Analyse brutale des balises <img> dans le texte ---
+                            if (!image) {
+                                // On cherche n'importe quel attribut src="..." ou data-src="..."
+                                // Le [\s\S] permet de chercher même s'il y a des retours à la ligne dans la balise
+                                const imgTagMatch = allText.match(/<img[\s\S]+?src=["']([^"']+)["']/i);
                                 if (imgTagMatch) {
-                                    const imgTag = imgTagMatch[0];
-                                    
-                                    // 1. Chercher 'src'
-                                    const srcMatch = imgTag.match(/src=["']([^"']+)["']/i);
-                                    // 2. Chercher 'data-src' (souvent utilisé par JSL/Wordpress pour le différé)
-                                    const dataSrcMatch = imgTag.match(/data-src=["']([^"']+)["']/i);
-                                    // 3. Chercher 'srcset' (images haute qualité)
-                                    const srcSetMatch = imgTag.match(/srcset=["']([^"'\s]+)/i);
-
-                                    // On prend le meilleur candidat (data-src est souvent meilleur que src s'il existe)
-                                    if (dataSrcMatch) image = dataSrcMatch[1];
-                                    else if (srcMatch) image = srcMatch[1];
-                                    else if (srcSetMatch) image = srcSetMatch[1];
-                                }
-
-                                // B. PLAN DE SECOURS : Chercher n'importe quel lien .jpg/.png/.jpeg dans le texte
-                                // Utile si l'image est juste un lien sans balise img
-                                if (!image) {
-                                    const directLinkMatch = fullContent.match(/http[^"'\s]+\.(jpg|jpeg|png|webp)/i);
-                                    if (directLinkMatch) {
-                                        image = directLinkMatch[0];
-                                    }
+                                    image = imgTagMatch[1];
                                 }
                             }
 
-                            // --- STRATÉGIE 3 : Nettoyage final ---
-                            // Parfois l'image commence par "//" (ex: //site.com/img.jpg), il faut ajouter https:
-                            if (image && image.startsWith('//')) {
-                                image = 'https:' + image;
-                            }
-                            
-                            // WordPress Jetpack fallback
-                            if (!image && item['content:encoded']) {
-                                const origMatch = item['content:encoded'].match(/data-orig-file=["']([^"']+)["']/i);
-                                if (origMatch) image = origMatch[1];
+                            // --- STRATÉGIE 4 : Dernier recours (Lien image direct dans le texte) ---
+                            if (!image) {
+                                // Cherche http://... .jpg ou .png qui traîne dans le texte
+                                const linkMatch = allText.match(/https?:\/\/[^"'\s]+\.(jpe?g|png|webp)/i);
+                                if (linkMatch) {
+                                    image = linkMatch[0];
+                                }
                             }
 
                             return {
                                 title: item.title,
                                 link: item.link,
-                                image: image, // Renvoie l'image trouvée ou null
+                                image: image, // L'image trouvée
                                 date: item.pubDate || item.isoDate,
                                 source: feed.name
                             };
