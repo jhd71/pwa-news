@@ -159,6 +159,174 @@
     border: 1px solid rgba(236, 72, 153, 0.15);
 }
 
+/* ============================================
+   THÈME ROSEPALE - STYLES COMPLETS
+   ============================================ */
+
+/* Header */
+[data-theme="rosepale"] .header h1 {
+    background: linear-gradient(135deg, #831843 0%, #db2777 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+[data-theme="rosepale"] .header-btn {
+    background: rgba(131, 24, 67, 0.08);
+    color: #831843;
+}
+
+[data-theme="rosepale"] .header-btn:hover {
+    background: rgba(131, 24, 67, 0.15);
+}
+
+[data-theme="rosepale"] .header-btn.support .material-icons {
+    color: #db2777;
+}
+
+[data-theme="rosepale"] .theme-toggle {
+    background: rgba(131, 24, 67, 0.08);
+    color: #831843;
+}
+
+[data-theme="rosepale"] .theme-toggle:hover {
+    background: rgba(131, 24, 67, 0.15);
+}
+
+/* Météo */
+[data-theme="rosepale"] .weather-bar {
+    background: rgba(131, 24, 67, 0.06);
+}
+
+[data-theme="rosepale"] .weather-separator {
+    background-color: rgba(131, 24, 67, 0.15);
+}
+
+[data-theme="rosepale"] .weather-day-label {
+    color: #9d174d;
+}
+
+/* News Section */
+[data-theme="rosepale"] .news-ticker-section {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="rosepale"] .news-ticker-header {
+    color: #831843;
+}
+
+[data-theme="rosepale"] .news-item {
+    background: rgba(131, 24, 67, 0.04);
+}
+
+[data-theme="rosepale"] .news-item:hover {
+    background: rgba(131, 24, 67, 0.08);
+}
+
+[data-theme="rosepale"] .news-item-source {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+}
+
+[data-theme="rosepale"] .ticker-nav-btn {
+    background: rgba(131, 24, 67, 0.08);
+    color: #831843;
+}
+
+[data-theme="rosepale"] .ticker-nav-btn:hover {
+    background: rgba(131, 24, 67, 0.15);
+}
+
+[data-theme="rosepale"] .ticker-dot {
+    background: rgba(131, 24, 67, 0.2);
+}
+
+[data-theme="rosepale"] .ticker-dot.active {
+    background: #db2777;
+}
+
+/* Tuiles */
+[data-theme="rosepale"] .section-title {
+    color: #831843;
+}
+
+[data-theme="rosepale"] .section-title .material-icons {
+    color: #db2777;
+}
+
+[data-theme="rosepale"] .tile {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="rosepale"] .tile:hover {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 12px 40px rgba(219, 39, 119, 0.15);
+}
+
+/* Cinéma */
+[data-theme="rosepale"] .cinema-section {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="rosepale"] .cinema-title {
+    color: #831843;
+}
+
+[data-theme="rosepale"] .cinema-title .material-icons {
+    color: #db2777;
+}
+
+[data-theme="rosepale"] .cinema-film {
+    background: rgba(131, 24, 67, 0.04);
+}
+
+[data-theme="rosepale"] .cinema-film:hover {
+    background: rgba(131, 24, 67, 0.08);
+}
+
+/* Communauté */
+[data-theme="rosepale"] .community-section {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="rosepale"] .community-title {
+    color: #831843;
+}
+
+[data-theme="rosepale"] .community-propose-btn {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+}
+
+[data-theme="rosepale"] .community-item {
+    background: rgba(131, 24, 67, 0.04);
+    border-color: rgba(131, 24, 67, 0.1);
+}
+
+[data-theme="rosepale"] .community-item:hover {
+    background: rgba(131, 24, 67, 0.08);
+}
+
+/* Footer */
+[data-theme="rosepale"] .footer {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="rosepale"] .footer p {
+    color: #831843;
+}
+
+/* SEO Section */
+[data-theme="rosepale"] .seo-section {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="rosepale"] .seo-section h2 {
+    color: #831843;
+}
+
+[data-theme="rosepale"] .seo-section strong {
+    color: #db2777;
+}
+
 /* Mode clair - Fond de page */
 [data-theme="light"] body {
     background: #f0f4f8;
@@ -1670,6 +1838,17 @@ body {
 .community-item-link:hover {
     background: var(--primary);
     color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Fix bouton en mode clair */
+[data-theme="light"] .community-item-link {
+    color: #ffffff;
+}
+
+[data-theme="rosepale"] .community-item-link {
+    color: #ffffff;
 }
 
 .community-item-link .material-icons {

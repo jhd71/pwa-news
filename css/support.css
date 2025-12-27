@@ -420,13 +420,32 @@
     text-align: center;
 }
 
-/* Fix texte sélecteur en thème rosepale */
+/* Fix texte sélecteur pour tous les thèmes clairs */
+[data-theme="light"] .theme-selector-title,
 [data-theme="rosepale"] .theme-selector-title {
-    color: #831843;
+    color: #1e293b;
 }
 
+[data-theme="light"] .theme-name,
 [data-theme="rosepale"] .theme-name {
-    color: #9d174d;
+    color: #475569;
+}
+
+[data-theme="light"] .theme-option,
+[data-theme="rosepale"] .theme-option {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .theme-option:hover,
+[data-theme="rosepale"] .theme-option:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .theme-option.active,
+[data-theme="rosepale"] .theme-option.active {
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.1);
 }
 
 .theme-selector-grid {
