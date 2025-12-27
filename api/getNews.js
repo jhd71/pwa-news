@@ -27,7 +27,12 @@ export default async function handler(req, res) {
     try {
         const parser = new Parser({
             customFields: {
-                item: ['media:content', 'enclosure']
+                item: [
+                    'media:content',
+                    'media:thumbnail', 
+                    'enclosure',
+                    'content:encoded'
+                ]
             }
         });
         
@@ -78,10 +83,43 @@ export default async function handler(req, res) {
                         console.log(`✅ ${feed.name}: ${feedData.items.length} articles`);
 
                         const articles = feedData.items.slice(0, feed.max).map(item => {
-                            let image = item.enclosure?.url || item['media:content']?.url || null;
-                            if (!image && item.content) {
-                                const imgMatch = item.content.match(/<img[^>]+src="([^">]+)"/);
+                            // Extraction d'image améliorée
+                            let image = null;
+                            
+                            // 1. Enclosure (standard RSS)
+                            if (item.enclosure?.url) {
+                                image = item.enclosure.url;
+                            }
+                            // 2. Media:content
+                            else if (item['media:content']?.$.url) {
+                                image = item['media:content'].$.url;
+                            }
+                            else if (item['media:content']?.url) {
+                                image = item['media:content'].url;
+                            }
+                            // 3. Media:thumbnail
+                            else if (item['media:thumbnail']?.$.url) {
+                                image = item['media:thumbnail'].$.url;
+                            }
+                            // 4. Chercher dans content:encoded (WordPress)
+                            if (!image && item['content:encoded']) {
+                                const imgMatch = item['content:encoded'].match(/<img[^>]+src=["']([^"']+)["']/i);
                                 if (imgMatch) image = imgMatch[1];
+                            }
+                            // 5. Chercher dans content
+                            if (!image && item.content) {
+                                const imgMatch = item.content.match(/<img[^>]+src=["']([^"']+)["']/i);
+                                if (imgMatch) image = imgMatch[1];
+                            }
+                            // 6. Chercher dans description
+                            if (!image && item.contentSnippet) {
+                                const imgMatch = item.contentSnippet.match(/<img[^>]+src=["']([^"']+)["']/i);
+                                if (imgMatch) image = imgMatch[1];
+                            }
+                            // 7. Chercher data-orig-file (WordPress Jetpack)
+                            if (!image && item['content:encoded']) {
+                                const origMatch = item['content:encoded'].match(/data-orig-file=["']([^"']+)["']/i);
+                                if (origMatch) image = origMatch[1];
                             }
 
                             return {
