@@ -124,7 +124,7 @@ const THEME_ICONS = {
     'light': 'light_mode',
     'rouge': 'local_fire_department',
     'bleuciel': 'water_drop',
-    'rose': 'favorite',
+    'rose': 'auto_awesome',
     'rosepale': 'spa'
 };
 
