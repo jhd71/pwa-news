@@ -2043,7 +2043,7 @@ body {
 }
 
 [data-theme="light"] .community-item-link {
-    background: rgba(99, 102, 241, 0.1);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
 }
 
 /* ============================================
