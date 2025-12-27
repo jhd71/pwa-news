@@ -38,6 +38,127 @@
     --text-muted: rgba(30, 41, 59, 0.5);
 }
 
+/* ============================================
+   THÈME ROUGE SANG
+   ============================================ */
+[data-theme="rouge"] {
+    --primary: #dc2626;
+    --primary-light: #ef4444;
+    --accent: #f97316;
+    --bg-dark: #1a0a0a;
+    --bg-gradient-1: #2d1515;
+    --bg-gradient-2: #3d1a1a;
+    --bg-gradient-3: #4a1f1f;
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 100, 100, 0.15);
+    --glass-shadow: rgba(0, 0, 0, 0.3);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --danger: #fbbf24;
+    --success: #10b981;
+}
+
+[data-theme="rouge"] .background-gradient {
+    background: 
+        radial-gradient(ellipse at 20% 20%, rgba(220, 38, 38, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(249, 115, 22, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(239, 68, 68, 0.1) 0%, transparent 70%),
+        linear-gradient(135deg, #1a0a0a 0%, #2d1515 50%, #3d1a1a 100%);
+}
+
+/* ============================================
+   THÈME BLEU CIEL
+   ============================================ */
+[data-theme="bleuciel"] {
+    --primary: #0ea5e9;
+    --primary-light: #38bdf8;
+    --accent: #06b6d4;
+    --bg-dark: #0c1929;
+    --bg-gradient-1: #0f2744;
+    --bg-gradient-2: #1e3a5f;
+    --bg-gradient-3: #2563eb;
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(56, 189, 248, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.3);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --danger: #ef4444;
+    --success: #10b981;
+}
+
+[data-theme="bleuciel"] .background-gradient {
+    background: 
+        radial-gradient(ellipse at 20% 20%, rgba(14, 165, 233, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(56, 189, 248, 0.1) 0%, transparent 70%),
+        linear-gradient(135deg, #0c1929 0%, #0f2744 50%, #1e3a5f 100%);
+}
+
+/* ============================================
+   THÈME ROSE / FUSHIA
+   ============================================ */
+[data-theme="rose"] {
+    --primary: #db2777;
+    --primary-light: #ec4899;
+    --accent: #f472b6;
+    --bg-dark: #1a0a14;
+    --bg-gradient-1: #2d1525;
+    --bg-gradient-2: #4a1942;
+    --bg-gradient-3: #6b215a;
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(236, 72, 153, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.3);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --danger: #ef4444;
+    --success: #10b981;
+}
+
+[data-theme="rose"] .background-gradient {
+    background: 
+        radial-gradient(ellipse at 20% 20%, rgba(219, 39, 119, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(244, 114, 182, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(236, 72, 153, 0.1) 0%, transparent 70%),
+        linear-gradient(135deg, #1a0a14 0%, #2d1525 50%, #4a1942 100%);
+}
+
+/* ============================================
+   THÈME ROSE PÂLE (version claire girly)
+   ============================================ */
+[data-theme="rosepale"] {
+    --primary: #ec4899;
+    --primary-light: #f472b6;
+    --accent: #db2777;
+    --bg-dark: #fdf2f8;
+    --bg-gradient-1: #fce7f3;
+    --bg-gradient-2: #fbcfe8;
+    --bg-gradient-3: #f9a8d4;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(236, 72, 153, 0.2);
+    --glass-shadow: rgba(219, 39, 119, 0.1);
+    --text-primary: #831843;
+    --text-secondary: rgba(131, 24, 67, 0.8);
+    --text-muted: rgba(131, 24, 67, 0.5);
+    --danger: #ef4444;
+    --success: #10b981;
+}
+
+[data-theme="rosepale"] .background-gradient {
+    background: 
+        radial-gradient(ellipse at 20% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(244, 114, 182, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(249, 168, 212, 0.1) 0%, transparent 70%),
+        linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%);
+}
+
+[data-theme="rosepale"] .glass {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(236, 72, 153, 0.15);
+}
+
 /* Mode clair - Fond de page */
 [data-theme="light"] body {
     background: #f0f4f8;

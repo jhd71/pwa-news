@@ -115,51 +115,64 @@ function getWeatherEmoji(code) {
 }
 
 // ============================================
-// THÈME CLAIR/SOMBRE
+// THÈME (Multi-thèmes)
 // ============================================
 function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    applyTheme(savedTheme);
+    
+    // Bouton toggle header (bascule sombre/clair)
     const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    
-    // Charger le thème sauvegardé ou détecter la préférence système
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    // Appliquer le thème initial
-    if (savedTheme) {
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
-    } else if (!prefersDark) {
-        document.documentElement.setAttribute('data-theme', 'light');
-        updateThemeIcon('light');
-    } else {
-        updateThemeIcon('dark');
-    }
-    
-    // Écouter le clic sur le bouton
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
-            document.documentElement.setAttribute('data-theme', newTheme);
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const newTheme = (current === 'light' || current === 'rosepale') ? 'dark' : 'light';
+            applyTheme(newTheme);
             localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
-            
-            console.log(`🎨 Thème changé: ${newTheme}`);
         });
     }
     
-    // Écouter les changements de préférence système
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme')) {
-            const newTheme = e.matches ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            updateThemeIcon(newTheme);
-        }
+    // Sélecteur de thèmes (dans panel support)
+    document.querySelectorAll('.theme-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const theme = btn.getAttribute('data-theme');
+            applyTheme(theme);
+            localStorage.setItem('theme', theme);
+            
+            // Mettre à jour la classe active
+            document.querySelectorAll('.theme-option').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
     });
     
-    console.log('🎨 Thème initialisé');
+    // Marquer le thème actif au chargement
+    updateActiveThemeButton(savedTheme);
+}
+
+function applyTheme(theme) {
+    // "dark" = pas d'attribut (utilise :root)
+    if (theme === 'dark') {
+        document.documentElement.removeAttribute('data-theme');
+    } else {
+        document.documentElement.setAttribute('data-theme', theme);
+    }
+    
+    // Mettre à jour l'icône du toggle header
+    const themeIcon = document.getElementById('themeIcon');
+    if (themeIcon) {
+        const isLight = (theme === 'light' || theme === 'rosepale');
+        themeIcon.textContent = isLight ? 'dark_mode' : 'light_mode';
+    }
+    
+    // Mettre à jour le bouton actif
+    updateActiveThemeButton(theme);
+}
+
+function updateActiveThemeButton(theme) {
+    document.querySelectorAll('.theme-option').forEach(btn => {
+        const btnTheme = btn.getAttribute('data-theme');
+        btn.classList.toggle('active', btnTheme === theme);
+    });
 }
 
 function updateThemeIcon(theme) {
