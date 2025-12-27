@@ -1447,7 +1447,7 @@ body {
 }
 
 /* Item communauté */
-.community-item {
+.community-item {  
     display: flex;
     gap: 1rem;
     padding: 1rem;
@@ -1456,6 +1456,7 @@ body {
     border: 1px solid var(--glass-border);
     transition: all 0.3s ease;
     cursor: pointer;
+    align-items: flex-start;
     flex-direction: column;
 }
 
