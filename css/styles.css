@@ -767,10 +767,6 @@ body {
 
 /* Mobile : image en haut */
 @media (max-width: 480px) {
-	
-	.news-item-image img {
-    object-position: center;
-}
 
     .news-item {
         flex-direction: column;
