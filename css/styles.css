@@ -877,7 +877,8 @@ body {
     }
 }
 
-@media (min-width: 768px) {
+/* Tablette (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
     .tiles-grid {
         grid-template-columns: repeat(4, 1fr);
     }
@@ -888,19 +889,71 @@ body {
     .seo-section,
     .tiles-section,
     .footer {
-        max-width: 800px;
+        max-width: 900px;
         margin-left: auto;
         margin-right: auto;
     }
     
     .header {
-        max-width: 800px;
+        max-width: 900px;
         margin-left: auto;
         margin-right: auto;
     }
     
     .cinema-films {
         max-height: 350px;
+    }
+}
+
+/* PC (> 1024px) */
+@media (min-width: 1025px) {
+    .tiles-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
+    
+    .news-ticker-section,
+    .cinema-section,
+    .community-section,
+    .seo-section,
+    .tiles-section,
+    .footer {
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .header {
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .cinema-films {
+        max-height: 400px;
+    }
+    
+    /* Amélioration du swiper news sur PC */
+    .news-item {
+        min-height: 160px;
+        padding: 1.5rem;
+    }
+    
+    .news-item-title {
+        font-size: 1.15rem;
+    }
+    
+    /* Tiles plus grandes sur PC */
+    .tile {
+        padding: 2rem 1.5rem;
+    }
+    
+    .tile-icon {
+        font-size: 3rem;
+    }
+    
+    .tile-name {
+        font-size: 1rem;
     }
 }
 
