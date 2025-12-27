@@ -540,6 +540,14 @@ body {
     width: 100%;
     max-width: 340px;
     justify-content: center;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+.weather-bar:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: scale(1.02);
 }
 
 .weather-day {

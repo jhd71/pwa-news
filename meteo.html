@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f1a">
+    <title>Météo Montceau - Actu & Média</title>
+    <meta name="description" content="Prévisions météo 7 jours pour Montceau-les-Mines et sa région">
+    
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/meteo.css">
+</head>
+<body>
+    <div class="background-gradient"></div>
+    
+    <!-- Header -->
+    <header class="header glass">
+        <div class="header-top">
+            <div class="header-left-btns">
+                <a href="index.html" class="header-btn" aria-label="Retour">
+                    <span class="material-icons">arrow_back</span>
+                </a>
+            </div>
+            <div class="header-title">
+                <span class="logo">🌤️</span>
+                <h1>Météo</h1>
+            </div>
+            <div class="header-right-btns">
+                <button class="theme-toggle" id="themeToggle" aria-label="Changer de thème">
+                    <span class="material-icons" id="themeIcon">dark_mode</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Localisation -->
+    <section class="meteo-location glass">
+        <span class="material-icons">location_on</span>
+        <div class="meteo-location-text">
+            <span class="meteo-city">Montceau-les-Mines</span>
+            <span class="meteo-region">Saône-et-Loire, Bourgogne</span>
+        </div>
+    </section>
+
+    <!-- Météo actuelle -->
+    <section class="meteo-current glass">
+        <div class="meteo-current-main">
+            <div class="meteo-current-icon" id="currentIcon">🌤️</div>
+            <div class="meteo-current-temp">
+                <span class="meteo-temp-value" id="currentTemp">--</span>
+                <span class="meteo-temp-unit">°C</span>
+            </div>
+        </div>
+        <div class="meteo-current-desc" id="currentDesc">Chargement...</div>
+        <div class="meteo-current-details">
+            <div class="meteo-detail">
+                <span class="material-icons">thermostat</span>
+                <span>Ressenti <strong id="currentFeels">--°</strong></span>
+            </div>
+            <div class="meteo-detail">
+                <span class="material-icons">water_drop</span>
+                <span>Humidité <strong id="currentHumidity">--%</strong></span>
+            </div>
+            <div class="meteo-detail">
+                <span class="material-icons">air</span>
+                <span>Vent <strong id="currentWind">-- km/h</strong></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lever/Coucher du soleil -->
+    <section class="meteo-sun glass">
+        <div class="meteo-sun-item">
+            <span class="material-icons sun-rise">wb_sunny</span>
+            <div class="meteo-sun-info">
+                <span class="meteo-sun-label">Lever</span>
+                <span class="meteo-sun-time" id="sunrise">--:--</span>
+            </div>
+        </div>
+        <div class="meteo-sun-progress">
+            <div class="meteo-sun-bar">
+                <div class="meteo-sun-position" id="sunPosition"></div>
+            </div>
+        </div>
+        <div class="meteo-sun-item">
+            <span class="material-icons sun-set">nights_stay</span>
+            <div class="meteo-sun-info">
+                <span class="meteo-sun-label">Coucher</span>
+                <span class="meteo-sun-time" id="sunset">--:--</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prévisions 7 jours -->
+    <section class="meteo-forecast glass">
+        <h2 class="meteo-forecast-title">
+            <span class="material-icons">date_range</span>
+            Prévisions 7 jours
+        </h2>
+        <div class="meteo-forecast-list" id="forecastList">
+            <div class="meteo-loading">
+                <span class="material-icons spinning">sync</span>
+                Chargement des prévisions...
+            </div>
+        </div>
+    </section>
+
+    <!-- Détails supplémentaires -->
+    <section class="meteo-extra glass">
+        <h2 class="meteo-extra-title">
+            <span class="material-icons">info</span>
+            Détails
+        </h2>
+        <div class="meteo-extra-grid">
+            <div class="meteo-extra-item">
+                <span class="material-icons">compress</span>
+                <span class="meteo-extra-label">Pression</span>
+                <span class="meteo-extra-value" id="pressure">-- hPa</span>
+            </div>
+            <div class="meteo-extra-item">
+                <span class="material-icons">visibility</span>
+                <span class="meteo-extra-label">Visibilité</span>
+                <span class="meteo-extra-value" id="visibility">-- km</span>
+            </div>
+            <div class="meteo-extra-item">
+                <span class="material-icons">wb_twilight</span>
+                <span class="meteo-extra-label">Indice UV</span>
+                <span class="meteo-extra-value" id="uvIndex">--</span>
+            </div>
+            <div class="meteo-extra-item">
+                <span class="material-icons">cloud</span>
+                <span class="meteo-extra-label">Couverture</span>
+                <span class="meteo-extra-value" id="cloudCover">--%</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer glass">
+        <p>Données <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p>
+        <p class="footer-sub">Mise à jour automatique</p>
+    </footer>
+
+    <script>
+        // ============================================
+        // MÉTÉO DÉTAILLÉE - Montceau-les-Mines
+        // ============================================
+        
+        const METEO_CONFIG = {
+            latitude: 46.6667,
+            longitude: 4.3667,
+            timezone: 'Europe/Paris'
+        };
+
+        // Thème
+        const THEMES = ['dark', 'light', 'rouge', 'bleuciel', 'rose', 'rosepale'];
+        const THEME_ICONS = {
+            'dark': 'dark_mode',
+            'light': 'light_mode',
+            'rouge': 'local_fire_department',
+            'bleuciel': 'water_drop',
+            'rose': 'auto_awesome',
+            'rosepale': 'spa'
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            loadWeatherData();
+        });
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            applyTheme(savedTheme);
+            
+            document.getElementById('themeToggle').addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme') || 'dark';
+                const currentIndex = THEMES.indexOf(current);
+                const nextIndex = (currentIndex + 1) % THEMES.length;
+                const newTheme = THEMES[nextIndex];
+                applyTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+            document.getElementById('themeIcon').textContent = THEME_ICONS[theme] || 'dark_mode';
+        }
+
+        async function loadWeatherData() {
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${METEO_CONFIG.latitude}&longitude=${METEO_CONFIG.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,surface_pressure,cloud_cover&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&timezone=${METEO_CONFIG.timezone}`;
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Erreur API');
+                
+                const data = await response.json();
+                
+                updateCurrentWeather(data.current, data.daily);
+                updateForecast(data.daily);
+                updateExtras(data.current, data.daily);
+                
+                console.log('🌤️ Météo chargée');
+                
+            } catch (error) {
+                console.error('❌ Erreur météo:', error);
+                document.getElementById('currentDesc').textContent = 'Erreur de chargement';
+            }
+        }
+
+        function updateCurrentWeather(current, daily) {
+            document.getElementById('currentTemp').textContent = Math.round(current.temperature_2m);
+            document.getElementById('currentIcon').textContent = getWeatherEmoji(current.weather_code);
+            document.getElementById('currentDesc').textContent = getWeatherDescription(current.weather_code);
+            document.getElementById('currentFeels').textContent = Math.round(current.apparent_temperature) + '°';
+            document.getElementById('currentHumidity').textContent = current.relative_humidity_2m + '%';
+            document.getElementById('currentWind').textContent = Math.round(current.wind_speed_10m) + ' km/h';
+            
+            // Lever/coucher du soleil
+            const sunrise = new Date(daily.sunrise[0]);
+            const sunset = new Date(daily.sunset[0]);
+            document.getElementById('sunrise').textContent = sunrise.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('sunset').textContent = sunset.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            
+            // Position du soleil
+            updateSunPosition(sunrise, sunset);
+        }
+
+        function updateSunPosition(sunrise, sunset) {
+            const now = new Date();
+            const sunriseTime = sunrise.getTime();
+            const sunsetTime = sunset.getTime();
+            const nowTime = now.getTime();
+            
+            let percentage = 0;
+            if (nowTime < sunriseTime) {
+                percentage = 0;
+            } else if (nowTime > sunsetTime) {
+                percentage = 100;
+            } else {
+                percentage = ((nowTime - sunriseTime) / (sunsetTime - sunriseTime)) * 100;
+            }
+            
+            document.getElementById('sunPosition').style.left = `${percentage}%`;
+        }
+
+        function updateForecast(daily) {
+            const forecastList = document.getElementById('forecastList');
+            const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+            
+            let html = '';
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(daily.time[i]);
+                const dayName = i === 0 ? "Aujourd'hui" : days[date.getDay()];
+                const dateStr = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+                
+                html += `
+                    <div class="meteo-forecast-item ${i === 0 ? 'today' : ''}">
+                        <div class="forecast-day">
+                            <span class="forecast-day-name">${dayName}</span>
+                            <span class="forecast-day-date">${dateStr}</span>
+                        </div>
+                        <div class="forecast-icon">${getWeatherEmoji(daily.weather_code[i])}</div>
+                        <div class="forecast-precip">
+                            <span class="material-icons">water_drop</span>
+                            ${daily.precipitation_probability_max[i] || 0}%
+                        </div>
+                        <div class="forecast-temps">
+                            <span class="forecast-temp-max">${Math.round(daily.temperature_2m_max[i])}°</span>
+                            <span class="forecast-temp-min">${Math.round(daily.temperature_2m_min[i])}°</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            forecastList.innerHTML = html;
+        }
+
+        function updateExtras(current, daily) {
+            document.getElementById('pressure').textContent = Math.round(current.surface_pressure) + ' hPa';
+            document.getElementById('cloudCover').textContent = current.cloud_cover + '%';
+            document.getElementById('uvIndex').textContent = daily.uv_index_max[0] || '--';
+            document.getElementById('visibility').textContent = '10+ km'; // Open-Meteo ne fournit pas cette donnée
+        }
+
+        function getWeatherEmoji(code) {
+            if (code === 0) return '☀️';
+            if ([1, 2, 3].includes(code)) return '⛅';
+            if ([45, 48].includes(code)) return '🌫️';
+            if ([51, 53, 55].includes(code)) return '🌦️';
+            if ([61, 63, 65].includes(code)) return '🌧️';
+            if ([66, 67].includes(code)) return '🌧️';
+            if ([71, 73, 75, 77].includes(code)) return '❄️';
+            if ([80, 81, 82].includes(code)) return '🌦️';
+            if ([85, 86].includes(code)) return '🌨️';
+            if ([95, 96, 99].includes(code)) return '⛈️';
+            return '🌤️';
+        }
+
+        function getWeatherDescription(code) {
+            const descriptions = {
+                0: 'Ciel dégagé',
+                1: 'Principalement dégagé',
+                2: 'Partiellement nuageux',
+                3: 'Couvert',
+                45: 'Brouillard',
+                48: 'Brouillard givrant',
+                51: 'Bruine légère',
+                53: 'Bruine modérée',
+                55: 'Bruine dense',
+                61: 'Pluie légère',
+                63: 'Pluie modérée',
+                65: 'Pluie forte',
+                66: 'Pluie verglaçante légère',
+                67: 'Pluie verglaçante forte',
+                71: 'Neige légère',
+                73: 'Neige modérée',
+                75: 'Neige forte',
+                77: 'Grains de neige',
+                80: 'Averses légères',
+                81: 'Averses modérées',
+                82: 'Averses violentes',
+                85: 'Averses de neige légères',
+                86: 'Averses de neige fortes',
+                95: 'Orage',
+                96: 'Orage avec grêle légère',
+                99: 'Orage avec grêle forte'
+            };
+            return descriptions[code] || 'Conditions variables';
+        }
+    </script>
+</body>
+</html>
