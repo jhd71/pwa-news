@@ -782,7 +782,6 @@ body {
    
    .news-item-image img {
     object-fit: contain;
-    background: #000;
 	}
 
     .news-item-content {
