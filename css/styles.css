@@ -691,11 +691,12 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center top;
     transition: transform 0.3s ease;
 }
 
 .news-item:hover .news-item-image img {
-    transform: scale(1.05);
+    transform: scale(1.02);
 }
 
 /* Placeholder quand pas d'image */
@@ -766,6 +767,11 @@ body {
 
 /* Mobile : image en haut */
 @media (max-width: 480px) {
+	
+	.news-item-image img {
+    object-position: center;
+}
+
     .news-item {
         flex-direction: column;
         min-height: auto;
