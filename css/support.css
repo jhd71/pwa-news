@@ -420,6 +420,15 @@
     text-align: center;
 }
 
+/* Fix texte sélecteur en thème rosepale */
+[data-theme="rosepale"] .theme-selector-title {
+    color: #831843;
+}
+
+[data-theme="rosepale"] .theme-name {
+    color: #9d174d;
+}
+
 .theme-selector-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
