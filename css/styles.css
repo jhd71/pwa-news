@@ -978,7 +978,7 @@ body {
     -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid var(--glass-border);
     padding: 1.25rem;
-    z-index: 1000;
+    z-index: 10000;
     transform: translateY(100%);
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4);
