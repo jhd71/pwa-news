@@ -1,6 +1,29 @@
 // api/getNews.js - API pour récupérer les actualités locales
 import Parser from 'rss-parser';
 
+// Extraction de l'image OG depuis la page HTML (fallback)
+async function fetchOgImage(url) {
+    try {
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (compatible; ActuMedia/2.0)'
+            }
+        });
+
+        if (!response.ok) return null;
+
+        const html = await response.text();
+
+        const match = html.match(
+            /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i
+        );
+
+        return match ? match[1] : null;
+    } catch (e) {
+        return null;
+    }
+}
+
 // Cache en mémoire
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 let cachedArticles = null;
@@ -82,7 +105,9 @@ export default async function handler(req, res) {
 
                         console.log(`✅ ${feed.name}: ${feedData.items.length} articles`);
 
-                        const articles = feedData.items.slice(0, feed.max).map(item => {
+                        const articles = await Promise.all(
+    feedData.items.slice(0, feed.max).map(async item => {
+
                             // Extraction d'image améliorée
                             let image = null;
                             
@@ -106,6 +131,10 @@ export default async function handler(req, res) {
                                 const imgMatch = item['content:encoded'].match(/<img[^>]+src=["']([^"']+)["']/i);
                                 if (imgMatch) image = imgMatch[1];
                             }
+							// 8. Fallback ultime : og:image depuis la page (Le JSL & autres)
+							if (!image && item.link) {
+								image = await fetchOgImage(item.link);
+							}
                             // 5. Chercher dans content
                             if (!image && item.content) {
                                 const imgMatch = item.content.match(/<img[^>]+src=["']([^"']+)["']/i);
@@ -129,7 +158,7 @@ export default async function handler(req, res) {
                                 date: item.pubDate || item.isoDate,
                                 source: feed.name
                             };
-                        });
+                        }));
 
                         return resolve(articles);
                     }
