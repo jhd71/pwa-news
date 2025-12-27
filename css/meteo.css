@@ -1,6 +1,32 @@
 /* ============================================
    PAGE MÉTÉO DÉTAILLÉE
    ============================================ */
+/* Fix header sticky sur page météo */
+.header.glass {
+    background: rgba(15, 15, 26, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+[data-theme="light"] .header.glass {
+    background: rgba(240, 244, 248, 0.95);
+}
+
+[data-theme="rouge"] .header.glass {
+    background: rgba(26, 10, 10, 0.95);
+}
+
+[data-theme="bleuciel"] .header.glass {
+    background: rgba(12, 25, 41, 0.95);
+}
+
+[data-theme="rose"] .header.glass {
+    background: rgba(26, 10, 20, 0.95);
+}
+
+[data-theme="rosepale"] .header.glass {
+    background: rgba(253, 242, 248, 0.95);
+}
 
 /* Localisation */
 .meteo-location {
