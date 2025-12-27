@@ -696,7 +696,7 @@ body {
     transition: transform 0.3s ease;
 }
 
-.news-item:hover .news-item-image img {
+.news-item:hover .news-item-image:not(.no-image) img {
     transform: scale(1.03);
 }
 
@@ -738,6 +738,11 @@ body {
     font-family: "Material Icons";
     font-size: 2.5rem;
     color: rgba(255, 255, 255, 0.7);
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Contenu de l'article */
