@@ -1464,11 +1464,9 @@ body {
 }
 
 .community-item-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-size: 1.5rem;
     flex-shrink: 0;
+    line-height: 1;
 }
 
 .community-item-content {
