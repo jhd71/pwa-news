@@ -85,12 +85,11 @@ export default async function handler(req, res) {
                         const articles = feedData.items.slice(0, feed.max).map(item => {
                             let image = null;
 
-                            // ÉTAPE 1 : Vérifier les balises RSS standards (priorité haute)
+                            // --- STRATÉGIE 1 : Les champs RSS officiels ---
                             if (item.enclosure && item.enclosure.url) {
                                 image = item.enclosure.url;
                             } 
                             else if (item['media:content']) {
-                                // Parfois media:content est un objet, parfois non
                                 if (item['media:content'].url) image = item['media:content'].url;
                                 else if (item['media:content'].$ && item['media:content'].$.url) image = item['media:content'].$.url;
                             }
@@ -99,25 +98,53 @@ export default async function handler(req, res) {
                                 else if (item['media:thumbnail'].$ && item['media:thumbnail'].$.url) image = item['media:thumbnail'].$.url;
                             }
 
-                            // ÉTAPE 2 : Si aucune image, scanner tout le contenu HTML (Regex puissant)
+                            // --- STRATÉGIE 2 : Scanner le HTML (Amélioré pour Lazy Load) ---
                             if (!image) {
-                                // On regroupe tout le texte disponible pour chercher dedans
+                                // On assemble tout le contenu textuel
                                 const fullContent = [
                                     item['content:encoded'],
                                     item.content,
                                     item.description,
                                     item.summary
-                                ].filter(Boolean).join(' '); // On joint tout en une seule chaine
+                                ].filter(Boolean).join(' ');
 
-                                // Cherche la première balise <img src="...">
-                                const imgMatch = fullContent.match(/<img[^>]+src=["']([^"']+)["']/i);
+                                // A. Chercher d'abord une balise img standard ou lazy-load
+                                // On capture tout ce qui est dans <img ... >
+                                const imgTagMatch = fullContent.match(/<img[^>]+>/i);
                                 
-                                if (imgMatch) {
-                                    image = imgMatch[1];
+                                if (imgTagMatch) {
+                                    const imgTag = imgTagMatch[0];
+                                    
+                                    // 1. Chercher 'src'
+                                    const srcMatch = imgTag.match(/src=["']([^"']+)["']/i);
+                                    // 2. Chercher 'data-src' (souvent utilisé par JSL/Wordpress pour le différé)
+                                    const dataSrcMatch = imgTag.match(/data-src=["']([^"']+)["']/i);
+                                    // 3. Chercher 'srcset' (images haute qualité)
+                                    const srcSetMatch = imgTag.match(/srcset=["']([^"'\s]+)/i);
+
+                                    // On prend le meilleur candidat (data-src est souvent meilleur que src s'il existe)
+                                    if (dataSrcMatch) image = dataSrcMatch[1];
+                                    else if (srcMatch) image = srcMatch[1];
+                                    else if (srcSetMatch) image = srcSetMatch[1];
+                                }
+
+                                // B. PLAN DE SECOURS : Chercher n'importe quel lien .jpg/.png/.jpeg dans le texte
+                                // Utile si l'image est juste un lien sans balise img
+                                if (!image) {
+                                    const directLinkMatch = fullContent.match(/http[^"'\s]+\.(jpg|jpeg|png|webp)/i);
+                                    if (directLinkMatch) {
+                                        image = directLinkMatch[0];
+                                    }
                                 }
                             }
 
-                            // ÉTAPE 3 : Gestion spécifique WordPress Jetpack (data-orig-file)
+                            // --- STRATÉGIE 3 : Nettoyage final ---
+                            // Parfois l'image commence par "//" (ex: //site.com/img.jpg), il faut ajouter https:
+                            if (image && image.startsWith('//')) {
+                                image = 'https:' + image;
+                            }
+                            
+                            // WordPress Jetpack fallback
                             if (!image && item['content:encoded']) {
                                 const origMatch = item['content:encoded'].match(/data-orig-file=["']([^"']+)["']/i);
                                 if (origMatch) image = origMatch[1];
@@ -126,7 +153,7 @@ export default async function handler(req, res) {
                             return {
                                 title: item.title,
                                 link: item.link,
-                                image: image,
+                                image: image, // Renvoie l'image trouvée ou null
                                 date: item.pubDate || item.isoDate,
                                 source: feed.name
                             };
