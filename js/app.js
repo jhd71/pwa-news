@@ -74,7 +74,7 @@ async function initWeather() {
         
         const icon0 = document.getElementById('weatherIcon0');
         const temp0 = document.getElementById('weatherTemp0');
-        if (icon0) icon0.textContent = iconToday;
+        if (icon0) icon0.innerHTML = getWeatherIcon(data.current_weather.weathercode, 'small');
         if (temp0) temp0.textContent = `${tempToday}°`;
 
         // Demain (J+1)
@@ -84,7 +84,7 @@ async function initWeather() {
             
             const icon1 = document.getElementById('weatherIcon1');
             const temp1 = document.getElementById('weatherTemp1');
-            if (icon1) icon1.textContent = iconJ1;
+            if (icon1) icon1.innerHTML = getWeatherIcon(data.daily.weathercode[1], 'small');
             if (temp1) temp1.textContent = `${tempJ1}°`;
         }
 
@@ -98,7 +98,7 @@ async function initWeather() {
             const icon2 = document.getElementById('weatherIcon2');
             const temp2 = document.getElementById('weatherTemp2');
             if (label2) label2.textContent = dayNameJ2;
-            if (icon2) icon2.textContent = iconJ2;
+            if (icon2) icon2.innerHTML = getWeatherIcon(data.daily.weathercode[2], 'small');
             if (temp2) temp2.textContent = `${tempJ2}°`;
         }
 
@@ -117,15 +117,46 @@ function getDayName(daysFromNow) {
 }
 
 function getWeatherEmoji(code) {
+    // Retourne emoji pour compatibilité (utilisé dans textContent)
     if (code === 0) return '☀️';
     if ([1, 2, 3].includes(code)) return '⛅';
-    if ([45, 48].includes(code)) return '☁️';
+    if ([45, 48].includes(code)) return '🌫️';
     if ([51, 53, 55, 61, 63, 65].includes(code)) return '🌧️';
     if ([66, 67].includes(code)) return '🌧️';
     if ([71, 73, 75, 77].includes(code)) return '❄️';
     if ([80, 81, 82].includes(code)) return '🌦️';
     if ([95, 96, 99].includes(code)) return '⛈️';
     return '🌤️';
+}
+
+// Icône météo animée (HTML)
+function getWeatherIcon(code, size = 'medium') {
+    if (code === 0) {
+        // Soleil
+        return `<span class="weather-icon sun ${size}"></span>`;
+    }
+    if ([1, 2, 3].includes(code)) {
+        // Partiellement nuageux
+        return `<span class="weather-icon partly-cloudy ${size}"><span class="sun-part"></span><span class="cloud-part"></span></span>`;
+    }
+    if ([45, 48].includes(code)) {
+        // Brouillard
+        return `<span class="weather-icon fog ${size}"><span class="line"></span><span class="line"></span><span class="line"></span></span>`;
+    }
+    if ([51, 53, 55, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) {
+        // Pluie
+        return `<span class="weather-icon rain ${size}"><span class="cloud"></span><span class="drops"><span class="drop"></span><span class="drop"></span><span class="drop"></span></span></span>`;
+    }
+    if ([71, 73, 75, 77, 85, 86].includes(code)) {
+        // Neige
+        return `<span class="weather-icon snow ${size}"><span class="cloud"></span><span class="flakes"><span class="flake"></span><span class="flake"></span><span class="flake"></span></span></span>`;
+    }
+    if ([95, 96, 99].includes(code)) {
+        // Orage
+        return `<span class="weather-icon thunder ${size}"><span class="cloud"></span><span class="bolt"></span></span>`;
+    }
+    // Par défaut : partiellement nuageux
+    return `<span class="weather-icon partly-cloudy ${size}"><span class="sun-part"></span><span class="cloud-part"></span></span>`;
 }
 
 // ============================================

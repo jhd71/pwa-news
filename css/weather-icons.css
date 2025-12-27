@@ -1,0 +1,385 @@
+/* ============================================
+   ICÔNES MÉTÉO ANIMÉES (CSS pur)
+   ============================================ */
+
+.weather-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 1em;
+    height: 1em;
+    font-size: inherit;
+}
+
+/* ============================================
+   SOLEIL
+   ============================================ */
+.weather-icon.sun {
+    --sun-color: #fbbf24;
+}
+
+.weather-icon.sun::before {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    background: var(--sun-color);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--sun-color), 0 0 20px rgba(251, 191, 36, 0.4);
+    animation: sun-pulse 3s ease-in-out infinite;
+}
+
+.weather-icon.sun::after {
+    content: '';
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    background: transparent;
+    border: 2px dashed var(--sun-color);
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: sun-rotate 20s linear infinite;
+}
+
+@keyframes sun-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.9; }
+}
+
+@keyframes sun-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   NUAGES
+   ============================================ */
+.weather-icon.cloudy {
+    --cloud-color: #94a3b8;
+}
+
+.weather-icon.cloudy::before {
+    content: '';
+    position: absolute;
+    width: 60%;
+    height: 35%;
+    background: var(--cloud-color);
+    border-radius: 50px;
+    top: 40%;
+    animation: cloud-float 4s ease-in-out infinite;
+}
+
+.weather-icon.cloudy::after {
+    content: '';
+    position: absolute;
+    width: 35%;
+    height: 35%;
+    background: var(--cloud-color);
+    border-radius: 50%;
+    top: 20%;
+    left: 25%;
+    animation: cloud-float 4s ease-in-out infinite 0.5s;
+}
+
+@keyframes cloud-float {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(5%); }
+}
+
+/* ============================================
+   PARTIELLEMENT NUAGEUX (Soleil + Nuage)
+   ============================================ */
+.weather-icon.partly-cloudy {
+    --sun-color: #fbbf24;
+    --cloud-color: #e2e8f0;
+}
+
+.weather-icon.partly-cloudy .sun-part {
+    position: absolute;
+    width: 45%;
+    height: 45%;
+    background: var(--sun-color);
+    border-radius: 50%;
+    top: 10%;
+    right: 10%;
+    box-shadow: 0 0 8px var(--sun-color);
+    animation: sun-pulse 3s ease-in-out infinite;
+}
+
+.weather-icon.partly-cloudy .cloud-part {
+    position: absolute;
+    width: 70%;
+    height: 40%;
+    background: var(--cloud-color);
+    border-radius: 50px;
+    bottom: 15%;
+    left: 5%;
+    animation: cloud-float 4s ease-in-out infinite;
+}
+
+.weather-icon.partly-cloudy .cloud-part::before {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 80%;
+    background: var(--cloud-color);
+    border-radius: 50%;
+    top: -50%;
+    left: 20%;
+}
+
+.weather-icon.partly-cloudy .cloud-part::after {
+    content: '';
+    position: absolute;
+    width: 40%;
+    height: 70%;
+    background: var(--cloud-color);
+    border-radius: 50%;
+    top: -40%;
+    right: 20%;
+}
+
+/* ============================================
+   PLUIE
+   ============================================ */
+.weather-icon.rain {
+    --cloud-color: #64748b;
+    --rain-color: #60a5fa;
+}
+
+.weather-icon.rain .cloud {
+    position: absolute;
+    width: 70%;
+    height: 35%;
+    background: var(--cloud-color);
+    border-radius: 50px;
+    top: 15%;
+    left: 15%;
+}
+
+.weather-icon.rain .cloud::before {
+    content: '';
+    position: absolute;
+    width: 45%;
+    height: 90%;
+    background: var(--cloud-color);
+    border-radius: 50%;
+    top: -55%;
+    left: 15%;
+}
+
+.weather-icon.rain .cloud::after {
+    content: '';
+    position: absolute;
+    width: 35%;
+    height: 70%;
+    background: var(--cloud-color);
+    border-radius: 50%;
+    top: -40%;
+    right: 15%;
+}
+
+.weather-icon.rain .drops {
+    position: absolute;
+    bottom: 10%;
+    left: 20%;
+    width: 60%;
+    height: 40%;
+}
+
+.weather-icon.rain .drop {
+    position: absolute;
+    width: 3px;
+    height: 12px;
+    background: linear-gradient(to bottom, transparent, var(--rain-color));
+    border-radius: 0 0 3px 3px;
+    animation: rain-fall 1s linear infinite;
+}
+
+.weather-icon.rain .drop:nth-child(1) { left: 10%; animation-delay: 0s; }
+.weather-icon.rain .drop:nth-child(2) { left: 40%; animation-delay: 0.3s; }
+.weather-icon.rain .drop:nth-child(3) { left: 70%; animation-delay: 0.6s; }
+
+@keyframes rain-fall {
+    0% { transform: translateY(-10px); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(15px); opacity: 0; }
+}
+
+/* ============================================
+   NEIGE
+   ============================================ */
+.weather-icon.snow {
+    --cloud-color: #94a3b8;
+    --snow-color: #ffffff;
+}
+
+.weather-icon.snow .cloud {
+    position: absolute;
+    width: 70%;
+    height: 35%;
+    background: var(--cloud-color);
+    border-radius: 50px;
+    top: 15%;
+    left: 15%;
+}
+
+.weather-icon.snow .cloud::before {
+    content: '';
+    position: absolute;
+    width: 45%;
+    height: 90%;
+    background: var(--cloud-color);
+    border-radius: 50%;
+    top: -55%;
+    left: 15%;
+}
+
+.weather-icon.snow .flakes {
+    position: absolute;
+    bottom: 5%;
+    left: 15%;
+    width: 70%;
+    height: 45%;
+}
+
+.weather-icon.snow .flake {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: var(--snow-color);
+    border-radius: 50%;
+    box-shadow: 0 0 3px var(--snow-color);
+    animation: snow-fall 2s linear infinite;
+}
+
+.weather-icon.snow .flake:nth-child(1) { left: 10%; animation-delay: 0s; }
+.weather-icon.snow .flake:nth-child(2) { left: 40%; animation-delay: 0.7s; }
+.weather-icon.snow .flake:nth-child(3) { left: 70%; animation-delay: 1.4s; }
+
+@keyframes snow-fall {
+    0% { transform: translateY(-5px) rotate(0deg); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(20px) rotate(180deg); opacity: 0; }
+}
+
+/* ============================================
+   ORAGE
+   ============================================ */
+.weather-icon.thunder {
+    --cloud-color: #475569;
+    --lightning-color: #fbbf24;
+}
+
+.weather-icon.thunder .cloud {
+    position: absolute;
+    width: 75%;
+    height: 38%;
+    background: var(--cloud-color);
+    border-radius: 50px;
+    top: 10%;
+    left: 12%;
+}
+
+.weather-icon.thunder .cloud::before {
+    content: '';
+    position: absolute;
+    width: 45%;
+    height: 90%;
+    background: var(--cloud-color);
+    border-radius: 50%;
+    top: -55%;
+    left: 15%;
+}
+
+.weather-icon.thunder .bolt {
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 20px solid var(--lightning-color);
+    filter: drop-shadow(0 0 5px var(--lightning-color));
+    animation: lightning-flash 2s ease-in-out infinite;
+}
+
+.weather-icon.thunder .bolt::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -3px;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 10px solid var(--lightning-color);
+}
+
+@keyframes lightning-flash {
+    0%, 100% { opacity: 0.3; }
+    10%, 12% { opacity: 1; }
+    14%, 50% { opacity: 0.3; }
+    52%, 54% { opacity: 1; }
+    56% { opacity: 0.3; }
+}
+
+/* ============================================
+   BROUILLARD
+   ============================================ */
+.weather-icon.fog {
+    --fog-color: #94a3b8;
+}
+
+.weather-icon.fog .line {
+    position: absolute;
+    height: 3px;
+    background: var(--fog-color);
+    border-radius: 3px;
+    animation: fog-drift 3s ease-in-out infinite;
+}
+
+.weather-icon.fog .line:nth-child(1) {
+    width: 70%;
+    top: 25%;
+    left: 15%;
+    animation-delay: 0s;
+}
+
+.weather-icon.fog .line:nth-child(2) {
+    width: 80%;
+    top: 45%;
+    left: 10%;
+    animation-delay: 0.5s;
+}
+
+.weather-icon.fog .line:nth-child(3) {
+    width: 60%;
+    top: 65%;
+    left: 20%;
+    animation-delay: 1s;
+}
+
+@keyframes fog-drift {
+    0%, 100% { transform: translateX(0); opacity: 0.6; }
+    50% { transform: translateX(10%); opacity: 1; }
+}
+
+/* ============================================
+   TAILLES
+   ============================================ */
+.weather-icon.small { font-size: 1.3rem; }
+.weather-icon.medium { font-size: 1.75rem; }
+.weather-icon.large { font-size: 4rem; }
+
+/* ============================================
+   MODE CLAIR - Ajustements
+   ============================================ */
+[data-theme="light"] .weather-icon.cloudy { --cloud-color: #64748b; }
+[data-theme="light"] .weather-icon.partly-cloudy .cloud-part { --cloud-color: #cbd5e1; }
+[data-theme="light"] .weather-icon.rain .cloud { --cloud-color: #475569; }
+[data-theme="light"] .weather-icon.snow .cloud { --cloud-color: #64748b; }
+[data-theme="light"] .weather-icon.fog .line { --fog-color: #64748b; }

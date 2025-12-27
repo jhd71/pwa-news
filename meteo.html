@@ -18,6 +18,7 @@
     
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/meteo.css">
+	<link rel="stylesheet" href="css/weather-icons.css">
 </head>
 <body>
     <div class="background-gradient"></div>
@@ -223,7 +224,7 @@
 
         function updateCurrentWeather(current, daily) {
             document.getElementById('currentTemp').textContent = Math.round(current.temperature_2m);
-            document.getElementById('currentIcon').textContent = getWeatherEmoji(current.weather_code);
+            document.getElementById('currentIcon').innerHTML = getWeatherIcon(current.weather_code, 'large');
             document.getElementById('currentDesc').textContent = getWeatherDescription(current.weather_code);
             document.getElementById('currentFeels').textContent = Math.round(current.apparent_temperature) + '°';
             document.getElementById('currentHumidity').textContent = current.relative_humidity_2m + '%';
@@ -273,7 +274,7 @@
                             <span class="forecast-day-name">${dayName}</span>
                             <span class="forecast-day-date">${dateStr}</span>
                         </div>
-                        <div class="forecast-icon">${getWeatherEmoji(daily.weather_code[i])}</div>
+                        <div class="forecast-icon">${getWeatherIcon(daily.weather_code[i], 'medium')}</div>
                         <div class="forecast-precip">
                             <span class="material-icons">water_drop</span>
                             ${daily.precipitation_probability_max[i] || 0}%
@@ -310,6 +311,28 @@
             return '🌤️';
         }
 
+		function getWeatherIcon(code, size = 'medium') {
+            if (code === 0) {
+                return `<span class="weather-icon sun ${size}"></span>`;
+            }
+            if ([1, 2, 3].includes(code)) {
+                return `<span class="weather-icon partly-cloudy ${size}"><span class="sun-part"></span><span class="cloud-part"></span></span>`;
+            }
+            if ([45, 48].includes(code)) {
+                return `<span class="weather-icon fog ${size}"><span class="line"></span><span class="line"></span><span class="line"></span></span>`;
+            }
+            if ([51, 53, 55, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) {
+                return `<span class="weather-icon rain ${size}"><span class="cloud"></span><span class="drops"><span class="drop"></span><span class="drop"></span><span class="drop"></span></span></span>`;
+            }
+            if ([71, 73, 75, 77, 85, 86].includes(code)) {
+                return `<span class="weather-icon snow ${size}"><span class="cloud"></span><span class="flakes"><span class="flake"></span><span class="flake"></span><span class="flake"></span></span></span>`;
+            }
+            if ([95, 96, 99].includes(code)) {
+                return `<span class="weather-icon thunder ${size}"><span class="cloud"></span><span class="bolt"></span></span>`;
+            }
+            return `<span class="weather-icon partly-cloudy ${size}"><span class="sun-part"></span><span class="cloud-part"></span></span>`;
+        }
+		
         function getWeatherDescription(code) {
             const descriptions = {
                 0: 'Ciel dégagé',
