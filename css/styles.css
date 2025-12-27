@@ -681,7 +681,7 @@ body {
     position: relative;
     width: 220px;
     min-width: 220px;
-    height: 100%;
+    height: auto;
     min-height: 160px;
     overflow: hidden;
     flex-shrink: 0;
@@ -697,7 +697,7 @@ body {
 }
 
 .news-item:hover .news-item-image img {
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
 
 /* Placeholder quand pas d'image */
@@ -713,13 +713,6 @@ body {
 .news-item-placeholder .material-icons {
     font-size: 2.5rem;
     color: rgba(255, 255, 255, 0.5);
-}
-
-.news-item-image.no-image::after {
-    content: "article";
-    font-family: "Material Icons";
-    font-size: 2.5rem;
-    color: rgba(255, 255, 255, 0.7);
 }
 
 .news-item-image.no-image .news-item-placeholder {
