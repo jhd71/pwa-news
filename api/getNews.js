@@ -83,56 +83,49 @@ export default async function handler(req, res) {
                         console.log(`✅ ${feed.name}: ${feedData.items.length} articles`);
 
                         const articles = feedData.items.slice(0, feed.max).map(item => {
+                            // Extraction d'image améliorée
                             let image = null;
-
-                            // 1. On rassemble TOUT le texte disponible dans une seule grosse variable
-                            // Cela permet de chercher l'image partout à la fois
-                            const allText = [
-                                item['content:encoded'],
-                                item.content,
-                                item.description,
-                                item.summary,
-                                item['media:description'] // Parfois utilisé
-                            ].filter(Boolean).join(' ');
-
-                            // --- STRATÉGIE 1 : Le "data-orig-file" (C'est ce qui manque pour L'Informateur) ---
-                            // Votre exemple montre : data-orig-file="...jpg"
-                            const origFileMatch = allText.match(/data-orig-file=["']([^"']+)["']/i);
-                            if (origFileMatch) {
-                                image = origFileMatch[1];
+                            
+                            // 1. Enclosure (standard RSS)
+                            if (item.enclosure?.url) {
+                                image = item.enclosure.url;
                             }
-
-                            // --- STRATÉGIE 2 : Les balises RSS standards (si pas trouvé en 1) ---
-                            if (!image) {
-                                if (item.enclosure && item.enclosure.url) image = item.enclosure.url;
-                                else if (item['media:content']?.url) image = item['media:content'].url;
-                                else if (item['media:content']?.$?.url) image = item['media:content'].$.url;
-                                else if (item['media:thumbnail']?.url) image = item['media:thumbnail'].url;
+                            // 2. Media:content
+                            else if (item['media:content']?.$.url) {
+                                image = item['media:content'].$.url;
                             }
-
-                            // --- STRATÉGIE 3 : Analyse brutale des balises <img> dans le texte ---
-                            if (!image) {
-                                // On cherche n'importe quel attribut src="..." ou data-src="..."
-                                // Le [\s\S] permet de chercher même s'il y a des retours à la ligne dans la balise
-                                const imgTagMatch = allText.match(/<img[\s\S]+?src=["']([^"']+)["']/i);
-                                if (imgTagMatch) {
-                                    image = imgTagMatch[1];
-                                }
+                            else if (item['media:content']?.url) {
+                                image = item['media:content'].url;
                             }
-
-                            // --- STRATÉGIE 4 : Dernier recours (Lien image direct dans le texte) ---
-                            if (!image) {
-                                // Cherche http://... .jpg ou .png qui traîne dans le texte
-                                const linkMatch = allText.match(/https?:\/\/[^"'\s]+\.(jpe?g|png|webp)/i);
-                                if (linkMatch) {
-                                    image = linkMatch[0];
-                                }
+                            // 3. Media:thumbnail
+                            else if (item['media:thumbnail']?.$.url) {
+                                image = item['media:thumbnail'].$.url;
+                            }
+                            // 4. Chercher dans content:encoded (WordPress)
+                            if (!image && item['content:encoded']) {
+                                const imgMatch = item['content:encoded'].match(/<img[^>]+src=["']([^"']+)["']/i);
+                                if (imgMatch) image = imgMatch[1];
+                            }
+                            // 5. Chercher dans content
+                            if (!image && item.content) {
+                                const imgMatch = item.content.match(/<img[^>]+src=["']([^"']+)["']/i);
+                                if (imgMatch) image = imgMatch[1];
+                            }
+                            // 6. Chercher dans description
+                            if (!image && item.contentSnippet) {
+                                const imgMatch = item.contentSnippet.match(/<img[^>]+src=["']([^"']+)["']/i);
+                                if (imgMatch) image = imgMatch[1];
+                            }
+                            // 7. Chercher data-orig-file (WordPress Jetpack)
+                            if (!image && item['content:encoded']) {
+                                const origMatch = item['content:encoded'].match(/data-orig-file=["']([^"']+)["']/i);
+                                if (origMatch) image = origMatch[1];
                             }
 
                             return {
                                 title: item.title,
                                 link: item.link,
-                                image: image, // L'image trouvée
+                                image,
                                 date: item.pubDate || item.isoDate,
                                 source: feed.name
                             };
