@@ -117,16 +117,29 @@ function getWeatherEmoji(code) {
 // ============================================
 // THÈME (Multi-thèmes)
 // ============================================
+const THEMES = ['dark', 'light', 'rouge', 'bleuciel', 'rose', 'rosepale'];
+
+const THEME_ICONS = {
+    'dark': 'dark_mode',
+    'light': 'light_mode',
+    'rouge': 'local_fire_department',
+    'bleuciel': 'water_drop',
+    'rose': 'favorite',
+    'rosepale': 'spa'
+};
+
 function initTheme() {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     applyTheme(savedTheme);
     
-    // Bouton toggle header (bascule sombre/clair)
+    // Bouton toggle header (cycle tous les thèmes)
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
             const current = document.documentElement.getAttribute('data-theme') || 'dark';
-            const newTheme = (current === 'light' || current === 'rosepale') ? 'dark' : 'light';
+            const currentIndex = THEMES.indexOf(current);
+            const nextIndex = (currentIndex + 1) % THEMES.length;
+            const newTheme = THEMES[nextIndex];
             applyTheme(newTheme);
             localStorage.setItem('theme', newTheme);
         });
@@ -138,15 +151,8 @@ function initTheme() {
             const theme = btn.getAttribute('data-theme');
             applyTheme(theme);
             localStorage.setItem('theme', theme);
-            
-            // Mettre à jour la classe active
-            document.querySelectorAll('.theme-option').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
         });
     });
-    
-    // Marquer le thème actif au chargement
-    updateActiveThemeButton(savedTheme);
 }
 
 function applyTheme(theme) {
@@ -160,26 +166,14 @@ function applyTheme(theme) {
     // Mettre à jour l'icône du toggle header
     const themeIcon = document.getElementById('themeIcon');
     if (themeIcon) {
-        const isLight = (theme === 'light' || theme === 'rosepale');
-        themeIcon.textContent = isLight ? 'dark_mode' : 'light_mode';
+        themeIcon.textContent = THEME_ICONS[theme] || 'dark_mode';
     }
     
-    // Mettre à jour le bouton actif
-    updateActiveThemeButton(theme);
-}
-
-function updateActiveThemeButton(theme) {
+    // Mettre à jour le bouton actif dans le sélecteur
     document.querySelectorAll('.theme-option').forEach(btn => {
         const btnTheme = btn.getAttribute('data-theme');
         btn.classList.toggle('active', btnTheme === theme);
     });
-}
-
-function updateThemeIcon(theme) {
-    const themeIcon = document.getElementById('themeIcon');
-    if (themeIcon) {
-        themeIcon.textContent = theme === 'light' ? 'dark_mode' : 'light_mode';
-    }
 }
 
 // ============================================
