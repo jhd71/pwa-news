@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCommunity();
     initServiceWorker();
     initInstallPrompt();
+    initExtraTiles();
 });
 
 // ============================================
@@ -760,3 +761,54 @@ setInterval(() => {
     console.log('🔄 Rafraîchissement des actualités...');
     initNews();
 }, CONFIG.news.refreshInterval);
+
+// ============================================
+// TOGGLE VILLES SUPPLÉMENTAIRES
+// ============================================
+function toggleExtraTiles() {
+    const tilesExtra = document.getElementById('tilesExtra');
+    const toggleBtn = document.getElementById('tilesToggle');
+    const toggleIcon = document.getElementById('tilesToggleIcon');
+    const toggleText = document.getElementById('tilesToggleText');
+    
+    if (!tilesExtra || !toggleBtn) return;
+    
+    const isExpanded = tilesExtra.classList.contains('show');
+    
+    if (isExpanded) {
+        // Fermer
+        tilesExtra.classList.remove('show');
+        toggleBtn.classList.remove('expanded');
+        toggleIcon.textContent = 'expand_more';
+        toggleText.textContent = 'Plus de villes';
+        localStorage.setItem('tilesExpanded', 'false');
+    } else {
+        // Ouvrir
+        tilesExtra.classList.add('show');
+        toggleBtn.classList.add('expanded');
+        toggleIcon.textContent = 'expand_less';
+        toggleText.textContent = 'Moins de villes';
+        localStorage.setItem('tilesExpanded', 'true');
+    }
+}
+
+// Restaurer l'état au chargement
+function initExtraTiles() {
+    const saved = localStorage.getItem('tilesExpanded');
+    if (saved === 'true') {
+        const tilesExtra = document.getElementById('tilesExtra');
+        const toggleBtn = document.getElementById('tilesToggle');
+        const toggleIcon = document.getElementById('tilesToggleIcon');
+        const toggleText = document.getElementById('tilesToggleText');
+        
+        if (tilesExtra && toggleBtn) {
+            tilesExtra.classList.add('show');
+            toggleBtn.classList.add('expanded');
+            toggleIcon.textContent = 'expand_less';
+            toggleText.textContent = 'Moins de villes';
+        }
+    }
+}
+
+// Exposer la fonction globalement
+window.toggleExtraTiles = toggleExtraTiles;

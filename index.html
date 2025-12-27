@@ -534,6 +534,36 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <div class="tile-subtitle">Bourgogne</div>
             </a>
         </div>
+        
+        <!-- Villes supplémentaires (masquées par défaut) -->
+        <div class="tiles-grid tiles-extra" id="tilesExtra">
+            <a href="https://www.lejsl.com/edition-chalon-sur-saone" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🍷</div>
+                <div class="tile-name">Le JSL</div>
+                <div class="tile-subtitle">Chalon-sur-Saône</div>
+            </a>
+            <a href="https://www.lejsl.com/edition-macon" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🍇</div>
+                <div class="tile-name">Le JSL</div>
+                <div class="tile-subtitle">Mâcon</div>
+            </a>
+            <a href="https://www.bienpublic.com/edition-dijon-ville" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🦉</div>
+                <div class="tile-name">Bien Public</div>
+                <div class="tile-subtitle">Dijon</div>
+            </a>
+            <a href="https://www.lejsl.com/edition-autun" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🏛️</div>
+                <div class="tile-name">Le JSL</div>
+                <div class="tile-subtitle">Autun</div>
+            </a>
+        </div>
+        
+        <!-- Bouton toggle -->
+        <button class="tiles-toggle" id="tilesToggle" onclick="toggleExtraTiles()">
+            <span class="material-icons" id="tilesToggleIcon">expand_more</span>
+            <span id="tilesToggleText">Plus de villes</span>
+        </button>
     </section>
 
     <!-- Widget Cinéma -->
