@@ -823,7 +823,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             }
             
             try {
-                const supabaseClient = window.supabase.createClient(CONFIG.supabase.url, CONFIG.supabase.key);
+                const supabaseClient = window.getSupabaseClient ? window.getSupabaseClient() : null;
+if (!supabaseClient) return;
                 
                 const { data: contactData } = await supabaseClient
                     .from('contact_messages')

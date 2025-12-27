@@ -17,6 +17,20 @@ const CONFIG = {
     }
 };
 
+// Instance unique Supabase (évite les multiples instances)
+let supabaseClient = null;
+
+function getSupabaseClient() {
+    if (!supabaseClient && typeof window.supabase !== 'undefined') {
+        supabaseClient = window.supabase.createClient(CONFIG.supabase.url, CONFIG.supabase.key);
+        console.log('✅ Supabase initialisé (instance unique)');
+    }
+    return supabaseClient;
+}
+
+// Exposer globalement pour les autres scripts
+window.getSupabaseClient = getSupabaseClient;
+
 // État de l'application
 let newsCurrentSlide = 0;
 let newsSlides = [];
@@ -561,8 +575,12 @@ async function initCommunity() {
             return;
         }
         
-        // Créer le client Supabase
-        const supabaseClient = window.supabase.createClient(CONFIG.supabase.url, CONFIG.supabase.key);
+        // Utiliser l'instance unique Supabase
+        const supabaseClient = getSupabaseClient();
+        if (!supabaseClient) {
+            console.log('⚠️ Supabase non disponible');
+            return;
+        }
         
         // Charger les propositions approuvées
         const { data, error } = await supabaseClient
