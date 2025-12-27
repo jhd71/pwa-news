@@ -713,8 +713,9 @@ body {
     color: rgba(255, 255, 255, 0.5);
 }
 
-.news-item-image.no-image .news-item-placeholder {
-    display: flex;
+/* Masquer complètement la zone si pas d'image */
+.news-item-image.no-image {
+    display: none;
 }
 
 .news-item-image.no-image img {
