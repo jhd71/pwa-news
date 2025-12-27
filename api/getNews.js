@@ -83,40 +83,41 @@ export default async function handler(req, res) {
                         console.log(`✅ ${feed.name}: ${feedData.items.length} articles`);
 
                         const articles = feedData.items.slice(0, feed.max).map(item => {
-                            // Extraction d'image améliorée
                             let image = null;
-                            
-                            // 1. Enclosure (standard RSS)
-                            if (item.enclosure?.url) {
+
+                            // ÉTAPE 1 : Vérifier les balises RSS standards (priorité haute)
+                            if (item.enclosure && item.enclosure.url) {
                                 image = item.enclosure.url;
+                            } 
+                            else if (item['media:content']) {
+                                // Parfois media:content est un objet, parfois non
+                                if (item['media:content'].url) image = item['media:content'].url;
+                                else if (item['media:content'].$ && item['media:content'].$.url) image = item['media:content'].$.url;
                             }
-                            // 2. Media:content
-                            else if (item['media:content']?.$.url) {
-                                image = item['media:content'].$.url;
+                            else if (item['media:thumbnail']) {
+                                if (item['media:thumbnail'].url) image = item['media:thumbnail'].url;
+                                else if (item['media:thumbnail'].$ && item['media:thumbnail'].$.url) image = item['media:thumbnail'].$.url;
                             }
-                            else if (item['media:content']?.url) {
-                                image = item['media:content'].url;
+
+                            // ÉTAPE 2 : Si aucune image, scanner tout le contenu HTML (Regex puissant)
+                            if (!image) {
+                                // On regroupe tout le texte disponible pour chercher dedans
+                                const fullContent = [
+                                    item['content:encoded'],
+                                    item.content,
+                                    item.description,
+                                    item.summary
+                                ].filter(Boolean).join(' '); // On joint tout en une seule chaine
+
+                                // Cherche la première balise <img src="...">
+                                const imgMatch = fullContent.match(/<img[^>]+src=["']([^"']+)["']/i);
+                                
+                                if (imgMatch) {
+                                    image = imgMatch[1];
+                                }
                             }
-                            // 3. Media:thumbnail
-                            else if (item['media:thumbnail']?.$.url) {
-                                image = item['media:thumbnail'].$.url;
-                            }
-                            // 4. Chercher dans content:encoded (WordPress)
-                            if (!image && item['content:encoded']) {
-                                const imgMatch = item['content:encoded'].match(/<img[^>]+src=["']([^"']+)["']/i);
-                                if (imgMatch) image = imgMatch[1];
-                            }
-                            // 5. Chercher dans content
-                            if (!image && item.content) {
-                                const imgMatch = item.content.match(/<img[^>]+src=["']([^"']+)["']/i);
-                                if (imgMatch) image = imgMatch[1];
-                            }
-                            // 6. Chercher dans description
-                            if (!image && item.contentSnippet) {
-                                const imgMatch = item.contentSnippet.match(/<img[^>]+src=["']([^"']+)["']/i);
-                                if (imgMatch) image = imgMatch[1];
-                            }
-                            // 7. Chercher data-orig-file (WordPress Jetpack)
+
+                            // ÉTAPE 3 : Gestion spécifique WordPress Jetpack (data-orig-file)
                             if (!image && item['content:encoded']) {
                                 const origMatch = item['content:encoded'].match(/data-orig-file=["']([^"']+)["']/i);
                                 if (origMatch) image = origMatch[1];
@@ -125,7 +126,7 @@ export default async function handler(req, res) {
                             return {
                                 title: item.title,
                                 link: item.link,
-                                image,
+                                image: image,
                                 date: item.pubDate || item.isoDate,
                                 source: feed.name
                             };
