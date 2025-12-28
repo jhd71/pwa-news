@@ -679,6 +679,63 @@
             color: #ef4444;
         }
 		
+		/* Checkbox notification publication */
+		.notif-checkbox-label {
+			display: flex;
+			align-items: center;
+			gap: 0.75rem;
+			padding: 1rem;
+			background: rgba(245, 158, 11, 0.1);
+			border: 1px solid rgba(245, 158, 11, 0.3);
+			border-radius: 12px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.notif-checkbox-label:hover {
+			background: rgba(245, 158, 11, 0.15);
+			border-color: rgba(245, 158, 11, 0.5);
+		}
+
+		.notif-checkbox-label input {
+			display: none;
+		}
+
+		.notif-checkbox-box {
+			width: 40px;
+			height: 40px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: rgba(245, 158, 11, 0.2);
+			border: 2px solid rgba(245, 158, 11, 0.5);
+			border-radius: 10px;
+			color: var(--warning);
+			transition: all 0.3s ease;
+		}
+
+		.notif-checkbox-label input:checked + .notif-checkbox-box {
+			background: var(--warning);
+			border-color: var(--warning);
+			color: white;
+		}
+
+		.notif-checkbox-text {
+			display: flex;
+			flex-direction: column;
+			gap: 0.15rem;
+		}
+
+		.notif-checkbox-text strong {
+			color: var(--text-primary);
+			font-size: 0.9rem;
+		}
+
+		.notif-checkbox-text small {
+			color: var(--text-muted);
+			font-size: 0.75rem;
+		}
+		
     </style>
 </head>
 <body>
@@ -771,6 +828,18 @@
                             <img id="previewImg" src="" alt="Aperçu">
                             <button type="button" class="image-preview-remove" onclick="removeImage()"><span class="material-icons">close</span></button>
                         </div>
+                    </div>
+                    <div class="form-group" style="margin-top:1rem;">
+                        <label class="notif-checkbox-label">
+                            <input type="checkbox" id="pubSendNotif">
+                            <span class="notif-checkbox-box">
+                                <span class="material-icons">notifications</span>
+                            </span>
+                            <span class="notif-checkbox-text">
+                                <strong>Envoyer une notification push</strong>
+                                <small>Alerter les abonnés de cette actualité</small>
+                            </span>
+                        </label>
                     </div>
                     <button type="submit" class="submit-btn" id="publishBtn"><span class="material-icons">publish</span> Publier maintenant</button>
                 </form>
@@ -990,7 +1059,34 @@
                 }]);
                 
                 if (error) throw error;
-                showToast('Actualité publiée ! 🎉');
+                
+                // Envoyer notification si checkbox cochée
+                const sendNotif = document.getElementById('pubSendNotif').checked;
+                if (sendNotif) {
+                    try {
+                        const title = document.getElementById('pubTitle').value;
+                        const content = document.getElementById('pubContent').value;
+                        const linkUrl = document.getElementById('pubLink').value;
+                        
+                        await fetch('/api/sendNotification', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                title: '📢 ' + title.substring(0, 45),
+                                body: content.substring(0, 100) + (content.length > 100 ? '...' : ''),
+                                url: linkUrl || '/',
+                                adminKey: ADMIN_PASSWORD
+                            })
+                        });
+                        showToast('Actualité publiée + notification envoyée ! 🔔🎉');
+                    } catch (notifError) {
+                        console.error('Erreur notification:', notifError);
+                        showToast('Actualité publiée (notification échouée)');
+                    }
+                } else {
+                    showToast('Actualité publiée ! 🎉');
+                }
+                
                 document.getElementById('publishForm').reset();
                 removeImage();
                 loadPublishedArticles();
