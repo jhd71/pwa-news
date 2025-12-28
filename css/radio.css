@@ -1614,24 +1614,3 @@ body.radio-playing .footer {
     border: 1px solid rgba(236, 72, 153, 0.15);
     box-shadow: 0 4px 20px rgba(219, 39, 119, 0.15);
 }
-
-/* ============================================
-   FIX iOS SAFE AREAS
-   ============================================ */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-    #radioWidget {
-        bottom: calc(16px + env(safe-area-inset-bottom)) !important;
-    }
-    
-    body.radio-playing .footer {
-        margin-bottom: calc(110px + env(safe-area-inset-bottom)) !important;
-    }
-    
-    .radio-modal {
-        padding-bottom: env(safe-area-inset-bottom);
-    }
-    
-    .sleep-timer-popup {
-        bottom: calc(200px + env(safe-area-inset-bottom));
-    }
-}

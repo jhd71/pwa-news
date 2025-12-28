@@ -234,10 +234,3 @@
 [data-theme="light"] .quick-links-close:hover {
     background: rgba(0, 0, 0, 0.1);
 }
-
-/* Safe area iOS */
-@supports (padding-top: env(safe-area-inset-top)) {
-    .quick-links-header {
-        padding-top: calc(1.25rem + env(safe-area-inset-top));
-    }
-}
