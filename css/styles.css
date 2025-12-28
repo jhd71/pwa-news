@@ -1468,7 +1468,7 @@ body {
     /* Amélioration du swiper news sur PC */
     .news-item {
         min-height: 160px;
-        padding: 1.5rem;
+        padding: 0.5rem;
     }
     
     .news-item-title {
