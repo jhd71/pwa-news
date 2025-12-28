@@ -1,10 +1,10 @@
 // api/subscribe.js - Enregistrer un abonnement push
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-    process.env.SUPABASE_URL || 'https://ekjgfiyhkythqcnmhzea.supabase.co',
-    process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY
-);
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://ekjgfiyhkythqcnmhzea.supabase.co';
+const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 export default async function handler(req, res) {
     // CORS
@@ -19,9 +19,14 @@ export default async function handler(req, res) {
 
     // GET : Récupérer la clé publique VAPID
     if (req.method === 'GET') {
-        return res.status(200).json({
-            publicKey: process.env.VAPID_PUBLIC_KEY
-        });
+        const publicKey = process.env.VAPID_PUBLIC_KEY;
+        
+        if (!publicKey) {
+            console.error('❌ VAPID_PUBLIC_KEY non définie');
+            return res.status(500).json({ error: 'Configuration VAPID manquante' });
+        }
+        
+        return res.status(200).json({ publicKey });
     }
 
     // POST : Enregistrer un abonnement
@@ -45,7 +50,10 @@ export default async function handler(req, res) {
                     onConflict: 'endpoint'
                 });
 
-            if (error) throw error;
+            if (error) {
+                console.error('❌ Erreur Supabase:', error);
+                throw error;
+            }
 
             console.log('✅ Abonnement enregistré');
             return res.status(201).json({ success: true });
