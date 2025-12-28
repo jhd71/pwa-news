@@ -538,3 +538,21 @@
 [data-theme="rosepale"] .theme-option:hover {
     background: rgba(131, 24, 67, 0.1);
 }
+
+/* Bouton notifications */
+.support-action-icon.notif {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.support-action-icon.notif.subscribed {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+#notifSubscribeBtn.subscribed {
+    border-left: 3px solid #10b981;
+}
+
+#notifSubscribeBtn.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}

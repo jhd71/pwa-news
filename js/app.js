@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initServiceWorker();
     initInstallPrompt();
     initExtraTiles();
+    initPushNotifications();
 });
 
 // ============================================
@@ -812,3 +813,187 @@ function initExtraTiles() {
 
 // Exposer la fonction globalement
 window.toggleExtraTiles = toggleExtraTiles;
+
+// ============================================
+// NOTIFICATIONS PUSH
+// ============================================
+
+let pushSubscription = null;
+
+// Initialiser les notifications au chargement
+async function initPushNotifications() {
+    const btn = document.getElementById('notifSubscribeBtn');
+    if (!btn) return;
+
+    // Vérifier si le navigateur supporte les notifications
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        btn.style.display = 'none';
+        console.log('⚠️ Push non supporté');
+        return;
+    }
+
+    // Vérifier l'état actuel
+    try {
+        const registration = await navigator.serviceWorker.ready;
+        pushSubscription = await registration.pushManager.getSubscription();
+
+        if (pushSubscription) {
+            updateNotifButton(true);
+            console.log('🔔 Déjà abonné aux notifications');
+        } else {
+            updateNotifButton(false);
+        }
+    } catch (error) {
+        console.error('❌ Erreur init push:', error);
+    }
+}
+
+// Mettre à jour l'apparence du bouton
+function updateNotifButton(isSubscribed) {
+    const btn = document.getElementById('notifSubscribeBtn');
+    const icon = document.getElementById('notifIcon');
+    const title = document.getElementById('notifTitle');
+    const desc = document.getElementById('notifDesc');
+    const arrow = document.getElementById('notifArrow');
+
+    if (!btn) return;
+
+    if (isSubscribed) {
+        btn.classList.add('subscribed');
+        icon.textContent = '🔔';
+        icon.classList.add('subscribed');
+        title.textContent = 'Notifications activées';
+        desc.textContent = 'Cliquez pour désactiver';
+        arrow.textContent = 'notifications_active';
+    } else {
+        btn.classList.remove('subscribed');
+        icon.textContent = '🔕';
+        icon.classList.remove('subscribed');
+        title.textContent = 'Activer les notifications';
+        desc.textContent = 'Recevoir les alertes infos';
+        arrow.textContent = 'notifications_none';
+    }
+}
+
+// Toggle abonnement
+async function togglePushSubscription() {
+    const btn = document.getElementById('notifSubscribeBtn');
+    if (!btn) return;
+
+    btn.classList.add('loading');
+
+    try {
+        if (pushSubscription) {
+            // Se désabonner
+            await unsubscribeFromPush();
+        } else {
+            // S'abonner
+            await subscribeToPush();
+        }
+    } catch (error) {
+        console.error('❌ Erreur toggle push:', error);
+        alert('Erreur : ' + error.message);
+    } finally {
+        btn.classList.remove('loading');
+    }
+}
+
+// S'abonner aux notifications
+async function subscribeToPush() {
+    // Demander la permission
+    const permission = await Notification.requestPermission();
+
+    if (permission !== 'granted') {
+        alert('Vous devez autoriser les notifications pour recevoir les alertes.');
+        return;
+    }
+
+    // Récupérer la clé publique VAPID
+    const response = await fetch('/api/subscribe');
+    const { publicKey } = await response.json();
+
+    if (!publicKey) {
+        throw new Error('Clé VAPID non disponible');
+    }
+
+    // Convertir la clé
+    const applicationServerKey = urlBase64ToUint8Array(publicKey);
+
+    // S'abonner
+    const registration = await navigator.serviceWorker.ready;
+    pushSubscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: applicationServerKey
+    });
+
+    // Envoyer l'abonnement au serveur
+    const subscribeResponse = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pushSubscription.toJSON())
+    });
+
+    if (!subscribeResponse.ok) {
+        throw new Error('Erreur lors de l\'enregistrement');
+    }
+
+    updateNotifButton(true);
+    console.log('✅ Abonné aux notifications');
+
+    // Notification de confirmation
+    showToast('🔔 Notifications activées !', 'Vous recevrez les alertes infos.');
+}
+
+// Se désabonner
+async function unsubscribeFromPush() {
+    if (!pushSubscription) return;
+
+    // Supprimer côté serveur
+    await fetch('/api/subscribe', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ endpoint: pushSubscription.endpoint })
+    });
+
+    // Supprimer côté client
+    await pushSubscription.unsubscribe();
+    pushSubscription = null;
+
+    updateNotifButton(false);
+    console.log('✅ Désabonné des notifications');
+
+    showToast('🔕 Notifications désactivées', 'Vous ne recevrez plus les alertes.');
+}
+
+// Convertir clé VAPID base64 en Uint8Array
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+// Toast de confirmation
+function showToast(title, message) {
+    // Utiliser le toast existant ou en créer un simple
+    const existingToast = document.querySelector('.notification-toast');
+    if (existingToast) {
+        existingToast.querySelector('.notification-toast-title').textContent = title;
+        existingToast.querySelector('.notification-toast-text').textContent = message;
+        existingToast.classList.add('show');
+        setTimeout(() => existingToast.classList.remove('show'), 3000);
+    } else {
+        alert(title + '\n' + message);
+    }
+}
+
+// Exposer globalement
+window.togglePushSubscription = togglePushSubscription;

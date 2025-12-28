@@ -1,8 +1,8 @@
 // ============================================
-// ACTU & MÉDIA - Service Worker v2
+// ACTU & MÉDIA - Service Worker v26
 // ============================================
 
-const CACHE_NAME = 'actu-media-v25';
+const CACHE_NAME = 'actu-media-v26';
 
 const STATIC_ASSETS = [
     '/',
@@ -90,4 +90,86 @@ self.addEventListener('fetch', event => {
             });
         })
     );
+});
+
+// ============================================
+// NOTIFICATIONS PUSH
+// ============================================
+
+// Réception d'une notification push
+self.addEventListener('push', (event) => {
+    console.log('🔔 Notification push reçue');
+
+    let data = {
+        title: 'Actu & Média',
+        body: 'Nouvelle actualité !',
+        icon: '/icons/icon-192.png',
+        badge: '/icons/icon-72.png',
+        url: '/'
+    };
+
+    if (event.data) {
+        try {
+            data = { ...data, ...event.data.json() };
+        } catch (e) {
+            data.body = event.data.text();
+        }
+    }
+
+    const options = {
+        body: data.body,
+        icon: data.icon,
+        badge: data.badge,
+        vibrate: [200, 100, 200],
+        tag: 'actu-media-notification',
+        renotify: true,
+        requireInteraction: false,
+        data: {
+            url: data.url,
+            timestamp: data.timestamp
+        },
+        actions: [
+            { action: 'open', title: 'Voir' },
+            { action: 'close', title: 'Fermer' }
+        ]
+    };
+
+    event.waitUntil(
+        self.registration.showNotification(data.title, options)
+    );
+});
+
+// Clic sur la notification
+self.addEventListener('notificationclick', (event) => {
+    console.log('👆 Clic sur notification');
+
+    event.notification.close();
+
+    const url = event.notification.data?.url || '/';
+
+    if (event.action === 'close') {
+        return;
+    }
+
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true })
+            .then((clientList) => {
+                // Si une fenêtre est déjà ouverte, la focus
+                for (const client of clientList) {
+                    if (client.url.includes('actuetmedia.fr') && 'focus' in client) {
+                        client.navigate(url);
+                        return client.focus();
+                    }
+                }
+                // Sinon ouvrir une nouvelle fenêtre
+                if (clients.openWindow) {
+                    return clients.openWindow(url);
+                }
+            })
+    );
+});
+
+// Fermeture de notification
+self.addEventListener('notificationclose', (event) => {
+    console.log('❌ Notification fermée');
 });

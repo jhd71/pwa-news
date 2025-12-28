@@ -663,6 +663,22 @@
             .stat-value { font-size: 1.5rem; }
             .publish-form { padding: 0 0.5rem; }
         }
+		
+		/* === NOTIFICATIONS === */
+        #notifResult.success {
+            display: block;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+        
+        #notifResult.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+		
     </style>
 </head>
 <body>
@@ -705,6 +721,7 @@
             <button class="tab" data-tab="messages">📬 Messages <span class="tab-badge" id="badgeMessages" style="display:none;">0</span></button>
             <button class="tab" data-tab="propositions">📰 Propositions <span class="tab-badge" id="badgePropositions" style="display:none;">0</span></button>
             <button class="tab" data-tab="published">✅ Publiées</button>
+            <button class="tab" data-tab="notifications">🔔 Notifications</button>
         </div>
         
         <!-- PUBLIER -->
@@ -777,6 +794,56 @@
             <button class="refresh-btn" onclick="loadPublishedArticles()"><span class="material-icons">refresh</span> Actualiser</button>
             <div class="messages-list" id="publishedList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
         </div>
+        
+        <!-- NOTIFICATIONS -->
+        <div class="tab-content" id="tabNotifications">
+            <div class="publish-form">
+                <h2 style="margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;">
+                    <span class="material-icons" style="color:var(--warning);">notifications_active</span> Envoyer une notification push
+                </h2>
+                
+                <div class="notif-stats" style="display:flex;gap:1rem;margin-bottom:1.5rem;">
+                    <div class="stat-card" style="flex:1;"><div class="stat-value" id="statSubscribers">-</div><div class="stat-label">Abonnés</div></div>
+                </div>
+                
+                <form id="notifForm">
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">title</span> Titre <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="notifTitle" placeholder="Ex: 🚨 Alerte Info" required maxlength="50">
+                        <div class="form-hint"><span id="notifTitleCount">0</span>/50 caractères</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">description</span> Message <span class="required">*</span></label>
+                        <textarea class="form-textarea" id="notifBody" placeholder="Ex: Accident sur la RCEA, circulation perturbée..." required maxlength="150" rows="3"></textarea>
+                        <div class="form-hint"><span id="notifBodyCount">0</span>/150 caractères</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">link</span> Lien (optionnel)</label>
+                        <input type="url" class="form-input" id="notifUrl" placeholder="https://actuetmedia.fr/...">
+                        <div class="form-hint">Laissez vide pour renvoyer vers l'accueil</div>
+                    </div>
+                    
+                    <!-- Aperçu -->
+                    <div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:1rem;margin-bottom:1.5rem;">
+                        <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.75rem;text-transform:uppercase;">Aperçu</div>
+                        <div style="display:flex;gap:0.75rem;background:#2d2d2d;padding:0.75rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);">
+                            <img src="/icons/icon-72.png" alt="icon" style="width:40px;height:40px;border-radius:8px;">
+                            <div style="flex:1;min-width:0;">
+                                <div style="font-weight:600;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="previewNotifTitle">Titre de la notification</div>
+                                <div style="font-size:0.8rem;color:var(--text-secondary);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;" id="previewNotifBody">Message de la notification...</div>
+                                <div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.25rem;">actuetmedia.fr</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="sendNotifBtn" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                        <span class="material-icons">send</span> Envoyer la notification
+                    </button>
+                </form>
+                
+                <div id="notifResult" style="margin-top:1rem;padding:1rem;border-radius:10px;text-align:center;display:none;"></div>
+            </div>
+        </div>
     </div>
     
     <div class="toast" id="toast"><span class="toast-icon">✅</span><span class="toast-text">Message</span></div>
@@ -828,6 +895,7 @@
             loadMessages();
             loadPropositions();
             loadPublishedArticles();
+            loadSubscriberCount();
         }
         
         // === TABS ===
@@ -1074,6 +1142,97 @@
             if (e.key === 'Escape') closeImageModal();
         });
         
+		// === NOTIFICATIONS ===
+        document.getElementById('notifTitle')?.addEventListener('input', function() {
+            document.getElementById('notifTitleCount').textContent = this.value.length;
+            document.getElementById('previewNotifTitle').textContent = this.value || 'Titre de la notification';
+        });
+        
+        document.getElementById('notifBody')?.addEventListener('input', function() {
+            document.getElementById('notifBodyCount').textContent = this.value.length;
+            document.getElementById('previewNotifBody').textContent = this.value || 'Message de la notification...';
+        });
+        
+        async function loadSubscriberCount() {
+            try {
+                if (!supabaseClient) return;
+                const { count, error } = await supabaseClient
+                    .from('push_subscriptions')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('is_active', true);
+                if (!error) {
+                    document.getElementById('statSubscribers').textContent = count || 0;
+                }
+            } catch (e) { console.error('Erreur comptage abonnés:', e); }
+        }
+        
+        document.getElementById('notifForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('notifTitle').value.trim();
+            const body = document.getElementById('notifBody').value.trim();
+            const url = document.getElementById('notifUrl').value.trim();
+            const resultEl = document.getElementById('notifResult');
+            const btn = document.getElementById('sendNotifBtn');
+            
+            if (!title || !body) {
+                resultEl.textContent = '❌ Titre et message requis';
+                resultEl.className = 'error';
+                resultEl.style.display = 'block';
+                return;
+            }
+            
+            const subscriberCount = document.getElementById('statSubscribers').textContent;
+            if (!confirm(`Envoyer cette notification à ${subscriberCount} abonné(s) ?\n\n"${title}"\n${body}`)) {
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-icons" style="animation:spin 0.8s linear infinite;">sync</span> Envoi en cours...';
+            
+            try {
+                const response = await fetch('/api/sendNotification', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title,
+                        body,
+                        url: url || '/',
+                        adminKey: ADMIN_PASSWORD
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultEl.textContent = `✅ Notification envoyée à ${result.sent} abonné(s) !`;
+                    resultEl.className = 'success';
+                    resultEl.style.display = 'block';
+                    
+                    document.getElementById('notifTitle').value = '';
+                    document.getElementById('notifBody').value = '';
+                    document.getElementById('notifUrl').value = '';
+                    document.getElementById('notifTitleCount').textContent = '0';
+                    document.getElementById('notifBodyCount').textContent = '0';
+                    document.getElementById('previewNotifTitle').textContent = 'Titre de la notification';
+                    document.getElementById('previewNotifBody').textContent = 'Message de la notification...';
+                    
+                    showToast('Notification envoyée ! 🔔');
+                } else {
+                    resultEl.textContent = `❌ Erreur : ${result.error}`;
+                    resultEl.className = 'error';
+                    resultEl.style.display = 'block';
+                }
+            } catch (error) {
+                resultEl.textContent = `❌ Erreur : ${error.message}`;
+                resultEl.className = 'error';
+                resultEl.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-icons">send</span> Envoyer la notification';
+            }
+        });
+		
         checkSession();
     </script>
 </body>
