@@ -45,26 +45,31 @@
     --primary: #dc2626;
     --primary-light: #ef4444;
     --accent: #f97316;
-    --bg-dark: #1a0a0a;
-    --bg-gradient-1: #2d1515;
-    --bg-gradient-2: #3d1a1a;
-    --bg-gradient-3: #4a1f1f;
-    --glass-bg: rgba(255, 255, 255, 0.08);
-    --glass-border: rgba(255, 100, 100, 0.15);
-    --glass-shadow: rgba(0, 0, 0, 0.3);
+    --bg-dark: #1a0505;
+    --bg-gradient-1: #2a0a0a;
+    --bg-gradient-2: #3a0f0f;
+    --bg-gradient-3: #4a1414;
+    --glass-bg: rgba(255, 50, 50, 0.08);
+    --glass-border: rgba(255, 80, 80, 0.2);
+    --glass-shadow: rgba(139, 0, 0, 0.3);
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.7);
-    --text-muted: rgba(255, 255, 255, 0.5);
+    --text-muted: rgba(255, 200, 200, 0.5);
     --danger: #fbbf24;
     --success: #10b981;
 }
 
 [data-theme="rouge"] .background-gradient {
     background: 
-        radial-gradient(ellipse at 20% 20%, rgba(220, 38, 38, 0.2) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(249, 115, 22, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(239, 68, 68, 0.1) 0%, transparent 70%),
-        linear-gradient(135deg, #1a0a0a 0%, #2d1515 50%, #3d1a1a 100%);
+        radial-gradient(ellipse at 20% 20%, rgba(220, 38, 38, 0.3) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(185, 28, 28, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(239, 68, 68, 0.15) 0%, transparent 70%),
+        linear-gradient(135deg, #1a0505 0%, #2a0a0a 50%, #3a0f0f 100%);
+}
+
+[data-theme="rouge"] .glass {
+    background: rgba(60, 10, 10, 0.6);
+    border: 1px solid rgba(255, 80, 80, 0.15);
 }
 
 /* ============================================
@@ -629,7 +634,7 @@ body {
     position: relative;
     min-height: 120px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     overflow: hidden;
 }
 
@@ -881,6 +886,48 @@ body {
 .ticker-dot.active {
     background: var(--primary);
     transform: scale(1.2);
+}
+
+/* Swiper PC - réduire espace vide */
+@media (min-width: 769px) {
+    .news-ticker-container {
+        min-height: auto;
+    }
+    
+    .news-item {
+        min-height: 180px;
+        max-height: 200px;
+    }
+    
+    .news-item-image {
+        height: 180px;
+        min-height: 180px;
+        max-height: 200px;
+    }
+    
+    .news-ticker-nav {
+        margin-top: 0.75rem;
+    }
+}
+
+/* Grand écran PC */
+@media (min-width: 1024px) {
+    .news-ticker-section {
+        padding: 1.25rem;
+    }
+    
+    .news-item {
+        min-height: 160px;
+        max-height: 180px;
+    }
+    
+    .news-item-image {
+        width: 180px;
+        min-width: 180px;
+        height: 160px;
+        min-height: 160px;
+        max-height: 180px;
+    }
 }
 
 /* ============================================
