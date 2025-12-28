@@ -935,5 +935,18 @@ if (!supabaseClient) return;
             setTimeout(checkAdminNotifications, 2000);
         });
     </script>
+	<!-- Popup Notifications -->
+<div class="notif-prompt" id="notifPrompt">
+    <div class="notif-prompt-content">
+        <button class="notif-prompt-close" onclick="closeNotifPrompt(true)">&times;</button>
+        <div class="notif-prompt-icon">🔔</div>
+        <div class="notif-prompt-title">Restez informé !</div>
+        <div class="notif-prompt-text">Recevez les alertes infos importantes de Montceau et sa région directement sur votre appareil.</div>
+        <div class="notif-prompt-actions">
+            <button class="notif-prompt-btn primary" onclick="acceptNotifPrompt()">Activer</button>
+            <button class="notif-prompt-btn secondary" onclick="closeNotifPrompt(true)">Plus tard</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

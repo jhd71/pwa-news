@@ -822,30 +822,64 @@ let pushSubscription = null;
 
 // Initialiser les notifications au chargement
 async function initPushNotifications() {
-    const btn = document.getElementById('notifSubscribeBtn');
-    if (!btn) return;
-
-    // Vérifier si le navigateur supporte les notifications
+    // Vérifier si les notifications sont supportées
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        btn.style.display = 'none';
-        console.log('⚠️ Push non supporté');
+        console.log('❌ Push non supporté');
         return;
     }
 
-    // Vérifier l'état actuel
     try {
         const registration = await navigator.serviceWorker.ready;
-        pushSubscription = await registration.pushManager.getSubscription();
+        const subscription = await registration.pushManager.getSubscription();
 
-        if (pushSubscription) {
+        if (subscription) {
+            // Déjà abonné
+            console.log('✅ Déjà abonné aux notifications');
             updateNotifButton(true);
-            console.log('🔔 Déjà abonné aux notifications');
         } else {
+            // Pas encore abonné - afficher le popup après 5 secondes
             updateNotifButton(false);
+            
+            // Vérifier si on n'a pas déjà refusé ou si c'est la première visite
+            const notifDismissed = localStorage.getItem('notifPromptDismissed');
+            const lastDismiss = notifDismissed ? parseInt(notifDismissed) : 0;
+            const daysSinceDismiss = (Date.now() - lastDismiss) / (1000 * 60 * 60 * 24);
+            
+            // Afficher le popup si jamais affiché OU si refusé il y a plus de 7 jours
+            if (!notifDismissed || daysSinceDismiss > 7) {
+                setTimeout(() => {
+                    showNotifPrompt();
+                }, 5000); // 5 secondes après le chargement
+            }
         }
     } catch (error) {
         console.error('❌ Erreur init push:', error);
     }
+}
+
+// Afficher le popup de notification
+function showNotifPrompt() {
+    const prompt = document.getElementById('notifPrompt');
+    if (prompt && Notification.permission === 'default') {
+        prompt.classList.add('show');
+    }
+}
+
+// Fermer le popup
+function closeNotifPrompt(saveDismiss = false) {
+    const prompt = document.getElementById('notifPrompt');
+    if (prompt) {
+        prompt.classList.remove('show');
+        if (saveDismiss) {
+            localStorage.setItem('notifPromptDismissed', Date.now().toString());
+        }
+    }
+}
+
+// Accepter les notifications depuis le popup
+async function acceptNotifPrompt() {
+    closeNotifPrompt(false);
+    await subscribeToPush();
 }
 
 // Mettre à jour l'apparence du bouton
@@ -997,3 +1031,6 @@ function showToast(title, message) {
 
 // Exposer globalement
 window.togglePushSubscription = togglePushSubscription;
+window.showNotifPrompt = showNotifPrompt;
+window.closeNotifPrompt = closeNotifPrompt;
+window.acceptNotifPrompt = acceptNotifPrompt;
