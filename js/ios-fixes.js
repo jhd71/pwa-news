@@ -37,16 +37,69 @@
                 }
                 
                 /* ========== HEADER ========== */
-                .ios-device .header {
-                    padding-top: calc(1rem + var(--ios-safe-area-top)) !important;
-                    position: sticky !important;
-                    top: 0 !important;
-                    z-index: 100 !important;
-                }
-                
-                .ios-device .header-actions {
-                    top: calc(1rem + var(--ios-safe-area-top)) !important;
-                }
+				.ios-device .header {
+					padding-top: calc(1rem + var(--ios-safe-area-top)) !important;
+					position: sticky !important;
+					top: 0 !important;
+					z-index: 100 !important;
+				}
+
+				.ios-device .header-actions {
+					top: calc(1rem + var(--ios-safe-area-top)) !important;
+				}
+
+				/* Fix icônes header alignement horizontal */
+				.ios-device .header-left {
+					display: flex !important;
+					flex-direction: row !important;
+					align-items: center !important;
+					gap: 0.5rem !important;
+				}
+
+				.ios-device .header-left .header-btn {
+					display: flex !important;
+					flex-shrink: 0 !important;
+				}
+
+				/* ========== MÉTÉO - Supprimer surbrillance ========== */
+				.ios-device .weather-widget,
+				.ios-device .weather-widget * {
+					-webkit-tap-highlight-color: transparent !important;
+					-webkit-touch-callout: none !important;
+					-webkit-user-select: none !important;
+					user-select: none !important;
+					background-color: transparent !important;
+				}
+
+				.ios-device .weather-day {
+					-webkit-tap-highlight-color: transparent !important;
+				}
+
+				/* ========== TUILES - Espacement uniforme ========== */
+				.ios-device .quick-links-grid,
+				.ios-device .tiles-grid {
+					display: grid !important;
+					grid-template-columns: repeat(2, 1fr) !important;
+					gap: 1rem !important;
+				}
+
+				.ios-device .quick-link-tile,
+				.ios-device .tile {
+					margin: 0 !important;
+				}
+
+				/* Fix tuiles supplémentaires */
+				.ios-device .extra-tiles {
+					display: grid !important;
+					grid-template-columns: repeat(2, 1fr) !important;
+					gap: 1rem !important;
+					margin-top: 1rem !important;
+				}
+
+				.ios-device .extra-tiles .quick-link-tile,
+				.ios-device .extra-tiles .tile {
+					margin: 0 !important;
+				}
                 
                 /* ========== NAVIGATION ========== */
                 .ios-device .nav-tabs {
