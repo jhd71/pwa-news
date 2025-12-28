@@ -1,13 +1,13 @@
-// api/sendNotification.js - Envoyer une notification push
+// api/sendNotification.js - Envoyer des notifications push
 import { createClient } from '@supabase/supabase-js';
 import webpush from 'web-push';
 
-const supabase = createClient(
-    process.env.SUPABASE_URL || 'https://ekjgfiyhkythqcnmhzea.supabase.co',
-    process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY
-);
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://ekjgfiyhkythqcnmhzea.supabase.co';
+const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
 
-// Configuration VAPID
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Configurer VAPID
 webpush.setVapidDetails(
     'mailto:contact@actuetmedia.fr',
     process.env.VAPID_PUBLIC_KEY,
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
@@ -32,17 +32,17 @@ export default async function handler(req, res) {
     try {
         const { title, body, url, adminKey } = req.body;
 
-        // Vérification admin simple (à améliorer selon ton système)
+        // Vérifier la clé admin
         const ADMIN_PASSWORD = process.env.ADMIN_NOTIFICATION_KEY || 'fc35$wL72iZA^';
-if (adminKey !== ADMIN_PASSWORD) {
-            return res.status(401).json({ error: 'Non autorisé' });
+        if (adminKey !== ADMIN_PASSWORD) {
+            return res.status(401).json({ error: 'Clé admin invalide' });
         }
 
         if (!title || !body) {
             return res.status(400).json({ error: 'Titre et message requis' });
         }
 
-        // Récupérer tous les abonnements actifs
+        // Récupérer tous les abonnés actifs
         const { data: subscriptions, error } = await supabase
             .from('push_subscriptions')
             .select('*')
@@ -51,16 +51,10 @@ if (adminKey !== ADMIN_PASSWORD) {
         if (error) throw error;
 
         if (!subscriptions || subscriptions.length === 0) {
-            return res.status(200).json({ 
-                success: true, 
-                sent: 0, 
-                message: 'Aucun abonné' 
-            });
+            return res.status(200).json({ sent: 0, message: 'Aucun abonné' });
         }
 
-        console.log(`📤 Envoi à ${subscriptions.length} abonnés...`);
-
-        // Payload de la notification
+        // Payload de la notification - IMPORTANT : structure correcte
         const payload = JSON.stringify({
             title: title,
             body: body,
@@ -70,43 +64,46 @@ if (adminKey !== ADMIN_PASSWORD) {
             timestamp: Date.now()
         });
 
-        // Envoyer à tous les abonnés
-        const results = await Promise.allSettled(
-            subscriptions.map(async (sub) => {
-                const pushSubscription = {
-                    endpoint: sub.endpoint,
-                    keys: {
-                        p256dh: sub.keys_p256dh,
-                        auth: sub.keys_auth
-                    }
-                };
+        console.log('📤 Envoi notification:', payload);
 
-                try {
-                    await webpush.sendNotification(pushSubscription, payload);
-                    return { success: true, endpoint: sub.endpoint };
-                } catch (err) {
-                    // Si l'abonnement n'est plus valide, le désactiver
-                    if (err.statusCode === 410 || err.statusCode === 404) {
-                        await supabase
-                            .from('push_subscriptions')
-                            .update({ is_active: false })
-                            .eq('endpoint', sub.endpoint);
-                    }
-                    return { success: false, endpoint: sub.endpoint, error: err.message };
+        let sent = 0;
+        let failed = 0;
+
+        // Envoyer à chaque abonné
+        for (const sub of subscriptions) {
+            const pushSubscription = {
+                endpoint: sub.endpoint,
+                keys: {
+                    p256dh: sub.keys_p256dh,
+                    auth: sub.keys_auth
                 }
-            })
-        );
+            };
 
-        const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
-        const failed = results.length - successful;
+            try {
+                await webpush.sendNotification(pushSubscription, payload);
+                sent++;
+                console.log('✅ Envoyé à:', sub.endpoint.substring(0, 50) + '...');
+            } catch (err) {
+                console.error('❌ Erreur envoi:', err.statusCode, err.body);
+                failed++;
+                
+                // Désactiver les abonnements invalides (410 = expiré, 404 = introuvable)
+                if (err.statusCode === 410 || err.statusCode === 404) {
+                    await supabase
+                        .from('push_subscriptions')
+                        .update({ is_active: false })
+                        .eq('endpoint', sub.endpoint);
+                    console.log('🗑️ Abonnement désactivé:', sub.endpoint.substring(0, 50) + '...');
+                }
+            }
+        }
 
-        console.log(`✅ Envoyé: ${successful}, ❌ Échec: ${failed}`);
+        console.log(`📊 Résultat: ${sent} envoyés, ${failed} échoués`);
 
-        return res.status(200).json({
-            success: true,
-            sent: successful,
-            failed: failed,
-            total: subscriptions.length
+        return res.status(200).json({ 
+            sent, 
+            failed,
+            total: subscriptions.length 
         });
 
     } catch (error) {

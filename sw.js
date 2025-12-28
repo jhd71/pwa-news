@@ -141,30 +141,48 @@ self.addEventListener('push', (event) => {
 
 // Clic sur la notification
 self.addEventListener('notificationclick', (event) => {
-    console.log('👆 Clic sur notification');
+    console.log('👆 Clic sur notification, action:', event.action);
+    console.log('📦 Données notification:', event.notification.data);
 
     event.notification.close();
 
-    const url = event.notification.data?.url || '/';
-
+    // Si l'utilisateur clique sur "Fermer"
     if (event.action === 'close') {
+        console.log('❌ Action fermer');
         return;
     }
+
+    // Récupérer l'URL
+    const urlPath = event.notification.data?.url || '/';
+    const fullUrl = urlPath.startsWith('http') ? urlPath : 'https://actuetmedia.fr' + urlPath;
+    
+    console.log('🌐 URL à ouvrir:', fullUrl);
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true })
             .then((clientList) => {
-                // Si une fenêtre est déjà ouverte, la focus
+                console.log('📱 Nombre de fenêtres:', clientList.length);
+                
+                // Chercher une fenêtre existante
                 for (const client of clientList) {
-                    if (client.url.includes('actuetmedia.fr') && 'focus' in client) {
-                        client.navigate(url);
-                        return client.focus();
+                    console.log('🔍 Fenêtre trouvée:', client.url);
+                    if ('focus' in client) {
+                        return client.focus().then(() => {
+                            if ('navigate' in client) {
+                                console.log('➡️ Navigation vers:', fullUrl);
+                                return client.navigate(fullUrl);
+                            }
+                        });
                     }
                 }
-                // Sinon ouvrir une nouvelle fenêtre
-                if (clients.openWindow) {
-                    return clients.openWindow(url);
-                }
+                
+                // Ouvrir une nouvelle fenêtre
+                console.log('🆕 Ouverture nouvelle fenêtre:', fullUrl);
+                return clients.openWindow(fullUrl);
+            })
+            .catch((err) => {
+                console.error('❌ Erreur:', err);
+                return clients.openWindow(fullUrl);
             })
     );
 });
