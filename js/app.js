@@ -224,12 +224,12 @@ function applyTheme(theme) {
     
     // Mettre à jour le theme-color pour les barres système (Android/iOS)
     const themeColors = {
-        'dark': '#0f0f1a',
-        'light': '#f0f4f8',
-        'rouge': '#1a0505',
-        'bleuciel': '#0c1929',
-        'rose': '#1a0a14',
-        'rosepale': '#fdf2f8'
+        'dark': '#1a1a2e',
+        'light': '#e2e8f0',
+        'rouge': '#3a0f0f',
+        'bleuciel': '#1e3a5f',
+        'rose': '#4a1942',
+        'rosepale': '#fce7f3'
     };
     
     const themeColorMeta = document.getElementById('themeColorMeta');
