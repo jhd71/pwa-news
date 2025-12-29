@@ -358,21 +358,10 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-
-    /* Couleur système ANDROID */
-    background-color: #1a1a2e;
-
-    /* Ton thème existant */
-    background-image: var(--bg-dark);
+    background: var(--bg-dark);
     color: var(--text-primary);
-
     min-height: 100vh;
     overflow-x: hidden;
-
-    /* SAFE AREAS Android / iOS */
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-
     -webkit-font-smoothing: antialiased;
 }
 
