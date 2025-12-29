@@ -556,3 +556,65 @@
     opacity: 0.7;
     pointer-events: none;
 }
+
+/* ============================================
+   SOCIAL ICONS FOOTER
+   ============================================ */
+.support-social {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.support-social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.support-social-link:hover {
+    transform: translateY(-3px) scale(1.05);
+}
+
+.support-social-link.facebook:hover {
+    background: #1877f2;
+    border-color: #1877f2;
+    color: white;
+    box-shadow: 0 8px 25px rgba(24, 119, 242, 0.4);
+}
+
+.support-social-link.email:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+}
+
+.support-social-link svg {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+}
+
+.support-social-link .material-icons {
+    font-size: 22px;
+}
+
+/* Mode clair */
+[data-theme="light"] .support-social-link {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="rosepale"] .support-social-link {
+    background: rgba(131, 24, 67, 0.08);
+    color: #9d174d;
+}
