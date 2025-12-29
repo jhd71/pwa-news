@@ -358,10 +358,7 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-
-    /* IMPORTANT pour Android PWA */
-    background-color: #1a1a2e;
-    background-image: var(--bg-dark);
+    background: var(--bg-dark);
     color: var(--text-primary);
     min-height: 100vh;
     overflow-x: hidden;
