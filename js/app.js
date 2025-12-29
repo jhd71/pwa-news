@@ -221,6 +221,21 @@ function applyTheme(theme) {
         const btnTheme = btn.getAttribute('data-theme');
         btn.classList.toggle('active', btnTheme === theme);
     });
+    
+    // Mettre à jour le theme-color pour les barres système (Android/iOS)
+    const themeColors = {
+        'dark': '#0f0f1a',
+        'light': '#f0f4f8',
+        'rouge': '#1a0505',
+        'bleuciel': '#0c1929',
+        'rose': '#1a0a14',
+        'rosepale': '#fdf2f8'
+    };
+    
+    const themeColorMeta = document.getElementById('themeColorMeta');
+    if (themeColorMeta) {
+        themeColorMeta.setAttribute('content', themeColors[theme] || '#0f0f1a');
+    }
 }
 
 // ============================================
