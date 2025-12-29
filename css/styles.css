@@ -332,11 +332,6 @@
     color: #db2777;
 }
 
-/* Mode clair - Fond de page */
-[data-theme="light"] body {
-    background: #f0f4f8;
-}
-
 /* Mode clair - Fond animé */
 [data-theme="light"] .background-gradient {
     background: 
@@ -363,7 +358,6 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: var(--bg-dark);
     color: var(--text-primary);
     min-height: 100vh;
     overflow-x: hidden;
