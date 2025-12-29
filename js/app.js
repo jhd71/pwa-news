@@ -324,32 +324,69 @@ function initNewsNavigation() {
     }, { passive: true });
 }
 
-function goToNewsSlide(index) {
+function goToNewsSlide(index, smooth = true) {
     const slides = document.getElementById('newsSlides');
     const dots = document.querySelectorAll('.ticker-dot');
     
     if (!slides || !newsSlides.length) return;
     
-    if (index < 0) index = newsSlides.length - 1;
-    if (index >= newsSlides.length) index = 0;
+    // Calculer le nouvel index
+    let newIndex = index;
+    let needsInstantJump = false;
     
-    newsCurrentSlide = index;
-    slides.style.transform = `translateX(-${index * 100}%)`;
+    if (index < 0) {
+        newIndex = newsSlides.length - 1;
+        needsInstantJump = true;
+    } else if (index >= newsSlides.length) {
+        newIndex = 0;
+        needsInstantJump = true;
+    }
+    
+    // Si on boucle (fin → début ou début → fin), désactiver la transition
+    if (needsInstantJump && smooth) {
+        slides.style.transition = 'none';
+        slides.style.transform = `translateX(-${newIndex * 100}%)`;
+        
+        // Forcer le reflow puis réactiver la transition
+        slides.offsetHeight;
+        setTimeout(() => {
+            slides.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        }, 50);
+    } else {
+        slides.style.transform = `translateX(-${newIndex * 100}%)`;
+    }
+    
+    newsCurrentSlide = newIndex;
     
     dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === index);
+        dot.classList.toggle('active', i === newIndex);
     });
 }
 
 function startNewsAutoPlay() {
+    // S'assurer qu'il n'y a pas déjà un intervalle actif
+    if (newsAutoPlayInterval) {
+        clearInterval(newsAutoPlayInterval);
+    }
+    
     newsAutoPlayInterval = setInterval(() => {
         goToNewsSlide(newsCurrentSlide + 1);
-    }, 6000);
+    }, 6000); // 6 secondes entre chaque slide
 }
 
 function resetNewsAutoPlay() {
-    clearInterval(newsAutoPlayInterval);
+    if (newsAutoPlayInterval) {
+        clearInterval(newsAutoPlayInterval);
+        newsAutoPlayInterval = null;
+    }
     startNewsAutoPlay();
+}
+
+function stopNewsAutoPlay() {
+    if (newsAutoPlayInterval) {
+        clearInterval(newsAutoPlayInterval);
+        newsAutoPlayInterval = null;
+    }
 }
 
 function showNewsError(message) {
