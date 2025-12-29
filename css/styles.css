@@ -332,28 +332,6 @@
     color: #db2777;
 }
 
-/* Backgrounds HTML pour barre navigation Android */
-[data-theme="light"] html,
-[data-theme="light"] body {
-    background: #f0f4f8;
-}
-
-[data-theme="rouge"] html {
-    background: #1a0505;
-}
-
-[data-theme="bleuciel"] html {
-    background: #0c1929;
-}
-
-[data-theme="rose"] html {
-    background: #1a0a14;
-}
-
-[data-theme="rosepale"] html {
-    background: #fdf2f8;
-}
-
 /* Mode clair - Fond animé */
 [data-theme="light"] .background-gradient {
     background: 
@@ -376,10 +354,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-html {
-    background: var(--bg-dark);
 }
 
 body {
@@ -2586,10 +2560,4 @@ body {
 .notif-prompt-btn.secondary:hover {
     background: rgba(255, 255, 255, 0.15);
     color: white;
-}
-
-/* Support safe areas (encoche, barre navigation) */
-body {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
 }
