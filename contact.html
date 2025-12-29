@@ -292,26 +292,48 @@
             gap: 1rem;
         }
         
-        .contact-social {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 50px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 50%;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
-        }
-        
-        .contact-social:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            transform: translateY(-3px);
-        }
+        /* Social icons améliorés */
+		.contact-social {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 50px;
+			height: 50px;
+			background: rgba(255, 255, 255, 0.1);
+			border: 1px solid var(--glass-border);
+			border-radius: 50%;
+			text-decoration: none;
+			font-size: 1.5rem;
+			transition: all 0.3s ease;
+			color: var(--text-secondary);
+		}
+
+		.contact-social:hover {
+			transform: translateY(-3px) scale(1.05);
+		}
+
+		.contact-social.facebook {
+			color: var(--text-secondary);
+		}
+
+		.contact-social.facebook:hover {
+			background: #1877f2;
+			border-color: #1877f2;
+			color: white;
+			box-shadow: 0 8px 25px rgba(24, 119, 242, 0.4);
+		}
+
+		.contact-social.tipeee:hover {
+			background: #e84c64;
+			border-color: #e84c64;
+			box-shadow: 0 8px 25px rgba(232, 76, 100, 0.4);
+		}
+
+		.contact-social svg {
+			width: 24px;
+			height: 24px;
+			fill: currentColor;
+		}
         
         /* Mode clair */
         [data-theme="light"] .contact-form {
@@ -482,10 +504,10 @@
         <div class="contact-info">
             <div class="contact-info-title">Suivez-nous aussi sur</div>
             <div class="contact-socials">
-                <a href="https://www.facebook.com/actuetmedia.fr/" target="_blank" class="contact-social" title="Facebook">
-                    📘
+                <a href="https://www.facebook.com/actuetmedia.fr/" target="_blank" rel="noopener" class="contact-social facebook" title="Facebook">
+                    <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 </a>
-                <a href="https://fr.tipeee.com/actuetmedia" target="_blank" class="contact-social" title="Tipeee">
+                <a href="https://fr.tipeee.com/actuetmedia" target="_blank" rel="noopener" class="contact-social tipeee" title="Tipeee">
                     ❤️
                 </a>
             </div>
