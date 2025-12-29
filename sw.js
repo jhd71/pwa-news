@@ -1,12 +1,11 @@
 // ============================================
-// ACTU & MÉDIA - Service Worker v27
+// ACTU & MÉDIA - Service Worker v28
 // ============================================
 
-const CACHE_NAME = 'actu-media-v27';
+const CACHE_NAME = 'actu-media-v28';
 
 const STATIC_ASSETS = [
     '/',
-    '/index.html',
     '/css/styles.css',
     '/css/quick-links.css',
     '/css/support.css',
@@ -14,8 +13,7 @@ const STATIC_ASSETS = [
     '/js/app.js',
     '/js/quick-links.js',
     '/js/support.js',
-    '/js/radio.js',
-    '/manifest.json'
+    '/js/radio.js'
 ];
 
 // Installation
