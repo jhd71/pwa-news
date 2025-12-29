@@ -444,13 +444,56 @@ body {
 
 .header h1 {
     font-size: 1.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 100%);
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffffff 0%, var(--primary-light) 50%, var(--primary) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     letter-spacing: -0.5px;
     white-space: nowrap;
+    text-shadow: 0 2px 20px rgba(99, 102, 241, 0.3);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Header titre par thème */
+[data-theme="light"] .header h1 {
+    background: linear-gradient(135deg, #1e293b 0%, var(--primary) 50%, var(--primary-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+[data-theme="rouge"] .header h1 {
+    background: linear-gradient(135deg, #ffffff 0%, #ff6b6b 50%, #dc2626 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 8px rgba(220, 38, 38, 0.4));
+}
+
+[data-theme="bleuciel"] .header h1 {
+    background: linear-gradient(135deg, #ffffff 0%, #7dd3fc 50%, #0ea5e9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 8px rgba(14, 165, 233, 0.4));
+}
+
+[data-theme="rose"] .header h1 {
+    background: linear-gradient(135deg, #ffffff 0%, #f9a8d4 50%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 8px rgba(236, 72, 153, 0.4));
+}
+
+[data-theme="rosepale"] .header h1 {
+    background: linear-gradient(135deg, #831843 0%, #db2777 50%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 4px rgba(219, 39, 119, 0.2));
 }
 
 .header-right-btns {
