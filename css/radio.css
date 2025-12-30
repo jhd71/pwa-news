@@ -1,6 +1,6 @@
 /* ============================================
-   RADIO PLAYER - CSS COMPLET
-   Widget déplié/replié + Minuteur + Now Playing
+   RADIO PLAYER - CSS SIMPLIFIÉ
+   Version 2 thèmes (dark/light)
    ============================================ */
 
 /* ============================================
@@ -45,11 +45,9 @@
 .radio-modal {
     width: 100%;
     max-height: 85vh;
-    background: var(--glass-bg);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border: 1px solid var(--glass-border);
-    border-radius: 24px 24px 0 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -66,7 +64,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--border-color);
     flex-shrink: 0;
 }
 
@@ -82,7 +80,7 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-elevated);
     border: none;
     border-radius: 50%;
     color: var(--text-primary);
@@ -91,7 +89,7 @@
 }
 
 .radio-modal-close:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--bg-card-hover);
 }
 
 .radio-modal-content {
@@ -106,7 +104,7 @@
     gap: 1rem;
     padding: 1rem;
     background: rgba(99, 102, 241, 0.1);
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     margin-bottom: 1rem;
 }
 
@@ -117,9 +115,9 @@
 .radio-current-logo {
     width: 56px;
     height: 56px;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     object-fit: cover;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-md);
 }
 
 .radio-current-info {
@@ -187,7 +185,7 @@
     color: white;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+    box-shadow: var(--shadow-primary);
 }
 
 .radio-play-btn:hover {
@@ -215,7 +213,7 @@
     height: 6px;
     -webkit-appearance: none;
     appearance: none;
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--bg-elevated);
     border-radius: 3px;
     cursor: pointer;
 }
@@ -228,7 +226,7 @@
     background: var(--primary);
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+    box-shadow: var(--shadow-sm);
 }
 
 .radio-volume-value {
@@ -254,7 +252,7 @@
 }
 
 .radio-cast-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-elevated);
     color: var(--text-primary);
 }
 
@@ -273,7 +271,6 @@
     overscroll-behavior: contain;
 }
 
-/* Scrollbar plus fine */
 .radio-stations-container::-webkit-scrollbar {
     width: 4px;
 }
@@ -283,7 +280,7 @@
 }
 
 .radio-stations-container::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--border-color);
     border-radius: 2px;
 }
 
@@ -311,9 +308,9 @@
     flex-direction: column;
     align-items: center;
     padding: 0.6rem 0.35rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: center;
@@ -321,7 +318,7 @@
 }
 
 .radio-station:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-card-hover);
     transform: translateY(-2px);
 }
 
@@ -333,10 +330,10 @@
 .radio-station-logo {
     width: 44px;
     height: 44px;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     object-fit: cover;
     margin-bottom: 0.35rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-elevated);
     flex-shrink: 0;
 }
 
@@ -361,48 +358,127 @@
 }
 
 /* ============================================
-   WIDGET RADIO (Mini Player)
+   WIDGET RADIO COMPACT
    ============================================ */
 #radioWidget {
-    position: fixed !important;
-    bottom: 16px !important;
-    left: 50% !important;
-    transform: translateX(-50%);
-    width: calc(100% - 1.5rem);
-    max-width: 440px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
     z-index: 9999;
     display: none;
     flex-direction: column;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
+    align-items: flex-end;
+    gap: 0.75rem;
     transition: all 0.3s ease;
 }
 
 #radioWidget.show {
-    display: flex !important;
+    display: flex;
 }
 
-/* Widget header */
+#radioWidget.expanded {
+    width: 320px;
+    max-width: calc(100vw - 40px);
+}
+
+/* Widget replié */
+.radio-widget-collapsed {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-lg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.radio-widget-collapsed:hover {
+    transform: scale(1.02);
+}
+
+#radioWidget.expanded .radio-widget-collapsed {
+    display: none;
+}
+
+.radio-widget-collapsed-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.radio-widget-collapsed-info {
+    flex: 1;
+    min-width: 0;
+    max-width: 150px;
+}
+
+.radio-widget-collapsed-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.radio-widget-collapsed-status {
+    font-size: 0.7rem;
+    color: var(--primary);
+}
+
+.radio-widget-collapsed-eq {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 20px;
+}
+
+.radio-widget-collapsed-eq .bar {
+    width: 3px;
+    background: var(--primary);
+    border-radius: 1px;
+    animation: equalizerBounce 0.6s ease-in-out infinite;
+}
+
+.radio-widget-collapsed-eq .bar:nth-child(2) { animation-delay: 0.1s; }
+.radio-widget-collapsed-eq .bar:nth-child(3) { animation-delay: 0.2s; }
+
+/* Widget déplié */
+.radio-widget-expanded {
+    display: none;
+    width: 100%;
+    padding: 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+#radioWidget.expanded .radio-widget-expanded {
+    display: block;
+}
+
 .radio-widget-header {
     display: flex;
     align-items: center;
-    padding: 0.75rem 1rem;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.radio-widget-station {
+    display: flex;
+    align-items: center;
     gap: 0.75rem;
-    cursor: pointer;
 }
 
 .radio-widget-logo {
     width: 48px;
     height: 48px;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     object-fit: cover;
-    flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .radio-widget-info {
@@ -413,258 +489,178 @@
 .radio-widget-name {
     font-size: 1rem;
     font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .radio-widget-status {
     font-size: 0.8rem;
     color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    margin-top: 0.15rem;
 }
 
-.radio-widget-status .live-dot {
-    width: 6px;
-    height: 6px;
-    background: #22c55e;
-    border-radius: 50%;
-    animation: livePulse 1.5s infinite;
-}
-
-@keyframes livePulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-}
-
-/* Now Playing dans le widget */
 .radio-widget-nowplaying {
     font-size: 0.75rem;
+    color: var(--primary);
     margin-top: 0.25rem;
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
-.radio-widget-nowplaying .material-icons {
-    font-size: 0.9rem;
-}
-
-/* Visualizer widget */
-.radio-widget-visualizer {
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    gap: 3px;
-    height: 40px;
-    padding: 0.5rem 0;
-}
-
-.radio-widget-bar {
-    width: 3px;
-    background: var(--primary);
-    border-radius: 2px;
-    animation: widgetBarBounce 0.5s ease-in-out infinite;
-}
-
-.radio-widget-bar:nth-child(1) { animation-delay: 0s; height: 15px; }
-.radio-widget-bar:nth-child(2) { animation-delay: 0.1s; height: 25px; }
-.radio-widget-bar:nth-child(3) { animation-delay: 0.2s; height: 35px; }
-.radio-widget-bar:nth-child(4) { animation-delay: 0.3s; height: 25px; }
-.radio-widget-bar:nth-child(5) { animation-delay: 0.4s; height: 15px; }
-
-@keyframes widgetBarBounce {
-    0%, 100% { transform: scaleY(0.4); }
-    50% { transform: scaleY(1); }
-}
-
-/* Toggle btn */
 .radio-widget-toggle {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: rgba(255, 255, 255, 0.1);
+    width: 32px;
+    height: 32px;
+    background: var(--bg-elevated);
     border: none;
     border-radius: 50%;
-    color: var(--text-primary);
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.2s ease;
-    flex-shrink: 0;
 }
 
 .radio-widget-toggle:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--bg-card-hover);
+    color: var(--text-primary);
 }
 
-.radio-widget-toggle .material-icons {
-    transition: transform 0.3s ease;
-}
-
-/* Corps du widget (dépliable) */
-.radio-widget-expanded {
-    padding: 0 1rem 1rem;
+.radio-widget-equalizer {
     display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    max-height: 300px;
-    overflow: hidden;
-    transition: all 0.3s ease;
+    align-items: flex-end;
+    gap: 3px;
+    height: 24px;
+    margin-left: 0.5rem;
 }
 
-#radioWidget.collapsed .radio-widget-expanded {
-    max-height: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    opacity: 0;
+.radio-widget-bar {
+    width: 4px;
+    background: var(--primary);
+    border-radius: 2px;
+    animation: equalizerBounce 0.6s ease-in-out infinite;
 }
 
-/* Contrôles principaux */
-.radio-widget-main-controls {
+.radio-widget-bar:nth-child(2) { animation-delay: 0.1s; }
+.radio-widget-bar:nth-child(3) { animation-delay: 0.2s; }
+.radio-widget-bar:nth-child(4) { animation-delay: 0.3s; }
+
+.radio-widget-equalizer.paused .radio-widget-bar {
+    animation: none;
+    height: 6px;
+}
+
+.radio-widget-controls {
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
 .radio-widget-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
+    width: 40px;
+    height: 40px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
     border-radius: 50%;
     color: var(--text-primary);
     cursor: pointer;
     transition: all 0.2s ease;
-    position: relative;
 }
 
 .radio-widget-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.05);
+    background: var(--bg-card-hover);
 }
 
 .radio-widget-btn.large {
-    width: 60px;
-    height: 60px;
+    width: 52px;
+    height: 52px;
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     color: white;
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+    border: none;
+    box-shadow: var(--shadow-primary);
+}
+
+.radio-widget-btn.large:hover {
+    transform: scale(1.05);
 }
 
 .radio-widget-btn.large .material-icons {
-    font-size: 2rem;
+    font-size: 1.75rem;
 }
 
-.radio-widget-btn.cast.casting {
-    background: rgba(66, 133, 244, 0.2);
-    color: #4285f4;
+.radio-widget-btn.timer-active {
+    color: var(--warning);
+    border-color: var(--warning);
 }
 
-.radio-widget-btn.sleep.active {
-    background: rgba(251, 191, 36, 0.2);
-    color: #fbbf24;
-}
-
-/* Badge minuteur */
-.sleep-badge {
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    background: #fbbf24;
-    color: #000;
-    font-size: 0.65rem;
-    font-weight: 700;
-    padding: 2px 5px;
-    border-radius: 10px;
-    display: none;
-}
-
-/* Section volume */
-.radio-widget-volume-section {
+.radio-widget-volume {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.5rem 0;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.radio-widget-volume-icon {
+    color: var(--text-secondary);
+    cursor: pointer;
 }
 
 .radio-widget-volume-slider {
     flex: 1;
-    height: 8px;
+    height: 4px;
     -webkit-appearance: none;
     appearance: none;
-    background: linear-gradient(to right, var(--primary) 0%, rgba(255, 255, 255, 0.2) 0%);
-    border-radius: 4px;
+    background: var(--bg-elevated);
+    border-radius: 2px;
     cursor: pointer;
 }
 
 .radio-widget-volume-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 24px;
-    height: 24px;
-    background: white;
+    width: 14px;
+    height: 14px;
+    background: var(--primary);
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.radio-widget-volume-slider::-moz-range-thumb {
-    width: 24px;
-    height: 24px;
-    background: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .radio-widget-volume-value {
-    font-size: 0.9rem;
-    font-weight: 600;
-    min-width: 45px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    min-width: 30px;
     text-align: right;
-    color: var(--text-primary);
 }
 
 /* ============================================
-   POPUP MINUTEUR SOMMEIL
+   POPUP MINUTEUR
    ============================================ */
 .sleep-timer-popup {
     position: fixed;
-    bottom: 200px;
-    left: 50%;
-    transform: translateX(-50%) scale(0.9);
-    width: calc(100% - 2rem);
-    max-width: 320px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
+    bottom: 100px;
+    right: 20px;
+    width: 260px;
+    max-width: calc(100vw - 40px);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
     padding: 1.25rem;
+    box-shadow: var(--shadow-lg);
     z-index: 10001;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.2s ease;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    display: none;
 }
 
 .sleep-timer-popup.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) scale(1);
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .sleep-timer-popup-header {
@@ -674,14 +670,13 @@
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    color: #fbbf24;
+    color: var(--primary);
 }
 
-.sleep-timer-popup-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+.sleep-timer-options {
+    display: flex;
+    flex-direction: column;
     gap: 0.5rem;
-    margin-bottom: 0.75rem;
 }
 
 .sleep-timer-option {
@@ -689,928 +684,115 @@
     align-items: center;
     justify-content: center;
     padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    color: var(--text-primary);
-    font-size: 0.9rem;
-    font-weight: 500;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
     cursor: pointer;
     transition: all 0.2s ease;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
 }
 
 .sleep-timer-option:hover {
-    background: rgba(251, 191, 36, 0.2);
-    border-color: #fbbf24;
+    background: var(--bg-card-hover);
+    border-color: var(--primary);
 }
 
-.sleep-timer-time-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    width: 100%;
-    padding: 0.75rem;
-    background: rgb(0 0 0 / .1);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    border-radius: 12px;
-    color: #dfa40a;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: 600;
-}
-
-.sleep-timer-time-btn:hover {
+.sleep-timer-option.active {
     background: rgba(99, 102, 241, 0.2);
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
-.sleep-timer-time-input {
+.sleep-timer-active {
     display: none;
-    width: 100%;
-    padding: 0.75rem;
-    margin-top: 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    color: var(--text-primary);
-    font-size: 1rem;
-    text-align: center;
-}
-
-.sleep-timer-status {
-    display: none;
+    flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    padding: 0.75rem;
-    background: rgba(251, 191, 36, 0.15);
-    border: 1px solid rgba(251, 191, 36, 0.3);
-    border-radius: 12px;
-    color: #fbbf24;
-    font-size: 0.85rem;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
 }
 
-.sleep-timer-status .material-icons {
-    font-size: 1.1rem;
+.sleep-timer-active.show {
+    display: flex;
 }
 
-#sleepTimerStatusText {
-    flex: 1;
+.sleep-timer-countdown {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
 }
 
 .sleep-timer-cancel {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    background: rgba(239, 68, 68, 0.2);
-    border: none;
-    border-radius: 50%;
-    color: #ef4444;
+    padding: 0.5rem 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid var(--danger);
+    border-radius: var(--radius-md);
+    color: var(--danger);
+    font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .sleep-timer-cancel:hover {
-    background: rgba(239, 68, 68, 0.3);
-}
-
-.sleep-timer-cancel .material-icons {
-    font-size: 1rem;
+    background: var(--danger);
+    color: white;
 }
 
 /* ============================================
-   TOAST
+   TOAST RADIO
    ============================================ */
 .radio-toast {
     position: fixed;
     bottom: 100px;
     left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
+    transform: translateX(-50%) translateY(100px);
     padding: 0.75rem 1.5rem;
-    border-radius: 50px;
-    font-size: 0.9rem;
-    color: var(--text-primary);
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-lg);
     z-index: 10002;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: all 0.3s ease;
 }
 
 .radio-toast.show {
     opacity: 1;
-    visibility: visible;
     transform: translateX(-50%) translateY(0);
 }
 
-/* ============================================
-   ESPACE FOOTER QUAND RADIO JOUE
-   ============================================ */
-body.radio-playing .footer {
-    margin-bottom: 110px !important;
+.radio-toast-icon {
+    font-size: 1.25rem;
 }
 
 /* ============================================
-   RESPONSIVE MOBILE (< 600px)
+   RESPONSIVE
    ============================================ */
-@media (max-width: 599px) {
+@media (min-width: 768px) {
     .radio-modal {
-        max-height: 90vh;
-        border-radius: 20px 20px 0 0;
-		background: rgb(48 56 83);
-    }
-    
-    .radio-modal-header {
-        padding: 0.875rem 1rem;
-    }
-    
-    .radio-modal-header h2 {
-        font-size: 1rem;
-    }
-    
-    .radio-modal-content {
-        padding: 0.875rem 1rem;
-    }
-    
-    .radio-stations-container {
-        padding: 0.5rem 0.75rem 1.5rem;
-    }
-    
-    .radio-stations-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.4rem;
-    }
-    
-    .radio-station {
-        padding: 0.5rem 0.25rem;
-    }
-    
-    .radio-station-logo {
-        width: 50px;
-        height: 50px;
-    }
-    
-    .radio-station-name {
-        font-size: 0.65rem;
-    }
-    
-    .radio-station-desc {
-        font-size: 0.55rem;
-    }
-    
-    .radio-current-logo {
-        width: 48px;
-        height: 48px;
-    }
-    
-    .radio-current-name {
-        font-size: 1rem;
-    }
-    
-    .radio-play-btn {
-        width: 50px;
-        height: 50px;
-    }
-    
-    .radio-play-btn .material-icons {
-        font-size: 1.75rem;
-    }
-}
-
-/* ============================================
-   RESPONSIVE TABLETTE ET PC (>= 600px)
-   ============================================ */
-@media (min-width: 600px) {
-    .radio-modal-overlay {
-        align-items: center;
-        padding: 2rem;
-    }
-    
-    .radio-modal {
-        max-width: 850px;
+        max-width: 500px;
+        margin: 0 auto;
+        border-radius: var(--radius-xl);
         max-height: 80vh;
-        border-radius: 24px;
-        animation: modalFadeIn 0.3s ease;
-		background: rgb(48 56 83);
-    }
-    
-    @keyframes modalFadeIn {
-        from { transform: scale(0.95); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
     }
     
     .radio-stations-grid {
         grid-template-columns: repeat(4, 1fr);
-        gap: 0.6rem;
+    }
+}
+
+@media (max-width: 380px) {
+    #radioWidget.expanded {
+        width: calc(100vw - 20px);
+        right: 10px;
     }
     
-    .radio-station {
-        padding: 0.7rem 0.4rem;
+    .radio-widget-collapsed-info {
+        max-width: 100px;
     }
-    
-    .radio-station-logo {
-        width: 50px;
-        height: 50px;
-    }
-    
-    .radio-station-name {
-        font-size: 0.72rem;
-    }
-    
-    .radio-station-desc {
-        font-size: 0.62rem;
-    }
-    
-    #radioWidget {
-        bottom: 20px !important;
-        max-width: 420px;
-    }
-    
-    body.radio-playing .footer {
-        margin-bottom: 220px !important;
-    }
-}
-
-/* ============================================
-   RESPONSIVE PETIT MOBILE (< 380px)
-   ============================================ */
-@media (max-width: 379px) {
-    .radio-stations-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.35rem;
-    }
-    
-    .radio-station {
-        padding: 0.4rem 0.2rem;
-    }
-    
-    .radio-station-logo {
-        width: 36px;
-        height: 36px;
-    }
-    
-    .radio-station-name {
-        font-size: 0.6rem;
-    }
-    
-    .radio-station-desc {
-        display: none;
-    }
-    
-    .radio-widget-main-controls {
-        gap: 0.35rem;
-    }
-    
-    .radio-widget-btn {
-        width: 42px;
-        height: 42px;
-    }
-    
-    .radio-widget-btn.large {
-        width: 52px;
-        height: 52px;
-    }
-    
-    .sleep-timer-popup-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.4rem;
-    }
-}
-/* ============================================
-   THÈME CLAIR - Styles spécifiques
-   ============================================ */
-
-/* === WIDGET EN MODE CLAIR === */
-[data-theme="light"] #radioWidget,
-[data-theme="bleuciel"] #radioWidget {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-}
-
-[data-theme="light"] .radio-widget-name,
-[data-theme="bleuciel"] .radio-widget-name {
-    color: #1e293b;
-}
-
-[data-theme="light"] .radio-widget-status,
-[data-theme="bleuciel"] .radio-widget-status {
-    color: #64748b;
-}
-
-[data-theme="light"] .radio-widget-nowplaying,
-[data-theme="bleuciel"] .radio-widget-nowplaying {
-    color: var(--primary);
-}
-
-[data-theme="light"] .radio-widget-btn,
-[data-theme="bleuciel"] .radio-widget-btn {
-    background: rgba(0, 0, 0, 0.05);
-    color: #1e293b;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .radio-widget-btn:hover,
-[data-theme="bleuciel"] .radio-widget-btn:hover {
-    background: rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .radio-widget-btn.large,
-[data-theme="bleuciel"] .radio-widget-btn.large {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-    color: white;
-    border: none;
-}
-
-[data-theme="light"] .radio-widget-toggle,
-[data-theme="bleuciel"] .radio-widget-toggle {
-    background: rgba(0, 0, 0, 0.05);
-    color: #1e293b;
-}
-
-[data-theme="light"] .radio-widget-toggle:hover,
-[data-theme="bleuciel"] .radio-widget-toggle:hover {
-    background: rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .radio-widget-bar,
-[data-theme="bleuciel"] .radio-widget-bar {
-    background: var(--primary);
-}
-
-[data-theme="light"] .radio-widget-volume-slider,
-[data-theme="bleuciel"] .radio-widget-volume-slider {
-    background: rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .radio-widget-volume-slider::-webkit-slider-thumb,
-[data-theme="bleuciel"] .radio-widget-volume-slider::-webkit-slider-thumb {
-    background: var(--primary);
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
-}
-
-[data-theme="light"] .radio-widget-volume-value,
-[data-theme="bleuciel"] .radio-widget-volume-value {
-    color: #1e293b;
-}
-
-/* === MODAL EN MODE CLAIR === */
-[data-theme="light"] .radio-modal,
-[data-theme="bleuciel"] .radio-modal {
-    background: rgba(255, 255, 255, 0.98);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .radio-modal-header,
-[data-theme="bleuciel"] .radio-modal-header {
-    border-color: rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .radio-modal-header h2,
-[data-theme="bleuciel"] .radio-modal-header h2 {
-    color: #1e293b;
-}
-
-[data-theme="light"] .radio-modal-close,
-[data-theme="bleuciel"] .radio-modal-close {
-    background: rgba(0, 0, 0, 0.05);
-    color: #64748b;
-}
-
-[data-theme="light"] .radio-modal-close:hover,
-[data-theme="bleuciel"] .radio-modal-close:hover {
-    background: rgba(0, 0, 0, 0.1);
-    color: #1e293b;
-}
-
-[data-theme="light"] .radio-now-playing,
-[data-theme="bleuciel"] .radio-now-playing {
-    background: rgba(99, 102, 241, 0.1);
-}
-
-[data-theme="light"] .radio-current-name,
-[data-theme="bleuciel"] .radio-current-name {
-    color: #1e293b;
-}
-
-[data-theme="light"] .radio-current-desc,
-[data-theme="bleuciel"] .radio-current-desc {
-    color: #64748b;
-}
-
-[data-theme="light"] .radio-play-btn,
-[data-theme="bleuciel"] .radio-play-btn {
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
-}
-
-[data-theme="light"] .radio-volume-slider,
-[data-theme="bleuciel"] .radio-volume-slider {
-    background: rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .radio-volume-value,
-[data-theme="bleuciel"] .radio-volume-value {
-    color: #64748b;
-}
-
-[data-theme="light"] .radio-volume-icon,
-[data-theme="bleuciel"] .radio-volume-icon {
-    color: #64748b;
-}
-
-[data-theme="light"] .radio-stations-title,
-[data-theme="bleuciel"] .radio-stations-title {
-    color: #64748b;
-}
-
-[data-theme="light"] .radio-station,
-[data-theme="bleuciel"] .radio-station {
-    background: rgba(0, 0, 0, 0.03);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-[data-theme="light"] .radio-station:hover,
-[data-theme="bleuciel"] .radio-station:hover {
-    background: rgba(0, 0, 0, 0.06);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .radio-station.active,
-[data-theme="bleuciel"] .radio-station.active {
-    background: rgba(99, 102, 241, 0.1);
-    border-color: var(--primary);
-}
-
-[data-theme="light"] .radio-station-name,
-[data-theme="bleuciel"] .radio-station-name {
-    color: #1e293b;
-}
-
-[data-theme="light"] .radio-station-desc,
-[data-theme="bleuciel"] .radio-station-desc {
-    color: #64748b;
-}
-
-[data-theme="light"] .radio-stations-container::-webkit-scrollbar-thumb,
-[data-theme="bleuciel"] .radio-stations-container::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
-}
-
-/* === POPUP MINUTEUR EN MODE CLAIR === */
-[data-theme="light"] .sleep-timer-popup,
-[data-theme="bleuciel"] .sleep-timer-popup {
-    background: rgba(255, 255, 255, 0.98);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-}
-
-[data-theme="light"] .sleep-timer-popup-header,
-[data-theme="bleuciel"] .sleep-timer-popup-header {
-    color: #d97706;
-}
-
-[data-theme="light"] .sleep-timer-option,
-[data-theme="bleuciel"] .sleep-timer-option {
-    background: rgba(0, 0, 0, 0.03);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    color: #1e293b;
-}
-
-[data-theme="light"] .sleep-timer-option:hover,
-[data-theme="bleuciel"] .sleep-timer-option:hover {
-    background: rgba(251, 191, 36, 0.15);
-    border-color: #d97706;
-}
-
-[data-theme="light"] .sleep-timer-time-btn,
-[data-theme="bleuciel"] .sleep-timer-time-btn {
-    background: rgba(99, 102, 241, 0.1);
-    border-color: rgba(99, 102, 241, 0.3);
-    color: var(--primary);
-}
-
-[data-theme="light"] .sleep-timer-status,
-[data-theme="bleuciel"] .sleep-timer-status {
-    background: rgba(251, 191, 36, 0.1);
-    border-color: rgba(251, 191, 36, 0.3);
-    color: #d97706;
-}
-
-/* === TOAST EN MODE CLAIR === */
-[data-theme="light"] .radio-toast,
-[data-theme="bleuciel"] .radio-toast {
-    background: rgba(255, 255, 255, 0.95);
-    color: #1e293b;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
-
-/* ============================================
-   THÈME ROUGE - Radio
-   ============================================ */
-
-/* Widget */
-[data-theme="rouge"] #radioWidget {
-    background: rgba(45, 21, 21, 0.95);
-    border: 1px solid rgba(255, 100, 100, 0.2);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-}
-
-[data-theme="rouge"] .radio-widget-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 100, 100, 0.2);
-}
-
-[data-theme="rouge"] .radio-widget-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-[data-theme="rouge"] .radio-widget-btn.large {
-    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
-    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.4);
-}
-
-[data-theme="rouge"] .radio-widget-toggle {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="rouge"] .radio-widget-bar {
-    background: #ef4444;
-}
-
-/* Modal */
-[data-theme="rouge"] .radio-modal {
-    background: rgba(45, 21, 21, 0.98);
-    border: 1px solid rgba(255, 100, 100, 0.2);
-}
-
-[data-theme="rouge"] .radio-modal-header {
-    border-color: rgba(255, 100, 100, 0.2);
-}
-
-[data-theme="rouge"] .radio-modal-close {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="rouge"] .radio-modal-close:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-[data-theme="rouge"] .radio-now-playing {
-    background: rgba(220, 38, 38, 0.15);
-}
-
-[data-theme="rouge"] .radio-play-btn {
-    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
-    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.4);
-}
-
-[data-theme="rouge"] .radio-equalizer-bar {
-    background: #ef4444;
-}
-
-[data-theme="rouge"] .radio-volume-slider {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-[data-theme="rouge"] .radio-volume-slider::-webkit-slider-thumb {
-    background: #ef4444;
-    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
-}
-
-[data-theme="rouge"] .radio-station {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 100, 100, 0.15);
-}
-
-[data-theme="rouge"] .radio-station:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="rouge"] .radio-station.active {
-    background: rgba(220, 38, 38, 0.2);
-    border-color: #ef4444;
-}
-
-/* Popup minuteur */
-[data-theme="rouge"] .sleep-timer-popup {
-    background: rgba(45, 21, 21, 0.98);
-    border: 1px solid rgba(255, 100, 100, 0.2);
-}
-
-[data-theme="rouge"] .sleep-timer-option {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 100, 100, 0.2);
-}
-
-[data-theme="rouge"] .sleep-timer-option:hover {
-    background: rgba(220, 38, 38, 0.2);
-    border-color: #ef4444;
-}
-
-/* Toast */
-[data-theme="rouge"] .radio-toast {
-    background: rgba(45, 21, 21, 0.95);
-    border: 1px solid rgba(255, 100, 100, 0.2);
-}
-
-/* ============================================
-   THÈME ROSE - Radio
-   ============================================ */
-
-/* Widget */
-[data-theme="rose"] #radioWidget {
-    background: rgba(45, 21, 37, 0.95);
-    border: 1px solid rgba(236, 72, 153, 0.2);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-}
-
-[data-theme="rose"] .radio-widget-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(236, 72, 153, 0.2);
-}
-
-[data-theme="rose"] .radio-widget-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-[data-theme="rose"] .radio-widget-btn.large {
-    background: linear-gradient(135deg, #db2777 0%, #ec4899 100%);
-    box-shadow: 0 4px 16px rgba(219, 39, 119, 0.4);
-}
-
-[data-theme="rose"] .radio-widget-toggle {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="rose"] .radio-widget-bar {
-    background: #ec4899;
-}
-
-/* Modal */
-[data-theme="rose"] .radio-modal {
-    background: rgba(45, 21, 37, 0.98);
-    border: 1px solid rgba(236, 72, 153, 0.2);
-}
-
-[data-theme="rose"] .radio-modal-header {
-    border-color: rgba(236, 72, 153, 0.2);
-}
-
-[data-theme="rose"] .radio-modal-close {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="rose"] .radio-modal-close:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-[data-theme="rose"] .radio-now-playing {
-    background: rgba(219, 39, 119, 0.15);
-}
-
-[data-theme="rose"] .radio-play-btn {
-    background: linear-gradient(135deg, #db2777 0%, #ec4899 100%);
-    box-shadow: 0 4px 16px rgba(219, 39, 119, 0.4);
-}
-
-[data-theme="rose"] .radio-equalizer-bar {
-    background: #ec4899;
-}
-
-[data-theme="rose"] .radio-volume-slider {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-[data-theme="rose"] .radio-volume-slider::-webkit-slider-thumb {
-    background: #ec4899;
-    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
-}
-
-[data-theme="rose"] .radio-station {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(236, 72, 153, 0.15);
-}
-
-[data-theme="rose"] .radio-station:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="rose"] .radio-station.active {
-    background: rgba(219, 39, 119, 0.2);
-    border-color: #ec4899;
-}
-
-/* Popup minuteur */
-[data-theme="rose"] .sleep-timer-popup {
-    background: rgba(45, 21, 37, 0.98);
-    border: 1px solid rgba(236, 72, 153, 0.2);
-}
-
-[data-theme="rose"] .sleep-timer-option {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(236, 72, 153, 0.2);
-}
-
-[data-theme="rose"] .sleep-timer-option:hover {
-    background: rgba(219, 39, 119, 0.2);
-    border-color: #ec4899;
-}
-
-/* Toast */
-[data-theme="rose"] .radio-toast {
-    background: rgba(45, 21, 37, 0.95);
-    border: 1px solid rgba(236, 72, 153, 0.2);
-}
-
-/* ============================================
-   THÈME ROSEPALE (Girly) - Radio
-   ============================================ */
-
-/* Widget */
-[data-theme="rosepale"] #radioWidget {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(236, 72, 153, 0.2);
-    box-shadow: 0 10px 40px rgba(219, 39, 119, 0.15);
-}
-
-[data-theme="rosepale"] .radio-widget-name {
-    color: #831843;
-}
-
-[data-theme="rosepale"] .radio-widget-status {
-    color: #9d174d;
-}
-
-[data-theme="rosepale"] .radio-widget-nowplaying {
-    color: #db2777;
-}
-
-[data-theme="rosepale"] .radio-widget-btn {
-    background: rgba(131, 24, 67, 0.08);
-    color: #831843;
-    border: 1px solid rgba(131, 24, 67, 0.15);
-}
-
-[data-theme="rosepale"] .radio-widget-btn:hover {
-    background: rgba(131, 24, 67, 0.15);
-}
-
-[data-theme="rosepale"] .radio-widget-btn.large {
-    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
-    color: white;
-    border: none;
-    box-shadow: 0 4px 16px rgba(219, 39, 119, 0.3);
-}
-
-[data-theme="rosepale"] .radio-widget-toggle {
-    background: rgba(131, 24, 67, 0.08);
-    color: #831843;
-}
-
-[data-theme="rosepale"] .radio-widget-bar {
-    background: #ec4899;
-}
-
-[data-theme="rosepale"] .radio-widget-volume-slider {
-    background: rgba(131, 24, 67, 0.1);
-}
-
-[data-theme="rosepale"] .radio-widget-volume-slider::-webkit-slider-thumb {
-    background: #ec4899;
-    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
-}
-
-[data-theme="rosepale"] .radio-widget-volume-value {
-    color: #831843;
-}
-
-/* Modal */
-[data-theme="rosepale"] .radio-modal {
-    background: rgba(255, 255, 255, 0.98);
-    border: 1px solid rgba(236, 72, 153, 0.15);
-}
-
-[data-theme="rosepale"] .radio-modal-header {
-    border-color: rgba(236, 72, 153, 0.15);
-}
-
-[data-theme="rosepale"] .radio-modal-header h2 {
-    color: #831843;
-}
-
-[data-theme="rosepale"] .radio-modal-close {
-    background: rgba(131, 24, 67, 0.08);
-    color: #9d174d;
-}
-
-[data-theme="rosepale"] .radio-modal-close:hover {
-    background: rgba(131, 24, 67, 0.15);
-    color: #831843;
-}
-
-[data-theme="rosepale"] .radio-now-playing {
-    background: rgba(236, 72, 153, 0.1);
-}
-
-[data-theme="rosepale"] .radio-current-name {
-    color: #831843;
-}
-
-[data-theme="rosepale"] .radio-current-desc {
-    color: #9d174d;
-}
-
-[data-theme="rosepale"] .radio-play-btn {
-    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
-    box-shadow: 0 4px 16px rgba(219, 39, 119, 0.3);
-}
-
-[data-theme="rosepale"] .radio-equalizer-bar {
-    background: #ec4899;
-}
-
-[data-theme="rosepale"] .radio-volume-slider {
-    background: rgba(131, 24, 67, 0.1);
-}
-
-[data-theme="rosepale"] .radio-volume-slider::-webkit-slider-thumb {
-    background: #ec4899;
-    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
-}
-
-[data-theme="rosepale"] .radio-volume-value {
-    color: #9d174d;
-}
-
-[data-theme="rosepale"] .radio-volume-icon {
-    color: #9d174d;
-}
-
-[data-theme="rosepale"] .radio-stations-title {
-    color: #9d174d;
-}
-
-[data-theme="rosepale"] .radio-station {
-    background: rgba(131, 24, 67, 0.04);
-    border: 1px solid rgba(131, 24, 67, 0.1);
-}
-
-[data-theme="rosepale"] .radio-station:hover {
-    background: rgba(131, 24, 67, 0.08);
-    box-shadow: 0 4px 12px rgba(219, 39, 119, 0.1);
-}
-
-[data-theme="rosepale"] .radio-station.active {
-    background: rgba(236, 72, 153, 0.15);
-    border-color: #ec4899;
-}
-
-[data-theme="rosepale"] .radio-station-name {
-    color: #831843;
-}
-
-[data-theme="rosepale"] .radio-station-desc {
-    color: #9d174d;
-}
-
-[data-theme="rosepale"] .radio-stations-container::-webkit-scrollbar-thumb {
-    background: rgba(131, 24, 67, 0.2);
-}
-
-/* Popup minuteur */
-[data-theme="rosepale"] .sleep-timer-popup {
-    background: rgba(255, 255, 255, 0.98);
-    border: 1px solid rgba(236, 72, 153, 0.15);
-    box-shadow: 0 10px 40px rgba(219, 39, 119, 0.15);
-}
-
-[data-theme="rosepale"] .sleep-timer-popup-header {
-    color: #db2777;
-}
-
-[data-theme="rosepale"] .sleep-timer-option {
-    background: rgba(131, 24, 67, 0.04);
-    border: 1px solid rgba(131, 24, 67, 0.1);
-    color: #831843;
-}
-
-[data-theme="rosepale"] .sleep-timer-option:hover {
-    background: rgba(236, 72, 153, 0.15);
-    border-color: #ec4899;
-}
-
-/* Toast */
-[data-theme="rosepale"] .radio-toast {
-    background: rgba(255, 255, 255, 0.95);
-    color: #831843;
-    border: 1px solid rgba(236, 72, 153, 0.15);
-    box-shadow: 0 4px 20px rgba(219, 39, 119, 0.15);
 }

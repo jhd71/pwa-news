@@ -1,5 +1,6 @@
 // ============================================
-// ACTU & MÉDIA - Application JavaScript v2
+// ACTU & MÉDIA - Application JavaScript v3
+// Version simplifiée : 2 thèmes (dark/light)
 // ============================================
 
 // Configuration
@@ -17,7 +18,7 @@ const CONFIG = {
     }
 };
 
-// Instance unique Supabase (évite les multiples instances)
+// Instance unique Supabase
 let supabaseClient = null;
 
 function getSupabaseClient() {
@@ -28,7 +29,7 @@ function getSupabaseClient() {
     return supabaseClient;
 }
 
-// Exposer globalement pour les autres scripts
+// Exposer globalement
 window.getSupabaseClient = getSupabaseClient;
 
 // État de l'application
@@ -41,7 +42,7 @@ let deferredPrompt = null;
 // INITIALISATION
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 Actu & Média - Initialisation');
+    console.log('🚀 Actu & Média - Initialisation v3');
     
     initTheme();
     initWeather();
@@ -72,7 +73,6 @@ async function initWeather() {
 
         // Aujourd'hui (J+0)
         const tempToday = Math.round(data.current_weather.temperature);
-        const iconToday = getWeatherEmoji(data.current_weather.weathercode);
         
         const icon0 = document.getElementById('weatherIcon0');
         const temp0 = document.getElementById('weatherTemp0');
@@ -82,7 +82,6 @@ async function initWeather() {
         // Demain (J+1)
         if (data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length > 1) {
             const tempJ1 = Math.round(data.daily.temperature_2m_max[1]);
-            const iconJ1 = getWeatherEmoji(data.daily.weathercode[1]);
             
             const icon1 = document.getElementById('weatherIcon1');
             const temp1 = document.getElementById('weatherTemp1');
@@ -93,7 +92,6 @@ async function initWeather() {
         // Après-demain (J+2)
         if (data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length > 2) {
             const tempJ2 = Math.round(data.daily.temperature_2m_max[2]);
-            const iconJ2 = getWeatherEmoji(data.daily.weathercode[2]);
             const dayNameJ2 = getDayName(2);
             
             const label2 = document.getElementById('weatherLabel2');
@@ -119,7 +117,6 @@ function getDayName(daysFromNow) {
 }
 
 function getWeatherEmoji(code) {
-    // Retourne emoji pour compatibilité (utilisé dans textContent)
     if (code === 0) return '☀️';
     if ([1, 2, 3].includes(code)) return '⛅';
     if ([45, 48].includes(code)) return '🌫️';
@@ -134,209 +131,193 @@ function getWeatherEmoji(code) {
 // Icône météo animée (HTML)
 function getWeatherIcon(code, size = 'medium') {
     if (code === 0) {
-        // Soleil
         return `<span class="weather-icon sun ${size}"></span>`;
     }
     if ([1, 2, 3].includes(code)) {
-        // Partiellement nuageux
         return `<span class="weather-icon partly-cloudy ${size}"><span class="sun-part"></span><span class="cloud-part"></span></span>`;
     }
     if ([45, 48].includes(code)) {
-        // Brouillard
         return `<span class="weather-icon fog ${size}"><span class="line"></span><span class="line"></span><span class="line"></span></span>`;
     }
     if ([51, 53, 55, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) {
-        // Pluie
         return `<span class="weather-icon rain ${size}"><span class="cloud"></span><span class="drops"><span class="drop"></span><span class="drop"></span><span class="drop"></span></span></span>`;
     }
     if ([71, 73, 75, 77, 85, 86].includes(code)) {
-        // Neige
         return `<span class="weather-icon snow ${size}"><span class="cloud"></span><span class="flakes"><span class="flake"></span><span class="flake"></span><span class="flake"></span></span></span>`;
     }
     if ([95, 96, 99].includes(code)) {
-        // Orage
         return `<span class="weather-icon thunder ${size}"><span class="cloud"></span><span class="bolt"></span></span>`;
     }
-    // Par défaut : partiellement nuageux
     return `<span class="weather-icon partly-cloudy ${size}"><span class="sun-part"></span><span class="cloud-part"></span></span>`;
 }
 
 // ============================================
-// THÈME (Multi-thèmes)
+// THÈME - Simplifié (Dark / Light seulement)
 // ============================================
-const THEMES = ['dark', 'light', 'rouge', 'bleuciel', 'rose', 'rosepale'];
+const THEMES = ['dark', 'light'];
 
 const THEME_ICONS = {
     'dark': 'dark_mode',
-    'light': 'light_mode',
-    'rouge': 'local_fire_department',
-    'bleuciel': 'water_drop',
-    'rose': 'auto_awesome',
-    'rosepale': 'spa'
+    'light': 'light_mode'
+};
+
+const THEME_COLORS = {
+    'dark': '#0a0a0f',
+    'light': '#f8fafc'
 };
 
 function initTheme() {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     applyTheme(savedTheme);
     
-    // Bouton toggle header (cycle tous les thèmes)
+    // Bouton toggle header (bascule entre dark et light)
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
             const current = document.documentElement.getAttribute('data-theme') || 'dark';
-            const currentIndex = THEMES.indexOf(current);
-            const nextIndex = (currentIndex + 1) % THEMES.length;
-            const newTheme = THEMES[nextIndex];
+            const newTheme = current === 'dark' ? 'light' : 'dark';
             applyTheme(newTheme);
             localStorage.setItem('theme', newTheme);
         });
     }
     
-    // Sélecteur de thèmes (dans panel support)
+    // Sélecteur de thèmes (dans panel support) - pour compatibilité
     document.querySelectorAll('.theme-option').forEach(btn => {
         btn.addEventListener('click', () => {
             const theme = btn.getAttribute('data-theme');
-            applyTheme(theme);
-            localStorage.setItem('theme', theme);
+            // Convertir les anciens thèmes en dark/light
+            const mappedTheme = (theme === 'light' || theme === 'rosepale') ? 'light' : 'dark';
+            applyTheme(mappedTheme);
+            localStorage.setItem('theme', mappedTheme);
         });
     });
 }
 
 function applyTheme(theme) {
-    // "dark" = pas d'attribut (utilise :root)
-    if (theme === 'dark') {
+    // Normaliser le thème (seulement dark ou light)
+    const normalizedTheme = (theme === 'light' || theme === 'rosepale') ? 'light' : 'dark';
+    
+    if (normalizedTheme === 'dark') {
         document.documentElement.removeAttribute('data-theme');
     } else {
-        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.setAttribute('data-theme', normalizedTheme);
     }
     
     // Mettre à jour l'icône du toggle header
     const themeIcon = document.getElementById('themeIcon');
     if (themeIcon) {
-        themeIcon.textContent = THEME_ICONS[theme] || 'dark_mode';
+        themeIcon.textContent = THEME_ICONS[normalizedTheme] || 'dark_mode';
     }
     
     // Mettre à jour le bouton actif dans le sélecteur
     document.querySelectorAll('.theme-option').forEach(btn => {
         const btnTheme = btn.getAttribute('data-theme');
-        btn.classList.toggle('active', btnTheme === theme);
+        const mappedBtnTheme = (btnTheme === 'light' || btnTheme === 'rosepale') ? 'light' : 'dark';
+        btn.classList.toggle('active', mappedBtnTheme === normalizedTheme);
     });
     
     // Mettre à jour le theme-color pour les barres système (Android/iOS)
-    const themeColors = {
-        'dark': '#1a1a2e',
-        'light': '#e2e8f0',
-        'rouge': '#3a0f0f',
-        'bleuciel': '#1e3a5f',
-        'rose': '#4a1942',
-        'rosepale': '#fce7f3'
-    };
-    
     const themeColorMeta = document.getElementById('themeColorMeta');
     if (themeColorMeta) {
-        themeColorMeta.setAttribute('content', themeColors[theme] || '#0f0f1a');
+        themeColorMeta.setAttribute('content', THEME_COLORS[normalizedTheme] || '#0a0a0f');
     }
 }
 
 // ============================================
-// NEWS SWIPER
+// NEWS / INFOS EN DIRECT
 // ============================================
 async function initNews() {
-    const container = document.getElementById('newsTicker');
-    
+    const container = document.getElementById('newsSlides');
+    if (!container) return;
+
+    // Afficher le loading
+    container.innerHTML = `
+        <div class="news-ticker-loading">
+            <span class="material-icons spinning">refresh</span>
+            <span>Chargement des actualités...</span>
+        </div>
+    `;
+
     try {
         const response = await fetch(CONFIG.news.apiUrl);
         if (!response.ok) throw new Error('Erreur API');
-        
-        const articles = await response.json();
-        
-        if (articles && articles.length > 0) {
-            newsSlides = articles;
-            renderNewsSlider(articles);
-            initNewsNavigation();
-            startNewsAutoPlay();
-            console.log(`📰 ${articles.length} articles chargés`);
-        } else {
-            showNewsError('Aucune actualité disponible');
+
+        const data = await response.json();
+        newsSlides = data.articles || [];
+
+        if (newsSlides.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color: var(--text-muted);">Aucune actualité disponible</p>';
+            return;
         }
+
+        renderNewsSlides();
+        startNewsAutoPlay();
+
+        console.log(`📰 ${newsSlides.length} articles chargés`);
+
     } catch (error) {
         console.error('❌ Erreur news:', error);
-        showNewsError('Impossible de charger les actualités');
+        container.innerHTML = '<p style="text-align:center; color: var(--text-muted);">Impossible de charger les actualités</p>';
     }
 }
 
-function renderNewsSlider(articles) {
-    const container = document.getElementById('newsTicker');
-    const dotsContainer = document.getElementById('tickerDots');
-    
-    container.innerHTML = `
-        <div class="news-slides" id="newsSlides">
-            ${articles.map((article, index) => `
-                <div class="news-slide">
-                    <a href="${article.link}" target="_blank" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
-                        <div class="news-item-image ${!article.image ? 'no-image' : ''}">
-                            ${article.image 
-                                ? `<img src="${article.image}" alt="" loading="lazy" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">` 
-                                : ''}
-                            <div class="news-item-placeholder"><span class="material-icons">article</span></div>
-                        </div>
-                        <div class="news-item-content">
-                            <div class="news-item-source">${getSourceIcon(article.source)} ${article.source}</div>
-                            <div class="news-item-title">${article.title}</div>
-                            <div class="news-item-date">${formatDate(article.date)}</div>
-                        </div>
-                    </a>
+function renderNewsSlides() {
+    const container = document.getElementById('newsSlides');
+    const dotsContainer = document.querySelector('.ticker-dots');
+
+    if (!container) return;
+
+    container.innerHTML = newsSlides.map((article, index) => `
+        <div class="news-slide">
+            <a href="${article.link}" target="_blank" rel="noopener" class="news-item">
+                <div class="news-item-image ${!article.image ? 'no-image' : ''}">
+                    ${article.image ? `<img src="${article.image}" alt="${article.title}" loading="lazy" onerror="this.parentElement.classList.add('no-image')">` : ''}
                 </div>
-            `).join('')}
+                <div class="news-item-content">
+                    <span class="news-item-source">
+                        ${getSourceIcon(article.source)} ${article.source}
+                    </span>
+                    <h3 class="news-item-title">${article.title}</h3>
+                    <span class="news-item-date">${formatNewsDate(article.pubDate)}</span>
+                </div>
+            </a>
         </div>
-    `;
-    
-    dotsContainer.innerHTML = articles.map((_, index) => 
-        `<div class="ticker-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>`
-    ).join('');
-    
-    dotsContainer.querySelectorAll('.ticker-dot').forEach(dot => {
-        dot.addEventListener('click', () => {
-            goToNewsSlide(parseInt(dot.dataset.index));
-        });
-    });
+    `).join('');
+
+    // Créer les dots
+    if (dotsContainer) {
+        dotsContainer.innerHTML = newsSlides.map((_, i) => 
+            `<span class="ticker-dot ${i === 0 ? 'active' : ''}" onclick="goToNewsSlide(${i})"></span>`
+        ).join('');
+    }
 }
 
-function initNewsNavigation() {
-    const prevBtn = document.getElementById('tickerPrev');
-    const nextBtn = document.getElementById('tickerNext');
+function getSourceIcon(source) {
+    const icons = {
+        'Le JSL': '📰',
+        'Montceau News': '🏙️',
+        'Info Chalon': '📍',
+        'France 3': '📺',
+        'France Bleu': '📻'
+    };
+    return icons[source] || '📄';
+}
+
+function formatNewsDate(dateString) {
+    if (!dateString) return '';
     
-    prevBtn.addEventListener('click', () => {
-        goToNewsSlide(newsCurrentSlide - 1);
-        resetNewsAutoPlay();
-    });
-    
-    nextBtn.addEventListener('click', () => {
-        goToNewsSlide(newsCurrentSlide + 1);
-        resetNewsAutoPlay();
-    });
-    
-    // Swipe touch
-    const container = document.getElementById('newsTicker');
-    let touchStartX = 0;
-    let touchEndX = 0;
-    
-    container.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-    
-    container.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        const diff = touchStartX - touchEndX;
-        if (Math.abs(diff) > 50) {
-            if (diff > 0) {
-                goToNewsSlide(newsCurrentSlide + 1);
-            } else {
-                goToNewsSlide(newsCurrentSlide - 1);
-            }
-            resetNewsAutoPlay();
-        }
-    }, { passive: true });
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 60) return `Il y a ${diffMins} min`;
+    if (diffHours < 24) return `Il y a ${diffHours}h`;
+    if (diffDays < 7) return `Il y a ${diffDays}j`;
+
+    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
 }
 
 function goToNewsSlide(index, smooth = true) {
@@ -345,7 +326,6 @@ function goToNewsSlide(index, smooth = true) {
     
     if (!slides || !newsSlides.length) return;
     
-    // Calculer le nouvel index
     let newIndex = index;
     let needsInstantJump = false;
     
@@ -357,13 +337,12 @@ function goToNewsSlide(index, smooth = true) {
         needsInstantJump = true;
     }
     
-    // Si on boucle (fin → début ou début → fin), désactiver la transition
+    // Désactiver transition pour boucle (évite rembobinage visible)
     if (needsInstantJump && smooth) {
         slides.style.transition = 'none';
         slides.style.transform = `translateX(-${newIndex * 100}%)`;
         
-        // Forcer le reflow puis réactiver la transition
-        slides.offsetHeight;
+        slides.offsetHeight; // Force reflow
         setTimeout(() => {
             slides.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
         }, 50);
@@ -379,14 +358,13 @@ function goToNewsSlide(index, smooth = true) {
 }
 
 function startNewsAutoPlay() {
-    // S'assurer qu'il n'y a pas déjà un intervalle actif
     if (newsAutoPlayInterval) {
         clearInterval(newsAutoPlayInterval);
     }
     
     newsAutoPlayInterval = setInterval(() => {
         goToNewsSlide(newsCurrentSlide + 1);
-    }, 6000); // 6 secondes entre chaque slide
+    }, 6000); // 6 secondes entre slides
 }
 
 function resetNewsAutoPlay() {
@@ -404,327 +382,109 @@ function stopNewsAutoPlay() {
     }
 }
 
-function showNewsError(message) {
-    const container = document.getElementById('newsTicker');
-    container.innerHTML = `
-        <div class="news-ticker-loading">
-            <span class="material-icons">error_outline</span>
-            ${message}
-        </div>
-    `;
-}
-
-function getSourceIcon(source) {
-    const icons = {
-        'Le JSL': '📰',
-        'Montceau News': '🏙️',
-        'Creusot Infos': '🏭',
-        "L'Informateur": '📋',
-        'France Bleu': '🎙️'
-    };
-    return icons[source] || '📰';
-}
-
-function formatDate(dateString) {
-    if (!dateString) return '';
-    
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-    
-    if (diffMins < 60) {
-        return `Il y a ${diffMins} min`;
-    } else if (diffHours < 24) {
-        return `Il y a ${diffHours}h`;
-    } else if (diffDays < 7) {
-        return `Il y a ${diffDays}j`;
-    } else {
-        return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-    }
-}
+// Exposer globalement
+window.goToNewsSlide = goToNewsSlide;
+window.prevNewsSlide = () => { goToNewsSlide(newsCurrentSlide - 1); resetNewsAutoPlay(); };
+window.nextNewsSlide = () => { goToNewsSlide(newsCurrentSlide + 1); resetNewsAutoPlay(); };
 
 // ============================================
 // CINÉMA
 // ============================================
 async function initCinema() {
-    const container = document.getElementById('cinemaContent');
-    
+    const container = document.getElementById('cinemaList');
+    if (!container) return;
+
     try {
-        const response = await fetch(CONFIG.cinema.dataUrl + '?t=' + Date.now(), {
-            cache: 'no-store'
-        });
-        
+        const response = await fetch(CONFIG.cinema.dataUrl);
         if (!response.ok) throw new Error('Erreur cinéma');
-        
+
         const data = await response.json();
-        
-        if (data.films && data.films.length > 0) {
-            renderCinema(data.films);
-            console.log(`🎬 ${data.films.length} films chargés`);
-        } else {
-            showCinemaFallback();
+        const films = data.films || [];
+
+        if (films.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color: var(--text-muted);">Aucune séance disponible</p>';
+            return;
         }
+
+        container.innerHTML = films.slice(0, 3).map(film => `
+            <div class="cinema-film">
+                <div class="cinema-film-title">${film.title}</div>
+                <div class="cinema-film-info">
+                    ${film.duration ? `<span><span class="material-icons">schedule</span>${film.duration}</span>` : ''}
+                    ${film.genre ? `<span>${film.genre}</span>` : ''}
+                </div>
+                <div class="cinema-showtimes">
+                    ${film.showtimes.map(time => `<span class="cinema-showtime">${time}</span>`).join('')}
+                </div>
+            </div>
+        `).join('');
+
+        console.log(`🎬 ${films.length} films chargés`);
+
     } catch (error) {
         console.error('❌ Erreur cinéma:', error);
-        showCinemaFallback();
-    }
-}
-
-function renderCinema(films) {
-    const container = document.getElementById('cinemaContent');
-    const hasMore = films.length > 4;
-    
-    container.innerHTML = `
-        <div class="cinema-films">
-            ${films.map((film, index) => `
-                <a href="${film.lien || 'https://www.cinemacapitole-montceau.fr/horaires/'}" 
-                   target="_blank" 
-                   class="cinema-film fade-in" 
-                   style="animation-delay: ${index * 0.05}s">
-                    <div class="cinema-film-title">${film.titre}</div>
-                    <div class="cinema-film-meta">
-                        <span>🎭 ${film.genre || 'Film'}</span>
-                        <span>⏱️ ${film.duree || 'N/A'}</span>
-                    </div>
-                    <div class="cinema-film-times">
-                        ${(film.horaires || []).slice(0, 5).map(time => 
-                            `<span class="cinema-time">${time}</span>`
-                        ).join('')}
-                    </div>
-                </a>
-            `).join('')}
-        </div>
-        ${hasMore ? `
-            <div class="cinema-scroll-hint">
-                <span class="material-icons">swipe</span>
-                Scroll pour voir plus
-            </div>
-        ` : ''}
-    `;
-}
-
-function showCinemaFallback() {
-    const container = document.getElementById('cinemaContent');
-    
-    container.innerHTML = `
-        <div style="text-align: center; padding: 1.5rem;">
-            <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🎬</div>
-            <div style="font-weight: 600; margin-bottom: 0.5rem;">Le Capitole</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
-                4 salles • 589 places • Dolby Atmos
-            </div>
-            <a href="https://www.cinemacapitole-montceau.fr/horaires/" 
-               target="_blank"
-               style="display: inline-flex; align-items: center; gap: 0.5rem; 
-                      padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-                      color: white; border-radius: 50px; text-decoration: none; font-weight: 600;">
-                <span class="material-icons" style="font-size: 1.25rem;">movie</span>
-                Voir le programme
-            </a>
-        </div>
-    `;
-}
-
-// ============================================
-// INSTALLATION PWA
-// ============================================
-function initInstallPrompt() {
-    const installPrompt = document.getElementById('installPrompt');
-    const installBtn = document.getElementById('installBtn');
-    const dismissBtn = document.getElementById('dismissBtn');
-    const iosModal = document.getElementById('iosInstallModal');
-    const iosCloseBtn = document.getElementById('iosCloseBtn');
-    
-    // Vérifier si déjà installé
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        console.log('📱 App déjà installée');
-        return;
-    }
-    
-    // Vérifier si déjà refusé récemment
-    const dismissed = localStorage.getItem('installDismissed');
-    if (dismissed) {
-        const dismissedTime = parseInt(dismissed);
-        const daysPassed = (Date.now() - dismissedTime) / (1000 * 60 * 60 * 24);
-        if (daysPassed < 7) {
-            console.log('📱 Installation refusée il y a moins de 7 jours');
-            return;
-        }
-    }
-    
-    // Détecter iOS
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    const isInStandaloneMode = window.navigator.standalone === true;
-    
-    if (isIOS && !isInStandaloneMode) {
-        // iOS - Afficher après 3 secondes
-        setTimeout(() => {
-            if (installPrompt) {
-                installPrompt.classList.add('show');
-            }
-        }, 3000);
-        
-        if (installBtn) {
-            installBtn.addEventListener('click', () => {
-                installPrompt.classList.remove('show');
-                if (iosModal) {
-                    iosModal.classList.add('show');
-                }
-            });
-        }
-        
-        if (iosCloseBtn) {
-            iosCloseBtn.addEventListener('click', () => {
-                iosModal.classList.remove('show');
-            });
-        }
-        
-        if (iosModal) {
-            iosModal.addEventListener('click', (e) => {
-                if (e.target === iosModal) {
-                    iosModal.classList.remove('show');
-                }
-            });
-        }
-    } else {
-        // Android / Chrome - Écouter l'événement beforeinstallprompt
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            console.log('📱 Installation disponible');
-            
-            setTimeout(() => {
-                if (installPrompt) {
-                    installPrompt.classList.add('show');
-                }
-            }, 3000);
-        });
-        
-        if (installBtn) {
-            installBtn.addEventListener('click', async () => {
-                if (!deferredPrompt) return;
-                
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                
-                console.log(`📱 Installation: ${outcome}`);
-                deferredPrompt = null;
-                installPrompt.classList.remove('show');
-            });
-        }
-    }
-    
-    // Bouton ignorer
-    if (dismissBtn) {
-        dismissBtn.addEventListener('click', () => {
-            installPrompt.classList.remove('show');
-            localStorage.setItem('installDismissed', Date.now().toString());
-        });
-    }
-    
-    // Écouter l'installation réussie
-    window.addEventListener('appinstalled', () => {
-        console.log('✅ App installée !');
-        if (installPrompt) {
-            installPrompt.classList.remove('show');
-        }
-        deferredPrompt = null;
-    });
-}
-
-// ============================================
-// SERVICE WORKER
-// ============================================
-function initServiceWorker() {
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('✅ Service Worker enregistré'))
-            .catch(err => console.error('❌ SW Error:', err));
+        container.innerHTML = '<p style="text-align:center; color: var(--text-muted);">Programme indisponible</p>';
     }
 }
 
 // ============================================
-// INFOS COMMUNAUTÉ (Supabase)
+// COMMUNAUTÉ / INFOS LOCALES
 // ============================================
 async function initCommunity() {
-    const contentEl = document.getElementById('communityContent');
-    const emptyEl = document.getElementById('communityEmpty');
-    const sectionEl = document.getElementById('communitySection');
-    
-    // Vérifier que les éléments existent
-    if (!contentEl || !emptyEl) {
-        console.log('⚠️ Section communauté non trouvée');
-        return;
-    }
-    
+    const container = document.getElementById('communityList');
+    if (!container) return;
+
     try {
-        // Vérifier que Supabase est chargé
-        if (typeof window.supabase === 'undefined') {
-            console.log('⚠️ Supabase non chargé, section communauté masquée');
-            if (sectionEl) sectionEl.style.display = 'none';
+        const client = getSupabaseClient();
+        if (!client) {
+            console.log('⏳ Supabase non disponible');
             return;
         }
-        
-        // Utiliser l'instance unique Supabase
-        const supabaseClient = getSupabaseClient();
-        if (!supabaseClient) {
-            console.log('⚠️ Supabase non disponible');
-            return;
-        }
-        
-        // Charger les propositions approuvées
-        const { data, error } = await supabaseClient
+
+        const { data, error } = await client
             .from('news_submissions')
             .select('*')
             .eq('status', 'approved')
             .order('created_at', { ascending: false })
             .limit(5);
-        
+
         if (error) throw error;
-        
-        // Si aucune donnée
+
         if (!data || data.length === 0) {
-            contentEl.style.display = 'none';
-            emptyEl.style.display = 'block';
-            console.log('📭 Aucune info communauté');
+            container.innerHTML = `
+                <div class="community-empty">
+                    <div class="community-empty-icon">📭</div>
+                    <p>Aucune actualité communautaire</p>
+                    <p class="community-empty-sub">Soyez le premier à proposer une info !</p>
+                </div>
+            `;
             return;
         }
-        
-        // Afficher les infos
-        contentEl.innerHTML = data.map(item => `
-            <div class="community-item" onclick="toggleCommunityDetail(this)">
-                <div class="community-item-icon ${item.type || 'actualite'}">
-                    ${getCommunityIcon(item.type)}
-                </div>
-                <div class="community-item-content">
-                    <div class="community-item-title">${escapeHtml(item.title)}</div>
-                    ${item.image_url ? `<img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image" onclick="event.stopPropagation(); openImageModal('${item.image_url}')">` : ''}
-                    <div class="community-item-desc">${escapeHtml(item.content)}</div>
-                    ${item.link_url ? `<a href="${item.link_url}" target="_blank" class="community-item-link" onclick="event.stopPropagation()"><span class="material-icons">link</span>Voir plus</a>` : ''}
-                    <div class="community-item-meta">
-                        ${item.location ? `<span class="community-item-location"><span class="material-icons">location_on</span>${escapeHtml(item.location)}</span>` : ''}
-                        <span><span class="material-icons">person</span>${escapeHtml(item.author || 'Anonyme')}</span>
-                        <span><span class="material-icons">schedule</span>${formatCommunityDate(item.created_at)}</span>
-                    </div>
+
+        container.innerHTML = data.map(item => `
+            <div class="community-item">
+                <span class="community-item-type">${getTypeEmoji(item.type)}</span>
+                <h4 class="community-item-title">${escapeHtml(item.title)}</h4>
+                ${item.image_url ? `<img src="${item.image_url}" alt="${item.title}" class="community-item-image" onclick="openImageModal('${item.image_url}')">` : ''}
+                <p class="community-item-content">${escapeHtml(item.content)}</p>
+                ${item.link_url ? `<a href="${item.link_url}" target="_blank" rel="noopener" class="community-item-link"><span class="material-icons">open_in_new</span> Voir plus</a>` : ''}
+                <div class="community-item-meta">
+                    ${item.location ? `<span><span class="material-icons">location_on</span>${escapeHtml(item.location)}</span>` : ''}
+                    <span><span class="material-icons">person</span>${escapeHtml(item.author) || 'Actu & Média'}</span>
+                    <span><span class="material-icons">schedule</span>${formatCommunityDate(item.created_at)}</span>
                 </div>
             </div>
         `).join('');
-        
-        emptyEl.style.display = 'none';
-        console.log(`📢 ${data.length} infos communauté chargées`);
-        
+
+        console.log(`🏘️ ${data.length} infos communautaires chargées`);
+
     } catch (error) {
         console.error('❌ Erreur communauté:', error);
-        contentEl.innerHTML = '';
-        emptyEl.style.display = 'block';
     }
 }
 
-function getCommunityIcon(type) {
-    const icons = {
+function getTypeEmoji(type) {
+    const emojis = {
         'actualite': '📰',
         'evenement': '🎪',
         'pratique': '💡',
@@ -732,33 +492,19 @@ function getCommunityIcon(type) {
         'photo': '📸',
         'autre': '📋'
     };
-    return icons[type] || '📰';
+    return emojis[type] || '📄';
 }
 
-function formatCommunityDate(dateStr) {
-    const date = new Date(dateStr);
+function formatCommunityDate(dateString) {
+    const date = new Date(dateString);
     const now = new Date();
-    const diff = now - date;
-    
-    // Moins d'une heure
-    if (diff < 3600000) {
-        const mins = Math.floor(diff / 60000);
-        return `Il y a ${mins} min`;
-    }
-    
-    // Moins d'un jour
-    if (diff < 86400000) {
-        const hours = Math.floor(diff / 3600000);
-        return `Il y a ${hours}h`;
-    }
-    
-    // Moins d'une semaine
-    if (diff < 604800000) {
-        const days = Math.floor(diff / 86400000);
-        return `Il y a ${days} jour${days > 1 ? 's' : ''}`;
-    }
-    
-    // Plus d'une semaine
+    const diffMs = now - date;
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffDays === 0) return "Aujourd'hui";
+    if (diffDays === 1) return 'Hier';
+    if (diffDays < 7) return `Il y a ${diffDays}j`;
+
     return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
 }
 
@@ -769,29 +515,27 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Fonction pour afficher/masquer le détail d'une info communauté
-function toggleCommunityDetail(element) {
-    element.classList.toggle('expanded');
-}
-
-// Fonction pour ouvrir une image en grand
+// Modal image
 function openImageModal(imageUrl) {
-    // Créer le modal s'il n'existe pas
     let modal = document.getElementById('imageModal');
+    
     if (!modal) {
         modal = document.createElement('div');
         modal.id = 'imageModal';
         modal.className = 'image-modal';
         modal.innerHTML = `
-            <div class="image-modal-backdrop" onclick="closeImageModal()"></div>
             <div class="image-modal-content">
                 <button class="image-modal-close" onclick="closeImageModal()">
                     <span class="material-icons">close</span>
                 </button>
-                <img id="modalImage" src="" alt="Image">
+                <img id="modalImage" src="" alt="Image agrandie">
             </div>
         `;
         document.body.appendChild(modal);
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeImageModal();
+        });
     }
     
     document.getElementById('modalImage').src = imageUrl;
@@ -807,74 +551,66 @@ function closeImageModal() {
     }
 }
 
-// ============================================
-// RAFRAÎCHISSEMENT PÉRIODIQUE
-// ============================================
-setInterval(() => {
-    console.log('🔄 Rafraîchissement des actualités...');
-    initNews();
-}, CONFIG.news.refreshInterval);
+window.openImageModal = openImageModal;
+window.closeImageModal = closeImageModal;
 
 // ============================================
-// TOGGLE VILLES SUPPLÉMENTAIRES
+// SERVICE WORKER
 // ============================================
-function toggleExtraTiles() {
-    const tilesExtra = document.getElementById('tilesExtra');
-    const toggleBtn = document.getElementById('tilesToggle');
-    const toggleIcon = document.getElementById('tilesToggleIcon');
-    const toggleText = document.getElementById('tilesToggleText');
-    
-    if (!tilesExtra || !toggleBtn) return;
-    
-    const isExpanded = tilesExtra.classList.contains('show');
-    
-    if (isExpanded) {
-        // Fermer
-        tilesExtra.classList.remove('show');
-        toggleBtn.classList.remove('expanded');
-        toggleIcon.textContent = 'expand_more';
-        toggleText.textContent = 'Plus de villes';
-        localStorage.setItem('tilesExpanded', 'false');
-    } else {
-        // Ouvrir
-        tilesExtra.classList.add('show');
-        toggleBtn.classList.add('expanded');
-        toggleIcon.textContent = 'expand_less';
-        toggleText.textContent = 'Moins de villes';
-        localStorage.setItem('tilesExpanded', 'true');
+function initServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('✅ Service Worker enregistré'))
+            .catch(err => console.error('❌ SW Error:', err));
     }
 }
 
-// Restaurer l'état au chargement
+// ============================================
+// INSTALL PROMPT (PWA)
+// ============================================
+function initInstallPrompt() {
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        console.log('📲 Install prompt disponible');
+    });
+}
+
+// ============================================
+// EXTRA TILES (Plus de villes)
+// ============================================
 function initExtraTiles() {
-    const saved = localStorage.getItem('tilesExpanded');
-    if (saved === 'true') {
-        const tilesExtra = document.getElementById('tilesExtra');
-        const toggleBtn = document.getElementById('tilesToggle');
-        const toggleIcon = document.getElementById('tilesToggleIcon');
-        const toggleText = document.getElementById('tilesToggleText');
+    const btn = document.querySelector('.expand-tiles-btn');
+    const extraTiles = document.querySelector('.extra-tiles');
+    
+    if (btn && extraTiles) {
+        btn.addEventListener('click', () => toggleExtraTiles());
+    }
+}
+
+function toggleExtraTiles() {
+    const btn = document.querySelector('.expand-tiles-btn');
+    const extraTiles = document.querySelector('.extra-tiles');
+    
+    if (btn && extraTiles) {
+        const isExpanded = extraTiles.classList.toggle('show');
+        btn.classList.toggle('expanded', isExpanded);
         
-        if (tilesExtra && toggleBtn) {
-            tilesExtra.classList.add('show');
-            toggleBtn.classList.add('expanded');
-            toggleIcon.textContent = 'expand_less';
-            toggleText.textContent = 'Moins de villes';
+        const btnText = btn.querySelector('span:not(.material-icons)');
+        if (btnText) {
+            btnText.textContent = isExpanded ? 'Voir moins' : 'Plus de villes';
         }
     }
 }
 
-// Exposer la fonction globalement
 window.toggleExtraTiles = toggleExtraTiles;
 
 // ============================================
 // NOTIFICATIONS PUSH
 // ============================================
-
 let pushSubscription = null;
 
-// Initialiser les notifications au chargement
 async function initPushNotifications() {
-    // Vérifier si les notifications sont supportées
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
         console.log('❌ Push non supporté');
         return;
@@ -885,23 +621,19 @@ async function initPushNotifications() {
         const subscription = await registration.pushManager.getSubscription();
 
         if (subscription) {
-            // Déjà abonné
             console.log('✅ Déjà abonné aux notifications');
             updateNotifButton(true);
         } else {
-            // Pas encore abonné - afficher le popup après 5 secondes
             updateNotifButton(false);
             
-            // Vérifier si on n'a pas déjà refusé ou si c'est la première visite
             const notifDismissed = localStorage.getItem('notifPromptDismissed');
             const lastDismiss = notifDismissed ? parseInt(notifDismissed) : 0;
             const daysSinceDismiss = (Date.now() - lastDismiss) / (1000 * 60 * 60 * 24);
             
-            // Afficher le popup si jamais affiché OU si refusé il y a plus de 7 jours
             if (!notifDismissed || daysSinceDismiss > 7) {
                 setTimeout(() => {
                     showNotifPrompt();
-                }, 5000); // 5 secondes après le chargement
+                }, 5000);
             }
         }
     } catch (error) {
@@ -909,7 +641,6 @@ async function initPushNotifications() {
     }
 }
 
-// Afficher le popup de notification
 function showNotifPrompt() {
     const prompt = document.getElementById('notifPrompt');
     if (prompt && Notification.permission === 'default') {
@@ -917,7 +648,6 @@ function showNotifPrompt() {
     }
 }
 
-// Fermer le popup
 function closeNotifPrompt(saveDismiss = false) {
     const prompt = document.getElementById('notifPrompt');
     if (prompt) {
@@ -928,13 +658,11 @@ function closeNotifPrompt(saveDismiss = false) {
     }
 }
 
-// Accepter les notifications depuis le popup
 async function acceptNotifPrompt() {
     closeNotifPrompt(false);
     await subscribeToPush();
 }
 
-// Mettre à jour l'apparence du bouton
 function updateNotifButton(isSubscribed) {
     const btn = document.getElementById('notifSubscribeBtn');
     const icon = document.getElementById('notifIcon');
@@ -946,22 +674,21 @@ function updateNotifButton(isSubscribed) {
 
     if (isSubscribed) {
         btn.classList.add('subscribed');
-        icon.textContent = '🔔';
-        icon.classList.add('subscribed');
-        title.textContent = 'Notifications activées';
-        desc.textContent = 'Cliquez pour désactiver';
-        arrow.textContent = 'notifications_active';
+        if (icon) icon.textContent = '🔔';
+        if (icon) icon.classList.add('subscribed');
+        if (title) title.textContent = 'Notifications activées';
+        if (desc) desc.textContent = 'Cliquez pour désactiver';
+        if (arrow) arrow.textContent = 'notifications_active';
     } else {
         btn.classList.remove('subscribed');
-        icon.textContent = '🔕';
-        icon.classList.remove('subscribed');
-        title.textContent = 'Activer les notifications';
-        desc.textContent = 'Recevoir les alertes infos';
-        arrow.textContent = 'notifications_none';
+        if (icon) icon.textContent = '🔕';
+        if (icon) icon.classList.remove('subscribed');
+        if (title) title.textContent = 'Activer les notifications';
+        if (desc) desc.textContent = 'Recevoir les alertes infos';
+        if (arrow) arrow.textContent = 'notifications_none';
     }
 }
 
-// Toggle abonnement
 async function togglePushSubscription() {
     const btn = document.getElementById('notifSubscribeBtn');
     if (!btn) return;
@@ -970,10 +697,8 @@ async function togglePushSubscription() {
 
     try {
         if (pushSubscription) {
-            // Se désabonner
             await unsubscribeFromPush();
         } else {
-            // S'abonner
             await subscribeToPush();
         }
     } catch (error) {
@@ -984,9 +709,7 @@ async function togglePushSubscription() {
     }
 }
 
-// S'abonner aux notifications
 async function subscribeToPush() {
-    // Demander la permission
     const permission = await Notification.requestPermission();
 
     if (permission !== 'granted') {
@@ -994,7 +717,6 @@ async function subscribeToPush() {
         return;
     }
 
-    // Récupérer la clé publique VAPID
     const response = await fetch('/api/subscribe');
     const { publicKey } = await response.json();
 
@@ -1002,17 +724,14 @@ async function subscribeToPush() {
         throw new Error('Clé VAPID non disponible');
     }
 
-    // Convertir la clé
     const applicationServerKey = urlBase64ToUint8Array(publicKey);
 
-    // S'abonner
     const registration = await navigator.serviceWorker.ready;
     pushSubscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: applicationServerKey
     });
 
-    // Envoyer l'abonnement au serveur
     const subscribeResponse = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1026,22 +745,18 @@ async function subscribeToPush() {
     updateNotifButton(true);
     console.log('✅ Abonné aux notifications');
 
-    // Notification de confirmation
     showToast('🔔 Notifications activées !', 'Vous recevrez les alertes infos.');
 }
 
-// Se désabonner
 async function unsubscribeFromPush() {
     if (!pushSubscription) return;
 
-    // Supprimer côté serveur
     await fetch('/api/subscribe', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ endpoint: pushSubscription.endpoint })
     });
 
-    // Supprimer côté client
     await pushSubscription.unsubscribe();
     pushSubscription = null;
 
@@ -1051,7 +766,6 @@ async function unsubscribeFromPush() {
     showToast('🔕 Notifications désactivées', 'Vous ne recevrez plus les alertes.');
 }
 
-// Convertir clé VAPID base64 en Uint8Array
 function urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
     const base64 = (base64String + padding)
@@ -1067,9 +781,7 @@ function urlBase64ToUint8Array(base64String) {
     return outputArray;
 }
 
-// Toast de confirmation
 function showToast(title, message) {
-    // Utiliser le toast existant ou en créer un simple
     const existingToast = document.querySelector('.notification-toast');
     if (existingToast) {
         existingToast.querySelector('.notification-toast-title').textContent = title;

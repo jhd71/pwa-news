@@ -21,7 +21,6 @@
 	<link rel="stylesheet" href="css/weather-icons.css">
 </head>
 <body>
-    <div class="background-gradient"></div>
     
     <!-- Header -->
     <header class="header glass">
@@ -162,16 +161,12 @@
             timezone: 'Europe/Paris'
         };
 
-        // Thème
-        const THEMES = ['dark', 'light', 'rouge', 'bleuciel', 'rose', 'rosepale'];
-        const THEME_ICONS = {
-            'dark': 'dark_mode',
-            'light': 'light_mode',
-            'rouge': 'local_fire_department',
-            'bleuciel': 'water_drop',
-            'rose': 'auto_awesome',
-            'rosepale': 'spa'
-        };
+        // Thème (simplifié)
+		const THEMES = ['dark', 'light'];
+		const THEME_ICONS = {
+			'dark': 'dark_mode',
+			'light': 'light_mode'
+		};
 
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
