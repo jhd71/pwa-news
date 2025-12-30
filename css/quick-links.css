@@ -53,7 +53,6 @@
     align-items: center;
     padding: 1.25rem 1rem;
     border-bottom: 1px solid var(--glass-border);
-    background: var(--glass-bg);
     position: sticky;
     top: 0;
     z-index: 1;

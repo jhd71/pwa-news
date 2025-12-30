@@ -11,7 +11,6 @@
     --bg-gradient-1: #1a1a2e;
     --bg-gradient-2: #16213e;
     --bg-gradient-3: #0f3460;
-    --glass-bg: rgba(255, 255, 255, 0.08);
     --glass-border: rgba(255, 255, 255, 0.15);
     --glass-shadow: rgba(0, 0, 0, 0.3);
     --text-primary: #ffffff;
@@ -30,7 +29,6 @@
     --bg-gradient-1: #e2e8f0;
     --bg-gradient-2: #cbd5e1;
     --bg-gradient-3: #94a3b8;
-    --glass-bg: rgba(255, 255, 255, 0.7);
     --glass-border: rgba(0, 0, 0, 0.1);
     --glass-shadow: rgba(0, 0, 0, 0.1);
     --text-primary: #1e293b;
@@ -49,7 +47,6 @@
     --bg-gradient-1: #2a0a0a;
     --bg-gradient-2: #3a0f0f;
     --bg-gradient-3: #4a1414;
-    --glass-bg: rgba(255, 50, 50, 0.08);
     --glass-border: rgba(255, 80, 80, 0.2);
     --glass-shadow: rgba(139, 0, 0, 0.3);
     --text-primary: #ffffff;
@@ -83,7 +80,6 @@
     --bg-gradient-1: #0f2744;
     --bg-gradient-2: #1e3a5f;
     --bg-gradient-3: #2563eb;
-    --glass-bg: rgba(255, 255, 255, 0.08);
     --glass-border: rgba(56, 189, 248, 0.2);
     --glass-shadow: rgba(0, 0, 0, 0.3);
     --text-primary: #ffffff;
@@ -112,7 +108,6 @@
     --bg-gradient-1: #2d1525;
     --bg-gradient-2: #4a1942;
     --bg-gradient-3: #6b215a;
-    --glass-bg: rgba(255, 255, 255, 0.08);
     --glass-border: rgba(236, 72, 153, 0.2);
     --glass-shadow: rgba(0, 0, 0, 0.3);
     --text-primary: #ffffff;
@@ -141,7 +136,6 @@
     --bg-gradient-1: #fce7f3;
     --bg-gradient-2: #fbcfe8;
     --bg-gradient-3: #f9a8d4;
-    --glass-bg: rgba(255, 255, 255, 0.7);
     --glass-border: rgba(236, 72, 153, 0.2);
     --glass-shadow: rgba(219, 39, 119, 0.1);
     --text-primary: #831843;
@@ -380,19 +374,6 @@ body {
         radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 70%),
         linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 50%, var(--bg-gradient-3) 100%);
     z-index: -1;
-}
-
-/* ============================================
-   EFFET GLASS
-   ============================================ */
-.glass {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    box-shadow: 
-        0 8px 32px var(--glass-shadow),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 /* ============================================
