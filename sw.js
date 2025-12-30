@@ -8,7 +8,6 @@ const STATIC_ASSETS = [
     '/',
     '/index.html',
     '/css/styles.css',
-	'/css/patch-themes.css',
     '/css/quick-links.css',
     '/css/support.css',
     '/css/radio.css',

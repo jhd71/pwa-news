@@ -7,49 +7,35 @@
    THÈME SOMBRE (par défaut)
    ============================================ */
 :root {
-    /* Couleurs principales */
     --primary: #6366f1;
     --primary-light: #818cf8;
     --accent: #f472b6;
-    
-    /* Fonds */
-    --bg-body: #0f0f1a;
-    --bg-card: rgba(255, 255, 255, 0.08);
-    --bg-elevated: rgba(255, 255, 255, 0.12);
-    
-    /* Bordures et ombres */
-    --border-color: rgba(255, 255, 255, 0.12);
-    --shadow-color: rgba(0, 0, 0, 0.3);
-    
-    /* Textes */
+    --bg-dark: #0f0f1a;
+    --bg-gradient-1: #1a1a2e;
+    --bg-gradient-2: #16213e;
+    --bg-gradient-3: #0f3460;
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-shadow: rgba(0, 0, 0, 0.3);
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.7);
     --text-muted: rgba(255, 255, 255, 0.5);
-    
-    /* États */
     --danger: #ef4444;
     --success: #10b981;
 }
 
-/* ============================================
-   THÈME CLAIR
-   ============================================ */
+/* Mode clair */
 [data-theme="light"] {
-    /* Couleurs principales */
     --primary: #4f46e5;
     --primary-light: #6366f1;
     --accent: #ec4899;
-    
-    /* Fonds */
-    --bg-body: #f0f4f8;
-    --bg-card: rgba(255, 255, 255, 0.85);
-    --bg-elevated: rgba(255, 255, 255, 0.95);
-    
-    /* Bordures et ombres */
-    --border-color: rgba(0, 0, 0, 0.08);
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    
-    /* Textes */
+    --bg-dark: #f0f4f8;
+    --bg-gradient-1: #e2e8f0;
+    --bg-gradient-2: #cbd5e1;
+    --bg-gradient-3: #94a3b8;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --glass-shadow: rgba(0, 0, 0, 0.1);
     --text-primary: #1e293b;
     --text-secondary: rgba(30, 41, 59, 0.8);
     --text-muted: rgba(30, 41, 59, 0.5);
