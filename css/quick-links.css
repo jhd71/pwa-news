@@ -1,5 +1,6 @@
 /* ============================================
    WIDGET LIENS RAPIDES
+   Version simplifiée - 2 thèmes
    ============================================ */
 
 /* Overlay sombre */
@@ -10,8 +11,6 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
     z-index: 998;
     opacity: 0;
     visibility: hidden;
@@ -31,9 +30,9 @@
     width: 280px;
     max-width: 85vw;
     height: 100%;
-    background: var(--bg-gradient-1);
-    border-right: 1px solid var(--glass-border);
-    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.3);
+    background: var(--bg-body);
+    border-right: 1px solid var(--border-color);
+    box-shadow: 4px 0 30px var(--shadow-color);
     z-index: 1999;
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -52,8 +51,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.25rem 1rem;
-    border-bottom: 1px solid var(--glass-border);
-    background: var(--glass-bg);
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-card);
     position: sticky;
     top: 0;
     z-index: 1;
@@ -79,7 +78,7 @@
     width: 36px;
     height: 36px;
     border: none;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-elevated);
     border-radius: 50%;
     color: var(--text-secondary);
     cursor: pointer;
@@ -87,7 +86,7 @@
 }
 
 .quick-links-close:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(99, 102, 241, 0.2);
     color: var(--text-primary);
 }
 
@@ -123,7 +122,7 @@
     color: var(--text-primary);
     transition: all 0.3s ease;
     margin-bottom: 0.4rem;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-elevated);
     /* Pour uniformiser boutons et liens */
     width: 100%;
     border: none;
@@ -134,7 +133,7 @@
 }
 
 .quick-link-item:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(99, 102, 241, 0.15);
     transform: translateX(4px);
 }
 
@@ -212,19 +211,11 @@
 
 /* Mode clair */
 [data-theme="light"] .quick-links-panel {
-    background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
+    background: #ffffff;
 }
 
 [data-theme="light"] .quick-links-header {
-    background: rgba(255, 255, 255, 0.8);
-}
-
-[data-theme="light"] .quick-link-item {
-    background: rgba(0, 0, 0, 0.02);
-}
-
-[data-theme="light"] .quick-link-item:hover {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.9);
 }
 
 [data-theme="light"] .quick-links-close {

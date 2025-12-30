@@ -1,6 +1,7 @@
 /* ============================================
-   RADIO PLAYER - CSS COMPLET
+   RADIO PLAYER - CSS SIMPLIFIÉ
    Widget déplié/replié + Minuteur + Now Playing
+   Version 2 thèmes (dark/light)
    ============================================ */
 
 /* ============================================
@@ -30,8 +31,6 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     z-index: 10000;
     display: none;
     align-items: flex-end;
@@ -45,10 +44,8 @@
 .radio-modal {
     width: 100%;
     max-height: 85vh;
-    background: var(--glass-bg);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border: 1px solid var(--glass-border);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     border-radius: 24px 24px 0 0;
     overflow: hidden;
     display: flex;
@@ -66,7 +63,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--border-color);
     flex-shrink: 0;
 }
 
@@ -74,6 +71,7 @@
     font-size: 1.1rem;
     font-weight: 600;
     margin: 0;
+    color: var(--text-primary);
 }
 
 .radio-modal-close {
@@ -82,7 +80,7 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-elevated);
     border: none;
     border-radius: 50%;
     color: var(--text-primary);
@@ -91,7 +89,7 @@
 }
 
 .radio-modal-close:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(99, 102, 241, 0.2);
 }
 
 .radio-modal-content {
@@ -130,6 +128,7 @@
 .radio-current-name {
     font-size: 1.1rem;
     font-weight: 600;
+    color: var(--text-primary);
 }
 
 .radio-current-desc {
@@ -215,7 +214,7 @@
     height: 6px;
     -webkit-appearance: none;
     appearance: none;
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--bg-elevated);
     border-radius: 3px;
     cursor: pointer;
 }
@@ -254,7 +253,7 @@
 }
 
 .radio-cast-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-elevated);
     color: var(--text-primary);
 }
 
@@ -273,7 +272,7 @@
     overscroll-behavior: contain;
 }
 
-/* Scrollbar plus fine */
+/* Scrollbar */
 .radio-stations-container::-webkit-scrollbar {
     width: 4px;
 }
@@ -283,7 +282,7 @@
 }
 
 .radio-stations-container::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--text-muted);
     border-radius: 2px;
 }
 
@@ -311,8 +310,8 @@
     flex-direction: column;
     align-items: center;
     padding: 0.6rem 0.35rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -321,7 +320,7 @@
 }
 
 .radio-station:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(99, 102, 241, 0.1);
     transform: translateY(-2px);
 }
 
@@ -336,7 +335,7 @@
     border-radius: 10px;
     object-fit: cover;
     margin-bottom: 0.35rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-elevated);
     flex-shrink: 0;
 }
 
@@ -348,6 +347,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    color: var(--text-primary);
 }
 
 .radio-station-desc {
@@ -370,15 +370,13 @@
     transform: translateX(-50%);
     width: calc(100% - 1.5rem);
     max-width: 440px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border: 1px solid var(--glass-border);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     border-radius: 20px;
     z-index: 9999;
     display: none;
     flex-direction: column;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 40px var(--shadow-color);
     overflow: hidden;
     transition: all 0.3s ease;
 }
@@ -416,6 +414,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    color: var(--text-primary);
 }
 
 .radio-widget-status {
@@ -443,6 +442,7 @@
 /* Now Playing dans le widget */
 .radio-widget-nowplaying {
     font-size: 0.75rem;
+    color: var(--primary-light);
     margin-top: 0.25rem;
     display: flex;
     align-items: center;
@@ -491,7 +491,7 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-elevated);
     border: none;
     border-radius: 50%;
     color: var(--text-primary);
@@ -501,7 +501,7 @@
 }
 
 .radio-widget-toggle:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(99, 102, 241, 0.2);
 }
 
 .radio-widget-toggle .material-icons {
@@ -541,7 +541,7 @@
     justify-content: center;
     width: 48px;
     height: 48px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-elevated);
     border: none;
     border-radius: 50%;
     color: var(--text-primary);
@@ -551,7 +551,7 @@
 }
 
 .radio-widget-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(99, 102, 241, 0.2);
     transform: scale(1.05);
 }
 
@@ -604,7 +604,7 @@
     height: 8px;
     -webkit-appearance: none;
     appearance: none;
-    background: linear-gradient(to right, var(--primary) 0%, rgba(255, 255, 255, 0.2) 0%);
+    background: linear-gradient(to right, var(--primary) 0%, var(--bg-elevated) 0%);
     border-radius: 4px;
     cursor: pointer;
 }
@@ -648,17 +648,15 @@
     transform: translateX(-50%) scale(0.9);
     width: calc(100% - 2rem);
     max-width: 320px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border: 1px solid var(--glass-border);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     border-radius: 20px;
     padding: 1.25rem;
     z-index: 10001;
     opacity: 0;
     visibility: hidden;
     transition: all 0.2s ease;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 40px var(--shadow-color);
 }
 
 .sleep-timer-popup.show {
@@ -689,8 +687,8 @@
     align-items: center;
     justify-content: center;
     padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     color: var(--text-primary);
     font-size: 0.9rem;
@@ -711,7 +709,7 @@
     gap: 0.5rem;
     width: 100%;
     padding: 0.75rem;
-    background: rgb(0 0 0 / .1);
+    background: var(--bg-elevated);
     border: 1px solid rgba(99, 102, 241, 0.3);
     border-radius: 12px;
     color: #dfa40a;
@@ -730,8 +728,8 @@
     width: 100%;
     padding: 0.75rem;
     margin-top: 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     color: var(--text-primary);
     font-size: 1rem;
@@ -789,10 +787,8 @@
     bottom: 100px;
     left: 50%;
     transform: translateX(-50%) translateY(20px);
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     padding: 0.75rem 1.5rem;
     border-radius: 50px;
     font-size: 0.9rem;
@@ -801,7 +797,7 @@
     visibility: hidden;
     transition: all 0.3s ease;
     z-index: 10002;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 20px var(--shadow-color);
 }
 
 .radio-toast.show {
@@ -824,7 +820,7 @@ body.radio-playing .footer {
     .radio-modal {
         max-height: 90vh;
         border-radius: 20px 20px 0 0;
-		background: rgb(48 56 83);
+        background: var(--bg-card);
     }
     
     .radio-modal-header {
@@ -898,7 +894,7 @@ body.radio-playing .footer {
         max-height: 80vh;
         border-radius: 24px;
         animation: modalFadeIn 0.3s ease;
-		background: rgb(48 56 83);
+        background: var(--bg-card);
     }
     
     @keyframes modalFadeIn {
@@ -983,634 +979,123 @@ body.radio-playing .footer {
         gap: 0.4rem;
     }
 }
+
 /* ============================================
-   THÈME CLAIR - Styles spécifiques
+   THÈME CLAIR
    ============================================ */
 
-/* === WIDGET EN MODE CLAIR === */
-[data-theme="light"] #radioWidget,
-[data-theme="bleuciel"] #radioWidget {
+/* Widget */
+[data-theme="light"] #radioWidget {
     background: rgba(255, 255, 255, 0.95);
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
 
-[data-theme="light"] .radio-widget-name,
-[data-theme="bleuciel"] .radio-widget-name {
-    color: #1e293b;
-}
-
-[data-theme="light"] .radio-widget-status,
-[data-theme="bleuciel"] .radio-widget-status {
-    color: #64748b;
-}
-
-[data-theme="light"] .radio-widget-nowplaying,
-[data-theme="bleuciel"] .radio-widget-nowplaying {
-    color: var(--primary);
-}
-
-[data-theme="light"] .radio-widget-btn,
-[data-theme="bleuciel"] .radio-widget-btn {
+[data-theme="light"] .radio-widget-btn {
     background: rgba(0, 0, 0, 0.05);
-    color: #1e293b;
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="light"] .radio-widget-btn:hover,
-[data-theme="bleuciel"] .radio-widget-btn:hover {
+[data-theme="light"] .radio-widget-btn:hover {
     background: rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="light"] .radio-widget-btn.large,
-[data-theme="bleuciel"] .radio-widget-btn.large {
+[data-theme="light"] .radio-widget-btn.large {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     color: white;
     border: none;
 }
 
-[data-theme="light"] .radio-widget-toggle,
-[data-theme="bleuciel"] .radio-widget-toggle {
+[data-theme="light"] .radio-widget-toggle {
     background: rgba(0, 0, 0, 0.05);
-    color: #1e293b;
 }
 
-[data-theme="light"] .radio-widget-toggle:hover,
-[data-theme="bleuciel"] .radio-widget-toggle:hover {
+[data-theme="light"] .radio-widget-toggle:hover {
     background: rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="light"] .radio-widget-bar,
-[data-theme="bleuciel"] .radio-widget-bar {
-    background: var(--primary);
-}
-
-[data-theme="light"] .radio-widget-volume-slider,
-[data-theme="bleuciel"] .radio-widget-volume-slider {
+[data-theme="light"] .radio-widget-volume-slider {
     background: rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="light"] .radio-widget-volume-slider::-webkit-slider-thumb,
-[data-theme="bleuciel"] .radio-widget-volume-slider::-webkit-slider-thumb {
+[data-theme="light"] .radio-widget-volume-slider::-webkit-slider-thumb {
     background: var(--primary);
     box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
 }
 
-[data-theme="light"] .radio-widget-volume-value,
-[data-theme="bleuciel"] .radio-widget-volume-value {
-    color: #1e293b;
-}
-
-/* === MODAL EN MODE CLAIR === */
-[data-theme="light"] .radio-modal,
-[data-theme="bleuciel"] .radio-modal {
+/* Modal */
+[data-theme="light"] .radio-modal {
     background: rgba(255, 255, 255, 0.98);
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="light"] .radio-modal-header,
-[data-theme="bleuciel"] .radio-modal-header {
+[data-theme="light"] .radio-modal-header {
     border-color: rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="light"] .radio-modal-header h2,
-[data-theme="bleuciel"] .radio-modal-header h2 {
-    color: #1e293b;
-}
-
-[data-theme="light"] .radio-modal-close,
-[data-theme="bleuciel"] .radio-modal-close {
+[data-theme="light"] .radio-modal-close {
     background: rgba(0, 0, 0, 0.05);
-    color: #64748b;
 }
 
-[data-theme="light"] .radio-modal-close:hover,
-[data-theme="bleuciel"] .radio-modal-close:hover {
-    background: rgba(0, 0, 0, 0.1);
-    color: #1e293b;
-}
-
-[data-theme="light"] .radio-now-playing,
-[data-theme="bleuciel"] .radio-now-playing {
-    background: rgba(99, 102, 241, 0.1);
-}
-
-[data-theme="light"] .radio-current-name,
-[data-theme="bleuciel"] .radio-current-name {
-    color: #1e293b;
-}
-
-[data-theme="light"] .radio-current-desc,
-[data-theme="bleuciel"] .radio-current-desc {
-    color: #64748b;
-}
-
-[data-theme="light"] .radio-play-btn,
-[data-theme="bleuciel"] .radio-play-btn {
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
-}
-
-[data-theme="light"] .radio-volume-slider,
-[data-theme="bleuciel"] .radio-volume-slider {
+[data-theme="light"] .radio-modal-close:hover {
     background: rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="light"] .radio-volume-value,
-[data-theme="bleuciel"] .radio-volume-value {
-    color: #64748b;
+[data-theme="light"] .radio-volume-slider {
+    background: rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="light"] .radio-volume-icon,
-[data-theme="bleuciel"] .radio-volume-icon {
-    color: #64748b;
-}
-
-[data-theme="light"] .radio-stations-title,
-[data-theme="bleuciel"] .radio-stations-title {
-    color: #64748b;
-}
-
-[data-theme="light"] .radio-station,
-[data-theme="bleuciel"] .radio-station {
+[data-theme="light"] .radio-station {
     background: rgba(0, 0, 0, 0.03);
     border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-[data-theme="light"] .radio-station:hover,
-[data-theme="bleuciel"] .radio-station:hover {
+[data-theme="light"] .radio-station:hover {
     background: rgba(0, 0, 0, 0.06);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="light"] .radio-station.active,
-[data-theme="bleuciel"] .radio-station.active {
+[data-theme="light"] .radio-station.active {
     background: rgba(99, 102, 241, 0.1);
     border-color: var(--primary);
 }
 
-[data-theme="light"] .radio-station-name,
-[data-theme="bleuciel"] .radio-station-name {
-    color: #1e293b;
-}
-
-[data-theme="light"] .radio-station-desc,
-[data-theme="bleuciel"] .radio-station-desc {
-    color: #64748b;
-}
-
-[data-theme="light"] .radio-stations-container::-webkit-scrollbar-thumb,
-[data-theme="bleuciel"] .radio-stations-container::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
-}
-
-/* === POPUP MINUTEUR EN MODE CLAIR === */
-[data-theme="light"] .sleep-timer-popup,
-[data-theme="bleuciel"] .sleep-timer-popup {
+/* Popup minuteur */
+[data-theme="light"] .sleep-timer-popup {
     background: rgba(255, 255, 255, 0.98);
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
-[data-theme="light"] .sleep-timer-popup-header,
-[data-theme="bleuciel"] .sleep-timer-popup-header {
+[data-theme="light"] .sleep-timer-popup-header {
     color: #d97706;
 }
 
-[data-theme="light"] .sleep-timer-option,
-[data-theme="bleuciel"] .sleep-timer-option {
+[data-theme="light"] .sleep-timer-option {
     background: rgba(0, 0, 0, 0.03);
     border: 1px solid rgba(0, 0, 0, 0.1);
-    color: #1e293b;
 }
 
-[data-theme="light"] .sleep-timer-option:hover,
-[data-theme="bleuciel"] .sleep-timer-option:hover {
+[data-theme="light"] .sleep-timer-option:hover {
     background: rgba(251, 191, 36, 0.15);
     border-color: #d97706;
 }
 
-[data-theme="light"] .sleep-timer-time-btn,
-[data-theme="bleuciel"] .sleep-timer-time-btn {
+[data-theme="light"] .sleep-timer-time-btn {
     background: rgba(99, 102, 241, 0.1);
     border-color: rgba(99, 102, 241, 0.3);
     color: var(--primary);
 }
 
-[data-theme="light"] .sleep-timer-status,
-[data-theme="bleuciel"] .sleep-timer-status {
+[data-theme="light"] .sleep-timer-status {
     background: rgba(251, 191, 36, 0.1);
     border-color: rgba(251, 191, 36, 0.3);
     color: #d97706;
 }
 
-/* === TOAST EN MODE CLAIR === */
-[data-theme="light"] .radio-toast,
-[data-theme="bleuciel"] .radio-toast {
+/* Toast */
+[data-theme="light"] .radio-toast {
     background: rgba(255, 255, 255, 0.95);
-    color: #1e293b;
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
-
-/* ============================================
-   THÈME ROUGE - Radio
-   ============================================ */
-
-/* Widget */
-[data-theme="rouge"] #radioWidget {
-    background: rgba(45, 21, 21, 0.95);
-    border: 1px solid rgba(255, 100, 100, 0.2);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-}
-
-[data-theme="rouge"] .radio-widget-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 100, 100, 0.2);
-}
-
-[data-theme="rouge"] .radio-widget-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-[data-theme="rouge"] .radio-widget-btn.large {
-    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
-    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.4);
-}
-
-[data-theme="rouge"] .radio-widget-toggle {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="rouge"] .radio-widget-bar {
-    background: #ef4444;
-}
-
-/* Modal */
-[data-theme="rouge"] .radio-modal {
-    background: rgba(45, 21, 21, 0.98);
-    border: 1px solid rgba(255, 100, 100, 0.2);
-}
-
-[data-theme="rouge"] .radio-modal-header {
-    border-color: rgba(255, 100, 100, 0.2);
-}
-
-[data-theme="rouge"] .radio-modal-close {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="rouge"] .radio-modal-close:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-[data-theme="rouge"] .radio-now-playing {
-    background: rgba(220, 38, 38, 0.15);
-}
-
-[data-theme="rouge"] .radio-play-btn {
-    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
-    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.4);
-}
-
-[data-theme="rouge"] .radio-equalizer-bar {
-    background: #ef4444;
-}
-
-[data-theme="rouge"] .radio-volume-slider {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-[data-theme="rouge"] .radio-volume-slider::-webkit-slider-thumb {
-    background: #ef4444;
-    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
-}
-
-[data-theme="rouge"] .radio-station {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 100, 100, 0.15);
-}
-
-[data-theme="rouge"] .radio-station:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="rouge"] .radio-station.active {
-    background: rgba(220, 38, 38, 0.2);
-    border-color: #ef4444;
-}
-
-/* Popup minuteur */
-[data-theme="rouge"] .sleep-timer-popup {
-    background: rgba(45, 21, 21, 0.98);
-    border: 1px solid rgba(255, 100, 100, 0.2);
-}
-
-[data-theme="rouge"] .sleep-timer-option {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 100, 100, 0.2);
-}
-
-[data-theme="rouge"] .sleep-timer-option:hover {
-    background: rgba(220, 38, 38, 0.2);
-    border-color: #ef4444;
-}
-
-/* Toast */
-[data-theme="rouge"] .radio-toast {
-    background: rgba(45, 21, 21, 0.95);
-    border: 1px solid rgba(255, 100, 100, 0.2);
-}
-
-/* ============================================
-   THÈME ROSE - Radio
-   ============================================ */
-
-/* Widget */
-[data-theme="rose"] #radioWidget {
-    background: rgba(45, 21, 37, 0.95);
-    border: 1px solid rgba(236, 72, 153, 0.2);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-}
-
-[data-theme="rose"] .radio-widget-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(236, 72, 153, 0.2);
-}
-
-[data-theme="rose"] .radio-widget-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-[data-theme="rose"] .radio-widget-btn.large {
-    background: linear-gradient(135deg, #db2777 0%, #ec4899 100%);
-    box-shadow: 0 4px 16px rgba(219, 39, 119, 0.4);
-}
-
-[data-theme="rose"] .radio-widget-toggle {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="rose"] .radio-widget-bar {
-    background: #ec4899;
-}
-
-/* Modal */
-[data-theme="rose"] .radio-modal {
-    background: rgba(45, 21, 37, 0.98);
-    border: 1px solid rgba(236, 72, 153, 0.2);
-}
-
-[data-theme="rose"] .radio-modal-header {
-    border-color: rgba(236, 72, 153, 0.2);
-}
-
-[data-theme="rose"] .radio-modal-close {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="rose"] .radio-modal-close:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-[data-theme="rose"] .radio-now-playing {
-    background: rgba(219, 39, 119, 0.15);
-}
-
-[data-theme="rose"] .radio-play-btn {
-    background: linear-gradient(135deg, #db2777 0%, #ec4899 100%);
-    box-shadow: 0 4px 16px rgba(219, 39, 119, 0.4);
-}
-
-[data-theme="rose"] .radio-equalizer-bar {
-    background: #ec4899;
-}
-
-[data-theme="rose"] .radio-volume-slider {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-[data-theme="rose"] .radio-volume-slider::-webkit-slider-thumb {
-    background: #ec4899;
-    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
-}
-
-[data-theme="rose"] .radio-station {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(236, 72, 153, 0.15);
-}
-
-[data-theme="rose"] .radio-station:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="rose"] .radio-station.active {
-    background: rgba(219, 39, 119, 0.2);
-    border-color: #ec4899;
-}
-
-/* Popup minuteur */
-[data-theme="rose"] .sleep-timer-popup {
-    background: rgba(45, 21, 37, 0.98);
-    border: 1px solid rgba(236, 72, 153, 0.2);
-}
-
-[data-theme="rose"] .sleep-timer-option {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(236, 72, 153, 0.2);
-}
-
-[data-theme="rose"] .sleep-timer-option:hover {
-    background: rgba(219, 39, 119, 0.2);
-    border-color: #ec4899;
-}
-
-/* Toast */
-[data-theme="rose"] .radio-toast {
-    background: rgba(45, 21, 37, 0.95);
-    border: 1px solid rgba(236, 72, 153, 0.2);
-}
-
-/* ============================================
-   THÈME ROSEPALE (Girly) - Radio
-   ============================================ */
-
-/* Widget */
-[data-theme="rosepale"] #radioWidget {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(236, 72, 153, 0.2);
-    box-shadow: 0 10px 40px rgba(219, 39, 119, 0.15);
-}
-
-[data-theme="rosepale"] .radio-widget-name {
-    color: #831843;
-}
-
-[data-theme="rosepale"] .radio-widget-status {
-    color: #9d174d;
-}
-
-[data-theme="rosepale"] .radio-widget-nowplaying {
-    color: #db2777;
-}
-
-[data-theme="rosepale"] .radio-widget-btn {
-    background: rgba(131, 24, 67, 0.08);
-    color: #831843;
-    border: 1px solid rgba(131, 24, 67, 0.15);
-}
-
-[data-theme="rosepale"] .radio-widget-btn:hover {
-    background: rgba(131, 24, 67, 0.15);
-}
-
-[data-theme="rosepale"] .radio-widget-btn.large {
-    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
-    color: white;
-    border: none;
-    box-shadow: 0 4px 16px rgba(219, 39, 119, 0.3);
-}
-
-[data-theme="rosepale"] .radio-widget-toggle {
-    background: rgba(131, 24, 67, 0.08);
-    color: #831843;
-}
-
-[data-theme="rosepale"] .radio-widget-bar {
-    background: #ec4899;
-}
-
-[data-theme="rosepale"] .radio-widget-volume-slider {
-    background: rgba(131, 24, 67, 0.1);
-}
-
-[data-theme="rosepale"] .radio-widget-volume-slider::-webkit-slider-thumb {
-    background: #ec4899;
-    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
-}
-
-[data-theme="rosepale"] .radio-widget-volume-value {
-    color: #831843;
-}
-
-/* Modal */
-[data-theme="rosepale"] .radio-modal {
-    background: rgba(255, 255, 255, 0.98);
-    border: 1px solid rgba(236, 72, 153, 0.15);
-}
-
-[data-theme="rosepale"] .radio-modal-header {
-    border-color: rgba(236, 72, 153, 0.15);
-}
-
-[data-theme="rosepale"] .radio-modal-header h2 {
-    color: #831843;
-}
-
-[data-theme="rosepale"] .radio-modal-close {
-    background: rgba(131, 24, 67, 0.08);
-    color: #9d174d;
-}
-
-[data-theme="rosepale"] .radio-modal-close:hover {
-    background: rgba(131, 24, 67, 0.15);
-    color: #831843;
-}
-
-[data-theme="rosepale"] .radio-now-playing {
-    background: rgba(236, 72, 153, 0.1);
-}
-
-[data-theme="rosepale"] .radio-current-name {
-    color: #831843;
-}
-
-[data-theme="rosepale"] .radio-current-desc {
-    color: #9d174d;
-}
-
-[data-theme="rosepale"] .radio-play-btn {
-    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
-    box-shadow: 0 4px 16px rgba(219, 39, 119, 0.3);
-}
-
-[data-theme="rosepale"] .radio-equalizer-bar {
-    background: #ec4899;
-}
-
-[data-theme="rosepale"] .radio-volume-slider {
-    background: rgba(131, 24, 67, 0.1);
-}
-
-[data-theme="rosepale"] .radio-volume-slider::-webkit-slider-thumb {
-    background: #ec4899;
-    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
-}
-
-[data-theme="rosepale"] .radio-volume-value {
-    color: #9d174d;
-}
-
-[data-theme="rosepale"] .radio-volume-icon {
-    color: #9d174d;
-}
-
-[data-theme="rosepale"] .radio-stations-title {
-    color: #9d174d;
-}
-
-[data-theme="rosepale"] .radio-station {
-    background: rgba(131, 24, 67, 0.04);
-    border: 1px solid rgba(131, 24, 67, 0.1);
-}
-
-[data-theme="rosepale"] .radio-station:hover {
-    background: rgba(131, 24, 67, 0.08);
-    box-shadow: 0 4px 12px rgba(219, 39, 119, 0.1);
-}
-
-[data-theme="rosepale"] .radio-station.active {
-    background: rgba(236, 72, 153, 0.15);
-    border-color: #ec4899;
-}
-
-[data-theme="rosepale"] .radio-station-name {
-    color: #831843;
-}
-
-[data-theme="rosepale"] .radio-station-desc {
-    color: #9d174d;
-}
-
-[data-theme="rosepale"] .radio-stations-container::-webkit-scrollbar-thumb {
-    background: rgba(131, 24, 67, 0.2);
-}
-
-/* Popup minuteur */
-[data-theme="rosepale"] .sleep-timer-popup {
-    background: rgba(255, 255, 255, 0.98);
-    border: 1px solid rgba(236, 72, 153, 0.15);
-    box-shadow: 0 10px 40px rgba(219, 39, 119, 0.15);
-}
-
-[data-theme="rosepale"] .sleep-timer-popup-header {
-    color: #db2777;
-}
-
-[data-theme="rosepale"] .sleep-timer-option {
-    background: rgba(131, 24, 67, 0.04);
-    border: 1px solid rgba(131, 24, 67, 0.1);
-    color: #831843;
-}
-
-[data-theme="rosepale"] .sleep-timer-option:hover {
-    background: rgba(236, 72, 153, 0.15);
-    border-color: #ec4899;
-}
-
-/* Toast */
-[data-theme="rosepale"] .radio-toast {
-    background: rgba(255, 255, 255, 0.95);
-    color: #831843;
-    border: 1px solid rgba(236, 72, 153, 0.15);
-    box-shadow: 0 4px 20px rgba(219, 39, 119, 0.15);
 }
