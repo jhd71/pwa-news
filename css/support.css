@@ -284,7 +284,7 @@
 }
 
 .emergency-content {
-    background: var(--bg-card);
+    background: rgb(22 22 21);
     border: 1px solid var(--border-color);
     border-radius: 24px;
     padding: 1.5rem;
