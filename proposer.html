@@ -41,8 +41,10 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.6rem 1rem;
-            background: var(--bg-card);
-			border: 1px solid var(--border-color);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
             border-radius: 50px;
             color: var(--text-primary);
             text-decoration: none;
@@ -71,8 +73,10 @@
             max-width: 500px;
             margin: 2rem auto 0;
             padding: 1rem;
-            background: var(--bg-card);
-			border: 1px solid var(--border-color);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
             border-radius: 12px;
             color: var(--text-primary);
             text-decoration: none;
@@ -115,8 +119,10 @@
         }
         
         .propose-form {
-			background: var(--bg-card);
-			border: 1px solid var(--border-color);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: 1.5rem;
         }
@@ -183,9 +189,9 @@
         }
         
         .form-select option {
-			background: var(--bg-card);
-			color: var(--text-primary);
-		}
+            background: var(--bg-gradient-1);
+            color: var(--text-primary);
+        }
         
         .form-hint {
             font-size: 0.75rem;
@@ -438,6 +444,8 @@
     </style>
 </head>
 <body>
+    <!-- Fond animé -->
+    <div class="background-gradient"></div>
     
     <!-- Bouton retour en haut -->
     <a href="index.html" class="propose-back">

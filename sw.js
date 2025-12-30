@@ -14,7 +14,8 @@ const STATIC_ASSETS = [
     '/js/app.js',
     '/js/quick-links.js',
     '/js/support.js',
-    '/js/radio.js'
+    '/js/radio.js',
+    '/manifest.json'
 ];
 
 // Installation

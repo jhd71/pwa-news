@@ -1,6 +1,5 @@
 /* ============================================
    WIDGET LIENS RAPIDES
-   Version simplifiée - 2 thèmes (dark/light)
    ============================================ */
 
 /* Overlay sombre */
@@ -32,8 +31,8 @@
     width: 280px;
     max-width: 85vw;
     height: 100%;
-    background: var(--bg-card);
-    border-right: 1px solid var(--border-color);
+    background: var(--bg-gradient-1);
+    border-right: 1px solid var(--glass-border);
     box-shadow: 4px 0 30px rgba(0, 0, 0, 0.3);
     z-index: 1999;
     transform: translateX(-100%);
@@ -53,8 +52,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.25rem 1rem;
-    border-bottom: 1px solid var(--border-color);
-    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--glass-border);
+    background: var(--glass-bg);
     position: sticky;
     top: 0;
     z-index: 1;
@@ -80,8 +79,7 @@
     width: 36px;
     height: 36px;
     border: none;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     color: var(--text-secondary);
     cursor: pointer;
@@ -89,7 +87,7 @@
 }
 
 .quick-links-close:hover {
-    background: var(--bg-card-hover);
+    background: rgba(255, 255, 255, 0.2);
     color: var(--text-primary);
 }
 
@@ -120,14 +118,15 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.85rem 1rem;
-    border-radius: var(--radius-md);
+    border-radius: 12px;
     text-decoration: none;
     color: var(--text-primary);
     transition: all 0.3s ease;
     margin-bottom: 0.4rem;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.03);
+    /* Pour uniformiser boutons et liens */
     width: 100%;
+    border: none;
     cursor: pointer;
     font-family: inherit;
     font-size: inherit;
@@ -135,7 +134,7 @@
 }
 
 .quick-link-item:hover {
-    background: var(--bg-card-hover);
+    background: rgba(255, 255, 255, 0.1);
     transform: translateX(4px);
 }
 
@@ -149,7 +148,7 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    border-radius: var(--radius-sm);
+    border-radius: 10px;
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     font-size: 1.25rem;
     flex-shrink: 0;
@@ -211,9 +210,27 @@
     transform: translateX(0);
 }
 
-/* Safe area iOS */
-@supports (padding-top: env(safe-area-inset-top)) {
-    .quick-links-header {
-        padding-top: calc(1.25rem + env(safe-area-inset-top));
-    }
+/* Mode clair */
+[data-theme="light"] .quick-links-panel {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
+}
+
+[data-theme="light"] .quick-links-header {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .quick-link-item {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="light"] .quick-link-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .quick-links-close {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .quick-links-close:hover {
+    background: rgba(0, 0, 0, 0.1);
 }
