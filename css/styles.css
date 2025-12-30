@@ -7,38 +7,52 @@
    THÈME SOMBRE (par défaut)
    ============================================ */
 :root {
+    /* Couleurs principales */
     --primary: #6366f1;
     --primary-light: #818cf8;
     --accent: #f472b6;
-    --bg-dark: #0f0f1a;
-    --bg-gradient-1: #1a1a2e;
-    --bg-gradient-2: #16213e;
-    --bg-gradient-3: #0f3460;
-    --glass-bg: rgba(255, 255, 255, 0.08);
-    --glass-border: rgba(255, 255, 255, 0.15);
-    --glass-shadow: rgba(0, 0, 0, 0.3);
+    
+    /* Fonds */
+    --bg-body: #0f0f1a;
+    --bg-card: rgba(255, 255, 255, 0.08);
+    --bg-elevated: rgba(255, 255, 255, 0.12);
+    
+    /* Bordures et ombres */
+    --border-color: rgba(255, 255, 255, 0.12);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    
+    /* Textes */
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.7);
     --text-muted: rgba(255, 255, 255, 0.5);
+    
+    /* États */
     --danger: #ef4444;
     --success: #10b981;
 }
 
-/* Mode clair */
+/* ============================================
+   THÈME CLAIR
+   ============================================ */
 [data-theme="light"] {
+    /* Couleurs principales */
     --primary: #4f46e5;
     --primary-light: #6366f1;
     --accent: #ec4899;
-    --bg-dark: #f0f4f8;
-    --bg-gradient-1: #e2e8f0;
-    --bg-gradient-2: #cbd5e1;
-    --bg-gradient-3: #94a3b8;
-    --glass-bg: rgba(255, 255, 255, 0.7);
-    --glass-border: rgba(0, 0, 0, 0.1);
-    --glass-shadow: rgba(0, 0, 0, 0.1);
+    
+    /* Fonds */
+    --bg-body: #f0f4f8;
+    --bg-card: rgba(255, 255, 255, 0.95);
+    --bg-elevated: rgba(255, 255, 255, 0.98);
+    
+    /* Bordures et ombres */
+    --border-color: rgba(0, 0, 0, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    
+    /* Textes */
     --text-primary: #1e293b;
-    --text-secondary: rgba(30, 41, 59, 0.8);
-    --text-muted: rgba(30, 41, 59, 0.5);
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
 }
 
 /* ============================================
@@ -124,11 +138,221 @@ body {
     white-space: nowrap;
 }
 
+/* ============================================
+   MODE CLAIR - Header
+   ============================================ */
+[data-theme="light"] .header {
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .header-btn {
+    background: rgba(0, 0, 0, 0.05);
+    color: #1e293b;
+}
+
+[data-theme="light"] .header-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .header-title h1 {
+    color: #1e293b;
+}
+
+[data-theme="light"] .theme-toggle {
+    background: rgba(0, 0, 0, 0.05);
+    color: #1e293b;
+}
+
 [data-theme="light"] .header h1 {
     background: linear-gradient(135deg, #1e293b 0%, var(--primary) 50%, var(--primary-light) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+
+/* ============================================
+   MODE CLAIR - Modales
+   ============================================ */
+[data-theme="light"] .modal,
+[data-theme="light"] .modal-content,
+[data-theme="light"] .support-panel,
+[data-theme="light"] .pwa-modal,
+[data-theme="light"] .install-prompt,
+[data-theme="light"] .install-banner {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .support-panel {
+    background: #ffffff;
+}
+
+[data-theme="light"] .install-prompt,
+[data-theme="light"] .install-banner,
+[data-theme="light"] .pwa-install-banner {
+    background: #ffffff;
+}
+
+/* ============================================
+   MODE CLAIR - Sections et cartes
+   ============================================ */
+[data-theme="light"] .section,
+[data-theme="light"] .card,
+[data-theme="light"] .glass {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .news-carousel,
+[data-theme="light"] .news-item,
+[data-theme="light"] .cinema-section,
+[data-theme="light"] .community-section,
+[data-theme="light"] .quick-links-section,
+[data-theme="light"] .local-sites-section,
+[data-theme="light"] .footer {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================
+   MODE CLAIR - Boutons et liens rapides
+   ============================================ */
+[data-theme="light"] .quick-link-item,
+[data-theme="light"] .local-site-item {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .quick-link-item:hover,
+[data-theme="light"] .local-site-item:hover {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: var(--primary);
+}
+
+/* ============================================
+   MODE CLAIR - Textes
+   ============================================ */
+[data-theme="light"] .section-title,
+[data-theme="light"] .card-title,
+[data-theme="light"] h1, 
+[data-theme="light"] h2, 
+[data-theme="light"] h3 {
+    color: #1e293b;
+}
+
+[data-theme="light"] p,
+[data-theme="light"] .description,
+[data-theme="light"] .subtitle {
+    color: #64748b;
+}
+
+/* ============================================
+   MODE CLAIR - Widget météo
+   ============================================ */
+[data-theme="light"] .weather-widget {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .weather-widget * {
+    color: #1e293b;
+}
+
+/* ============================================
+   MODE CLAIR - Footer
+   ============================================ */
+[data-theme="light"] .footer {
+    background: rgba(255, 255, 255, 0.98);
+    color: #64748b;
+}
+
+[data-theme="light"] .footer a {
+    color: var(--primary);
+}
+
+/* ============================================
+   MODE SOMBRE - Sections principales
+   ============================================ */
+.news-carousel,
+.cinema-section,
+.community-section,
+.quick-links-section,
+.local-sites-section,
+.section,
+.card {
+    background: rgba(26, 26, 46, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Items dans les sections */
+.news-item,
+.cinema-item,
+.community-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.news-item:hover,
+.cinema-item:hover,
+.community-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   Header mode sombre
+   ============================================ */
+.header {
+    background: rgba(15, 15, 26, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   Footer mode sombre
+   ============================================ */
+.footer {
+    background: rgba(26, 26, 46, 0.98);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   MODE SOMBRE - Modales avec fond solide
+   ============================================ */
+
+/* Overlay des modales */
+.modal-overlay,
+.support-overlay,
+.pwa-modal-overlay,
+.install-prompt-overlay {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Contenu des modales - fond SOLIDE */
+.modal,
+.modal-content,
+.support-panel,
+.pwa-modal,
+.install-prompt,
+.install-banner {
+    background: #1a1a2e;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* Panel support */
+.support-panel {
+    background: #1a1a2e;
+}
+
+/* Install prompt / banner */
+.install-prompt,
+.install-banner,
+.pwa-install-banner {
+    background: #1a1a2e;
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .header-right-btns {
