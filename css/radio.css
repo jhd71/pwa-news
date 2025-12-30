@@ -45,6 +45,7 @@
 .radio-modal {
     width: 100%;
     max-height: 85vh;
+    background: var(--glass-bg);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     border: 1px solid var(--glass-border);
@@ -369,6 +370,7 @@
     transform: translateX(-50%);
     width: calc(100% - 1.5rem);
     max-width: 440px;
+    background: var(--glass-bg);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     border: 1px solid var(--glass-border);
@@ -646,6 +648,7 @@
     transform: translateX(-50%) scale(0.9);
     width: calc(100% - 2rem);
     max-width: 320px;
+    background: var(--glass-bg);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     border: 1px solid var(--glass-border);
@@ -786,6 +789,7 @@
     bottom: 100px;
     left: 50%;
     transform: translateX(-50%) translateY(20px);
+    background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
