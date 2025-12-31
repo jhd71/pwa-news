@@ -441,7 +441,6 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.3px;
     font-weight: 500;
-    color: var(--text-secondary);
 }
 
 .weather-day-icon {
@@ -479,7 +478,6 @@ body {
     gap: 0.5rem;
     margin-bottom: 1rem;
     font-weight: 600;
-    color: var(--text-secondary);
     font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -666,7 +664,6 @@ body {
 
 .news-item-date {
     font-size: 0.75rem;
-    color: var(--text-muted);
     margin-top: auto;
 }
 
@@ -1020,7 +1017,6 @@ body {
     gap: 0.5rem;
     margin-top: 0.75rem;
     font-size: 0.75rem;
-    color: var(--text-muted);
     animation: bounce 2s ease infinite;
 }
 
@@ -1056,7 +1052,6 @@ body {
     gap: 1rem;
     font-size: 0.75rem;
     margin-bottom: 0.5rem;
-    color: var(--text-muted);
 }
 
 .cinema-film-times {
@@ -1665,7 +1660,6 @@ body {
     font-size: 0.85rem;
     line-height: 1.5;
     margin-bottom: 0.5rem;
-    color: var(--text-secondary);
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -1682,7 +1676,6 @@ body {
     gap: 0.75rem;
     font-size: 0.75rem;
     flex-wrap: wrap;
-    color: var(--text-muted);
 }
 
 .community-item-meta span {
