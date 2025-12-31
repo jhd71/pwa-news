@@ -172,7 +172,7 @@ const THEME_ICONS = {
 };
 
 function initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
+    const savedTheme = localStorage.getItem('theme') || 'light';
     applyTheme(savedTheme);
     
     // Bouton toggle header (cycle tous les thèmes)
