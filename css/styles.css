@@ -189,6 +189,13 @@ body {
 /* ============================================
    MODE CLAIR - Sections et cartes
    ============================================ */
+[data-theme="light"] .section,
+[data-theme="light"] .card,
+[data-theme="light"] .glass {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
 
 [data-theme="light"] .news-carousel,
 [data-theme="light"] .news-item,

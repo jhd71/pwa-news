@@ -50,7 +50,6 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    animation: slideUp 0.3s ease;
 }
 
 @keyframes slideUp {
