@@ -866,11 +866,13 @@ async function initPushNotifications() {
         const subscription = await registration.pushManager.getSubscription();
 
         if (subscription) {
-            // Déjà abonné
+            // Déjà abonné - STOCKER L'ABONNEMENT
+            pushSubscription = subscription;
             console.log('✅ Déjà abonné aux notifications');
             updateNotifButton(true);
         } else {
-            // Pas encore abonné - afficher le popup après 5 secondes
+            // Pas encore abonné
+            pushSubscription = null;
             updateNotifButton(false);
             
             // Vérifier si on n'a pas déjà refusé ou si c'est la première visite
@@ -888,7 +890,6 @@ async function initPushNotifications() {
     } catch (error) {
         console.error('❌ Erreur init push:', error);
     }
-}
 
 // Afficher le popup de notification
 function showNotifPrompt() {
