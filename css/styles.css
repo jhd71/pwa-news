@@ -2140,3 +2140,61 @@ body {
     background: rgba(99, 102, 241, 0.1);
     color: var(--text-primary);
 }
+
+/* ============================================
+   FOOTER SOCIAL ICONS
+   ============================================ */
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.75rem;
+}
+
+.footer-social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.footer-social-link:hover {
+    transform: translateY(-3px);
+    color: white;
+}
+
+.footer-social-link.facebook:hover {
+    background: #1877f2;
+    border-color: #1877f2;
+    box-shadow: 0 8px 25px rgba(24, 119, 242, 0.4);
+}
+
+.footer-social-link.email:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+}
+
+.footer-social-link svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+/* Mode clair */
+[data-theme="light"] .footer-social-link {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--text-secondary);
+}
+
+[data-theme="rosepale"] .footer-social-link {
+    background: rgba(131, 24, 67, 0.08);
+    color: #9d174d;
+}
