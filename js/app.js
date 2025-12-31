@@ -866,7 +866,7 @@ async function initPushNotifications() {
         const subscription = await registration.pushManager.getSubscription();
 
         if (subscription) {
-            // Déjà abonné - STOCKER L'ABONNEMENT
+            // Déjà abonné - stocker l'abonnement
             pushSubscription = subscription;
             console.log('✅ Déjà abonné aux notifications');
             updateNotifButton(true);
@@ -875,16 +875,28 @@ async function initPushNotifications() {
             pushSubscription = null;
             updateNotifButton(false);
             
-            // Vérifier si on n'a pas déjà refusé ou si c'est la première visite
-            const notifDismissed = localStorage.getItem('notifPromptDismissed');
-            const lastDismiss = notifDismissed ? parseInt(notifDismissed) : 0;
-            const daysSinceDismiss = (Date.now() - lastDismiss) / (1000 * 60 * 60 * 24);
-            
-            // Afficher le popup si jamais affiché OU si refusé il y a plus de 7 jours
-            if (!notifDismissed || daysSinceDismiss > 7) {
+            // Si permission déjà accordée mais pas d'abonnement → créer l'abonnement
+            if (Notification.permission === 'granted') {
+                console.log('🔄 Permission accordée, création de l\'abonnement...');
                 setTimeout(() => {
-                    showNotifPrompt();
-                }, 5000); // 5 secondes après le chargement
+                    subscribeToPush();
+                }, 2000);
+            } 
+            // Si permission pas encore demandée → afficher le popup
+            else if (Notification.permission === 'default') {
+                const notifDismissed = localStorage.getItem('notifPromptDismissed');
+                const lastDismiss = notifDismissed ? parseInt(notifDismissed) : 0;
+                const daysSinceDismiss = (Date.now() - lastDismiss) / (1000 * 60 * 60 * 24);
+                
+                if (!notifDismissed || daysSinceDismiss > 7) {
+                    setTimeout(() => {
+                        showNotifPrompt();
+                    }, 5000);
+                }
+            }
+            // Si permission refusée → ne rien faire
+            else {
+                console.log('❌ Notifications refusées par l\'utilisateur');
             }
         }
     } catch (error) {
