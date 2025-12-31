@@ -698,7 +698,7 @@ body {
     }
 
     .news-item-title {
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 3;
         font-size: 0.9rem;
     }
 }
