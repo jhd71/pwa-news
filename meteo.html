@@ -268,6 +268,7 @@
                         <div class="forecast-day">
                             <span class="forecast-day-name">${dayName}</span>
                             <span class="forecast-day-date">${dateStr}</span>
+                            <span class="forecast-day-desc">${getWeatherDescription(daily.weather_code[i])}</span>
                         </div>
                         <div class="forecast-icon">${getWeatherIcon(daily.weather_code[i], 'medium')}</div>
                         <div class="forecast-precip">
