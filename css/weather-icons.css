@@ -380,6 +380,7 @@
    ============================================ */
 [data-theme="light"] .weather-icon.cloudy { --cloud-color: #64748b; }
 [data-theme="light"] .weather-icon.partly-cloudy .cloud-part { --cloud-color: #cbd5e1; }
-[data-theme="light"] .weather-icon.rain .cloud { --cloud-color: #475569; }
-[data-theme="light"] .weather-icon.snow .cloud { --cloud-color: #64748b; }
+[data-theme="light"] .weather-icon.rain { --cloud-color: #475569; --rain-color: #3b82f6; }
+[data-theme="light"] .weather-icon.snow { --cloud-color: #64748b; --snow-color: #60a5fa; }
+[data-theme="light"] .weather-icon.thunder { --cloud-color: #374151; }
 [data-theme="light"] .weather-icon.fog .line { --fog-color: #64748b; }
