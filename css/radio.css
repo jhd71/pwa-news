@@ -370,7 +370,7 @@
     transform: translateX(-50%);
     width: calc(100% - 1.5rem);
     max-width: 440px;
-    background: var(--bg-card);
+    background: rgb(20 20 20);
     border: 1px solid var(--border-color);
     border-radius: 20px;
     z-index: 9999;
@@ -820,7 +820,7 @@ body.radio-playing .footer {
     .radio-modal {
         max-height: 90vh;
         border-radius: 20px 20px 0 0;
-        background: var(--bg-card);
+        background: rgb(20 20 20);
     }
     
     .radio-modal-header {
@@ -894,7 +894,7 @@ body.radio-playing .footer {
         max-height: 80vh;
         border-radius: 24px;
         animation: modalFadeIn 0.3s ease;
-        background: var(--bg-card);
+        background: rgb(20 20 20);
     }
     
     @keyframes modalFadeIn {

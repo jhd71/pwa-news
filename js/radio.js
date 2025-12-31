@@ -333,7 +333,7 @@ class RadioPlayer {
         // Modal des stations
         const modalHTML = `
             <div class="radio-modal-overlay" id="radioModal">
-                <div class="radio-modal">
+                <div class="radio-modal glass">
                     <div class="radio-modal-header">
                         <h2>📻 Radio en direct</h2>
                         <button class="radio-modal-close" id="radioModalClose">
