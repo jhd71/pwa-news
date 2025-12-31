@@ -50,11 +50,24 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+
+    /* Anti-flash */
+    transform: translateY(100%);
+    opacity: 0;
+    will-change: transform, opacity;
+
+    animation: slideUp 0.3s ease forwards;
 }
 
 @keyframes slideUp {
-    from { transform: translateY(100%); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .radio-modal-header {
