@@ -902,6 +902,7 @@ async function initPushNotifications() {
     } catch (error) {
         console.error('❌ Erreur init push:', error);
     }
+}
 
 // Afficher le popup de notification
 function showNotifPrompt() {
