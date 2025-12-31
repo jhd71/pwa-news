@@ -459,7 +459,7 @@
 .support-social-link svg {
     width: 22px;
     height: 22px;
-    fill: currentColor;
+    fill: rgb(54 105 247);
 }
 
 .support-social-link .material-icons {
