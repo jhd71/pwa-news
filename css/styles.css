@@ -13,13 +13,12 @@
     --accent: #f472b6;
     
     /* Fonds */
-    --bg-body: #0f0f1a;
+    --bg-body: #000000;
     --bg-card: rgba(255, 255, 255, 0.08);
     --bg-elevated: rgba(255, 255, 255, 0.12);
     
     /* Bordures et ombres */
     --border-color: rgba(255, 255, 255, 0.12);
-    --shadow-color: rgba(0, 0, 0, 0.3);
     
     /* Textes */
     --text-primary: #ffffff;
@@ -206,7 +205,7 @@ body {
 [data-theme="light"] .local-sites-section,
 [data-theme="light"] .footer {
     background: #ffffff4d;
-    border: 2px solid rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 /* ============================================
@@ -297,7 +296,7 @@ body {
    Header mode sombre
    ============================================ */
 .header {
-	background: rgb(34 34 43);
+    background: rgb(20 20 20);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -903,7 +902,7 @@ body {
     background: var(--bg-elevated);
     border: 1px dashed var(--border-color);
     border-radius: 12px;
-    color: #000000;
+    color: var(--text-secondary);
     font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
