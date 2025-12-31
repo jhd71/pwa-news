@@ -648,7 +648,7 @@
     transform: translateX(-50%) scale(0.9);
     width: calc(100% - 2rem);
     max-width: 320px;
-    background: var(--bg-card);
+    background: rgb(20 20 20);
     border: 1px solid var(--border-color);
     border-radius: 20px;
     padding: 1.25rem;
