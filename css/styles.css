@@ -1803,7 +1803,7 @@ body {
 /* Grand écran / PC (> 1024px) */
 @media (min-width: 1025px) {
     .community-item-image {
-        max-height: 300px;
+        max-height: 360px;
         width: 70%;
     }
     
