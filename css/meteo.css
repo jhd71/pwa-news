@@ -187,7 +187,7 @@
 /* Prévisions 7 jours */
 .meteo-forecast {
     margin: 1rem;
-    padding: 1.25rem;
+    padding: 1rem;
     border-radius: 20px;
     background: var(--bg-card);
 }
