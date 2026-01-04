@@ -4,60 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     
-    <!-- ============================================
+<!-- ============================================
          SCRIPT FACEBOOK IN-APP BROWSER BLOCKER
          Doit rester en PREMIER pour bloquer le contenu
          ============================================ -->
     <style>
         html.fb-block, body.fb-block {
             margin: 0;
+            padding: 0;
             height: 100%;
+            min-height: 100vh;
             overflow: hidden;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #1a1a2e !important;
             font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            color: #fff;
         }
         .fb-wrapper {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100%;
+            min-height: 100vh;
             text-align: center;
             padding: 20px;
+            box-sizing: border-box;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 100%);
+        }
+        .fb-logo {
+            font-size: 3rem;
+            margin-bottom: 1rem;
         }
         .fb-wrapper h2 {
             font-size: 1.5rem;
-            margin-bottom: 10px;
+            margin: 0 0 0.5rem 0;
+            color: #ffffff;
+            font-weight: 700;
         }
         .fb-wrapper p {
-            opacity: 0.9;
+            color: rgba(255, 255, 255, 0.8);
             margin: 5px 0;
+            font-size: 1rem;
         }
         .fb-arrow {
-            font-size: 36px;
-            margin-top: 15px;
-            animation: arrowMove 1.2s infinite;
+            font-size: 2.5rem;
+            margin-top: 1.5rem;
+            animation: arrowMove 1.2s ease-in-out infinite;
         }
         @keyframes arrowMove {
-            0% { transform: translateY(0); opacity: 0.4; }
-            50% { transform: translateY(-6px); opacity: 1; }
-            100% { transform: translateY(0); opacity: 0.4; }
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(-8px); opacity: 1; }
         }
         .fb-box {
-            margin-top: 20px;
-            padding: 18px 22px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-top: 1.5rem;
+            padding: 1.25rem 1.5rem;
+            background: rgba(99, 102, 241, 0.2);
+            border: 2px solid rgba(99, 102, 241, 0.5);
             border-radius: 16px;
-            max-width: 300px;
-            font-size: 16px;
-            line-height: 1.5;
+            max-width: 280px;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ffffff;
         }
         .fb-box strong {
-            color: #fff;
+            color: #a5b4fc;
+            font-weight: 600;
+        }
+        .fb-icon {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.3);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 700;
+            margin: 0 2px;
+        }
+        .fb-footer {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .fb-footer span {
+            font-size: 1.25rem;
+            vertical-align: middle;
         }
     </style>
     <script>
@@ -75,27 +101,29 @@
             document.body.classList.add("fb-block");
             
             var message = isIOS
-                ? '<h2>📱 iPhone / iPad</h2>' +
+                ? '<div class="fb-logo">📱</div>' +
+                  '<h2>iPhone / iPad</h2>' +
                   '<p>Ce site fonctionne mieux dans Safari</p>' +
                   '<div class="fb-arrow">⬆️</div>' +
                   '<div class="fb-box">' +
-                  'Appuyez sur <strong>Partager</strong> (en bas)<br>' +
-                  'puis sur<br>' +
+                  '1. Appuyez sur <strong>Partager</strong> <span class="fb-icon">↑</span><br><br>' +
+                  '2. Puis sur<br>' +
                   '<strong>« Ouvrir dans Safari »</strong>' +
                   '</div>'
-                : '<h2>📱 Android</h2>' +
+                : '<div class="fb-logo">📱</div>' +
+                  '<h2>Android</h2>' +
                   '<p>Ce site fonctionne mieux dans Chrome</p>' +
                   '<div class="fb-arrow">⬆️</div>' +
                   '<div class="fb-box">' +
-                  'Appuyez sur <strong>⋮</strong> (en haut à droite)<br>' +
-                  'puis sur<br>' +
+                  '1. Appuyez sur <span class="fb-icon">⋮</span> (en haut à droite)<br><br>' +
+                  '2. Puis sur<br>' +
                   '<strong>« Ouvrir dans le navigateur »</strong>' +
                   '</div>';
             
             document.body.innerHTML = '<div class="fb-wrapper">' +
                 message +
-                '<p style="margin-top:25px; font-size:14px; opacity:0.7;">' +
-                'Ensuite, le site s\'ouvrira normalement 👍' +
+                '<p class="fb-footer">' +
+                '<span>👍</span> Le site s\'ouvrira ensuite normalement' +
                 '</p>' +
                 '</div>';
         });
