@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f1a">
+    <title>Agenda Local - Actu & Média</title>
+    <meta name="description" content="Agenda des événements locaux à Montceau-les-Mines : brocantes, vide-greniers, spectacles, fêtes et sorties en Saône-et-Loire">
+    
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <style>
+        /* ============================================
+           PAGE AGENDA LOCAL
+           ============================================ */
+        
+        .agenda-page {
+            padding-bottom: 2rem;
+        }
+        
+        /* Header sticky */
+        .header.glass {
+            background: var(--bg-body);
+        }
+        
+        [data-theme="light"] .header.glass {
+            background: rgba(240, 244, 248, 0.95);
+        }
+        
+        /* Section intro */
+        .agenda-intro {
+            margin: 1rem;
+            padding: 1.25rem;
+            border-radius: 20px;
+            background: var(--bg-card);
+            text-align: center;
+        }
+        
+        .agenda-intro-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .agenda-intro h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .agenda-intro p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.5;
+        }
+        
+        /* Bouton proposer */
+        .agenda-propose-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.75rem 1.25rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .agenda-propose-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+        
+        .agenda-propose-btn .material-icons {
+            font-size: 1.1rem;
+        }
+        
+        /* Section événements */
+        .agenda-section {
+            margin: 1rem;
+            padding: 1.25rem;
+            border-radius: 20px;
+            background: var(--bg-card);
+        }
+        
+        .agenda-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .agenda-section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .agenda-section-title .material-icons {
+            color: var(--primary-light);
+        }
+        
+        .agenda-section-link {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            color: var(--primary-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .agenda-section-link:hover {
+            color: var(--primary);
+        }
+        
+        .agenda-section-link .material-icons {
+            font-size: 1rem;
+        }
+        
+        /* Liste événements */
+        .agenda-events {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .agenda-event {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .agenda-event:hover {
+            background: rgba(99, 102, 241, 0.1);
+            transform: translateX(4px);
+        }
+        
+        .agenda-event-date {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 50px;
+            padding: 0.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .agenda-event-day {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+        }
+        
+        .agenda-event-month {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        
+        .agenda-event-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .agenda-event-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.7rem;
+            color: var(--primary-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+        
+        .agenda-event-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            line-height: 1.3;
+        }
+        
+        .agenda-event-location {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .agenda-event-location .material-icons {
+            font-size: 0.9rem;
+        }
+        
+        .agenda-event-distance {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            margin-left: auto;
+            white-space: nowrap;
+        }
+        
+        /* Catégories */
+        .agenda-categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+        
+        .agenda-category {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.25rem 1rem;
+            background: var(--bg-elevated);
+            border-radius: 16px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .agenda-category:hover {
+            background: rgba(99, 102, 241, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .agenda-category-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .agenda-category-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .agenda-category-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        /* Lien externe Brocabrac */
+        .agenda-external {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(251, 191, 36, 0.1) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .agenda-external:hover {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(251, 191, 36, 0.15) 100%);
+            transform: translateY(-2px);
+        }
+        
+        .agenda-external-icon {
+            font-size: 2.5rem;
+        }
+        
+        .agenda-external-info {
+            flex: 1;
+        }
+        
+        .agenda-external-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .agenda-external-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .agenda-external-arrow {
+            color: #f59e0b;
+        }
+        
+        /* Message vide */
+        .agenda-empty {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-muted);
+        }
+        
+        .agenda-empty .material-icons {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.5;
+        }
+        
+        /* Chargement */
+        .agenda-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+        
+        .spinning {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Info source */
+        .agenda-source {
+            margin: 1rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        
+        .agenda-source a {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+        
+        /* Responsive */
+        @media (min-width: 768px) {
+            .agenda-intro,
+            .agenda-section,
+            .agenda-source,
+            .footer {
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            .agenda-categories {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* Mode clair */
+        [data-theme="light"] .agenda-intro,
+        [data-theme="light"] .agenda-section,
+        [data-theme="light"] .agenda-source {
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        [data-theme="light"] .agenda-event,
+        [data-theme="light"] .agenda-category {
+            background: rgba(0, 0, 0, 0.03);
+        }
+        
+        [data-theme="light"] .agenda-event:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        [data-theme="light"] .agenda-category:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        [data-theme="light"] .agenda-event-distance {
+            background: rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Header -->
+    <header class="header glass">
+        <div class="header-top">
+            <div class="header-left-btns">
+                <a href="index.html" class="header-btn" aria-label="Retour">
+                    <span class="material-icons">arrow_back</span>
+                </a>
+            </div>
+            <div class="header-title">
+                <span class="logo">📅</span>
+                <h1>Agenda</h1>
+            </div>
+            <div class="header-right-btns">
+                <button class="theme-toggle" id="themeToggle" aria-label="Changer de thème">
+                    <span class="material-icons" id="themeIcon">dark_mode</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="agenda-page">
+        
+        <!-- Intro -->
+        <section class="agenda-intro">
+            <div class="agenda-intro-icon">📅</div>
+            <h2>Agenda local</h2>
+            <p>Découvrez les événements à venir à Montceau-les-Mines et ses environs : brocantes, spectacles, fêtes et bien plus !</p>
+            <a href="proposer.html" class="agenda-propose-btn">
+                <span class="material-icons">add</span>
+                Proposer un événement
+            </a>
+        </section>
+
+        <!-- Prochains événements -->
+        <section class="agenda-section">
+            <div class="agenda-section-header">
+                <h2 class="agenda-section-title">
+                    <span class="material-icons">event</span>
+                    Prochains événements
+                </h2>
+            </div>
+            <div class="agenda-events" id="upcomingEvents">
+                <div class="agenda-loading">
+                    <span class="material-icons spinning">sync</span>
+                    Chargement...
+                </div>
+            </div>
+        </section>
+
+        <!-- Brocantes & Vide-greniers (lien Brocabrac) -->
+        <section class="agenda-section">
+            <div class="agenda-section-header">
+                <h2 class="agenda-section-title">
+                    <span class="material-icons">storefront</span>
+                    Brocantes & Vide-greniers
+                </h2>
+            </div>
+            <a href="https://brocabrac.fr/71/montceau-les-mines/" target="_blank" rel="noopener" class="agenda-external">
+                <div class="agenda-external-icon">🛍️</div>
+                <div class="agenda-external-info">
+                    <div class="agenda-external-title">Voir sur Brocabrac</div>
+                    <div class="agenda-external-desc">Toutes les brocantes dans un rayon de 40km</div>
+                </div>
+                <span class="material-icons agenda-external-arrow">open_in_new</span>
+            </a>
+            
+            <!-- Aperçu des prochaines brocantes -->
+            <div class="agenda-events" id="brocantesPreview" style="margin-top: 1rem;">
+                <!-- Rempli par JS -->
+            </div>
+        </section>
+
+        <!-- Catégories -->
+        <section class="agenda-section">
+            <div class="agenda-section-header">
+                <h2 class="agenda-section-title">
+                    <span class="material-icons">category</span>
+                    Par catégorie
+                </h2>
+            </div>
+            <div class="agenda-categories">
+                <a href="https://brocabrac.fr/71/montceau-les-mines/" target="_blank" rel="noopener" class="agenda-category">
+                    <div class="agenda-category-icon">🛍️</div>
+                    <div class="agenda-category-name">Brocantes</div>
+                    <div class="agenda-category-desc">Vide-greniers, puces</div>
+                </a>
+                <a href="https://www.lembarcadere71.fr/" target="_blank" rel="noopener" class="agenda-category">
+                    <div class="agenda-category-icon">🎭</div>
+                    <div class="agenda-category-name">Spectacles</div>
+                    <div class="agenda-category-desc">Concerts, théâtre</div>
+                </a>
+                <a href="#" class="agenda-category" onclick="showCategoryInfo('fetes'); return false;">
+                    <div class="agenda-category-icon">🎪</div>
+                    <div class="agenda-category-name">Fêtes</div>
+                    <div class="agenda-category-desc">Festivals, carnavals</div>
+                </a>
+                <a href="#" class="agenda-category" onclick="showCategoryInfo('sport'); return false;">
+                    <div class="agenda-category-icon">🏃</div>
+                    <div class="agenda-category-name">Sport</div>
+                    <div class="agenda-category-desc">Courses, matchs</div>
+                </a>
+                <a href="#" class="agenda-category" onclick="showCategoryInfo('marches'); return false;">
+                    <div class="agenda-category-icon">🍽️</div>
+                    <div class="agenda-category-name">Marchés</div>
+                    <div class="agenda-category-desc">Marchés locaux</div>
+                </a>
+                <a href="#" class="agenda-category" onclick="showCategoryInfo('expos'); return false;">
+                    <div class="agenda-category-icon">📚</div>
+                    <div class="agenda-category-name">Expos</div>
+                    <div class="agenda-category-desc">Salons, expositions</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Liens utiles -->
+        <section class="agenda-section">
+            <div class="agenda-section-header">
+                <h2 class="agenda-section-title">
+                    <span class="material-icons">link</span>
+                    Liens utiles
+                </h2>
+            </div>
+            <div class="agenda-events">
+                <a href="https://www.lembarcadere71.fr/" target="_blank" rel="noopener" class="agenda-event">
+                    <div class="agenda-event-date" style="background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);">
+                        <span class="agenda-event-day">🎭</span>
+                    </div>
+                    <div class="agenda-event-info">
+                        <div class="agenda-event-title">L'Embarcadère</div>
+                        <div class="agenda-event-location">
+                            <span class="material-icons">location_on</span>
+                            Salle de spectacles, Montceau
+                        </div>
+                    </div>
+                    <span class="material-icons" style="color: var(--text-muted);">open_in_new</span>
+                </a>
+                <a href="https://www.cucm.fr/" target="_blank" rel="noopener" class="agenda-event">
+                    <div class="agenda-event-date" style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%);">
+                        <span class="agenda-event-day">🏛️</span>
+                    </div>
+                    <div class="agenda-event-info">
+                        <div class="agenda-event-title">CUCM - Communauté Urbaine</div>
+                        <div class="agenda-event-location">
+                            <span class="material-icons">location_on</span>
+                            Événements communautaires
+                        </div>
+                    </div>
+                    <span class="material-icons" style="color: var(--text-muted);">open_in_new</span>
+                </a>
+                <a href="https://www.montceaulesmines.fr/" target="_blank" rel="noopener" class="agenda-event">
+                    <div class="agenda-event-date" style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);">
+                        <span class="agenda-event-day">🏠</span>
+                    </div>
+                    <div class="agenda-event-info">
+                        <div class="agenda-event-title">Ville de Montceau</div>
+                        <div class="agenda-event-location">
+                            <span class="material-icons">location_on</span>
+                            Agenda municipal
+                        </div>
+                    </div>
+                    <span class="material-icons" style="color: var(--text-muted);">open_in_new</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Source -->
+        <div class="agenda-source">
+            💡 Vous connaissez un événement local ?<br>
+            <a href="proposer.html">Proposez-le à la communauté !</a>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer glass">
+        <p>Agenda local de <a href="index.html">Actu & Média</a></p>
+        <p class="footer-sub">Montceau-les-Mines et environs</p>
+    </footer>
+
+    <script>
+        // ============================================
+        // AGENDA LOCAL - Actu & Média
+        // ============================================
+        
+        // Thème
+        const THEMES = ['dark', 'light'];
+        const THEME_ICONS = {
+            'dark': 'dark_mode',
+            'light': 'light_mode'
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            loadUpcomingEvents();
+            loadBrocantesPreview();
+        });
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
+            
+            document.getElementById('themeToggle').addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme') || 'dark';
+                const currentIndex = THEMES.indexOf(current);
+                const nextIndex = (currentIndex + 1) % THEMES.length;
+                const newTheme = THEMES[nextIndex];
+                applyTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+            document.getElementById('themeIcon').textContent = THEME_ICONS[theme] || 'dark_mode';
+        }
+
+        // Charger les prochains événements (données statiques pour l'instant)
+        function loadUpcomingEvents() {
+            const container = document.getElementById('upcomingEvents');
+            
+            // Événements en dur pour commencer (à remplacer par Supabase plus tard)
+            const events = [
+                {
+                    date: '2026-01-18',
+                    type: 'Collection',
+                    title: '21ème Salon Multicollections',
+                    location: 'Embarcadère, Montceau',
+                    icon: '🎯'
+                },
+                {
+                    date: '2026-02-01',
+                    type: 'Brocante',
+                    title: 'Brocante mensuelle',
+                    location: 'Parking, Montceau',
+                    icon: '🛍️'
+                },
+                {
+                    date: '2026-02-08',
+                    type: 'Brocante',
+                    title: 'Puces Bourgogne du Sud',
+                    location: 'Montchanin',
+                    distance: '13 km',
+                    icon: '🛍️'
+                }
+            ];
+            
+            if (events.length === 0) {
+                container.innerHTML = `
+                    <div class="agenda-empty">
+                        <span class="material-icons">event_busy</span>
+                        <p>Aucun événement à venir</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = events.map(event => {
+                const date = new Date(event.date);
+                const day = date.getDate();
+                const month = date.toLocaleDateString('fr-FR', { month: 'short' });
+                
+                return `
+                    <div class="agenda-event">
+                        <div class="agenda-event-date">
+                            <span class="agenda-event-day">${day}</span>
+                            <span class="agenda-event-month">${month}</span>
+                        </div>
+                        <div class="agenda-event-info">
+                            <div class="agenda-event-type">${event.icon} ${event.type}</div>
+                            <div class="agenda-event-title">${event.title}</div>
+                            <div class="agenda-event-location">
+                                <span class="material-icons">location_on</span>
+                                ${event.location}
+                            </div>
+                        </div>
+                        ${event.distance ? `<span class="agenda-event-distance">${event.distance}</span>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Aperçu des brocantes (données statiques)
+        function loadBrocantesPreview() {
+            const container = document.getElementById('brocantesPreview');
+            
+            const brocantes = [
+                {
+                    date: '2026-01-11',
+                    title: 'Puces Bourgogne du Sud',
+                    location: 'Montchanin',
+                    distance: '13 km'
+                },
+                {
+                    date: '2026-01-18',
+                    title: 'Brocante Puces',
+                    location: 'Génelard',
+                    distance: '15 km'
+                }
+            ];
+            
+            container.innerHTML = brocantes.slice(0, 2).map(event => {
+                const date = new Date(event.date);
+                const day = date.getDate();
+                const month = date.toLocaleDateString('fr-FR', { month: 'short' });
+                
+                return `
+                    <div class="agenda-event">
+                        <div class="agenda-event-date">
+                            <span class="agenda-event-day">${day}</span>
+                            <span class="agenda-event-month">${month}</span>
+                        </div>
+                        <div class="agenda-event-info">
+                            <div class="agenda-event-type">🛍️ Brocante</div>
+                            <div class="agenda-event-title">${event.title}</div>
+                            <div class="agenda-event-location">
+                                <span class="material-icons">location_on</span>
+                                ${event.location}
+                            </div>
+                        </div>
+                        <span class="agenda-event-distance">${event.distance}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Afficher info catégorie (placeholder)
+        function showCategoryInfo(category) {
+            const messages = {
+                'fetes': 'Les fêtes et festivals seront bientôt disponibles !',
+                'sport': 'Les événements sportifs arrivent prochainement !',
+                'marches': 'Les marchés locaux seront listés bientôt !',
+                'expos': 'Les expositions et salons arrivent !'
+            };
+            alert(messages[category] || 'Bientôt disponible !');
+        }
+    </script>
+</body>
+</html>
