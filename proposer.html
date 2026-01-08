@@ -524,6 +524,16 @@
                     <input type="text" class="form-input" name="location" id="location" placeholder="Ex: Place du marché, Montceau">
                 </div>
                 
+                <!-- Lien (optionnel) -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons" style="font-size: 1.1rem;">link</span>
+                        Lien (optionnel)
+                    </label>
+                    <input type="url" class="form-input" name="link" id="link" placeholder="https://exemple.com/mon-lien">
+                    <div class="form-hint">Site web, formulaire, page Facebook...</div>
+                </div>
+                
                 <!-- Votre nom -->
                 <div class="form-group">
                     <label class="form-label">
@@ -641,6 +651,7 @@
                     title: document.getElementById('title').value,
                     content: document.getElementById('content').value,
                     location: document.getElementById('location').value || null,
+                    link: document.getElementById('link').value || null,
                     author: document.getElementById('author').value || null,
                     contact_email: document.getElementById('email').value,
                     status: 'pending',
