@@ -684,7 +684,7 @@ async function initCommunity() {
                     <div class="community-item-title">${escapeHtml(item.title)}</div>
                     ${item.image_url ? `<img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image" onclick="event.stopPropagation(); openImageModal('${item.image_url}')">` : ''}
                     <div class="community-item-desc">${escapeHtml(item.content)}</div>
-                    ${item.link_url ? `<a href="${item.link_url}" target="_blank" class="community-item-link" onclick="event.stopPropagation()"><span class="material-icons">link</span>Voir plus</a>` : ''}
+                    ${item.link ? `<a href="${item.link}" target="_blank" class="community-item-link" onclick="event.stopPropagation()"><span class="material-icons">link</span>Voir le lien</a>` : ''}
                     <div class="community-item-meta">
                         ${item.location ? `<span class="community-item-location"><span class="material-icons">location_on</span>${escapeHtml(item.location)}</span>` : ''}
                         <span><span class="material-icons">person</span>${escapeHtml(item.author || 'Anonyme')}</span>
