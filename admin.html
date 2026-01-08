@@ -1163,7 +1163,7 @@
                         <div class="message-email">${escapeHtml(prop.contact_email)}</div>
                         <div class="message-text">${escapeHtml(prop.content)}</div>
                         ${prop.image_url ? `<img src="${prop.image_url}" style="width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin:0.5rem 0;cursor:pointer;" onclick="openImageModal('${prop.image_url}')" title="Cliquez pour agrandir">` : ''}
-                        ${prop.link_url ? `<a href="${prop.link_url}" target="_blank" class="proposition-file"><span class="material-icons" style="font-size:1rem;">link</span> Lien</a>` : ''}
+                        ${prop.link ? `<a href="${prop.link}" target="_blank" class="proposition-file"><span class="material-icons" style="font-size:1rem;">link</span> Voir le lien</a>` : ''}
                         <div class="message-actions" style="margin-top:1rem;">
                             <button class="action-btn mark-read" onclick="updateStatus(${prop.id},'approved')"><span class="material-icons">check</span>Approuver</button>
                             <button class="action-btn" style="background:rgba(245,158,11,0.2);color:#f59e0b;" onclick="updateStatus(${prop.id},'rejected')"><span class="material-icons">close</span>Refuser</button>
@@ -1203,7 +1203,7 @@
                             <div class="article-title">${escapeHtml(a.title)}</div>
                             <div class="article-excerpt">${escapeHtml(a.content)}</div>
                             ${a.location ? `<div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem;"><span class="material-icons" style="font-size:1rem;vertical-align:middle;">location_on</span> ${escapeHtml(a.location)}</div>` : ''}
-                            ${a.link_url ? `<a href="${a.link_url}" target="_blank" class="proposition-file" style="margin-bottom:0.75rem;"><span class="material-icons" style="font-size:1rem;">link</span> Lien</a>` : ''}
+                            ${a.link ? `<a href="${a.link}" target="_blank" class="proposition-file" style="margin-bottom:0.75rem;"><span class="material-icons" style="font-size:1rem;">link</span> Voir le lien</a>` : ''}
                             <div class="article-meta"><span>${formatDate(a.created_at)}</span><span>${escapeHtml(a.author || 'Actu & Média')}</span></div>
                             <div class="message-actions" style="margin-top:1rem;">
                                 <button class="action-btn" style="background:rgba(245,158,11,0.2);color:#f59e0b;" onclick="updateStatus(${a.id},'pending')"><span class="material-icons">undo</span>Dépublier</button>
