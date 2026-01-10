@@ -131,7 +131,6 @@
     margin-bottom: 0.4rem;
     background: var(--bg-elevated);
     /* Pour uniformiser boutons et liens */
-    width: 100%;
     border: none;
     cursor: pointer;
     font-family: inherit;
