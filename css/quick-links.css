@@ -106,6 +106,7 @@
 /* Section */
 .quick-links-section {
     margin-bottom: 1.5rem;
+    padding: 0 0.25rem;
 }
 
 .quick-links-section-title {
@@ -131,6 +132,7 @@
     margin-bottom: 0.4rem;
     background: var(--bg-elevated);
     /* Pour uniformiser boutons et liens */
+    width: 100%;
     border: none;
     cursor: pointer;
     font-family: inherit;
