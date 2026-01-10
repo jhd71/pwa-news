@@ -39,6 +39,13 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    /* Cacher la scrollbar */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+.quick-links-panel::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
 
 .quick-links-panel.show {
