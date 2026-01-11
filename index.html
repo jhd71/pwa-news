@@ -418,17 +418,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     Votre portail d'informations locales pour Montceau-les-Mines et sa région.
                     Actualités, météo, cinéma et liens utiles.
                 </div>
-            </div>            
-			
-            <!-- Bouton PayPal -->
-            <div class="donation-section">
-                <a href="https://paypal.me/hdesvaux" target="_blank" rel="noopener" class="donation-btn">
-                    <span class="donation-icon">☕</span>
-                    Offrir un café à Hervé
-                </a>
-                <div class="donation-note">
-                    Site 100% bénévole, sans pub • Merci pour votre soutien ! ❤️
-                </div>
             </div>
             
             <!-- Actions -->
@@ -963,68 +952,5 @@ if (!supabaseClient) return;
         </div>
     </div>
 </div>
-<!-- Popup Don -->
-    <div class="donation-popup" id="donationPopup">
-        <button class="donation-popup-close" onclick="closeDonationPopup()">&times;</button>
-        <div class="donation-popup-icon">☕</div>
-        <div class="donation-popup-title">Vous aimez Actu & Média ?</div>
-        <div class="donation-popup-text">
-            Ce site est 100% gratuit et sans pub.<br>
-            Un petit café pour soutenir le projet ?
-        </div>
-        <a href="https://paypal.me/hdesvaux" target="_blank" rel="noopener" class="donation-popup-btn" onclick="closeDonationPopup()">
-            ☕ Offrir un café (2-3€)
-        </a>
-        <button class="donation-popup-later" onclick="closeDonationPopup(true)">
-            Plus tard
-        </button>
-    </div>
-
-    <script>
-    // === POPUP DON ===
-    (function() {
-        const POPUP_DELAY = 60000; // 60 secondes après chargement
-        const POPUP_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 jours entre chaque affichage
-        
-        function shouldShowPopup() {
-            const lastShown = localStorage.getItem('donation_popup_last');
-            const dismissed = localStorage.getItem('donation_popup_dismissed');
-            
-            // Si l'utilisateur a cliqué "Plus tard", attendre 7 jours
-            if (lastShown) {
-                const elapsed = Date.now() - parseInt(lastShown);
-                if (elapsed < POPUP_INTERVAL) return false;
-            }
-            
-            // Si déjà donné ou fermé définitivement
-            if (dismissed === 'permanent') return false;
-            
-            return true;
-        }
-        
-        function showDonationPopup() {
-            if (!shouldShowPopup()) return;
-            
-            const popup = document.getElementById('donationPopup');
-            if (popup) {
-                popup.classList.add('show');
-            }
-        }
-        
-        window.closeDonationPopup = function(later = false) {
-            const popup = document.getElementById('donationPopup');
-            if (popup) {
-                popup.classList.remove('show');
-            }
-            
-            if (later) {
-                localStorage.setItem('donation_popup_last', Date.now().toString());
-            }
-        };
-        
-        // Afficher après 60 secondes de navigation
-        setTimeout(showDonationPopup, POPUP_DELAY);
-    })();
-    </script>
 </body>
 </html>
