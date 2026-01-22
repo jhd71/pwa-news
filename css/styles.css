@@ -41,8 +41,8 @@
     
     /* Fonds */
     --bg-body: #f0f4f8;
-    --bg-card: rgba(255, 255, 255, 0.95);
-    --bg-elevated: rgba(255, 255, 255, 0.98);
+    --bg-card: rgba(255, 255, 255, 0.92);
+	--bg-elevated: rgba(255, 255, 255, 0.96);
     
     /* Bordures et ombres */
     --border-color: rgba(0, 0, 0, 0.1);
