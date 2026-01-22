@@ -183,7 +183,7 @@ body {
 [data-theme="light"] .install-prompt,
 [data-theme="light"] .install-banner,
 [data-theme="light"] .pwa-install-banner {
-    background: #fbbf24;
+    background: #ffffff;
 }
 
 /* ============================================
@@ -192,7 +192,7 @@ body {
 [data-theme="light"] .section,
 [data-theme="light"] .card,
 [data-theme="light"] .glass {
-    background: #fbbf24;
+    background: rgb(245 247 250);
     border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
@@ -204,7 +204,7 @@ body {
 [data-theme="light"] .quick-links-section,
 [data-theme="light"] .local-sites-section,
 [data-theme="light"] .footer {
-    background: #fbbf24;
+    background: #ffffff4d;
     border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
@@ -255,7 +255,7 @@ body {
    MODE CLAIR - Footer
    ============================================ */
 [data-theme="light"] .footer {
-    background: #fbbf24;
+    background: rgba(255, 255, 255, 0.98);
     color: #64748b;
 }
 
@@ -280,7 +280,7 @@ body {
 .news-item,
 .cinema-item,
 .community-card {
-    background: #fbbf24;
+    background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
