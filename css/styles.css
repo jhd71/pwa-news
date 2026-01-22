@@ -192,7 +192,7 @@ body {
 [data-theme="light"] .section,
 [data-theme="light"] .card,
 [data-theme="light"] .glass {
-    background: rgb(245 247 250);
+    background: rgba(99, 102, 241, 0.1);
     border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
@@ -204,7 +204,7 @@ body {
 [data-theme="light"] .quick-links-section,
 [data-theme="light"] .local-sites-section,
 [data-theme="light"] .footer {
-    background: #ffffff4d;
+    background: rgba(99, 102, 241, 0.1);
     border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
@@ -255,7 +255,7 @@ body {
    MODE CLAIR - Footer
    ============================================ */
 [data-theme="light"] .footer {
-    background: rgba(255, 255, 255, 0.98);
+    background: rgba(99, 102, 241, 0.1);
     color: #64748b;
 }
 
