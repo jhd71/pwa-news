@@ -1,8 +1,8 @@
 // ============================================
-// ACTU & MÉDIA - Service Worker v29
+// ACTU & MÉDIA - Service Worker v30
 // ============================================
 
-const CACHE_NAME = 'actu-media-v29';
+const CACHE_NAME = 'actu-media-v30';
 
 const STATIC_ASSETS = [
     '/',
