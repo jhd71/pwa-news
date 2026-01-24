@@ -1,9 +1,9 @@
-// api/sendNotification.js - Envoyer des notifications push
-import { createClient } from '@supabase/supabase-js';
-import webpush from 'web-push';
+// api/sendNotification.js - Version corrigée pour extensions Chrome
+const { createClient } = require('@supabase/supabase-js');
+const webpush = require('web-push');
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://ekjgfiyhkythqcnmhzea.supabase.co';
-const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
+const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -14,23 +14,26 @@ webpush.setVapidDetails(
     process.env.VAPID_PRIVATE_KEY
 );
 
-export default async function handler(req, res) {
-    // CORS
-    res.setHeader('Access-Control-Allow-Credentials', true);
+module.exports = async function handler(req, res) {
+    // CORS - Important pour les extensions Chrome
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-API-Key');
+    res.setHeader('Access-Control-Max-Age', '86400');
 
+    // Répondre immédiatement aux requêtes OPTIONS (preflight)
     if (req.method === 'OPTIONS') {
-        return res.status(200).end();
+        return res.status(200).json({ ok: true });
     }
 
+    // Vérifier la méthode
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Méthode non autorisée' });
     }
 
     try {
-        const { title, body, url, adminKey } = req.body;
+        const { title, body, url, adminKey, urgent } = req.body;
 
         // Vérifier la clé admin
         const ADMIN_PASSWORD = process.env.ADMIN_NOTIFICATION_KEY || 'fc35$wL72iZA^';
@@ -48,23 +51,27 @@ export default async function handler(req, res) {
             .select('*')
             .eq('is_active', true);
 
-        if (error) throw error;
-
-        if (!subscriptions || subscriptions.length === 0) {
-            return res.status(200).json({ sent: 0, message: 'Aucun abonné' });
+        if (error) {
+            console.error('Erreur Supabase:', error);
+            throw error;
         }
 
-        // Payload de la notification - IMPORTANT : structure correcte
+        if (!subscriptions || subscriptions.length === 0) {
+            return res.status(200).json({ sent: 0, failed: 0, total: 0, message: 'Aucun abonné' });
+        }
+
+        // Payload de la notification
         const payload = JSON.stringify({
             title: title,
             body: body,
             icon: '/icons/icon-192.png',
             badge: '/icons/icon-72.png',
-            url: url || '/',
+            url: url || 'https://actuetmedia.fr/',
+            urgent: urgent || false,
             timestamp: Date.now()
         });
 
-        console.log('📤 Envoi notification:', payload);
+        console.log('📤 Envoi notification à', subscriptions.length, 'abonnés');
 
         let sent = 0;
         let failed = 0;
@@ -82,18 +89,16 @@ export default async function handler(req, res) {
             try {
                 await webpush.sendNotification(pushSubscription, payload);
                 sent++;
-                console.log('✅ Envoyé à:', sub.endpoint.substring(0, 50) + '...');
             } catch (err) {
-                console.error('❌ Erreur envoi:', err.statusCode, err.body);
+                console.error('❌ Erreur envoi:', err.statusCode);
                 failed++;
                 
-                // Désactiver les abonnements invalides (410 = expiré, 404 = introuvable)
+                // Désactiver les abonnements invalides
                 if (err.statusCode === 410 || err.statusCode === 404) {
                     await supabase
                         .from('push_subscriptions')
                         .update({ is_active: false })
                         .eq('endpoint', sub.endpoint);
-                    console.log('🗑️ Abonnement désactivé:', sub.endpoint.substring(0, 50) + '...');
                 }
             }
         }
@@ -103,11 +108,12 @@ export default async function handler(req, res) {
         return res.status(200).json({ 
             sent, 
             failed,
-            total: subscriptions.length 
+            total: subscriptions.length,
+            success: true
         });
 
     } catch (error) {
         console.error('❌ Erreur sendNotification:', error);
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message || 'Erreur serveur' });
     }
-}
+};
