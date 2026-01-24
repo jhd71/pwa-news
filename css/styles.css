@@ -263,6 +263,18 @@ body {
     color: var(--primary);
 }
 
+/* Lien footer en mode sombre */
+.footer a {
+    color: var(--primary-light);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
 /* ============================================
    MODE SOMBRE - Sections principales
    ============================================ */
