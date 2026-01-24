@@ -192,7 +192,7 @@ body {
 [data-theme="light"] .section,
 [data-theme="light"] .card,
 [data-theme="light"] .glass {
-    background: rgb(245 247 250);
+    background: rgb(254 254 254);
     border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
