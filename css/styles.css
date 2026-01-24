@@ -203,8 +203,10 @@ body {
 [data-theme="light"] .community-section,
 [data-theme="light"] .quick-links-section,
 [data-theme="light"] .local-sites-section,
+[data-theme="light"] .seo-section,
+[data-theme="light"] .tile,
 [data-theme="light"] .footer {
-    background: #ffffff4d;
+    background: rgba(255, 255, 255, 0.85);
     border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
@@ -271,9 +273,22 @@ body {
 .community-section,
 .quick-links-section,
 .local-sites-section,
+.tiles-section,
+.seo-section,
+.footer,
 .section,
 .card {
     border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Tuiles mode sombre - même style que les autres cartes */
+.tile {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tile:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 /* Items dans les sections */
