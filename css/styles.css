@@ -39,14 +39,14 @@
     --primary-light: #6366f1;
     --accent: #ec4899;
     
-    /* Fonds */
-    --bg-body: #f0f4f8;
-    --bg-card: rgba(255, 255, 255, 0.92);
-	--bg-elevated: rgba(255, 255, 255, 0.96);
+    /* Fonds - Plus doux pour les yeux */
+    --bg-body: #e8ecf1;
+    --bg-card: rgba(255, 255, 255, 0.85);
+    --bg-elevated: rgba(255, 255, 255, 0.90);
     
-    /* Bordures et ombres */
-    --border-color: rgba(0, 0, 0, 0.1);
-    --shadow-color: rgba(0, 0, 0, 0.1);
+    /* Bordures et ombres - Plus visibles */
+    --border-color: rgba(0, 0, 0, 0.12);
+    --shadow-color: rgba(0, 0, 0, 0.08);
     
     /* Textes */
     --text-primary: #1e293b;
