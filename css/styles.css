@@ -39,14 +39,14 @@
     --primary-light: #6366f1;
     --accent: #ec4899;
     
-    /* Fonds - Plus doux pour les yeux */
-    --bg-body: #e8ecf1;
-    --bg-card: rgba(255, 255, 255, 0.85);
-    --bg-elevated: rgba(255, 255, 255, 0.90);
+    /* Fonds */
+    --bg-body: #f0f4f8;
+    --bg-card: rgba(255, 255, 255, 0.92);
+	--bg-elevated: rgba(255, 255, 255, 0.96);
     
-    /* Bordures et ombres - Plus visibles */
-    --border-color: rgba(0, 0, 0, 0.12);
-    --shadow-color: rgba(0, 0, 0, 0.08);
+    /* Bordures et ombres */
+    --border-color: rgba(0, 0, 0, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.1);
     
     /* Textes */
     --text-primary: #1e293b;
@@ -203,10 +203,8 @@ body {
 [data-theme="light"] .community-section,
 [data-theme="light"] .quick-links-section,
 [data-theme="light"] .local-sites-section,
-[data-theme="light"] .seo-section,
-[data-theme="light"] .tile,
 [data-theme="light"] .footer {
-    background: rgba(255, 255, 255, 0.85);
+    background: #ffffff4d;
     border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
@@ -273,22 +271,9 @@ body {
 .community-section,
 .quick-links-section,
 .local-sites-section,
-.tiles-section,
-.seo-section,
-.footer,
 .section,
 .card {
     border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Tuiles mode sombre - même style que les autres cartes */
-.tile {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.tile:hover {
-    background: rgba(255, 255, 255, 0.1);
 }
 
 /* Items dans les sections */
@@ -847,8 +832,8 @@ body {
     color: inherit;
     transition: all 0.3s ease;
     text-align: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
 }
 
 .tile:hover {
@@ -1263,8 +1248,8 @@ body {
     border-radius: 20px;
     text-align: center;
     box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
 }
 
 @media (min-width: 768px) {
@@ -1410,8 +1395,8 @@ body {
     border-radius: 20px;
     text-align: center;
     box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
 }
 
 @media (min-width: 768px) {
