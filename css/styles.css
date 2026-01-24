@@ -832,7 +832,7 @@ body {
     color: inherit;
     transition: all 0.3s ease;
     text-align: center;
-    background: var(--bg-card);
+    background: rgb(49 49 49);
     border: 1px solid var(--border-color);
 }
 
@@ -1248,7 +1248,7 @@ body {
     border-radius: 20px;
     text-align: center;
     box-sizing: border-box;
-    background: var(--bg-card);
+    background: rgb(49 49 49);
     border: 1px solid var(--border-color);
 }
 
@@ -1395,7 +1395,7 @@ body {
     border-radius: 20px;
     text-align: center;
     box-sizing: border-box;
-    background: var(--bg-card);
+    background: rgb(49 49 49);
     border: 1px solid var(--border-color);
 }
 
