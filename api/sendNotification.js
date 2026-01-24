@@ -87,13 +87,13 @@ export default async function handler(req, res) {
                 console.error('❌ Erreur envoi:', err.statusCode, err.body);
                 failed++;
                 
-                // Désactiver les abonnements invalides (410 = expiré, 404 = introuvable)
+                // Supprimer les abonnements invalides
                 if (err.statusCode === 410 || err.statusCode === 404) {
                     await supabase
                         .from('push_subscriptions')
-                        .update({ is_active: false })
+                        .delete()
                         .eq('endpoint', sub.endpoint);
-                    console.log('🗑️ Abonnement désactivé:', sub.endpoint.substring(0, 50) + '...');
+                    console.log('🗑️ Abonnement supprimé:', sub.endpoint.substring(0, 50) + '...');
                 }
             }
         }
