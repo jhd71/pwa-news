@@ -8,14 +8,14 @@
    ============================================ */
 :root {
     /* Couleurs principales */
-    --primary: #6366f1;
-    --primary-light: #818cf8;
+    --primary: #ff0007;
+    --primary-light: #fbbf24;
     --accent: #f472b6;
     
     /* Fonds */
     --bg-body: #000000;
     --bg-card: rgba(255, 255, 255, 0.08);
-    --bg-elevated: rgba(255, 255, 255, 0.12);
+    --bg-elevated: #8d0d11;
     
     /* Bordures et ombres */
     --border-color: rgba(255, 255, 255, 0.12);
