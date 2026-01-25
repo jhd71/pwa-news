@@ -207,7 +207,7 @@
             gap: 0.35rem;
             padding: 0.75rem 0.5rem;
             background: rgba(255, 255, 255, 0.03);
-            border: 2px solid var(--glass-border);
+            border: 2px solid var(--border-color);
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -234,6 +234,134 @@
             font-size: 0.7rem;
             font-weight: 600;
             color: var(--text-secondary);
+            text-align: center;
+        }
+        
+        /* === UPLOAD PHOTO === */
+        .photo-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .photo-upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
+        .photo-upload-area.dragover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .photo-upload-area.has-photo {
+            border-style: solid;
+            border-color: var(--primary);
+            padding: 0.5rem;
+        }
+        
+        .photo-upload-icon {
+            font-size: 2.5rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        .photo-upload-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .photo-upload-hint {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+        
+        .photo-upload-input {
+            display: none;
+        }
+        
+        /* Preview */
+        .photo-preview-container {
+            display: none;
+            position: relative;
+        }
+        
+        .photo-preview-container.show {
+            display: block;
+        }
+        
+        .photo-preview {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .photo-remove-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 32px;
+            height: 32px;
+            background: rgba(239, 68, 68, 0.9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .photo-remove-btn:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+        
+        .photo-upload-content {
+            display: block;
+        }
+        
+        .photo-upload-area.has-photo .photo-upload-content {
+            display: none;
+        }
+        
+        .upload-progress {
+            display: none;
+            margin-top: 0.5rem;
+        }
+        
+        .upload-progress.show {
+            display: block;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
             text-align: center;
         }
         
@@ -343,6 +471,14 @@
             background: rgba(0, 0, 0, 0.05);
         }
         
+        [data-theme="light"] .photo-upload-area {
+            border-color: rgba(0, 0, 0, 0.15);
+        }
+        
+        [data-theme="light"] .photo-upload-area:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
         /* Spinner */
         .spinner {
             width: 20px;
@@ -450,7 +586,7 @@
         <div class="propose-header">
             <div class="propose-logo">📰</div>
             <h1 class="propose-title">Proposer une actualité</h1>
-            <p class="propose-subtitle">Vous avez une info locale à partager ?<br>Envoyez-la nous, elle pourrait être publiée<br>sur notre page Facebook !</p>
+            <p class="propose-subtitle">Vous avez une info locale à partager ?<br>Envoyez-la nous, elle pourrait être publiée<br>sur <strong>notre site</strong> et notre <strong>page Facebook</strong> !</p>
         </div>
         
         <!-- Formulaire -->
@@ -515,6 +651,35 @@
                     <div class="form-hint">Maximum 2000 caractères</div>
                 </div>
                 
+                <!-- NOUVEAU : Upload Photo -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons" style="font-size: 1.1rem;">add_photo_alternate</span>
+                        Photo (optionnel)
+                    </label>
+                    <div class="photo-upload-area" id="photoUploadArea">
+                        <div class="photo-upload-content">
+                            <div class="photo-upload-icon">📷</div>
+                            <div class="photo-upload-text">Cliquez ou glissez une photo ici</div>
+                            <div class="photo-upload-hint">JPG, PNG • Max 5 Mo</div>
+                        </div>
+                        <div class="photo-preview-container" id="photoPreviewContainer">
+                            <img src="" alt="Aperçu" class="photo-preview" id="photoPreview">
+                            <button type="button" class="photo-remove-btn" id="photoRemoveBtn" title="Supprimer la photo">
+                                <span class="material-icons" style="font-size: 1.2rem;">close</span>
+                            </button>
+                        </div>
+                        <input type="file" class="photo-upload-input" id="photoInput" accept="image/jpeg,image/png,image/webp">
+                    </div>
+                    <div class="upload-progress" id="uploadProgress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div class="progress-text" id="progressText">Upload en cours...</div>
+                    </div>
+                    <div class="form-hint">Ajoutez une photo pour illustrer votre actualité</div>
+                </div>
+                
                 <!-- Lieu -->
                 <div class="form-group">
                     <label class="form-label">
@@ -574,6 +739,7 @@
                 </a>
             </div>
         </div>
+        
     <!-- Réseaux sociaux -->
         <div class="contact-info">
             <div class="contact-info-title">Suivez-nous aussi sur</div>
@@ -581,8 +747,8 @@
                 <a href="https://www.facebook.com/actuetmedia.fr/" target="_blank" class="contact-social" title="Facebook">
                     Facebook
                 </a>
-                <a href="https://fr.tipeee.com/actuetmedia" target="_blank" class="contact-social" title="Tipeee">
-                    Tipeee
+                <a href="https://www.paypal.com/paypalme/actuetmedia" target="_blank" class="contact-social" title="Soutenir">
+                    Soutenir
                 </a>
             </div>
         </div>
@@ -607,11 +773,16 @@
         // Supabase
         const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
+        
         // Instance unique pour éviter les doublons
         if (!window.supabaseClientProposer) {
             window.supabaseClientProposer = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         }
         const supabaseClient = window.supabaseClientProposer;
+        
+        // Variables pour la photo
+        let selectedPhotoFile = null;
+        let uploadedPhotoUrl = null;
         
         // Gestion des types
         document.querySelectorAll('.type-option').forEach(option => {
@@ -620,6 +791,130 @@
                 option.classList.add('selected');
             });
         });
+        
+        // === GESTION UPLOAD PHOTO ===
+        const photoUploadArea = document.getElementById('photoUploadArea');
+        const photoInput = document.getElementById('photoInput');
+        const photoPreview = document.getElementById('photoPreview');
+        const photoPreviewContainer = document.getElementById('photoPreviewContainer');
+        const photoRemoveBtn = document.getElementById('photoRemoveBtn');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        
+        // Clic sur la zone d'upload
+        photoUploadArea.addEventListener('click', (e) => {
+            if (e.target !== photoRemoveBtn && !photoRemoveBtn.contains(e.target)) {
+                photoInput.click();
+            }
+        });
+        
+        // Drag & Drop
+        photoUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            photoUploadArea.classList.add('dragover');
+        });
+        
+        photoUploadArea.addEventListener('dragleave', () => {
+            photoUploadArea.classList.remove('dragover');
+        });
+        
+        photoUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            photoUploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handlePhotoSelect(files[0]);
+            }
+        });
+        
+        // Sélection de fichier
+        photoInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handlePhotoSelect(e.target.files[0]);
+            }
+        });
+        
+        // Traitement de la photo sélectionnée
+        function handlePhotoSelect(file) {
+            // Vérifier le type
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                showToast('Format non supporté. Utilisez JPG, PNG ou WebP.', true);
+                return;
+            }
+            
+            // Vérifier la taille (5 Mo max)
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                showToast('Photo trop volumineuse. Maximum 5 Mo.', true);
+                return;
+            }
+            
+            selectedPhotoFile = file;
+            
+            // Afficher l'aperçu
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                photoPreview.src = e.target.result;
+                photoPreviewContainer.classList.add('show');
+                photoUploadArea.classList.add('has-photo');
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Supprimer la photo
+        photoRemoveBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selectedPhotoFile = null;
+            uploadedPhotoUrl = null;
+            photoInput.value = '';
+            photoPreview.src = '';
+            photoPreviewContainer.classList.remove('show');
+            photoUploadArea.classList.remove('has-photo');
+        });
+        
+        // Upload de la photo vers Supabase Storage
+        async function uploadPhoto(file) {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const filePath = `submissions/${fileName}`;
+            
+            // Afficher la progression
+            uploadProgress.classList.add('show');
+            progressFill.style.width = '30%';
+            progressText.textContent = 'Upload en cours...';
+            
+            try {
+                const { data, error } = await supabaseClient.storage
+                    .from('images')
+                    .upload(filePath, file, {
+                        cacheControl: '3600',
+                        upsert: false
+                    });
+                
+                if (error) throw error;
+                
+                progressFill.style.width = '100%';
+                progressText.textContent = 'Upload terminé !';
+                
+                // Récupérer l'URL publique
+                const { data: urlData } = supabaseClient.storage
+                    .from('images')
+                    .getPublicUrl(filePath);
+                
+                setTimeout(() => {
+                    uploadProgress.classList.remove('show');
+                }, 1000);
+                
+                return urlData.publicUrl;
+                
+            } catch (error) {
+                console.error('Erreur upload:', error);
+                uploadProgress.classList.remove('show');
+                throw error;
+            }
+        }
         
         // Toast
         function showToast(message, isError = false) {
@@ -646,6 +941,19 @@
             submitBtn.innerHTML = '<div class="spinner"></div> Envoi en cours...';
             
             try {
+                // Upload de la photo si présente
+                let imageUrl = null;
+                if (selectedPhotoFile) {
+                    try {
+                        imageUrl = await uploadPhoto(selectedPhotoFile);
+                    } catch (uploadError) {
+                        showToast('Erreur lors de l\'upload de la photo. Réessayez.', true);
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalContent;
+                        return;
+                    }
+                }
+                
                 const formData = {
                     type: document.querySelector('input[name="type"]:checked').value,
                     title: document.getElementById('title').value,
@@ -654,6 +962,7 @@
                     link: document.getElementById('link').value || null,
                     author: document.getElementById('author').value || null,
                     contact_email: document.getElementById('email').value,
+                    image_url: imageUrl,
                     status: 'pending',
                     created_at: new Date().toISOString()
                 };
