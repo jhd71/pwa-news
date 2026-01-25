@@ -237,112 +237,60 @@
             text-align: center;
         }
         
-        /* === BOUTONS SOURCE PHOTO === */
-        .photo-source-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-            margin-bottom: 0.75rem;
-        }
-        
-        .photo-source-btn {
+        /* === BOUTON AJOUTER PHOTO === */
+        .photo-add-btn {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 0.5rem;
-            padding: 1rem;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 1.25rem;
             background: rgba(99, 102, 241, 0.1);
-            border: 2px solid var(--primary);
+            border: 2px dashed var(--primary);
             border-radius: 12px;
             color: var(--primary-light);
-            font-size: 0.85rem;
+            font-size: 1rem;
             font-weight: 600;
             font-family: inherit;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         
-        .photo-source-btn:hover {
+        .photo-add-btn:hover {
             background: rgba(99, 102, 241, 0.2);
             transform: translateY(-2px);
         }
         
-        .photo-source-btn:active {
+        .photo-add-btn:active {
             transform: scale(0.98);
         }
         
-        .photo-source-btn .material-icons {
+        .photo-add-btn .material-icons {
             font-size: 1.75rem;
         }
         
-        .photo-source-buttons.hidden {
+        .photo-add-btn.hidden {
             display: none;
         }
         
-        [data-theme="light"] .photo-source-btn {
+        [data-theme="light"] .photo-add-btn {
             background: rgba(99, 102, 241, 0.08);
         }
         
-        [data-theme="light"] .photo-source-btn:hover {
+        [data-theme="light"] .photo-add-btn:hover {
             background: rgba(99, 102, 241, 0.15);
         }
 
-        /* === UPLOAD PHOTO === */
-        .photo-upload-area {
-            border: 2px dashed var(--border-color);
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        /* === PREVIEW PHOTO === */
+        .photo-preview-wrapper {
+            display: none;
             position: relative;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
             overflow: hidden;
         }
         
-        .photo-upload-area:hover {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.05);
-        }
-        
-        .photo-upload-area.dragover {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.1);
-        }
-        
-        .photo-upload-area.has-photo {
-            border-style: solid;
-            border-color: var(--primary);
-            padding: 0.5rem;
-        }
-        
-        .photo-upload-icon {
-            font-size: 2.5rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-        }
-        
-        .photo-upload-text {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 0.25rem;
-        }
-        
-        .photo-upload-hint {
-            color: var(--text-muted);
-            font-size: 0.75rem;
-        }
-        
-        .photo-upload-input {
-            display: none;
-        }
-        
-        /* Preview */
-        .photo-preview-container {
-            display: none;
-            position: relative;
-        }
-        
-        .photo-preview-container.show {
+        .photo-preview-wrapper.show {
             display: block;
         }
         
@@ -350,15 +298,25 @@
             width: 100%;
             max-height: 250px;
             object-fit: cover;
-            border-radius: 8px;
+            display: block;
+        }
+        
+        .photo-info {
+            padding: 0.5rem 0.75rem;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .photo-remove-btn {
             position: absolute;
             top: 0.5rem;
             right: 0.5rem;
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             background: rgba(239, 68, 68, 0.9);
             border: none;
             border-radius: 50%;
@@ -375,17 +333,13 @@
             transform: scale(1.1);
         }
         
-        .photo-upload-content {
-            display: block;
-        }
-        
-        .photo-upload-area.has-photo .photo-upload-content {
+        .photo-upload-input {
             display: none;
         }
         
         .upload-progress {
             display: none;
-            margin-top: 0.5rem;
+            margin-top: 0.75rem;
         }
         
         .upload-progress.show {
@@ -413,14 +367,6 @@
             color: var(--text-muted);
             margin-top: 0.25rem;
             text-align: center;
-        }
-        
-        [data-theme="light"] .photo-upload-area {
-            border-color: rgba(0, 0, 0, 0.15);
-        }
-        
-        [data-theme="light"] .photo-upload-area:hover {
-            background: rgba(99, 102, 241, 0.05);
         }
         
         /* Bouton submit */
@@ -708,42 +654,34 @@
                         Photo (optionnel)
                     </label>
                     
-                    <!-- Boutons pour choisir la source -->
-                    <div class="photo-source-buttons" id="photoSourceButtons">
-                        <button type="button" class="photo-source-btn" id="takePhotoBtn">
-                            <span class="material-icons">photo_camera</span>
-                            <span>Prendre une photo</span>
+                    <!-- Bouton unique pour ajouter une photo -->
+                    <button type="button" class="photo-add-btn" id="photoAddBtn">
+                        <span class="material-icons">photo_camera</span>
+                        <span>Ajouter une photo</span>
+                    </button>
+                    
+                    <!-- Preview de la photo -->
+                    <div class="photo-preview-wrapper" id="photoPreviewWrapper">
+                        <img src="" alt="Aperçu" class="photo-preview" id="photoPreview">
+                        <button type="button" class="photo-remove-btn" id="photoRemoveBtn" title="Supprimer la photo">
+                            <span class="material-icons" style="font-size: 1.3rem;">close</span>
                         </button>
-                        <button type="button" class="photo-source-btn" id="choosePhotoBtn">
-                            <span class="material-icons">photo_library</span>
-                            <span>Galerie</span>
-                        </button>
+                        <div class="photo-info">
+                            <span id="photoSize">0 Ko</span>
+                            <span>✓ Compressée automatiquement</span>
+                        </div>
                     </div>
                     
-                    <div class="photo-upload-area" id="photoUploadArea">
-                        <div class="photo-upload-content">
-                            <div class="photo-upload-icon">📷</div>
-                            <div class="photo-upload-text">Ou glissez une photo ici</div>
-                            <div class="photo-upload-hint">JPG, PNG • Max 5 Mo</div>
-                        </div>
-                        <div class="photo-preview-container" id="photoPreviewContainer">
-                            <img src="" alt="Aperçu" class="photo-preview" id="photoPreview">
-                            <button type="button" class="photo-remove-btn" id="photoRemoveBtn" title="Supprimer la photo">
-                                <span class="material-icons" style="font-size: 1.2rem;">close</span>
-                            </button>
-                        </div>
-                        <!-- Input pour prendre une photo (caméra) -->
-                        <input type="file" class="photo-upload-input" id="photoCaptureInput" accept="image/*" capture>
-                        <!-- Input pour choisir dans la galerie -->
-                        <input type="file" class="photo-upload-input" id="photoGalleryInput" accept="image/jpeg,image/png,image/webp">
-                    </div>
+                    <!-- Input caché -->
+                    <input type="file" class="photo-upload-input" id="photoInput" accept="image/*">
+                    
                     <div class="upload-progress" id="uploadProgress">
                         <div class="progress-bar">
                             <div class="progress-fill" id="progressFill"></div>
                         </div>
-                        <div class="progress-text" id="progressText">Upload en cours...</div>
+                        <div class="progress-text" id="progressText">Compression en cours...</div>
                     </div>
-                    <div class="form-hint">Ajoutez une photo pour illustrer votre actualité</div>
+                    <div class="form-hint">📷 Prenez une photo ou choisissez dans votre galerie</div>
                 </div>
                 
                 <!-- Lieu -->
@@ -840,162 +778,156 @@
         const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
         
-        // Instance unique pour éviter les doublons
         if (!window.supabaseClientProposer) {
             window.supabaseClientProposer = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         }
         const supabaseClient = window.supabaseClientProposer;
         
         // Variables pour la photo
-        let selectedPhotoFile = null;
-        let uploadedPhotoUrl = null;
+        let compressedPhotoBlob = null;
         
         // Gestion des types
-        document.querySelectorAll('.type-option').forEach(option => {
-            option.addEventListener('click', () => {
-                document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
+        document.querySelectorAll('.type-option').forEach(function(option) {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.type-option').forEach(function(o) {
+                    o.classList.remove('selected');
+                });
                 option.classList.add('selected');
             });
         });
         
-        // === GESTION UPLOAD PHOTO ===
-        const photoUploadArea = document.getElementById('photoUploadArea');
-        const photoCaptureInput = document.getElementById('photoCaptureInput');
-        const photoGalleryInput = document.getElementById('photoGalleryInput');
+        // === ÉLÉMENTS DOM ===
+        const photoAddBtn = document.getElementById('photoAddBtn');
+        const photoInput = document.getElementById('photoInput');
         const photoPreview = document.getElementById('photoPreview');
-        const photoPreviewContainer = document.getElementById('photoPreviewContainer');
+        const photoPreviewWrapper = document.getElementById('photoPreviewWrapper');
         const photoRemoveBtn = document.getElementById('photoRemoveBtn');
-        const takePhotoBtn = document.getElementById('takePhotoBtn');
-        const choosePhotoBtn = document.getElementById('choosePhotoBtn');
-        const photoSourceButtons = document.getElementById('photoSourceButtons');
+        const photoSizeEl = document.getElementById('photoSize');
         const uploadProgress = document.getElementById('uploadProgress');
         const progressFill = document.getElementById('progressFill');
         const progressText = document.getElementById('progressText');
         
-        // Bouton prendre une photo (caméra)
-        takePhotoBtn.addEventListener('click', function() {
-            photoCaptureInput.click();
+        // === BOUTON AJOUTER PHOTO ===
+        photoAddBtn.addEventListener('click', function() {
+            photoInput.click();
         });
         
-        // Bouton choisir dans la galerie
-        choosePhotoBtn.addEventListener('click', function() {
-            photoGalleryInput.click();
-        });
-        
-        // Clic sur la zone d'upload (drag & drop area)
-        photoUploadArea.addEventListener('click', function(e) {
-            if (e.target !== photoRemoveBtn && !photoRemoveBtn.contains(e.target) && !photoUploadArea.classList.contains('has-photo')) {
-                photoGalleryInput.click();
-            }
-        });
-        
-        // Drag & Drop
-        photoUploadArea.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            photoUploadArea.classList.add('dragover');
-        });
-        
-        photoUploadArea.addEventListener('dragleave', function() {
-            photoUploadArea.classList.remove('dragover');
-        });
-        
-        photoUploadArea.addEventListener('drop', function(e) {
-            e.preventDefault();
-            photoUploadArea.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handlePhotoSelect(files[0]);
-            }
-        });
-        
-        // Sélection de fichier (caméra)
-        photoCaptureInput.addEventListener('change', function(e) {
+        // === SÉLECTION DE FICHIER ===
+        photoInput.addEventListener('change', function(e) {
             if (e.target.files.length > 0) {
                 handlePhotoSelect(e.target.files[0]);
             }
         });
         
-        // Sélection de fichier (galerie)
-        photoGalleryInput.addEventListener('change', function(e) {
-            if (e.target.files.length > 0) {
-                handlePhotoSelect(e.target.files[0]);
-            }
-        });
-        
-        // Traitement de la photo sélectionnée
+        // === COMPRESSION ET TRAITEMENT ===
         function handlePhotoSelect(file) {
             // Vérifier le type
-            const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-            if (!allowedTypes.includes(file.type)) {
-                showToast('Format non supporté. Utilisez JPG, PNG ou WebP.', true);
+            if (!file.type.startsWith('image/')) {
+                showToast('Veuillez sélectionner une image.', true);
                 return;
             }
             
-            // Vérifier la taille (5 Mo max)
-            const maxSize = 5 * 1024 * 1024;
-            if (file.size > maxSize) {
-                showToast('Photo trop volumineuse. Maximum 5 Mo.', true);
-                return;
-            }
+            // Afficher la progression
+            uploadProgress.classList.add('show');
+            progressFill.style.width = '20%';
+            progressText.textContent = 'Compression en cours...';
             
-            selectedPhotoFile = file;
-            
-            // Afficher l'aperçu
-            const reader = new FileReader();
+            // Compresser l'image
+            compressImage(file, 1200, 0.8, function(blob, dataUrl) {
+                compressedPhotoBlob = blob;
+                
+                // Afficher l'aperçu
+                photoPreview.src = dataUrl;
+                photoPreviewWrapper.classList.add('show');
+                photoAddBtn.classList.add('hidden');
+                
+                // Afficher la taille
+                var sizeKo = Math.round(blob.size / 1024);
+                photoSizeEl.textContent = sizeKo + ' Ko';
+                
+                // Cacher la progression
+                progressFill.style.width = '100%';
+                progressText.textContent = 'Compression terminée !';
+                setTimeout(function() {
+                    uploadProgress.classList.remove('show');
+                }, 800);
+            });
+        }
+        
+        // === FONCTION DE COMPRESSION ===
+        function compressImage(file, maxWidth, quality, callback) {
+            var reader = new FileReader();
             reader.onload = function(e) {
-                photoPreview.src = e.target.result;
-                photoPreviewContainer.classList.add('show');
-                photoUploadArea.classList.add('has-photo');
-                photoSourceButtons.classList.add('hidden');
+                var img = new Image();
+                img.onload = function() {
+                    // Calculer les nouvelles dimensions
+                    var width = img.width;
+                    var height = img.height;
+                    
+                    if (width > maxWidth) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    }
+                    
+                    // Créer le canvas
+                    var canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Convertir en blob
+                    canvas.toBlob(function(blob) {
+                        var dataUrl = canvas.toDataURL('image/jpeg', quality);
+                        callback(blob, dataUrl);
+                    }, 'image/jpeg', quality);
+                };
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
         
-        // Supprimer la photo
+        // === SUPPRIMER LA PHOTO ===
         photoRemoveBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            selectedPhotoFile = null;
-            uploadedPhotoUrl = null;
-            photoCaptureInput.value = '';
-            photoGalleryInput.value = '';
+            compressedPhotoBlob = null;
+            photoInput.value = '';
             photoPreview.src = '';
-            photoPreviewContainer.classList.remove('show');
-            photoUploadArea.classList.remove('has-photo');
-            photoSourceButtons.classList.remove('hidden');
+            photoPreviewWrapper.classList.remove('show');
+            photoAddBtn.classList.remove('hidden');
         });
         
-        // Upload de la photo vers Supabase Storage
-        async function uploadPhoto(file) {
-            const fileExt = file.name.split('.').pop() || 'jpg';
-            const fileName = Date.now() + '-' + Math.random().toString(36).substring(7) + '.' + fileExt;
-            const filePath = 'submissions/' + fileName;
+        // === UPLOAD VERS SUPABASE ===
+        async function uploadPhoto(blob) {
+            var fileName = Date.now() + '-' + Math.random().toString(36).substring(7) + '.jpg';
+            var filePath = 'submissions/' + fileName;
             
-            // Afficher la progression
             uploadProgress.classList.add('show');
-            progressFill.style.width = '30%';
-            progressText.textContent = 'Upload en cours...';
+            progressFill.style.width = '50%';
+            progressText.textContent = 'Envoi en cours...';
             
             try {
-                const result = await supabaseClient.storage
+                var result = await supabaseClient.storage
                     .from('images')
-                    .upload(filePath, file, {
+                    .upload(filePath, blob, {
                         cacheControl: '3600',
-                        upsert: false
+                        upsert: false,
+                        contentType: 'image/jpeg'
                     });
                 
                 if (result.error) throw result.error;
                 
                 progressFill.style.width = '100%';
-                progressText.textContent = 'Upload terminé !';
+                progressText.textContent = 'Envoi terminé !';
                 
-                // Récupérer l'URL publique
-                const urlResult = supabaseClient.storage
+                var urlResult = supabaseClient.storage
                     .from('images')
                     .getPublicUrl(filePath);
                 
                 setTimeout(function() {
                     uploadProgress.classList.remove('show');
-                }, 1000);
+                }, 800);
                 
                 return urlResult.data.publicUrl;
                 
@@ -1006,11 +938,11 @@
             }
         }
         
-        // Toast
+        // === TOAST ===
         function showToast(message, isError) {
-            const toast = document.getElementById('toast');
-            const toastIcon = toast.querySelector('.toast-icon');
-            const toastText = toast.querySelector('.toast-text');
+            var toast = document.getElementById('toast');
+            var toastIcon = toast.querySelector('.toast-icon');
+            var toastText = toast.querySelector('.toast-text');
             
             toastIcon.textContent = isError ? '❌' : '✅';
             toastText.textContent = message;
@@ -1026,31 +958,31 @@
             }, 4000);
         }
         
-        // Formulaire
+        // === FORMULAIRE ===
         document.getElementById('proposeForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const submitBtn = document.getElementById('submitBtn');
-            const originalContent = submitBtn.innerHTML;
+            var submitBtn = document.getElementById('submitBtn');
+            var originalContent = submitBtn.innerHTML;
             
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<div class="spinner"></div> Envoi en cours...';
             
             try {
                 // Upload de la photo si présente
-                let imageUrl = null;
-                if (selectedPhotoFile) {
+                var imageUrl = null;
+                if (compressedPhotoBlob) {
                     try {
-                        imageUrl = await uploadPhoto(selectedPhotoFile);
+                        imageUrl = await uploadPhoto(compressedPhotoBlob);
                     } catch (uploadError) {
-                        showToast('Erreur lors de l\'upload de la photo. Réessayez.', true);
+                        showToast('Erreur lors de l\'envoi de la photo. Réessayez.', true);
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = originalContent;
                         return;
                     }
                 }
                 
-                const formData = {
+                var formData = {
                     type: document.querySelector('input[name="type"]:checked').value,
                     title: document.getElementById('title').value,
                     content: document.getElementById('content').value,
@@ -1063,7 +995,7 @@
                     created_at: new Date().toISOString()
                 };
                 
-                const result = await supabaseClient
+                var result = await supabaseClient
                     .from('news_submissions')
                     .insert([formData]);
                 
@@ -1083,7 +1015,7 @@
         });
         
         // Thème
-        const savedTheme = localStorage.getItem('theme');
+        var savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             document.documentElement.setAttribute('data-theme', savedTheme);
         }
