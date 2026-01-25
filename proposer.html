@@ -237,6 +237,56 @@
             text-align: center;
         }
         
+        /* === BOUTONS SOURCE PHOTO === */
+        .photo-source-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .photo-source-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            color: var(--primary-light);
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .photo-source-btn:hover {
+            background: rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .photo-source-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .photo-source-btn .material-icons {
+            font-size: 1.75rem;
+        }
+        
+        .photo-source-buttons.hidden {
+            display: none;
+        }
+        
+        [data-theme="light"] .photo-source-btn {
+            background: rgba(99, 102, 241, 0.08);
+        }
+        
+        [data-theme="light"] .photo-source-btn:hover {
+            background: rgba(99, 102, 241, 0.15);
+        }
+
         /* === UPLOAD PHOTO === */
         .photo-upload-area {
             border: 2px dashed var(--border-color);
@@ -657,10 +707,23 @@
                         <span class="material-icons" style="font-size: 1.1rem;">add_photo_alternate</span>
                         Photo (optionnel)
                     </label>
+                    
+                    <!-- Boutons pour choisir la source -->
+                    <div class="photo-source-buttons" id="photoSourceButtons">
+                        <button type="button" class="photo-source-btn" id="takePhotoBtn">
+                            <span class="material-icons">photo_camera</span>
+                            <span>Prendre une photo</span>
+                        </button>
+                        <button type="button" class="photo-source-btn" id="choosePhotoBtn">
+                            <span class="material-icons">photo_library</span>
+                            <span>Galerie</span>
+                        </button>
+                    </div>
+                    
                     <div class="photo-upload-area" id="photoUploadArea">
                         <div class="photo-upload-content">
                             <div class="photo-upload-icon">📷</div>
-                            <div class="photo-upload-text">Cliquez ou glissez une photo ici</div>
+                            <div class="photo-upload-text">Ou glissez une photo ici</div>
                             <div class="photo-upload-hint">JPG, PNG • Max 5 Mo</div>
                         </div>
                         <div class="photo-preview-container" id="photoPreviewContainer">
@@ -669,7 +732,10 @@
                                 <span class="material-icons" style="font-size: 1.2rem;">close</span>
                             </button>
                         </div>
-                        <input type="file" class="photo-upload-input" id="photoInput" accept="image/jpeg,image/png,image/webp">
+                        <!-- Input pour prendre une photo (caméra) -->
+                        <input type="file" class="photo-upload-input" id="photoCaptureInput" accept="image/*" capture="environment">
+                        <!-- Input pour choisir dans la galerie -->
+                        <input type="file" class="photo-upload-input" id="photoGalleryInput" accept="image/jpeg,image/png,image/webp">
                     </div>
                     <div class="upload-progress" id="uploadProgress">
                         <div class="progress-bar">
@@ -794,18 +860,32 @@
         
         // === GESTION UPLOAD PHOTO ===
         const photoUploadArea = document.getElementById('photoUploadArea');
-        const photoInput = document.getElementById('photoInput');
+        const photoCaptureInput = document.getElementById('photoCaptureInput');
+        const photoGalleryInput = document.getElementById('photoGalleryInput');
         const photoPreview = document.getElementById('photoPreview');
+        const takePhotoBtn = document.getElementById('takePhotoBtn');
+        const choosePhotoBtn = document.getElementById('choosePhotoBtn');
+        const photoSourceButtons = document.getElementById('photoSourceButtons');
         const photoPreviewContainer = document.getElementById('photoPreviewContainer');
         const photoRemoveBtn = document.getElementById('photoRemoveBtn');
         const uploadProgress = document.getElementById('uploadProgress');
         const progressFill = document.getElementById('progressFill');
         const progressText = document.getElementById('progressText');
         
-        // Clic sur la zone d'upload
+        // Bouton prendre une photo (caméra)
+        takePhotoBtn.addEventListener('click', () => {
+            photoCaptureInput.click();
+        });
+        
+        // Bouton choisir dans la galerie
+        choosePhotoBtn.addEventListener('click', () => {
+            photoGalleryInput.click();
+        });
+        
+        // Clic sur la zone d'upload (drag & drop area)
         photoUploadArea.addEventListener('click', (e) => {
-            if (e.target !== photoRemoveBtn && !photoRemoveBtn.contains(e.target)) {
-                photoInput.click();
+            if (e.target !== photoRemoveBtn && !photoRemoveBtn.contains(e.target) && !photoUploadArea.classList.contains('has-photo')) {
+                photoGalleryInput.click();
             }
         });
         
@@ -828,8 +908,15 @@
             }
         });
         
-        // Sélection de fichier
-        photoInput.addEventListener('change', (e) => {
+        // Sélection de fichier (caméra)
+        photoCaptureInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handlePhotoSelect(e.target.files[0]);
+            }
+        });
+        
+        // Sélection de fichier (galerie)
+        photoGalleryInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
                 handlePhotoSelect(e.target.files[0]);
             }
@@ -859,19 +946,21 @@
                 photoPreview.src = e.target.result;
                 photoPreviewContainer.classList.add('show');
                 photoUploadArea.classList.add('has-photo');
+                photoSourceButtons.classList.add('hidden');
             };
             reader.readAsDataURL(file);
-        }
         
         // Supprimer la photo
         photoRemoveBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             selectedPhotoFile = null;
             uploadedPhotoUrl = null;
-            photoInput.value = '';
+            photoCaptureInput.value = '';
+            photoGalleryInput.value = '';
             photoPreview.src = '';
             photoPreviewContainer.classList.remove('show');
             photoUploadArea.classList.remove('has-photo');
+            photoSourceButtons.classList.remove('hidden');
         });
         
         // Upload de la photo vers Supabase Storage
