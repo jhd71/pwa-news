@@ -8,7 +8,7 @@
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1a1a2e">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="images/icon-192.png">
     
@@ -415,6 +415,14 @@
             text-align: center;
         }
         
+        [data-theme="light"] .photo-upload-area {
+            border-color: rgba(0, 0, 0, 0.15);
+        }
+        
+        [data-theme="light"] .photo-upload-area:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
         /* Bouton submit */
         .submit-btn {
             width: 100%;
@@ -521,14 +529,6 @@
             background: rgba(0, 0, 0, 0.05);
         }
         
-        [data-theme="light"] .photo-upload-area {
-            border-color: rgba(0, 0, 0, 0.15);
-        }
-        
-        [data-theme="light"] .photo-upload-area:hover {
-            background: rgba(99, 102, 241, 0.05);
-        }
-        
         /* Spinner */
         .spinner {
             width: 20px;
@@ -573,7 +573,7 @@
             box-shadow: 0 10px 40px rgba(239, 68, 68, 0.4);
         }
         
-		/* Infos complémentaires */
+        /* Infos complémentaires */
         .contact-info {
             max-width: 500px;
             margin: 2rem auto 0;
@@ -588,27 +588,27 @@
             letter-spacing: 0.5px;
             margin-bottom: 1rem;
         }
-		
-		.contact-socials {
+        
+        .contact-socials {
             display: flex;
             justify-content: center;
             gap: 1rem;
         }
         
         .contact-social {
-			display: flex;
-			width: 60px;
-			height: 60px;
-			background: var(--bg-card);
+            display: flex;
+            width: 60px;
+            height: 60px;
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
-			border-radius: 50%;
-			color: var(--text-primary);
-			text-decoration: none;
-			font-size: 0.7rem;
-			transition: all 0.3s ease;
-			align-items: center;
-			justify-content: center;
-		}
+            border-radius: 50%;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.7rem;
+            transition: all 0.3s ease;
+            align-items: center;
+            justify-content: center;
+        }
         
         .contact-social:hover {
             background: var(--primary);
@@ -701,7 +701,7 @@
                     <div class="form-hint">Maximum 2000 caractères</div>
                 </div>
                 
-                <!-- NOUVEAU : Upload Photo -->
+                <!-- Upload Photo -->
                 <div class="form-group">
                     <label class="form-label">
                         <span class="material-icons" style="font-size: 1.1rem;">add_photo_alternate</span>
@@ -806,7 +806,7 @@
             </div>
         </div>
         
-    <!-- Réseaux sociaux -->
+        <!-- Réseaux sociaux -->
         <div class="contact-info">
             <div class="contact-info-title">Suivez-nous aussi sur</div>
             <div class="contact-socials">
@@ -863,43 +863,43 @@
         const photoCaptureInput = document.getElementById('photoCaptureInput');
         const photoGalleryInput = document.getElementById('photoGalleryInput');
         const photoPreview = document.getElementById('photoPreview');
+        const photoPreviewContainer = document.getElementById('photoPreviewContainer');
+        const photoRemoveBtn = document.getElementById('photoRemoveBtn');
         const takePhotoBtn = document.getElementById('takePhotoBtn');
         const choosePhotoBtn = document.getElementById('choosePhotoBtn');
         const photoSourceButtons = document.getElementById('photoSourceButtons');
-        const photoPreviewContainer = document.getElementById('photoPreviewContainer');
-        const photoRemoveBtn = document.getElementById('photoRemoveBtn');
         const uploadProgress = document.getElementById('uploadProgress');
         const progressFill = document.getElementById('progressFill');
         const progressText = document.getElementById('progressText');
         
         // Bouton prendre une photo (caméra)
-        takePhotoBtn.addEventListener('click', () => {
+        takePhotoBtn.addEventListener('click', function() {
             photoCaptureInput.click();
         });
         
         // Bouton choisir dans la galerie
-        choosePhotoBtn.addEventListener('click', () => {
+        choosePhotoBtn.addEventListener('click', function() {
             photoGalleryInput.click();
         });
         
         // Clic sur la zone d'upload (drag & drop area)
-        photoUploadArea.addEventListener('click', (e) => {
+        photoUploadArea.addEventListener('click', function(e) {
             if (e.target !== photoRemoveBtn && !photoRemoveBtn.contains(e.target) && !photoUploadArea.classList.contains('has-photo')) {
                 photoGalleryInput.click();
             }
         });
         
         // Drag & Drop
-        photoUploadArea.addEventListener('dragover', (e) => {
+        photoUploadArea.addEventListener('dragover', function(e) {
             e.preventDefault();
             photoUploadArea.classList.add('dragover');
         });
         
-        photoUploadArea.addEventListener('dragleave', () => {
+        photoUploadArea.addEventListener('dragleave', function() {
             photoUploadArea.classList.remove('dragover');
         });
         
-        photoUploadArea.addEventListener('drop', (e) => {
+        photoUploadArea.addEventListener('drop', function(e) {
             e.preventDefault();
             photoUploadArea.classList.remove('dragover');
             const files = e.dataTransfer.files;
@@ -909,14 +909,14 @@
         });
         
         // Sélection de fichier (caméra)
-        photoCaptureInput.addEventListener('change', (e) => {
+        photoCaptureInput.addEventListener('change', function(e) {
             if (e.target.files.length > 0) {
                 handlePhotoSelect(e.target.files[0]);
             }
         });
         
         // Sélection de fichier (galerie)
-        photoGalleryInput.addEventListener('change', (e) => {
+        photoGalleryInput.addEventListener('change', function(e) {
             if (e.target.files.length > 0) {
                 handlePhotoSelect(e.target.files[0]);
             }
@@ -942,16 +942,17 @@
             
             // Afficher l'aperçu
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = function(e) {
                 photoPreview.src = e.target.result;
                 photoPreviewContainer.classList.add('show');
                 photoUploadArea.classList.add('has-photo');
                 photoSourceButtons.classList.add('hidden');
             };
             reader.readAsDataURL(file);
+        }
         
         // Supprimer la photo
-        photoRemoveBtn.addEventListener('click', (e) => {
+        photoRemoveBtn.addEventListener('click', function(e) {
             e.stopPropagation();
             selectedPhotoFile = null;
             uploadedPhotoUrl = null;
@@ -965,9 +966,9 @@
         
         // Upload de la photo vers Supabase Storage
         async function uploadPhoto(file) {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-            const filePath = `submissions/${fileName}`;
+            const fileExt = file.name.split('.').pop() || 'jpg';
+            const fileName = Date.now() + '-' + Math.random().toString(36).substring(7) + '.' + fileExt;
+            const filePath = 'submissions/' + fileName;
             
             // Afficher la progression
             uploadProgress.classList.add('show');
@@ -975,28 +976,28 @@
             progressText.textContent = 'Upload en cours...';
             
             try {
-                const { data, error } = await supabaseClient.storage
+                const result = await supabaseClient.storage
                     .from('images')
                     .upload(filePath, file, {
                         cacheControl: '3600',
                         upsert: false
                     });
                 
-                if (error) throw error;
+                if (result.error) throw result.error;
                 
                 progressFill.style.width = '100%';
                 progressText.textContent = 'Upload terminé !';
                 
                 // Récupérer l'URL publique
-                const { data: urlData } = supabaseClient.storage
+                const urlResult = supabaseClient.storage
                     .from('images')
                     .getPublicUrl(filePath);
                 
-                setTimeout(() => {
+                setTimeout(function() {
                     uploadProgress.classList.remove('show');
                 }, 1000);
                 
-                return urlData.publicUrl;
+                return urlResult.data.publicUrl;
                 
             } catch (error) {
                 console.error('Erreur upload:', error);
@@ -1006,21 +1007,27 @@
         }
         
         // Toast
-        function showToast(message, isError = false) {
+        function showToast(message, isError) {
             const toast = document.getElementById('toast');
             const toastIcon = toast.querySelector('.toast-icon');
             const toastText = toast.querySelector('.toast-text');
             
             toastIcon.textContent = isError ? '❌' : '✅';
             toastText.textContent = message;
-            toast.classList.toggle('error', isError);
+            if (isError) {
+                toast.classList.add('error');
+            } else {
+                toast.classList.remove('error');
+            }
             toast.classList.add('show');
             
-            setTimeout(() => toast.classList.remove('show'), 4000);
+            setTimeout(function() {
+                toast.classList.remove('show');
+            }, 4000);
         }
         
         // Formulaire
-        document.getElementById('proposeForm').addEventListener('submit', async (e) => {
+        document.getElementById('proposeForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const submitBtn = document.getElementById('submitBtn');
@@ -1056,19 +1063,19 @@
                     created_at: new Date().toISOString()
                 };
                 
-                const { data, error } = await supabaseClient
+                const result = await supabaseClient
                     .from('news_submissions')
                     .insert([formData]);
                 
-                if (error) throw error;
+                if (result.error) throw result.error;
                 
-                showToast('Proposition envoyée avec succès ! 🎉');
+                showToast('Proposition envoyée avec succès ! 🎉', false);
                 
                 document.getElementById('proposeForm').style.display = 'none';
                 document.getElementById('successMessage').style.display = 'block';
                 
             } catch (error) {
-                console.error('❌ Erreur:', error);
+                console.error('Erreur:', error);
                 showToast('Erreur lors de l\'envoi. Réessayez.', true);
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalContent;
