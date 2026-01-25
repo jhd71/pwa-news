@@ -61,7 +61,6 @@
             font-size: 1.1rem;
         }
         
-        /* Bouton retour en bas */
         .back-bottom {
             display: flex;
             align-items: center;
@@ -108,7 +107,6 @@
             line-height: 1.5;
         }
         
-        /* Formulaire */
         .propose-form-container {
             max-width: 500px;
             margin: 0 auto;
@@ -237,47 +235,53 @@
             text-align: center;
         }
         
-        /* === BOUTON AJOUTER PHOTO === */
-        .photo-add-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* === BOUTONS PHOTO === */
+        .photo-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 0.75rem;
-            width: 100%;
-            padding: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .photo-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
             background: rgba(99, 102, 241, 0.1);
-            border: 2px dashed var(--primary);
+            border: 2px solid var(--primary);
             border-radius: 12px;
             color: var(--primary-light);
-            font-size: 1rem;
+            font-size: 0.85rem;
             font-weight: 600;
             font-family: inherit;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         
-        .photo-add-btn:hover {
+        .photo-btn:hover {
             background: rgba(99, 102, 241, 0.2);
             transform: translateY(-2px);
         }
         
-        .photo-add-btn:active {
+        .photo-btn:active {
             transform: scale(0.98);
         }
         
-        .photo-add-btn .material-icons {
+        .photo-btn .material-icons {
             font-size: 1.75rem;
         }
         
-        .photo-add-btn.hidden {
+        .photo-buttons.hidden {
             display: none;
         }
         
-        [data-theme="light"] .photo-add-btn {
+        [data-theme="light"] .photo-btn {
             background: rgba(99, 102, 241, 0.08);
         }
         
-        [data-theme="light"] .photo-add-btn:hover {
+        [data-theme="light"] .photo-btn:hover {
             background: rgba(99, 102, 241, 0.15);
         }
 
@@ -367,6 +371,130 @@
             color: var(--text-muted);
             margin-top: 0.25rem;
             text-align: center;
+        }
+        
+        /* === MODAL CAMERA === */
+        .camera-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            z-index: 10000;
+            flex-direction: column;
+        }
+        
+        .camera-modal.show {
+            display: flex;
+        }
+        
+        .camera-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        .camera-title {
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .camera-close-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .camera-video-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            overflow: hidden;
+        }
+        
+        .camera-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .camera-loading {
+            position: absolute;
+            color: white;
+            font-size: 1rem;
+            text-align: center;
+        }
+        
+        .camera-error {
+            position: absolute;
+            color: #ef4444;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .camera-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        .camera-capture-btn {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .camera-capture-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .camera-capture-btn:active {
+            transform: scale(0.95);
+            background: #ddd;
+        }
+        
+        .camera-switch-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .camera-switch-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Canvas caché pour capture */
+        #cameraCanvas {
+            display: none;
         }
         
         /* Bouton submit */
@@ -654,11 +782,17 @@
                         Photo (optionnel)
                     </label>
                     
-                    <!-- Bouton unique pour ajouter une photo -->
-                    <button type="button" class="photo-add-btn" id="photoAddBtn">
-                        <span class="material-icons">photo_camera</span>
-                        <span>Ajouter une photo</span>
-                    </button>
+                    <!-- Boutons pour choisir la source -->
+                    <div class="photo-buttons" id="photoButtons">
+                        <button type="button" class="photo-btn" id="takePhotoBtn">
+                            <span class="material-icons">photo_camera</span>
+                            <span>Prendre une photo</span>
+                        </button>
+                        <button type="button" class="photo-btn" id="choosePhotoBtn">
+                            <span class="material-icons">photo_library</span>
+                            <span>Galerie</span>
+                        </button>
+                    </div>
                     
                     <!-- Preview de la photo -->
                     <div class="photo-preview-wrapper" id="photoPreviewWrapper">
@@ -668,11 +802,11 @@
                         </button>
                         <div class="photo-info">
                             <span id="photoSize">0 Ko</span>
-                            <span>✓ Compressée automatiquement</span>
+                            <span>✓ Compressée</span>
                         </div>
                     </div>
                     
-                    <!-- Input caché -->
+                    <!-- Input pour galerie -->
                     <input type="file" class="photo-upload-input" id="photoInput" accept="image/*">
                     
                     <div class="upload-progress" id="uploadProgress">
@@ -681,7 +815,7 @@
                         </div>
                         <div class="progress-text" id="progressText">Compression en cours...</div>
                     </div>
-                    <div class="form-hint">📷 Prenez une photo ou choisissez dans votre galerie</div>
+                    <div class="form-hint">📷 Prenez une photo sur le vif ou choisissez dans votre galerie</div>
                 </div>
                 
                 <!-- Lieu -->
@@ -764,6 +898,31 @@
         </a>
     </div>
     
+    <!-- Modal Camera -->
+    <div class="camera-modal" id="cameraModal">
+        <div class="camera-header">
+            <span class="camera-title">📷 Prendre une photo</span>
+            <button type="button" class="camera-close-btn" id="cameraCloseBtn">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="camera-video-container">
+            <video class="camera-video" id="cameraVideo" autoplay playsinline></video>
+            <div class="camera-loading" id="cameraLoading">Chargement de la caméra...</div>
+            <div class="camera-error" id="cameraError" style="display: none;"></div>
+        </div>
+        <div class="camera-controls">
+            <button type="button" class="camera-switch-btn" id="cameraSwitchBtn" title="Changer de caméra">
+                <span class="material-icons">flip_camera_android</span>
+            </button>
+            <button type="button" class="camera-capture-btn" id="cameraCaptureBtn" title="Prendre la photo"></button>
+            <div style="width: 50px;"></div>
+        </div>
+    </div>
+    
+    <!-- Canvas pour capture -->
+    <canvas id="cameraCanvas"></canvas>
+    
     <!-- Toast notification -->
     <div class="toast" id="toast">
         <span class="toast-icon">✅</span>
@@ -775,16 +934,41 @@
     
     <script>
         // Supabase
-        const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
+        var SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
+        var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
         
         if (!window.supabaseClientProposer) {
             window.supabaseClientProposer = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         }
-        const supabaseClient = window.supabaseClientProposer;
+        var supabaseClient = window.supabaseClientProposer;
         
-        // Variables pour la photo
-        let compressedPhotoBlob = null;
+        // Variables
+        var compressedPhotoBlob = null;
+        var currentStream = null;
+        var facingMode = 'environment'; // Caméra arrière par défaut
+        
+        // === ÉLÉMENTS DOM ===
+        var takePhotoBtn = document.getElementById('takePhotoBtn');
+        var choosePhotoBtn = document.getElementById('choosePhotoBtn');
+        var photoButtons = document.getElementById('photoButtons');
+        var photoInput = document.getElementById('photoInput');
+        var photoPreview = document.getElementById('photoPreview');
+        var photoPreviewWrapper = document.getElementById('photoPreviewWrapper');
+        var photoRemoveBtn = document.getElementById('photoRemoveBtn');
+        var photoSizeEl = document.getElementById('photoSize');
+        var uploadProgress = document.getElementById('uploadProgress');
+        var progressFill = document.getElementById('progressFill');
+        var progressText = document.getElementById('progressText');
+        
+        // Camera elements
+        var cameraModal = document.getElementById('cameraModal');
+        var cameraVideo = document.getElementById('cameraVideo');
+        var cameraCanvas = document.getElementById('cameraCanvas');
+        var cameraCloseBtn = document.getElementById('cameraCloseBtn');
+        var cameraCaptureBtn = document.getElementById('cameraCaptureBtn');
+        var cameraSwitchBtn = document.getElementById('cameraSwitchBtn');
+        var cameraLoading = document.getElementById('cameraLoading');
+        var cameraError = document.getElementById('cameraError');
         
         // Gestion des types
         document.querySelectorAll('.type-option').forEach(function(option) {
@@ -796,56 +980,132 @@
             });
         });
         
-        // === ÉLÉMENTS DOM ===
-        const photoAddBtn = document.getElementById('photoAddBtn');
-        const photoInput = document.getElementById('photoInput');
-        const photoPreview = document.getElementById('photoPreview');
-        const photoPreviewWrapper = document.getElementById('photoPreviewWrapper');
-        const photoRemoveBtn = document.getElementById('photoRemoveBtn');
-        const photoSizeEl = document.getElementById('photoSize');
-        const uploadProgress = document.getElementById('uploadProgress');
-        const progressFill = document.getElementById('progressFill');
-        const progressText = document.getElementById('progressText');
+        // === BOUTON PRENDRE UNE PHOTO ===
+        takePhotoBtn.addEventListener('click', function() {
+            openCamera();
+        });
         
-        // === BOUTON AJOUTER PHOTO ===
-        photoAddBtn.addEventListener('click', function() {
+        // === BOUTON GALERIE ===
+        choosePhotoBtn.addEventListener('click', function() {
             photoInput.click();
         });
         
-        // === SÉLECTION DE FICHIER ===
+        // === OUVRIR LA CAMÉRA ===
+        function openCamera() {
+            cameraModal.classList.add('show');
+            cameraLoading.style.display = 'block';
+            cameraError.style.display = 'none';
+            startCamera();
+        }
+        
+        // === DÉMARRER LA CAMÉRA ===
+        function startCamera() {
+            // Arrêter le stream précédent si existant
+            if (currentStream) {
+                currentStream.getTracks().forEach(function(track) {
+                    track.stop();
+                });
+            }
+            
+            var constraints = {
+                video: {
+                    facingMode: facingMode,
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                },
+                audio: false
+            };
+            
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then(function(stream) {
+                    currentStream = stream;
+                    cameraVideo.srcObject = stream;
+                    cameraLoading.style.display = 'none';
+                })
+                .catch(function(error) {
+                    console.error('Erreur caméra:', error);
+                    cameraLoading.style.display = 'none';
+                    cameraError.style.display = 'block';
+                    
+                    if (error.name === 'NotAllowedError') {
+                        cameraError.textContent = '⚠️ Accès à la caméra refusé. Autorisez l\'accès dans les paramètres de votre navigateur.';
+                    } else if (error.name === 'NotFoundError') {
+                        cameraError.textContent = '⚠️ Aucune caméra détectée sur cet appareil.';
+                    } else {
+                        cameraError.textContent = '⚠️ Impossible d\'accéder à la caméra. Erreur: ' + error.message;
+                    }
+                });
+        }
+        
+        // === FERMER LA CAMÉRA ===
+        function closeCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(function(track) {
+                    track.stop();
+                });
+                currentStream = null;
+            }
+            cameraVideo.srcObject = null;
+            cameraModal.classList.remove('show');
+        }
+        
+        cameraCloseBtn.addEventListener('click', closeCamera);
+        
+        // === CHANGER DE CAMÉRA ===
+        cameraSwitchBtn.addEventListener('click', function() {
+            facingMode = facingMode === 'environment' ? 'user' : 'environment';
+            startCamera();
+        });
+        
+        // === CAPTURER LA PHOTO ===
+        cameraCaptureBtn.addEventListener('click', function() {
+            // Définir la taille du canvas
+            cameraCanvas.width = cameraVideo.videoWidth;
+            cameraCanvas.height = cameraVideo.videoHeight;
+            
+            // Dessiner l'image
+            var ctx = cameraCanvas.getContext('2d');
+            ctx.drawImage(cameraVideo, 0, 0);
+            
+            // Convertir en blob
+            cameraCanvas.toBlob(function(blob) {
+                closeCamera();
+                processPhoto(blob);
+            }, 'image/jpeg', 0.9);
+        });
+        
+        // === SÉLECTION DEPUIS GALERIE ===
         photoInput.addEventListener('change', function(e) {
             if (e.target.files.length > 0) {
-                handlePhotoSelect(e.target.files[0]);
+                var file = e.target.files[0];
+                
+                if (!file.type.startsWith('image/')) {
+                    showToast('Veuillez sélectionner une image.', true);
+                    return;
+                }
+                
+                processPhoto(file);
             }
         });
         
-        // === COMPRESSION ET TRAITEMENT ===
-        function handlePhotoSelect(file) {
-            // Vérifier le type
-            if (!file.type.startsWith('image/')) {
-                showToast('Veuillez sélectionner une image.', true);
-                return;
-            }
-            
-            // Afficher la progression
+        // === TRAITER LA PHOTO (compression) ===
+        function processPhoto(fileOrBlob) {
             uploadProgress.classList.add('show');
             progressFill.style.width = '20%';
             progressText.textContent = 'Compression en cours...';
             
-            // Compresser l'image
-            compressImage(file, 1200, 0.8, function(blob, dataUrl) {
+            compressImage(fileOrBlob, 1200, 0.8, function(blob, dataUrl) {
                 compressedPhotoBlob = blob;
                 
                 // Afficher l'aperçu
                 photoPreview.src = dataUrl;
                 photoPreviewWrapper.classList.add('show');
-                photoAddBtn.classList.add('hidden');
+                photoButtons.classList.add('hidden');
                 
                 // Afficher la taille
                 var sizeKo = Math.round(blob.size / 1024);
                 photoSizeEl.textContent = sizeKo + ' Ko';
                 
-                // Cacher la progression
                 progressFill.style.width = '100%';
                 progressText.textContent = 'Compression terminée !';
                 setTimeout(function() {
@@ -854,13 +1114,12 @@
             });
         }
         
-        // === FONCTION DE COMPRESSION ===
-        function compressImage(file, maxWidth, quality, callback) {
+        // === COMPRESSION D'IMAGE ===
+        function compressImage(fileOrBlob, maxWidth, quality, callback) {
             var reader = new FileReader();
             reader.onload = function(e) {
                 var img = new Image();
                 img.onload = function() {
-                    // Calculer les nouvelles dimensions
                     var width = img.width;
                     var height = img.height;
                     
@@ -869,7 +1128,6 @@
                         width = maxWidth;
                     }
                     
-                    // Créer le canvas
                     var canvas = document.createElement('canvas');
                     canvas.width = width;
                     canvas.height = height;
@@ -877,7 +1135,6 @@
                     var ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    // Convertir en blob
                     canvas.toBlob(function(blob) {
                         var dataUrl = canvas.toDataURL('image/jpeg', quality);
                         callback(blob, dataUrl);
@@ -885,7 +1142,7 @@
                 };
                 img.src = e.target.result;
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(fileOrBlob);
         }
         
         // === SUPPRIMER LA PHOTO ===
@@ -895,7 +1152,7 @@
             photoInput.value = '';
             photoPreview.src = '';
             photoPreviewWrapper.classList.remove('show');
-            photoAddBtn.classList.remove('hidden');
+            photoButtons.classList.remove('hidden');
         });
         
         // === UPLOAD VERS SUPABASE ===
@@ -969,7 +1226,6 @@
             submitBtn.innerHTML = '<div class="spinner"></div> Envoi en cours...';
             
             try {
-                // Upload de la photo si présente
                 var imageUrl = null;
                 if (compressedPhotoBlob) {
                     try {
