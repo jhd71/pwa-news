@@ -1700,25 +1700,24 @@ body {
 
 /* ===== Images Infos de la communauté ===== */
 
-/* Conteneur image (empêche le flex d'étirer) */
-.community-item-image-wrapper {
-    width: 100%;
-    height: 220px;          /* hauteur VISUELLE fixe */
-    overflow: hidden;
-    border-radius: 12px;
-    margin: 0.75rem 0;
-    flex-shrink: 0;         /* CRUCIAL avec flex */
-}
-
-/* Image */
 .community-item-image {
     width: 100%;
     height: 100%;
-    object-fit: contain;      /* recadrage propre */
+    object-fit: cover;          /* MODE ACTU */
     object-position: center;
     display: block;
     cursor: pointer;
     transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Conteneur image (empêche le flex d'étirer) */
+.community-item-image-wrapper {
+    width: 100%;
+    height: 220px;              /* hauteur VISUELLE */
+    overflow: hidden;
+    border-radius: 12px;
+    margin: 0.75rem 0;
+    flex-shrink: 0;
 }
 
 .community-item-image:hover {
@@ -1854,10 +1853,15 @@ body {
 /* Mobile (< 768px) */
 @media (max-width: 767px) {
     .community-item-image {
-        max-height: 180px;
-        border-radius: 10px;
+        max-height: 220px !important;
+        border-radius: 10px !important;
     }
     
+	.community-item-image-wrapper {
+        height: 180px;
+        border-radius: 10px;
+    }
+	
     .image-modal {
         padding: 0.5rem;
     }
