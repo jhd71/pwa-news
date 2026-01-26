@@ -1699,6 +1699,57 @@ body {
     font-size: 0.9rem;
 }
 
+/* Wrapper image avec effet zoom */
+.community-image-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin: 0.75rem 0;
+    cursor: pointer;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.community-image-zoom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.community-image-zoom .material-icons {
+    font-size: 1.2rem;
+}
+
+.community-image-wrapper:hover .community-image-zoom {
+    opacity: 1;
+}
+
+/* Sur mobile, toujours visible mais plus discret */
+@media (max-width: 767px) {
+    .community-image-zoom {
+        opacity: 1;
+        padding: 0.5rem;
+        font-size: 0.75rem;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+    }
+    
+    .community-image-zoom .material-icons {
+        font-size: 1rem;
+    }
+}
+
 /* Image dans les items communauté */
 .community-item-image {
     display: block;
@@ -1708,7 +1759,7 @@ body {
     max-height: 350px;
     object-fit: contain;
     border-radius: 12px;
-    margin: 0.75rem auto;
+    margin: 0;
     cursor: pointer;
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
