@@ -1230,35 +1230,131 @@
         const imageInput = document.getElementById('pubImage');
         const photoButtons = document.getElementById('photoButtons');
         const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
         
         // === VARIABLES CAMÉRA ===
         let cameraStream = null;
-        let currentFacingMode = 'environment'; // 'environment' = arrière, 'user' = avant
+        let currentFacingMode = 'environment';
         let compressedImageBlob = null;
-        const previewImg = document.getElementById('previewImg');
         
-        uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('dragover'); });
-        uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
-        uploadZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadZone.classList.remove('dragover');
-            if (e.dataTransfer.files[0]?.type.startsWith('image/')) handleImageSelect(e.dataTransfer.files[0]);
+        // Gestion de la galerie
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('Image trop volumineuse (max 5 Mo)', true);
+                    return;
+                }
+                compressImageBlob(file, 1200, 0.8, function(blob, dataUrl) {
+                    compressedImageBlob = blob;
+                    previewImg.src = dataUrl;
+                    imagePreview.classList.add('show');
+                    photoButtons.classList.add('hidden');
+                });
+            }
         });
-        imageInput.addEventListener('change', (e) => { if (e.target.files[0]) handleImageSelect(e.target.files[0]); });
-        
-        function handleImageSelect(file) {
-            if (file.size > 5 * 1024 * 1024) { showToast('Image trop volumineuse (max 5 Mo)', true); return; }
-            selectedImageFile = file;
-            const reader = new FileReader();
-            reader.onload = (e) => { previewImg.src = e.target.result; imagePreview.classList.add('show'); uploadZone.style.display = 'none'; };
-            reader.readAsDataURL(file);
-        }
         
         function removeImage() {
+            compressedImageBlob = null;
             selectedImageFile = null;
             imageInput.value = '';
             imagePreview.classList.remove('show');
-            uploadZone.style.display = 'block';
+            photoButtons.classList.remove('hidden');
+            previewImg.src = '';
+        }
+        
+        // === FONCTIONS CAMÉRA ===
+        function openCamera() {
+            document.getElementById('cameraModal').classList.add('show');
+            startCamera();
+        }
+        
+        function closeCamera() {
+            document.getElementById('cameraModal').classList.remove('show');
+            stopCamera();
+        }
+        
+        async function startCamera() {
+            try {
+                const constraints = {
+                    video: {
+                        facingMode: currentFacingMode,
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 }
+                    }
+                };
+                cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+                document.getElementById('cameraVideo').srcObject = cameraStream;
+            } catch (error) {
+                console.error('Erreur caméra:', error);
+                showToast('Erreur accès caméra: ' + error.message, true);
+                closeCamera();
+            }
+        }
+        
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            document.getElementById('cameraVideo').srcObject = null;
+        }
+        
+        async function switchCamera() {
+            currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+            stopCamera();
+            await startCamera();
+        }
+        
+        function capturePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('cameraCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0);
+            
+            canvas.toBlob(function(blob) {
+                compressImageBlob(blob, 1200, 0.8, function(compressedBlob, dataUrl) {
+                    compressedImageBlob = compressedBlob;
+                    previewImg.src = dataUrl;
+                    imagePreview.classList.add('show');
+                    photoButtons.classList.add('hidden');
+                    closeCamera();
+                    showToast('Photo capturée ✅');
+                });
+            }, 'image/jpeg', 0.9);
+        }
+        
+        function compressImageBlob(blob, maxWidth, quality, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > maxWidth) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    }
+                    
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    canvas.toBlob(function(compressedBlob) {
+                        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+                        callback(compressedBlob, dataUrl);
+                    }, 'image/jpeg', quality);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(blob);
         }
         
         async function uploadImage(file) {
@@ -1279,7 +1375,11 @@
             
             try {
                 let imageUrl = null;
-                if (selectedImageFile) imageUrl = await uploadImage(selectedImageFile);
+                if (compressedImageBlob) {
+                    imageUrl = await uploadImage(compressedImageBlob);
+                } else if (selectedImageFile) {
+                    imageUrl = await uploadImage(selectedImageFile);
+                }
                 
                 const { error } = await supabaseClient.from('news_submissions').insert([{
                     type: document.getElementById('pubType').value,
