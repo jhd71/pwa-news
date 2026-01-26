@@ -1853,8 +1853,8 @@ body {
 /* Mobile (< 768px) */
 @media (max-width: 767px) {
     .community-item-image {
-        max-height: 220px !important;
-        border-radius: 10px !important;
+        max-height: 220px;
+        border-radius: 10px;
     }
     
 	.community-item-image-wrapper {
