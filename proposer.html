@@ -18,6 +18,9 @@
     
     <!-- CSS -->
     <link rel="stylesheet" href="css/styles.css">
+	<!-- Cropper.js -->
+	<link rel="stylesheet" href="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.css">
+
     
     <style>
         /* Page Proposer */
@@ -898,6 +901,32 @@
         </a>
     </div>
     
+	<!-- Modal édition photo -->
+<div class="camera-modal" id="cropModal">
+    <div class="camera-header">
+        <span class="camera-title">✂️ Ajuster la photo</span>
+        <button type="button" class="camera-close-btn" onclick="closeCropper()">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+
+    <div class="camera-video-container">
+        <img id="cropImage" style="max-width:100%; max-height:100%;">
+    </div>
+
+    <div class="camera-controls">
+        <button type="button" class="camera-switch-btn" onclick="rotateCropper(-90)">
+            <span class="material-icons">rotate_left</span>
+        </button>
+
+        <button type="button" class="camera-capture-btn" onclick="validateCrop()"></button>
+
+        <button type="button" class="camera-switch-btn" onclick="rotateCropper(90)">
+            <span class="material-icons">rotate_right</span>
+        </button>
+    </div>
+</div>
+
     <!-- Modal Camera -->
     <div class="camera-modal" id="cameraModal">
         <div class="camera-header">
@@ -944,6 +973,57 @@
         
         // Variables
         var compressedPhotoBlob = null;
+		// === CROPper ===
+var cropper = null;
+var cropModal = document.getElementById('cropModal');
+var cropImage = document.getElementById('cropImage');
+
+function openCropper(dataUrl) {
+    cropImage.src = dataUrl;
+    cropModal.classList.add('show');
+
+    setTimeout(function () {
+        cropper = new Cropper(cropImage, {
+            viewMode: 1,
+            autoCropArea: 1,
+            responsive: true,
+            background: false
+        });
+    }, 50);
+}
+
+function rotateCropper(deg) {
+    if (cropper) cropper.rotate(deg);
+}
+
+function closeCropper() {
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+    cropModal.classList.remove('show');
+}
+
+function validateCrop() {
+    if (!cropper) return;
+
+    cropper.getCroppedCanvas({
+        maxWidth: 1200,
+        maxHeight: 1200,
+        imageSmoothingQuality: 'high'
+    }).toBlob(function (blob) {
+
+        // Image finale corrigée
+        compressedPhotoBlob = blob;
+
+        // 👉 Passer par le flow normal
+        processPhoto(blob);
+
+        closeCropper();
+
+    }, 'image/jpeg', 0.85);
+}
+
         var currentStream = null;
         var facingMode = 'environment'; // Caméra arrière par défaut
         
@@ -1069,50 +1149,55 @@
             
             // Convertir en blob
             cameraCanvas.toBlob(function(blob) {
-                closeCamera();
-                processPhoto(blob);
-            }, 'image/jpeg', 0.9);
+    closeCamera();
+
+    // 👉 Ouvrir l'éditeur (rotation / recadrage)
+    openCropper(URL.createObjectURL(blob));
+}, 'image/jpeg', 0.9);
+
         });
         
         // === SÉLECTION DEPUIS GALERIE ===
-        photoInput.addEventListener('change', function(e) {
-            if (e.target.files.length > 0) {
-                var file = e.target.files[0];
-                
-                if (!file.type.startsWith('image/')) {
-                    showToast('Veuillez sélectionner une image.', true);
-                    return;
-                }
-                
-                processPhoto(file);
-            }
-        });
-        
-        // === TRAITER LA PHOTO (compression) ===
-        function processPhoto(fileOrBlob) {
-            uploadProgress.classList.add('show');
-            progressFill.style.width = '20%';
-            progressText.textContent = 'Compression en cours...';
-            
-            compressImage(fileOrBlob, 1200, 0.8, function(blob, dataUrl) {
-                compressedPhotoBlob = blob;
-                
-                // Afficher l'aperçu
-                photoPreview.src = dataUrl;
-                photoPreviewWrapper.classList.add('show');
-                photoButtons.classList.add('hidden');
-                
-                // Afficher la taille
-                var sizeKo = Math.round(blob.size / 1024);
-                photoSizeEl.textContent = sizeKo + ' Ko';
-                
-                progressFill.style.width = '100%';
-                progressText.textContent = 'Compression terminée !';
-                setTimeout(function() {
-                    uploadProgress.classList.remove('show');
-                }, 800);
-            });
+photoInput.addEventListener('change', function(e) {
+    if (e.target.files.length > 0) {
+        var file = e.target.files[0];
+
+        if (!file.type.startsWith('image/')) {
+            showToast('Veuillez sélectionner une image.', true);
+            return;
         }
+
+        // 👉 Passer par l'éditeur (rotation / recadrage)
+        openCropper(URL.createObjectURL(file));
+    }
+});
+        
+        // === TRAITER LA PHOTO (APRÈS CROP) ===
+function processPhoto(blob) {
+    uploadProgress.classList.add('show');
+    progressFill.style.width = '30%';
+    progressText.textContent = 'Préparation de l’image...';
+
+    compressedPhotoBlob = blob;
+
+    // Générer un aperçu propre
+    var dataUrl = URL.createObjectURL(blob);
+
+    photoPreview.src = dataUrl;
+    photoPreviewWrapper.classList.add('show');
+    photoButtons.classList.add('hidden');
+
+    // Taille
+    var sizeKo = Math.round(blob.size / 1024);
+    photoSizeEl.textContent = sizeKo + ' Ko';
+
+    progressFill.style.width = '100%';
+    progressText.textContent = 'Image prête !';
+
+    setTimeout(function () {
+        uploadProgress.classList.remove('show');
+    }, 600);
+}
         
         // === COMPRESSION D'IMAGE ===
         function compressImage(fileOrBlob, maxWidth, quality, callback) {
@@ -1276,5 +1361,6 @@
             document.documentElement.setAttribute('data-theme', savedTheme);
         }
     </script>
+	<script src="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.js"></script>
 </body>
 </html>
