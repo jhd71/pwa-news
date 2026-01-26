@@ -1181,65 +1181,47 @@
                 reader.onload = function(e) {
                     var img = new Image();
                     img.onload = function() {
-                        var width = img.width;
-                        var height = img.height;
+                        var srcWidth = img.width;
+                        var srcHeight = img.height;
                         
-                        // Redimensionner si nécessaire
-                        if (width > maxWidth) {
-                            height = Math.round((height * maxWidth) / width);
-                            width = maxWidth;
+                        // Pour les orientations 5-8 (rotations 90°), les dimensions finales sont inversées
+                        var needsSwap = (orientation >= 5 && orientation <= 8);
+                        var displayWidth = needsSwap ? srcHeight : srcWidth;
+                        var displayHeight = needsSwap ? srcWidth : srcHeight;
+                        
+                        // Calculer le redimensionnement basé sur les dimensions AFFICHÉES
+                        var scale = 1;
+                        if (displayWidth > maxWidth) {
+                            scale = maxWidth / displayWidth;
                         }
+                        
+                        var finalWidth = Math.round(displayWidth * scale);
+                        var finalHeight = Math.round(displayHeight * scale);
                         
                         var canvas = document.createElement('canvas');
+                        canvas.width = finalWidth;
+                        canvas.height = finalHeight;
+                        
                         var ctx = canvas.getContext('2d');
                         
-                        // Ajuster le canvas selon l'orientation
-                        // Orientations 5, 6, 7, 8 = rotation 90° (inverser width/height)
-                        if (orientation >= 5 && orientation <= 8) {
-                            canvas.width = height;
-                            canvas.height = width;
-                        } else {
-                            canvas.width = width;
-                            canvas.height = height;
-                        }
+                        // Déplacer l'origine au centre pour les rotations
+                        ctx.translate(finalWidth / 2, finalHeight / 2);
                         
                         // Appliquer la transformation selon l'orientation EXIF
                         switch (orientation) {
-                            case 2: // Flip horizontal
-                                ctx.scale(-1, 1);
-                                ctx.translate(-width, 0);
-                                break;
-                            case 3: // Rotate 180°
-                                ctx.translate(width, height);
-                                ctx.rotate(Math.PI);
-                                break;
-                            case 4: // Flip vertical
-                                ctx.scale(1, -1);
-                                ctx.translate(0, -height);
-                                break;
-                            case 5: // Flip horizontal + Rotate 90° CW
-                                ctx.rotate(0.5 * Math.PI);
-                                ctx.scale(1, -1);
-                                break;
-                            case 6: // Rotate 90° CW (photo portrait iPhone)
-                                ctx.rotate(0.5 * Math.PI);
-                                ctx.translate(0, -height);
-                                break;
-                            case 7: // Flip horizontal + Rotate 90° CCW
-                                ctx.rotate(-0.5 * Math.PI);
-                                ctx.translate(-width, 0);
-                                ctx.scale(1, -1);
-                                break;
-                            case 8: // Rotate 90° CCW
-                                ctx.rotate(-0.5 * Math.PI);
-                                ctx.translate(-width, 0);
-                                break;
-                            default: // orientation 1 = normal, pas de transformation
-                                break;
+                            case 2: ctx.scale(-1, 1); break;
+                            case 3: ctx.rotate(Math.PI); break;
+                            case 4: ctx.scale(1, -1); break;
+                            case 5: ctx.rotate(0.5 * Math.PI); ctx.scale(1, -1); break;
+                            case 6: ctx.rotate(0.5 * Math.PI); break;
+                            case 7: ctx.rotate(-0.5 * Math.PI); ctx.scale(1, -1); break;
+                            case 8: ctx.rotate(-0.5 * Math.PI); break;
                         }
                         
-                        // Dessiner l'image avec la bonne orientation
-                        ctx.drawImage(img, 0, 0, width, height);
+                        // Dessiner l'image centrée avec les bonnes dimensions
+                        var drawWidth = srcWidth * scale;
+                        var drawHeight = srcHeight * scale;
+                        ctx.drawImage(img, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
                         
                         canvas.toBlob(function(blob) {
                             var dataUrl = canvas.toDataURL('image/jpeg', quality);
