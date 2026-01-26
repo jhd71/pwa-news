@@ -15,6 +15,8 @@
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<!-- Cropper.js pour le recadrage -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
     
     <!-- CSS -->
     <link rel="stylesheet" href="css/styles.css">
@@ -368,6 +370,170 @@
         
         .photo-rotate-btn .material-icons {
             font-size: 1.25rem;
+        }
+        
+        /* Bouton recadrer */
+        .photo-crop-btn {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            padding: 0.4rem 0.75rem;
+            background: rgba(99, 102, 241, 0.9);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .photo-crop-btn:hover {
+            background: #6366f1;
+            transform: scale(1.05);
+        }
+        
+        .photo-crop-btn .material-icons {
+            font-size: 1rem;
+        }
+        
+        /* Modal de recadrage */
+        .crop-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10001;
+            background: rgba(0, 0, 0, 0.95);
+            flex-direction: column;
+        }
+        
+        .crop-modal.show {
+            display: flex;
+        }
+        
+        .crop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        .crop-title {
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .crop-close-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .crop-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 1rem;
+        }
+        
+        .crop-container img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .crop-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        .crop-ratios {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .crop-ratio-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .crop-ratio-btn:hover,
+        .crop-ratio-btn.active {
+            background: rgba(99, 102, 241, 0.5);
+            border-color: #6366f1;
+        }
+        
+        .crop-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .crop-cancel-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            border-radius: 10px;
+            color: #ef4444;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .crop-cancel-btn:hover {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .crop-validate-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .crop-validate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
         }
         
         .photo-upload-input {
@@ -912,6 +1078,10 @@
                         <button type="button" class="photo-remove-btn" id="photoRemoveBtn" title="Supprimer la photo">
                             <span class="material-icons" style="font-size: 1.3rem;">close</span>
                         </button>
+                        <button type="button" class="photo-crop-btn" onclick="openCropModal()" title="Recadrer l'image">
+                            <span class="material-icons">crop</span>
+                            Recadrer
+                        </button>
                         <div class="photo-rotate-buttons">
                             <button type="button" class="photo-rotate-btn" onclick="rotatePreviewPhoto(-90)" title="Pivoter à gauche">
                                 <span class="material-icons">rotate_left</span>
@@ -1047,6 +1217,37 @@
     <!-- Canvas pour capture -->
     <canvas id="cameraCanvas"></canvas>
     
+	<!-- Modal de recadrage -->
+    <div class="crop-modal" id="cropModal">
+        <div class="crop-header">
+            <span class="crop-title"><span class="material-icons">crop</span> Recadrer l'image</span>
+            <button type="button" class="crop-close-btn" onclick="closeCropModal()">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="crop-container">
+            <img id="cropImage" src="">
+        </div>
+        <div class="crop-controls">
+            <div class="crop-ratios">
+                <button type="button" class="crop-ratio-btn active" onclick="setCropRatio(NaN, this)">Libre</button>
+                <button type="button" class="crop-ratio-btn" onclick="setCropRatio(1, this)">1:1</button>
+                <button type="button" class="crop-ratio-btn" onclick="setCropRatio(4/3, this)">4:3</button>
+                <button type="button" class="crop-ratio-btn" onclick="setCropRatio(16/9, this)">16:9</button>
+            </div>
+            <div class="crop-actions">
+                <button type="button" class="crop-cancel-btn" onclick="closeCropModal()">
+                    <span class="material-icons">close</span>
+                    Annuler
+                </button>
+                <button type="button" class="crop-validate-btn" onclick="applyCrop()">
+                    <span class="material-icons">check</span>
+                    Valider
+                </button>
+            </div>
+        </div>
+    </div>
+	
     <!-- Toast notification -->
     <div class="toast" id="toast">
         <span class="toast-icon">✅</span>
@@ -1068,6 +1269,87 @@
         
         // Variables
         var compressedPhotoBlob = null;
+        var cropper = null;
+        
+        // === RECADRAGE ===
+        function openCropModal() {
+            var img = document.getElementById('photoPreview');
+            var cropImage = document.getElementById('cropImage');
+            cropImage.src = img.src;
+            
+            document.getElementById('cropModal').classList.add('show');
+            
+            // Initialiser Cropper après un court délai pour que l'image soit chargée
+            setTimeout(function() {
+                if (cropper) {
+                    cropper.destroy();
+                }
+                cropper = new Cropper(cropImage, {
+                    viewMode: 1,
+                    dragMode: 'move',
+                    aspectRatio: NaN,
+                    autoCropArea: 0.9,
+                    responsive: true,
+                    restore: false,
+                    guides: true,
+                    center: true,
+                    highlight: true,
+                    cropBoxMovable: true,
+                    cropBoxResizable: true,
+                    toggleDragModeOnDblclick: false
+                });
+            }, 100);
+            
+            // Reset des boutons ratio
+            document.querySelectorAll('.crop-ratio-btn').forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            document.querySelector('.crop-ratio-btn').classList.add('active');
+        }
+        
+        function closeCropModal() {
+            document.getElementById('cropModal').classList.remove('show');
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        }
+        
+        function setCropRatio(ratio, btn) {
+            if (cropper) {
+                cropper.setAspectRatio(ratio);
+            }
+            document.querySelectorAll('.crop-ratio-btn').forEach(function(b) {
+                b.classList.remove('active');
+            });
+            btn.classList.add('active');
+        }
+        
+        function applyCrop() {
+            if (!cropper) return;
+            
+            var canvas = cropper.getCroppedCanvas({
+                maxWidth: 1200,
+                maxHeight: 1200,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high'
+            });
+            
+            canvas.toBlob(function(blob) {
+                compressedPhotoBlob = blob;
+                
+                // Mettre à jour l'aperçu
+                var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                document.getElementById('photoPreview').src = dataUrl;
+                
+                // Mettre à jour la taille
+                var sizeKo = Math.round(blob.size / 1024);
+                document.getElementById('photoSize').textContent = sizeKo + ' Ko';
+                
+                closeCropModal();
+                showToast('Image recadrée ✅');
+            }, 'image/jpeg', 0.85);
+        }
         
         // Fonction de rotation de l'aperçu
         function rotatePreviewPhoto(degrees) {
@@ -1581,5 +1863,7 @@
             document.documentElement.setAttribute('data-theme', savedTheme);
         }
     </script>
+    <!-- Cropper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 </body>
 </html>
