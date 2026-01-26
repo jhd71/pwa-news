@@ -1705,7 +1705,7 @@ body {
     width: auto;
     max-width: 100%;
     height: auto;
-    max-height: 280px;
+    max-height: 350px;
     object-fit: contain;
     border-radius: 12px;
     margin: 0.75rem auto;
@@ -1845,8 +1845,9 @@ body {
 /* Mobile (< 768px) */
 @media (max-width: 767px) {
     .community-item-image {
-        max-height: 180px;
+        max-height: 250px;
         border-radius: 10px;
+        margin: 0.5rem auto;
     }
     
     .image-modal {
@@ -1873,9 +1874,9 @@ body {
 /* Petit mobile (< 480px) */
 @media (max-width: 479px) {
     .community-item-image {
-        max-height: 150px;
+        max-height: 220px;
         border-radius: 8px;
-        margin: 0.5rem 0;
+        margin: 0.5rem auto;
     }
     
     .image-modal-content img {
