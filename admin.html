@@ -1243,7 +1243,58 @@
             loadPublishedArticles();
         }
         
-        async function deleteProp(id) { if (confirm('Supprimer ?')) { await supabaseClient.from('news_submissions').delete().eq('id', id); loadPropositions(); loadPublishedArticles(); } }
+        async function deleteProp(id) {
+            if (!confirm('Supprimer cette publication et son image ?')) return;
+            
+            try {
+                // 1. Récupérer les infos de la publication (pour avoir l'URL de l'image)
+                const { data: prop, error: fetchError } = await supabaseClient
+                    .from('news_submissions')
+                    .select('image_url')
+                    .eq('id', id)
+                    .single();
+                
+                if (fetchError) throw fetchError;
+                
+                // 2. Si une image existe, la supprimer du Storage
+                if (prop && prop.image_url) {
+                    // Extraire le chemin de l'image depuis l'URL
+                    // Format: https://xxx.supabase.co/storage/v1/object/public/images/submissions/xxx.jpg
+                    const urlParts = prop.image_url.split('/storage/v1/object/public/images/');
+                    if (urlParts.length > 1) {
+                        const imagePath = urlParts[1];
+                        console.log('🗑️ Suppression image:', imagePath);
+                        
+                        const { error: storageError } = await supabaseClient
+                            .storage
+                            .from('images')
+                            .remove([imagePath]);
+                        
+                        if (storageError) {
+                            console.warn('⚠️ Erreur suppression image:', storageError);
+                        } else {
+                            console.log('✅ Image supprimée du Storage');
+                        }
+                    }
+                }
+                
+                // 3. Supprimer la ligne de la base de données
+                const { error: deleteError } = await supabaseClient
+                    .from('news_submissions')
+                    .delete()
+                    .eq('id', id);
+                
+                if (deleteError) throw deleteError;
+                
+                showToast('Publication et image supprimées ✅');
+                loadPropositions();
+                loadPublishedArticles();
+                
+            } catch (error) {
+                console.error('Erreur suppression:', error);
+                showToast('Erreur: ' + error.message);
+            }
+        }
         
 		// === ROTATION D'IMAGE ===
         async function rotateImage(propId, imageUrl, degrees) {
