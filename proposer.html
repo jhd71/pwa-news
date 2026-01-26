@@ -384,6 +384,10 @@
             background: #000;
             z-index: 10000;
             flex-direction: column;
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
         
         .camera-modal.show {
@@ -490,6 +494,81 @@
         
         .camera-switch-btn:hover {
             background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Contrôle de zoom */
+        .camera-zoom-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            padding: 0.5rem;
+        }
+        
+        .camera-zoom-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        
+        .camera-zoom-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .camera-zoom-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .camera-zoom-level {
+            color: white;
+            font-size: 0.85rem;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .camera-zoom-control.hidden {
+            display: none;
+        }
+        
+        /* Mode paysage */
+        @media (orientation: landscape) {
+            .camera-modal {
+                flex-direction: row;
+            }
+            
+            .camera-header {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 10;
+            }
+            
+            .camera-video-container {
+                width: 100%;
+                height: 100%;
+            }
+            
+            .camera-controls {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(0, 0, 0, 0.7);
+                padding: 1rem;
+            }
         }
         
         /* Canvas caché pour capture */
@@ -916,7 +995,11 @@
                 <span class="material-icons">flip_camera_android</span>
             </button>
             <button type="button" class="camera-capture-btn" id="cameraCaptureBtn" title="Prendre la photo"></button>
-            <div style="width: 50px;"></div>
+            <div class="camera-zoom-control hidden" id="cameraZoomControl">
+                <button type="button" class="camera-zoom-btn" id="zoomOutBtn">−</button>
+                <span class="camera-zoom-level" id="zoomLevel">1x</span>
+                <button type="button" class="camera-zoom-btn" id="zoomInBtn">+</button>
+            </div>
         </div>
     </div>
     
@@ -969,6 +1052,16 @@
         var cameraSwitchBtn = document.getElementById('cameraSwitchBtn');
         var cameraLoading = document.getElementById('cameraLoading');
         var cameraError = document.getElementById('cameraError');
+        var cameraZoomControl = document.getElementById('cameraZoomControl');
+        var zoomLevel = document.getElementById('zoomLevel');
+        var zoomInBtn = document.getElementById('zoomInBtn');
+        var zoomOutBtn = document.getElementById('zoomOutBtn');
+        
+        // Variables zoom
+        var currentZoom = 1;
+        var minZoom = 1;
+        var maxZoom = 1;
+        var videoTrack = null;
         
         // Gestion des types
         document.querySelectorAll('.type-option').forEach(function(option) {
@@ -1010,8 +1103,8 @@
             var constraints = {
                 video: {
                     facingMode: facingMode,
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 }
+                    width: { ideal: 1920 },
+                    height: { ideal: 1080 }
                 },
                 audio: false
             };
@@ -1021,6 +1114,23 @@
                     currentStream = stream;
                     cameraVideo.srcObject = stream;
                     cameraLoading.style.display = 'none';
+                    
+                    // Vérifier si le zoom est disponible
+                    videoTrack = stream.getVideoTracks()[0];
+                    if (videoTrack) {
+                        var capabilities = videoTrack.getCapabilities();
+                        if (capabilities.zoom) {
+                            minZoom = capabilities.zoom.min;
+                            maxZoom = capabilities.zoom.max;
+                            currentZoom = 1;
+                            cameraZoomControl.classList.remove('hidden');
+                            zoomLevel.textContent = '1x';
+                            console.log('📷 Zoom disponible: ' + minZoom + 'x - ' + maxZoom + 'x');
+                        } else {
+                            cameraZoomControl.classList.add('hidden');
+                            console.log('📷 Zoom non disponible sur cet appareil');
+                        }
+                    }
                 })
                 .catch(function(error) {
                     console.error('Erreur caméra:', error);
@@ -1047,9 +1157,35 @@
             }
             cameraVideo.srcObject = null;
             cameraModal.classList.remove('show');
+            videoTrack = null;
+            currentZoom = 1;
+            cameraZoomControl.classList.add('hidden');
         }
         
         cameraCloseBtn.addEventListener('click', closeCamera);
+        
+        // === ZOOM ===
+        function adjustZoom(delta) {
+            if (!videoTrack) return;
+            
+            currentZoom = Math.max(minZoom, Math.min(maxZoom, currentZoom + delta));
+            
+            videoTrack.applyConstraints({
+                advanced: [{ zoom: currentZoom }]
+            }).then(function() {
+                zoomLevel.textContent = currentZoom.toFixed(1) + 'x';
+            }).catch(function(error) {
+                console.error('Erreur zoom:', error);
+            });
+        }
+        
+        zoomInBtn.addEventListener('click', function() {
+            adjustZoom(0.5);
+        });
+        
+        zoomOutBtn.addEventListener('click', function() {
+            adjustZoom(-0.5);
+        });
         
         // === CHANGER DE CAMÉRA ===
         cameraSwitchBtn.addEventListener('click', function() {
