@@ -1701,18 +1701,17 @@ body {
 
 /* Image dans les items communauté */
 .community-item-image {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    max-height: 250px;
-    object-fit: cover;
-    object-position: center;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 180px !important;
+    max-height: 180px !important;
+    object-fit: cover !important;
+    object-position: center !important;
     border-radius: 12px;
     margin: 0.75rem 0;
     cursor: pointer;
     transition: transform 0.3s ease, opacity 0.3s ease;
-    overflow: hidden;
 }
 
 .community-item-image:hover {
