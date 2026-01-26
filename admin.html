@@ -428,6 +428,149 @@
         .upload-text { color: var(--text-secondary); font-size: 0.9rem; }
         .upload-hint { color: var(--text-muted); font-size: 0.75rem; margin-top: 0.5rem; }
         
+		/* Boutons photo (caméra + galerie) */
+        .photo-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .photo-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .photo-btn:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary-light);
+        }
+        
+        .photo-btn .material-icons {
+            font-size: 2rem;
+        }
+        
+        .photo-btn span:last-child {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .photo-buttons.hidden {
+            display: none;
+        }
+        
+        /* Modal Caméra */
+        .camera-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: #000;
+            flex-direction: column;
+        }
+        
+        .camera-modal.show {
+            display: flex;
+        }
+        
+        .camera-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        .camera-header h3 {
+            color: white;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .camera-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .camera-view {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            overflow: hidden;
+        }
+        
+        .camera-view video {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .camera-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        .camera-capture {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .camera-capture:hover {
+            transform: scale(1.1);
+        }
+        
+        .camera-capture:active {
+            transform: scale(0.95);
+            background: #ddd;
+        }
+        
+        .camera-switch {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .camera-switch:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+		
         .image-preview { display: none; position: relative; margin-top: 1rem; }
         .image-preview.show { display: block; }
         .image-preview img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 12px; }
@@ -880,12 +1023,17 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">image</span> Image</label>
-                        <div class="image-upload-zone" id="imageUploadZone">
-                            <input type="file" id="pubImage" accept="image/*">
-                            <div class="upload-icon">📷</div>
-                            <div class="upload-text">Cliquez ou glissez une image</div>
-                            <div class="upload-hint">JPG, PNG, WEBP (max 5 Mo)</div>
+                        <div class="photo-buttons" id="photoButtons">
+                            <button type="button" class="photo-btn" onclick="openCamera()">
+                                <span class="material-icons">photo_camera</span>
+                                <span>Prendre une photo</span>
+                            </button>
+                            <button type="button" class="photo-btn" onclick="document.getElementById('pubImage').click()">
+                                <span class="material-icons">photo_library</span>
+                                <span>Galerie</span>
+                            </button>
                         </div>
+                        <input type="file" id="pubImage" accept="image/*" style="display:none;">
                         <div class="image-preview" id="imagePreview">
                             <img id="previewImg" src="" alt="Aperçu">
                             <button type="button" class="image-preview-remove" onclick="removeImage()"><span class="material-icons">close</span></button>
@@ -979,6 +1127,27 @@
     
     <div class="toast" id="toast"><span class="toast-icon">✅</span><span class="toast-text">Message</span></div>
     
+	<!-- Modal Caméra -->
+    <div class="camera-modal" id="cameraModal">
+        <div class="camera-header">
+            <h3><span class="material-icons">photo_camera</span> Prendre une photo</h3>
+            <button class="camera-close" onclick="closeCamera()">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="camera-view">
+            <video id="cameraVideo" autoplay playsinline></video>
+        </div>
+        <div class="camera-controls">
+            <button class="camera-switch" onclick="switchCamera()" title="Changer de caméra">
+                <span class="material-icons">flip_camera_ios</span>
+            </button>
+            <button class="camera-capture" onclick="capturePhoto()" title="Prendre la photo"></button>
+            <div style="width:50px;"></div>
+        </div>
+    </div>
+    <canvas id="cameraCanvas" style="display:none;"></canvas>
+	
     <!-- Modal pour agrandir les images -->
     <div class="image-modal" id="imageModal" onclick="closeImageModal()">
         <button class="image-modal-close" onclick="closeImageModal()">
@@ -1059,8 +1228,13 @@
         
         // === IMAGE ===
         const imageInput = document.getElementById('pubImage');
-        const uploadZone = document.getElementById('imageUploadZone');
+        const photoButtons = document.getElementById('photoButtons');
         const imagePreview = document.getElementById('imagePreview');
+        
+        // === VARIABLES CAMÉRA ===
+        let cameraStream = null;
+        let currentFacingMode = 'environment'; // 'environment' = arrière, 'user' = avant
+        let compressedImageBlob = null;
         const previewImg = document.getElementById('previewImg');
         
         uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('dragover'); });
