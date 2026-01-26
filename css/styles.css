@@ -1698,15 +1698,24 @@ body {
     font-size: 0.9rem;
 }
 
-/* Image dans les items communauté */
+/* Conteneur image communauté */
+.community-image-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 9;          /* ratio propre et stable */
+    overflow: hidden;
+    border-radius: 14px;
+    margin: 0.75rem 0;
+    background: rgba(255,255,255,0.03);
+    cursor: pointer;
+}
+
+/* Image */
 .community-item-image {
     width: 100%;
-    max-height: 250px;
-    object-fit: cover;
-    border-radius: 12px;
-    margin: 0.75rem 0;
-    cursor: pointer;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    height: 100%;
+    object-fit: cover;             /* maintenant OK */
+    object-position: center;
+    display: block;
 }
 
 .community-item-image:hover {
