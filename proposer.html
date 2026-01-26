@@ -1114,35 +1114,142 @@
             });
         }
         
-        // === COMPRESSION D'IMAGE ===
-        function compressImage(fileOrBlob, maxWidth, quality, callback) {
+		// === LECTURE ORIENTATION EXIF ===
+        function getExifOrientation(file, callback) {
             var reader = new FileReader();
             reader.onload = function(e) {
-                var img = new Image();
-                img.onload = function() {
-                    var width = img.width;
-                    var height = img.height;
-                    
-                    if (width > maxWidth) {
-                        height = Math.round((height * maxWidth) / width);
-                        width = maxWidth;
+                var view = new DataView(e.target.result);
+                
+                // Vérifier si c'est un JPEG
+                if (view.getUint16(0, false) !== 0xFFD8) {
+                    callback(1); // Pas un JPEG, orientation normale
+                    return;
+                }
+                
+                var length = view.byteLength;
+                var offset = 2;
+                
+                while (offset < length) {
+                    if (view.getUint16(offset, false) === 0xFFE1) {
+                        // Segment EXIF trouvé
+                        var exifLength = view.getUint16(offset + 2, false);
+                        var exifOffset = offset + 4;
+                        
+                        // Vérifier "Exif\0\0"
+                        if (view.getUint32(exifOffset, false) !== 0x45786966) {
+                            callback(1);
+                            return;
+                        }
+                        
+                        var tiffOffset = exifOffset + 6;
+                        var littleEndian = view.getUint16(tiffOffset, false) === 0x4949;
+                        
+                        var ifdOffset = tiffOffset + view.getUint32(tiffOffset + 4, littleEndian);
+                        var numEntries = view.getUint16(ifdOffset, littleEndian);
+                        
+                        for (var i = 0; i < numEntries; i++) {
+                            var entryOffset = ifdOffset + 2 + (i * 12);
+                            var tag = view.getUint16(entryOffset, littleEndian);
+                            
+                            if (tag === 0x0112) {
+                                // Tag Orientation trouvé
+                                var orientation = view.getUint16(entryOffset + 8, littleEndian);
+                                callback(orientation);
+                                return;
+                            }
+                        }
+                        
+                        callback(1); // Pas de tag orientation
+                        return;
                     }
                     
-                    var canvas = document.createElement('canvas');
-                    canvas.width = width;
-                    canvas.height = height;
-                    
-                    var ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    canvas.toBlob(function(blob) {
-                        var dataUrl = canvas.toDataURL('image/jpeg', quality);
-                        callback(blob, dataUrl);
-                    }, 'image/jpeg', quality);
-                };
-                img.src = e.target.result;
+                    offset += 2 + view.getUint16(offset + 2, false);
+                }
+                
+                callback(1); // Pas de données EXIF
             };
-            reader.readAsDataURL(fileOrBlob);
+            reader.readAsArrayBuffer(file.slice(0, 65536)); // Lire seulement le début du fichier
+        }
+		
+        // === COMPRESSION D'IMAGE ===
+        function compressImage(fileOrBlob, maxWidth, quality, callback) {
+            // D'abord lire l'orientation EXIF
+            getExifOrientation(fileOrBlob, function(orientation) {
+                console.log('📷 Orientation EXIF détectée:', orientation);
+                
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = new Image();
+                    img.onload = function() {
+                        var width = img.width;
+                        var height = img.height;
+                        
+                        // Redimensionner si nécessaire
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                        
+                        var canvas = document.createElement('canvas');
+                        var ctx = canvas.getContext('2d');
+                        
+                        // Ajuster le canvas selon l'orientation
+                        // Orientations 5, 6, 7, 8 = rotation 90° (inverser width/height)
+                        if (orientation >= 5 && orientation <= 8) {
+                            canvas.width = height;
+                            canvas.height = width;
+                        } else {
+                            canvas.width = width;
+                            canvas.height = height;
+                        }
+                        
+                        // Appliquer la transformation selon l'orientation EXIF
+                        switch (orientation) {
+                            case 2: // Flip horizontal
+                                ctx.scale(-1, 1);
+                                ctx.translate(-width, 0);
+                                break;
+                            case 3: // Rotate 180°
+                                ctx.translate(width, height);
+                                ctx.rotate(Math.PI);
+                                break;
+                            case 4: // Flip vertical
+                                ctx.scale(1, -1);
+                                ctx.translate(0, -height);
+                                break;
+                            case 5: // Flip horizontal + Rotate 90° CW
+                                ctx.rotate(0.5 * Math.PI);
+                                ctx.scale(1, -1);
+                                break;
+                            case 6: // Rotate 90° CW (photo portrait iPhone)
+                                ctx.rotate(0.5 * Math.PI);
+                                ctx.translate(0, -height);
+                                break;
+                            case 7: // Flip horizontal + Rotate 90° CCW
+                                ctx.rotate(-0.5 * Math.PI);
+                                ctx.translate(-width, 0);
+                                ctx.scale(1, -1);
+                                break;
+                            case 8: // Rotate 90° CCW
+                                ctx.rotate(-0.5 * Math.PI);
+                                ctx.translate(-width, 0);
+                                break;
+                            default: // orientation 1 = normal, pas de transformation
+                                break;
+                        }
+                        
+                        // Dessiner l'image avec la bonne orientation
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        canvas.toBlob(function(blob) {
+                            var dataUrl = canvas.toDataURL('image/jpeg', quality);
+                            callback(blob, dataUrl);
+                        }, 'image/jpeg', quality);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(fileOrBlob);
+            });
         }
         
         // === SUPPRIMER LA PHOTO ===
