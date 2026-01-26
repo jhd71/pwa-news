@@ -1657,6 +1657,7 @@ body {
 .community-item-content {
     flex: 1;
     min-width: 0;
+    overflow: hidden;
 }
 
 .community-item-title {
@@ -1700,13 +1701,18 @@ body {
 
 /* Image dans les items communauté */
 .community-item-image {
+    display: block;
     width: 100%;
+    max-width: 100%;
+    height: auto;
     max-height: 250px;
     object-fit: cover;
+    object-position: center;
     border-radius: 12px;
     margin: 0.75rem 0;
     cursor: pointer;
     transition: transform 0.3s ease, opacity 0.3s ease;
+    overflow: hidden;
 }
 
 .community-item-image:hover {
