@@ -523,11 +523,42 @@
             justify-content: center;
             background: #000;
             overflow: hidden;
+            min-height: 0;
         }
         
         .camera-view video {
-            max-width: 100%;
-            max-height: 100%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        @media (orientation: landscape) {
+            .camera-modal {
+                flex-direction: row;
+            }
+            
+            .camera-header {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 10;
+            }
+            
+            .camera-view {
+                width: 100%;
+                height: 100%;
+            }
+            
+            .camera-controls {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(0, 0, 0, 0.7);
+                padding: 1rem;
+            }
         }
         
         .camera-controls {
@@ -573,6 +604,51 @@
         
         .camera-switch:hover {
             background: rgba(255, 255, 255, 0.3);
+        }
+		
+		/* Contrôle de zoom */
+        .camera-zoom-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            padding: 0.5rem;
+        }
+        
+        .camera-zoom-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        
+        .camera-zoom-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .camera-zoom-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .camera-zoom-level {
+            color: white;
+            font-size: 0.85rem;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .camera-zoom-control.hidden {
+            display: none;
         }
 		
         .image-preview { display: none; position: relative; margin-top: 1rem; }
@@ -1275,7 +1351,11 @@
                 <span class="material-icons">flip_camera_ios</span>
             </button>
             <button class="camera-capture" onclick="capturePhoto()" title="Prendre la photo"></button>
-            <div style="width:50px;"></div>
+            <div class="camera-zoom-control hidden" id="cameraZoomControl">
+                <button class="camera-zoom-btn" onclick="adjustZoom(-0.5)">−</button>
+                <span class="camera-zoom-level" id="zoomLevel">1x</span>
+                <button class="camera-zoom-btn" onclick="adjustZoom(0.5)">+</button>
+            </div>
         </div>
     </div>
     <canvas id="cameraCanvas" style="display:none;"></canvas>
@@ -1443,6 +1523,11 @@
             stopCamera();
         }
         
+        let currentZoom = 1;
+        let minZoom = 1;
+        let maxZoom = 1;
+        let videoTrack = null;
+        
         async function startCamera() {
             try {
                 const constraints = {
@@ -1454,10 +1539,42 @@
                 };
                 cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
                 document.getElementById('cameraVideo').srcObject = cameraStream;
+                
+                // Vérifier si le zoom est disponible
+                videoTrack = cameraStream.getVideoTracks()[0];
+                if (videoTrack) {
+                    const capabilities = videoTrack.getCapabilities();
+                    if (capabilities.zoom) {
+                        minZoom = capabilities.zoom.min;
+                        maxZoom = capabilities.zoom.max;
+                        currentZoom = 1;
+                        document.getElementById('cameraZoomControl').classList.remove('hidden');
+                        document.getElementById('zoomLevel').textContent = '1x';
+                        console.log(`📷 Zoom disponible: ${minZoom}x - ${maxZoom}x`);
+                    } else {
+                        document.getElementById('cameraZoomControl').classList.add('hidden');
+                        console.log('📷 Zoom non disponible sur cet appareil');
+                    }
+                }
             } catch (error) {
                 console.error('Erreur caméra:', error);
                 showToast('Erreur accès caméra: ' + error.message, true);
                 closeCamera();
+            }
+        }
+        
+        async function adjustZoom(delta) {
+            if (!videoTrack) return;
+            
+            currentZoom = Math.max(minZoom, Math.min(maxZoom, currentZoom + delta));
+            
+            try {
+                await videoTrack.applyConstraints({
+                    advanced: [{ zoom: currentZoom }]
+                });
+                document.getElementById('zoomLevel').textContent = currentZoom.toFixed(1) + 'x';
+            } catch (error) {
+                console.error('Erreur zoom:', error);
             }
         }
         
@@ -1467,6 +1584,9 @@
                 cameraStream = null;
             }
             document.getElementById('cameraVideo').srcObject = null;
+            videoTrack = null;
+            currentZoom = 1;
+            document.getElementById('cameraZoomControl').classList.add('hidden');
         }
         
         async function switchCamera() {
