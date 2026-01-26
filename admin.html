@@ -869,6 +869,82 @@
             .publish-form { padding: 0 0.5rem; }
         }
 		
+		/* === COMMENTAIRES === */
+        .comment-tab {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .comment-tab:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .comment-tab.active {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--primary);
+            color: var(--primary-light);
+        }
+        
+        .comment-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .comment-card.pending {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .comment-card.approved {
+            border-left: 4px solid var(--success);
+        }
+        
+        .comment-news-ref {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            background: rgba(99, 102, 241, 0.15);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--primary-light);
+            margin-bottom: 0.75rem;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .comment-content {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+        
+        .comment-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+		
 		/* === NOTIFICATIONS === */
         #notifResult.success {
             display: block;
@@ -974,7 +1050,8 @@
         <div class="stats-grid">
             <div class="stat-card"><div class="stat-value" id="statTotalMessages">-</div><div class="stat-label">Messages</div></div>
             <div class="stat-card unread"><div class="stat-value" id="statUnreadMessages">-</div><div class="stat-label">Non lus</div></div>
-            <div class="stat-card unread"><div class="stat-value" id="statPendingPropositions">-</div><div class="stat-label">En attente</div></div>
+            <div class="stat-card unread"><div class="stat-value" id="statPendingPropositions">-</div><div class="stat-label">Propositions</div></div>
+            <div class="stat-card unread"><div class="stat-value" id="statPendingComments">-</div><div class="stat-label">Commentaires</div></div>
             <div class="stat-card success"><div class="stat-value" id="statPublished">-</div><div class="stat-label">Publiées</div></div>
         </div>
         
@@ -982,6 +1059,7 @@
             <button class="tab active" data-tab="publish">✏️ Publier</button>
             <button class="tab" data-tab="messages">📬 Messages <span class="tab-badge" id="badgeMessages" style="display:none;">0</span></button>
             <button class="tab" data-tab="propositions">📰 Propositions <span class="tab-badge" id="badgePropositions" style="display:none;">0</span></button>
+            <button class="tab" data-tab="comments">💬 Commentaires <span class="tab-badge" id="badgeComments" style="display:none;">0</span></button>
             <button class="tab" data-tab="published">✅ Publiées</button>
             <button class="tab" data-tab="notifications">🔔 Notifications</button>
         </div>
@@ -1068,6 +1146,20 @@
             <div class="messages-list" id="propositionsList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
         </div>
         
+		<!-- COMMENTAIRES -->
+        <div class="tab-content" id="tabComments">
+            <button class="refresh-btn" onclick="loadPendingComments()"><span class="material-icons">refresh</span> Actualiser</button>
+            
+            <!-- Sous-onglets -->
+            <div class="comment-tabs" style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+                <button class="comment-tab active" id="tabPendingComments" onclick="showCommentTab('pending')">⏳ En attente <span id="countPending">0</span></button>
+                <button class="comment-tab" id="tabApprovedComments" onclick="showCommentTab('approved')">✅ Approuvés <span id="countApproved">0</span></button>
+            </div>
+            
+            <div class="messages-list" id="pendingCommentsList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
+            <div class="messages-list" id="approvedCommentsList" style="display:none;"></div>
+        </div>
+		
         <!-- PUBLIÉES -->
         <div class="tab-content" id="tabPublished">
             <button class="refresh-btn" onclick="loadPublishedArticles()"><span class="material-icons">refresh</span> Actualiser</button>
@@ -1196,6 +1288,7 @@
             loadPropositions();
             loadPublishedArticles();
             loadSubscriberCount();
+            loadPendingComments();
         }
         
         // === TABS ===
@@ -1822,6 +1915,137 @@
                 btn.innerHTML = '<span class="material-icons">send</span> Envoyer la notification';
             }
         });
+		
+		// === COMMENTAIRES ===
+        async function loadPendingComments() {
+            const pendingContainer = document.getElementById('pendingCommentsList');
+            const approvedContainer = document.getElementById('approvedCommentsList');
+            
+            pendingContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
+            approvedContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
+            
+            try {
+                // Charger les commentaires en attente
+                const { data: pending, error: errPending } = await supabaseClient
+                    .from('news_comments')
+                    .select('*')
+                    .eq('status', 'pending')
+                    .order('created_at', { ascending: false });
+                
+                if (errPending) throw errPending;
+                
+                // Charger les commentaires approuvés
+                const { data: approved, error: errApproved } = await supabaseClient
+                    .from('news_comments')
+                    .select('*')
+                    .eq('status', 'approved')
+                    .order('created_at', { ascending: false });
+                
+                if (errApproved) throw errApproved;
+                
+                // Charger les titres des actualités
+                const newsIds = [...new Set([...pending, ...approved].map(c => c.news_id))];
+                let newsTitles = {};
+                
+                if (newsIds.length > 0) {
+                    const { data: newsData } = await supabaseClient
+                        .from('news_submissions')
+                        .select('id, title')
+                        .in('id', newsIds);
+                    
+                    if (newsData) {
+                        newsData.forEach(n => newsTitles[n.id] = n.title);
+                    }
+                }
+                
+                // Mettre à jour les compteurs
+                document.getElementById('statPendingComments').textContent = pending.length;
+                document.getElementById('badgeComments').textContent = pending.length;
+                document.getElementById('badgeComments').style.display = pending.length > 0 ? 'inline-flex' : 'none';
+                document.getElementById('countPending').textContent = pending.length;
+                document.getElementById('countApproved').textContent = approved.length;
+                
+                // Afficher les commentaires en attente
+                if (pending.length === 0) {
+                    pendingContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💬</div><p>Aucun commentaire en attente</p></div>';
+                } else {
+                    pendingContainer.innerHTML = pending.map(c => renderCommentCard(c, newsTitles, 'pending')).join('');
+                }
+                
+                // Afficher les commentaires approuvés
+                if (approved.length === 0) {
+                    approvedContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">✅</div><p>Aucun commentaire approuvé</p></div>';
+                } else {
+                    approvedContainer.innerHTML = approved.map(c => renderCommentCard(c, newsTitles, 'approved')).join('');
+                }
+                
+            } catch (error) {
+                console.error('Erreur chargement commentaires:', error);
+                pendingContainer.innerHTML = '<div class="empty-state"><p>❌ Erreur de chargement</p></div>';
+            }
+        }
+        
+        function renderCommentCard(comment, newsTitles, status) {
+            const newsTitle = newsTitles[comment.news_id] || 'Actualité #' + comment.news_id;
+            return `
+                <div class="comment-card ${status}">
+                    <div class="comment-news-ref">
+                        <span class="material-icons" style="font-size:1rem;">article</span>
+                        ${escapeHtml(newsTitle.substring(0, 50))}${newsTitle.length > 50 ? '...' : ''}
+                    </div>
+                    <div class="comment-author">👤 ${escapeHtml(comment.author)}</div>
+                    <div class="comment-content">${escapeHtml(comment.content)}</div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+                        <span class="comment-date">${formatDate(comment.created_at)}</span>
+                        <div class="message-actions">
+                            ${status === 'pending' ? `<button class="action-btn mark-read" onclick="approveComment(${comment.id})"><span class="material-icons">check</span>Approuver</button>` : ''}
+                            <button class="action-btn delete" onclick="deleteComment(${comment.id})"><span class="material-icons">delete</span>Suppr</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function showCommentTab(tab) {
+            document.getElementById('tabPendingComments').classList.toggle('active', tab === 'pending');
+            document.getElementById('tabApprovedComments').classList.toggle('active', tab === 'approved');
+            document.getElementById('pendingCommentsList').style.display = tab === 'pending' ? 'block' : 'none';
+            document.getElementById('approvedCommentsList').style.display = tab === 'approved' ? 'block' : 'none';
+        }
+        
+        async function approveComment(id) {
+            try {
+                const { error } = await supabaseClient
+                    .from('news_comments')
+                    .update({ status: 'approved' })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                showToast('Commentaire approuvé ✅');
+                loadPendingComments();
+            } catch (error) {
+                console.error('Erreur approbation:', error);
+                showToast('Erreur: ' + error.message, true);
+            }
+        }
+        
+        async function deleteComment(id) {
+            if (!confirm('Supprimer ce commentaire ?')) return;
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('news_comments')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) throw error;
+                showToast('Commentaire supprimé 🗑️');
+                loadPendingComments();
+            } catch (error) {
+                console.error('Erreur suppression:', error);
+                showToast('Erreur: ' + error.message, true);
+            }
+        }
 		
         checkSession();
     </script>
