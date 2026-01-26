@@ -674,8 +674,30 @@ async function initCommunity() {
             return;
         }
         
+        // Charger le nombre de commentaires pour chaque actualité
+        const newsIds = data.map(item => item.id);
+        let commentCounts = {};
+        
+        try {
+            const { data: comments } = await supabaseClient
+                .from('news_comments')
+                .select('news_id')
+                .eq('status', 'approved')
+                .in('news_id', newsIds);
+            
+            if (comments) {
+                comments.forEach(c => {
+                    commentCounts[c.news_id] = (commentCounts[c.news_id] || 0) + 1;
+                });
+            }
+        } catch (e) {
+            console.log('⚠️ Erreur chargement compteurs commentaires:', e);
+        }
+        
         // Afficher les infos
-        contentEl.innerHTML = data.map(item => `
+        contentEl.innerHTML = data.map(item => {
+            const commentCount = commentCounts[item.id] || 0;
+            return `
             <div class="community-item" onclick="toggleCommunityDetail(this)">
                 <div class="community-item-icon ${item.type || 'actualite'}">
                     ${getCommunityIcon(item.type)}
@@ -690,9 +712,36 @@ async function initCommunity() {
                         <span><span class="material-icons">person</span>${escapeHtml(item.author || 'Anonyme')}</span>
                         <span><span class="material-icons">schedule</span>${formatCommunityDate(item.created_at)}</span>
                     </div>
+                    
+                    <!-- Section Commentaires -->
+                    <div class="community-comments-section" onclick="event.stopPropagation()">
+                        <button class="comments-toggle-btn" onclick="toggleComments(${item.id}, this)">
+                            <span class="material-icons">chat_bubble_outline</span>
+                            <span>${commentCount > 0 ? commentCount + ' commentaire' + (commentCount > 1 ? 's' : '') : 'Commenter'}</span>
+                            <span class="material-icons arrow">expand_more</span>
+                        </button>
+                        <div class="comments-container" id="comments-${item.id}">
+                            <div class="comments-list" id="comments-list-${item.id}">
+                                <div class="comments-empty">
+                                    <div class="comments-empty-icon">💬</div>
+                                    Chargement...
+                                </div>
+                            </div>
+                            <form class="comment-form" onsubmit="submitComment(event, ${item.id})">
+                                <div class="comment-form-row">
+                                    <input type="text" class="comment-input" id="comment-author-${item.id}" placeholder="Votre pseudo" maxlength="50" required>
+                                </div>
+                                <textarea class="comment-input comment-textarea" id="comment-content-${item.id}" placeholder="Votre commentaire..." maxlength="500" required></textarea>
+                                <button type="submit" class="comment-submit-btn">
+                                    <span class="material-icons">send</span>
+                                    Envoyer
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
         
         emptyEl.style.display = 'none';
         console.log(`📢 ${data.length} infos communauté chargées`);
@@ -748,6 +797,132 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// ============================================
+// GESTION DES COMMENTAIRES
+// ============================================
+async function toggleComments(newsId, btn) {
+    const container = document.getElementById(`comments-${newsId}`);
+    const isOpen = container.classList.contains('open');
+    
+    if (isOpen) {
+        container.classList.remove('open');
+        btn.classList.remove('open');
+    } else {
+        container.classList.add('open');
+        btn.classList.add('open');
+        loadComments(newsId);
+    }
+}
+
+async function loadComments(newsId) {
+    const listEl = document.getElementById(`comments-list-${newsId}`);
+    
+    try {
+        const supabaseClient = getSupabaseClient();
+        if (!supabaseClient) return;
+        
+        const { data, error } = await supabaseClient
+            .from('news_comments')
+            .select('*')
+            .eq('news_id', newsId)
+            .eq('status', 'approved')
+            .order('created_at', { ascending: false })
+            .limit(10);
+        
+        if (error) throw error;
+        
+        if (!data || data.length === 0) {
+            listEl.innerHTML = `
+                <div class="comments-empty">
+                    <div class="comments-empty-icon">💬</div>
+                    Aucun commentaire pour le moment.<br>Soyez le premier !
+                </div>
+            `;
+            return;
+        }
+        
+        listEl.innerHTML = data.map(comment => `
+            <div class="comment-item">
+                <div class="comment-item-header">
+                    <span class="comment-item-author">👤 ${escapeHtml(comment.author)}</span>
+                    <span class="comment-item-date">${formatCommunityDate(comment.created_at)}</span>
+                </div>
+                <div class="comment-item-content">${escapeHtml(comment.content)}</div>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Erreur chargement commentaires:', error);
+        listEl.innerHTML = `
+            <div class="comments-empty">
+                <div class="comments-empty-icon">❌</div>
+                Erreur de chargement
+            </div>
+        `;
+    }
+}
+
+async function submitComment(event, newsId) {
+    event.preventDefault();
+    
+    const authorInput = document.getElementById(`comment-author-${newsId}`);
+    const contentInput = document.getElementById(`comment-content-${newsId}`);
+    const form = event.target;
+    const submitBtn = form.querySelector('.comment-submit-btn');
+    
+    const author = authorInput.value.trim();
+    const content = contentInput.value.trim();
+    
+    if (!author || !content) return;
+    
+    // Désactiver le bouton
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="material-icons">hourglass_empty</span> Envoi...';
+    
+    try {
+        const supabaseClient = getSupabaseClient();
+        if (!supabaseClient) throw new Error('Supabase non disponible');
+        
+        const { error } = await supabaseClient
+            .from('news_comments')
+            .insert([{
+                news_id: newsId,
+                author: author,
+                content: content,
+                status: 'pending'
+            }]);
+        
+        if (error) throw error;
+        
+        // Afficher message de succès
+        form.innerHTML = `
+            <div class="comment-success">
+                ✅ Merci ! Votre commentaire sera visible après validation.
+            </div>
+        `;
+        
+        // Restaurer le formulaire après 5 secondes
+        setTimeout(() => {
+            form.innerHTML = `
+                <div class="comment-form-row">
+                    <input type="text" class="comment-input" id="comment-author-${newsId}" placeholder="Votre pseudo" maxlength="50" required>
+                </div>
+                <textarea class="comment-input comment-textarea" id="comment-content-${newsId}" placeholder="Votre commentaire..." maxlength="500" required></textarea>
+                <button type="submit" class="comment-submit-btn">
+                    <span class="material-icons">send</span>
+                    Envoyer
+                </button>
+            `;
+        }, 5000);
+        
+    } catch (error) {
+        console.error('Erreur envoi commentaire:', error);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span class="material-icons">send</span> Envoyer';
+        alert('Erreur lors de l\'envoi. Réessayez.');
+    }
 }
 
 // Fonction pour afficher/masquer le détail d'une info communauté
