@@ -682,11 +682,7 @@ async function initCommunity() {
                 </div>
                 <div class="community-item-content">
                     <div class="community-item-title">${escapeHtml(item.title)}</div>
-                    ${item.image_url ? `
-<div class="community-image-wrapper" onclick="event.stopPropagation(); openImageModal('${item.image_url}')">
-    <img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image">
-</div>
-` : ''}
+                    ${item.image_url ? `<img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image" onclick="event.stopPropagation(); openImageModal('${item.image_url}')">` : ''}
                     <div class="community-item-desc">${escapeHtml(item.content)}</div>
                     ${item.link ? `<a href="${item.link}" target="_blank" class="community-item-link" onclick="event.stopPropagation()"><span class="material-icons">link</span>Voir le lien</a>` : ''}
                     <div class="community-item-meta">
