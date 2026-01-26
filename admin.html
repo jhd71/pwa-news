@@ -1358,7 +1358,12 @@
         }
         
         async function uploadImage(file) {
-            const ext = file.name.split('.').pop();
+            let ext = 'jpg';
+            if (file.name) {
+                ext = file.name.split('.').pop();
+            } else if (file.type) {
+                ext = file.type.split('/')[1] || 'jpg';
+            }
             const path = `community/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${ext}`;
             const { error } = await supabaseClient.storage.from('images').upload(path, file, { cacheControl: '3600', upsert: false });
             if (error) throw error;
