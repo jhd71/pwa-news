@@ -1703,17 +1703,16 @@ body {
 .community-item-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;          /* MODE ACTU */
-    object-position: center;
-    display: block;
-    cursor: pointer;
+    object-fit: cover;
+    object-position: center center;
+    transform: scale(0.92);   /* 🔥 clé anti-zoom */
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 /* Conteneur image (empêche le flex d'étirer) */
 .community-item-image-wrapper {
     width: 100%;
-    height: 220px;              /* hauteur VISUELLE */
+    height: 180px;          /* MOINS agressif */
     overflow: hidden;
     border-radius: 12px;
     margin: 0.75rem 0;
@@ -1721,7 +1720,7 @@ body {
 }
 
 .community-item-image:hover {
-    transform: scale(1.03);
+    transform: scale(0.97);
     opacity: 0.95;
 }
 
@@ -1858,7 +1857,7 @@ body {
     }
     
 	.community-item-image-wrapper {
-        height: 180px;
+        height: 160px;
         border-radius: 10px;
     }
 	
