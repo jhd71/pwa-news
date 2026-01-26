@@ -878,7 +878,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             
             try {
                 const supabaseClient = window.getSupabaseClient ? window.getSupabaseClient() : null;
-if (!supabaseClient) return;
+                if (!supabaseClient) return;
                 
                 const { data: contactData } = await supabaseClient
                     .from('contact_messages')
@@ -890,9 +890,15 @@ if (!supabaseClient) return;
                     .select('id', { count: 'exact' })
                     .eq('status', 'pending');
                 
+                const { data: commentsData } = await supabaseClient
+                    .from('news_comments')
+                    .select('id', { count: 'exact' })
+                    .eq('status', 'pending');
+                
                 const unreadContacts = contactData ? contactData.length : 0;
                 const pendingNews = newsData ? newsData.length : 0;
-                const totalUnread = unreadContacts + pendingNews;
+                const pendingComments = commentsData ? commentsData.length : 0;
+                const totalUnread = unreadContacts + pendingNews + pendingComments;
                 
                 const adminBadge = document.getElementById('adminBadge');
                 if (adminBadge && totalUnread > 0) {
@@ -904,28 +910,36 @@ if (!supabaseClient) return;
                 const now = Date.now();
                 
                 if (totalUnread > 0 && (now - parseInt(lastNotified)) > 30 * 60 * 1000) {
-                    showAdminNotification(unreadContacts, pendingNews);
+                    showAdminNotification(unreadContacts, pendingNews, pendingComments);
                     localStorage.setItem('admin_last_notified', now.toString());
                 }
                 
-                console.log(`📬 Admin: ${unreadContacts} messages, ${pendingNews} propositions`);
+                console.log(`📬 Admin: ${unreadContacts} messages, ${pendingNews} propositions, ${pendingComments} commentaires`);
                 
             } catch (error) {
                 console.error('Erreur vérification admin:', error);
             }
         }
         
-        function showAdminNotification(contacts, news) {
+        function showAdminNotification(contacts, news, comments) {
             const notification = document.getElementById('adminNotification');
             const text = document.getElementById('notificationText');
             
-            let message = '';
-            if (contacts > 0 && news > 0) {
-                message = `${contacts} message${contacts > 1 ? 's' : ''} et ${news} proposition${news > 1 ? 's' : ''}`;
-            } else if (contacts > 0) {
-                message = `${contacts} nouveau${contacts > 1 ? 'x' : ''} message${contacts > 1 ? 's' : ''} de contact`;
-            } else if (news > 0) {
-                message = `${news} nouvelle${news > 1 ? 's' : ''} proposition${news > 1 ? 's' : ''} d'actu`;
+            let parts = [];
+            if (contacts > 0) {
+                parts.push(`${contacts} message${contacts > 1 ? 's' : ''}`);
+            }
+            if (news > 0) {
+                parts.push(`${news} proposition${news > 1 ? 's' : ''}`);
+            }
+            if (comments > 0) {
+                parts.push(`${comments} commentaire${comments > 1 ? 's' : ''}`);
+            }
+            
+            let message = parts.join(', ');
+            if (parts.length > 1) {
+                const lastComma = message.lastIndexOf(', ');
+                message = message.substring(0, lastComma) + ' et ' + message.substring(lastComma + 2);
             }
             
             text.textContent = message;
