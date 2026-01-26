@@ -1698,29 +1698,19 @@ body {
     font-size: 0.9rem;
 }
 
-/* ===== Images Infos de la communauté ===== */
-
+/* Image dans les items communauté */
 .community-item-image {
     width: 100%;
-    height: 100%;
+    max-height: 250px;
     object-fit: cover;
-    object-position: center center;
-    transform: scale(0.92);   /* 🔥 clé anti-zoom */
+    border-radius: 12px;
+    margin: 0.75rem 0;
+    cursor: pointer;
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Conteneur image (empêche le flex d'étirer) */
-.community-item-image-wrapper {
-    width: 100%;
-    height: 180px;          /* MOINS agressif */
-    overflow: hidden;
-    border-radius: 12px;
-    margin: 0.75rem 0;
-    flex-shrink: 0;
-}
-
 .community-item-image:hover {
-    transform: scale(0.97);
+    transform: scale(1.01);
     opacity: 0.95;
 }
 
@@ -1852,15 +1842,10 @@ body {
 /* Mobile (< 768px) */
 @media (max-width: 767px) {
     .community-item-image {
-        max-height: 220px;
+        max-height: 180px;
         border-radius: 10px;
     }
     
-	.community-item-image-wrapper {
-        height: 160px;
-        border-radius: 10px;
-    }
-	
     .image-modal {
         padding: 0.5rem;
     }
@@ -1885,7 +1870,7 @@ body {
 /* Petit mobile (< 480px) */
 @media (max-width: 479px) {
     .community-item-image {
-        max-height: 200px;
+        max-height: 150px;
         border-radius: 8px;
         margin: 0.5rem 0;
     }
