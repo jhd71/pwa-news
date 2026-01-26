@@ -512,6 +512,68 @@
             transition: opacity 0.3s ease;
         }
 
+		/* Boutons de rotation d'image */
+        .image-container {
+            position: relative;
+            display: inline-block;
+            margin: 0.5rem 0;
+        }
+        
+        .image-container img {
+            display: block;
+            max-height: 230px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .image-rotate-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .rotate-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.4rem 0.75rem;
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 8px;
+            color: var(--primary-light);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .rotate-btn:hover {
+            background: rgba(99, 102, 241, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .rotate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .rotate-btn .material-icons {
+            font-size: 1rem;
+        }
+        
+        .rotate-btn.rotating {
+            pointer-events: none;
+        }
+        
+        .rotate-btn.rotating .material-icons {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+		
         .article-image:hover {
             opacity: 0.8;
         }
@@ -1162,7 +1224,7 @@
                         <div class="message-from">De: ${escapeHtml(prop.author || 'Anonyme')}</div>
                         <div class="message-email">${escapeHtml(prop.contact_email)}</div>
                         <div class="message-text">${escapeHtml(prop.content)}</div>
-                        ${prop.image_url ? `<img src="${prop.image_url}" style="max-height:230px;object-fit:cover;border-radius:8px;margin:0.5rem 0;cursor:pointer;" onclick="openImageModal('${prop.image_url}')" title="Cliquez pour agrandir">` : ''}
+                        ${prop.image_url ? `<div class="image-container" id="imgContainer_${prop.id}"><img src="${prop.image_url}" onclick="openImageModal('${prop.image_url}')" title="Cliquez pour agrandir"><div class="image-rotate-buttons"><button class="rotate-btn" onclick="rotateImage(${prop.id}, '${prop.image_url}', -90)"><span class="material-icons">rotate_left</span>Gauche</button><button class="rotate-btn" onclick="rotateImage(${prop.id}, '${prop.image_url}', 90)"><span class="material-icons">rotate_right</span>Droite</button></div></div>` : ''}
                         ${prop.link ? `<a href="${prop.link}" target="_blank" class="proposition-file"><span class="material-icons" style="font-size:1rem;">link</span> Voir le lien</a>` : ''}
                         <div class="message-actions" style="margin-top:1rem;">
                             <button class="action-btn mark-read" onclick="updateStatus(${prop.id},'approved')"><span class="material-icons">check</span>Approuver</button>
@@ -1183,6 +1245,108 @@
         
         async function deleteProp(id) { if (confirm('Supprimer ?')) { await supabaseClient.from('news_submissions').delete().eq('id', id); loadPropositions(); loadPublishedArticles(); } }
         
+		// === ROTATION D'IMAGE ===
+        async function rotateImage(propId, imageUrl, degrees) {
+            const container = document.getElementById(`imgContainer_${propId}`);
+            const buttons = container.querySelectorAll('.rotate-btn');
+            
+            // Désactiver les boutons pendant le traitement
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('rotating');
+            });
+            
+            try {
+                showToast('Rotation en cours... ⏳');
+                
+                // 1. Charger l'image
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                
+                await new Promise((resolve, reject) => {
+                    img.onload = resolve;
+                    img.onerror = reject;
+                    img.src = imageUrl + '?t=' + Date.now(); // Cache buster
+                });
+                
+                // 2. Créer un canvas et faire la rotation
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Si rotation 90° ou -90°, inverser largeur/hauteur
+                if (Math.abs(degrees) === 90) {
+                    canvas.width = img.height;
+                    canvas.height = img.width;
+                } else {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                }
+                
+                // Appliquer la rotation
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate((degrees * Math.PI) / 180);
+                ctx.drawImage(img, -img.width / 2, -img.height / 2);
+                
+                // 3. Convertir en blob
+                const blob = await new Promise(resolve => {
+                    canvas.toBlob(resolve, 'image/jpeg', 0.85);
+                });
+                
+                // 4. Extraire le chemin de l'ancienne image
+                const oldPath = imageUrl.split('/storage/v1/object/public/images/')[1];
+                
+                // 5. Générer un nouveau nom de fichier
+                const newFileName = `submissions/${Date.now()}_rotated.jpg`;
+                
+                // 6. Upload la nouvelle image
+                const { data: uploadData, error: uploadError } = await supabaseClient
+                    .storage
+                    .from('images')
+                    .upload(newFileName, blob, {
+                        contentType: 'image/jpeg',
+                        upsert: false
+                    });
+                
+                if (uploadError) throw uploadError;
+                
+                // 7. Obtenir l'URL publique
+                const { data: publicUrlData } = supabaseClient
+                    .storage
+                    .from('images')
+                    .getPublicUrl(newFileName);
+                
+                const newImageUrl = publicUrlData.publicUrl;
+                
+                // 8. Mettre à jour la base de données
+                const { error: updateError } = await supabaseClient
+                    .from('news_submissions')
+                    .update({ image_url: newImageUrl })
+                    .eq('id', propId);
+                
+                if (updateError) throw updateError;
+                
+                // 9. Supprimer l'ancienne image
+                if (oldPath) {
+                    await supabaseClient.storage.from('images').remove([oldPath]);
+                }
+                
+                showToast('Image pivotée ✅');
+                
+                // 10. Recharger les propositions
+                loadPropositions();
+                
+            } catch (error) {
+                console.error('Erreur rotation:', error);
+                showToast('Erreur: ' + error.message);
+                
+                // Réactiver les boutons
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('rotating');
+                });
+            }
+        }
+		
         // === PUBLIÉES ===
         async function loadPublishedArticles() {
             const container = document.getElementById('publishedList');
