@@ -477,6 +477,10 @@
             z-index: 10000;
             background: #000;
             flex-direction: column;
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
         
         .camera-modal.show {
@@ -575,6 +579,38 @@
         .image-preview.show { display: block; }
         .image-preview img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 12px; }
         
+		.image-preview-rotate {
+            position: absolute;
+            bottom: 0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .rotate-preview-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(99, 102, 241, 0.9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .rotate-preview-btn:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+        
+        .rotate-preview-btn .material-icons {
+            font-size: 1.25rem;
+        }
+		
         .image-preview-remove {
             position: absolute;
             top: 0.5rem;
@@ -1115,6 +1151,10 @@
                         <div class="image-preview" id="imagePreview">
                             <img id="previewImg" src="" alt="Aperçu">
                             <button type="button" class="image-preview-remove" onclick="removeImage()"><span class="material-icons">close</span></button>
+                            <div class="image-preview-rotate">
+                                <button type="button" class="rotate-preview-btn" onclick="rotatePreview(-90)"><span class="material-icons">rotate_left</span></button>
+                                <button type="button" class="rotate-preview-btn" onclick="rotatePreview(90)"><span class="material-icons">rotate_right</span></button>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group" style="margin-top:1rem;">
@@ -1354,6 +1394,42 @@
             imagePreview.classList.remove('show');
             photoButtons.classList.remove('hidden');
             previewImg.src = '';
+        }
+        
+        // Rotation de l'aperçu avant publication
+        function rotatePreview(degrees) {
+            const img = document.getElementById('previewImg');
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            const image = new Image();
+            image.onload = function() {
+                // Si rotation 90° ou -90°, inverser largeur/hauteur
+                if (Math.abs(degrees) === 90) {
+                    canvas.width = image.height;
+                    canvas.height = image.width;
+                } else {
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                }
+                
+                // Appliquer la rotation
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate((degrees * Math.PI) / 180);
+                ctx.drawImage(image, -image.width / 2, -image.height / 2);
+                
+                // Mettre à jour l'aperçu
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                img.src = dataUrl;
+                
+                // Mettre à jour le blob compressé
+                canvas.toBlob(function(blob) {
+                    compressedImageBlob = blob;
+                }, 'image/jpeg', 0.85);
+                
+                showToast('Image pivotée ✅');
+            };
+            image.src = img.src;
         }
         
         // === FONCTIONS CAMÉRA ===
