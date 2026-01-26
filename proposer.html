@@ -337,6 +337,39 @@
             transform: scale(1.1);
         }
         
+        /* Boutons de rotation */
+        .photo-rotate-buttons {
+            position: absolute;
+            bottom: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .photo-rotate-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(99, 102, 241, 0.9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .photo-rotate-btn:hover {
+            background: #6366f1;
+            transform: scale(1.1);
+        }
+        
+        .photo-rotate-btn .material-icons {
+            font-size: 1.25rem;
+        }
+        
         .photo-upload-input {
             display: none;
         }
@@ -879,6 +912,14 @@
                         <button type="button" class="photo-remove-btn" id="photoRemoveBtn" title="Supprimer la photo">
                             <span class="material-icons" style="font-size: 1.3rem;">close</span>
                         </button>
+                        <div class="photo-rotate-buttons">
+                            <button type="button" class="photo-rotate-btn" onclick="rotatePreviewPhoto(-90)" title="Pivoter à gauche">
+                                <span class="material-icons">rotate_left</span>
+                            </button>
+                            <button type="button" class="photo-rotate-btn" onclick="rotatePreviewPhoto(90)" title="Pivoter à droite">
+                                <span class="material-icons">rotate_right</span>
+                            </button>
+                        </div>
                         <div class="photo-info">
                             <span id="photoSize">0 Ko</span>
                             <span>✓ Compressée</span>
@@ -1027,6 +1068,45 @@
         
         // Variables
         var compressedPhotoBlob = null;
+        
+        // Fonction de rotation de l'aperçu
+        function rotatePreviewPhoto(degrees) {
+            var img = document.getElementById('photoPreview');
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            
+            var image = new Image();
+            image.onload = function() {
+                // Si rotation 90° ou -90°, inverser largeur/hauteur
+                if (Math.abs(degrees) === 90) {
+                    canvas.width = image.height;
+                    canvas.height = image.width;
+                } else {
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                }
+                
+                // Appliquer la rotation
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate((degrees * Math.PI) / 180);
+                ctx.drawImage(image, -image.width / 2, -image.height / 2);
+                
+                // Mettre à jour l'aperçu
+                var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                img.src = dataUrl;
+                
+                // Mettre à jour le blob compressé
+                canvas.toBlob(function(blob) {
+                    compressedPhotoBlob = blob;
+                    // Mettre à jour la taille affichée
+                    var sizeKo = Math.round(blob.size / 1024);
+                    document.getElementById('photoSize').textContent = sizeKo + ' Ko';
+                }, 'image/jpeg', 0.85);
+                
+                showToast('Image pivotée ✅');
+            };
+            image.src = img.src;
+        }
         var currentStream = null;
         var facingMode = 'environment'; // Caméra arrière par défaut
         
