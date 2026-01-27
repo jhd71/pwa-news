@@ -1,4 +1,33 @@
 // ============================================
+// ACCESSIBILITÉ - TAILLE POLICE
+// ============================================
+function setFontSize(size) {
+    // Appliquer la taille
+    document.documentElement.setAttribute('data-font-size', size);
+    
+    // Sauvegarder le choix
+    localStorage.setItem('font-size', size);
+    
+    // Mettre à jour les boutons
+    document.querySelectorAll('.font-size-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.size === size);
+    });
+}
+
+// Charger la taille sauvegardée au démarrage
+(function() {
+    const savedSize = localStorage.getItem('font-size') || 'normal';
+    document.documentElement.setAttribute('data-font-size', savedSize);
+    
+    // Mettre à jour les boutons quand le DOM est prêt
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.font-size-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.size === savedSize);
+        });
+    });
+})();
+
+// ============================================
 // ACTU & MÉDIA - Application JavaScript v2
 // ============================================
 

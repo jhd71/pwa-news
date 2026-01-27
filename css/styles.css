@@ -2222,6 +2222,93 @@ body {
     font-size: 1rem;
 }
 
+/* === ACCESSIBILITÉ - TAILLE POLICE === */
+.accessibility-section {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+}
+
+.accessibility-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.accessibility-title .material-icons {
+    color: var(--primary-light);
+}
+
+.font-size-options {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.font-size-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.font-size-btn:hover {
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.font-size-btn.active {
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.2);
+    color: var(--primary-light);
+}
+
+.font-size-btn .size-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.font-size-btn .size-preview {
+    font-weight: 600;
+}
+
+.font-size-btn[data-size="normal"] .size-preview {
+    font-size: 0.9rem;
+}
+
+.font-size-btn[data-size="medium"] .size-preview {
+    font-size: 1.05rem;
+}
+
+.font-size-btn[data-size="large"] .size-preview {
+    font-size: 1.2rem;
+}
+
+/* Application des tailles de police */
+[data-font-size="medium"] {
+    font-size: 115%;
+}
+
+[data-font-size="large"] {
+    font-size: 130%;
+}
+
 /* Système Voir plus / Voir moins */
 .community-item-desc {
     max-height: 80px;
