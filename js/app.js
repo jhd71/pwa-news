@@ -930,6 +930,22 @@ async function submitComment(event, newsId) {
         
         if (error) throw error;
         
+        // Envoyer notification email
+        try {
+            await fetch('/api/sendEmail', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: 'commentaire',
+                    author: author,
+                    content: content,
+                    newsTitle: document.querySelector(`#comments-${newsId}`)?.closest('.community-item')?.querySelector('.community-item-title')?.textContent || 'Actualité'
+                })
+            });
+        } catch (e) {
+            console.log('Email notification non envoyée:', e);
+        }
+        
         // Afficher message de succès
         form.innerHTML = `
             <div class="comment-success">
