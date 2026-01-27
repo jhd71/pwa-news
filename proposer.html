@@ -1844,6 +1844,22 @@
                 
                 if (result.error) throw result.error;
                 
+                // Envoyer notification email
+                try {
+                    await fetch('/api/sendEmail', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            type: 'proposition',
+                            title: document.getElementById('title').value,
+                            author: document.getElementById('author').value || 'Anonyme',
+                            content: document.getElementById('description').value
+                        })
+                    });
+                } catch (e) {
+                    console.log('Email notification non envoyée:', e);
+                }
+                
                 showToast('Proposition envoyée avec succès ! 🎉', false);
                 
                 document.getElementById('proposeForm').style.display = 'none';
