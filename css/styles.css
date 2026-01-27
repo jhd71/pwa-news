@@ -2234,16 +2234,8 @@ body {
 }
 
 .font-size-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
     font-size: 0.85rem;
     color: var(--text-secondary);
-}
-
-.font-size-label .material-icons {
-    font-size: 1.1rem;
-    color: var(--text-muted);
 }
 
 .font-size-buttons {
@@ -2277,11 +2269,22 @@ body {
 
 /* Application des tailles de police */
 [data-font-size="medium"] {
-    font-size: 108%;
+    font-size: 110%;
 }
 
 [data-font-size="large"] {
-    font-size: 116%;
+    font-size: 118%;
+    letter-spacing: 0.02em;
+    word-spacing: 0.05em;
+}
+
+[data-font-size="large"] .community-item-desc,
+[data-font-size="large"] .community-item-title,
+[data-font-size="large"] p,
+[data-font-size="large"] .quick-link-name,
+[data-font-size="large"] .support-about p {
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.3);
+    font-weight: 500;
 }
 
 /* Système Voir plus / Voir moins */
