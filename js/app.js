@@ -724,14 +724,18 @@ async function initCommunity() {
         contentEl.innerHTML = data.map(item => {
             const commentCount = commentCounts[item.id] || 0;
             return `
-            <div class="community-item" onclick="toggleCommunityDetail(this)">
+            <div class="community-item">
                 <div class="community-item-icon ${item.type || 'actualite'}">
                     ${getCommunityIcon(item.type)}
                 </div>
                 <div class="community-item-content">
                     <div class="community-item-title">${escapeHtml(item.title)}</div>
                     ${item.image_url ? `<div class="community-image-wrapper" onclick="event.stopPropagation(); openImageModal('${item.image_url}')"><img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image"><div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div></div>` : ''}
-                    <div class="community-item-desc">${escapeHtml(item.content)}</div>
+                    <div class="community-item-desc" id="desc-${item.id}">${escapeHtml(item.content)}</div>
+                    <button class="see-more-btn" id="see-more-${item.id}" onclick="event.stopPropagation(); toggleSeeMore(${item.id})">
+                        <span>Voir plus</span>
+                        <span class="material-icons">expand_more</span>
+                    </button>
                     ${item.link ? `<a href="${item.link}" target="_blank" class="community-item-link" onclick="event.stopPropagation()"><span class="material-icons">link</span>Voir le lien</a>` : ''}
                     <div class="community-item-meta">
                         ${item.location ? `<span class="community-item-location"><span class="material-icons">location_on</span>${escapeHtml(item.location)}</span>` : ''}
@@ -780,6 +784,20 @@ async function initCommunity() {
         
         emptyEl.style.display = 'none';
         console.log(`📢 ${data.length} infos communauté chargées`);
+        
+        // Détecter les textes tronqués et afficher le bouton "Voir plus"
+        setTimeout(() => {
+            data.forEach(item => {
+                const descEl = document.getElementById(`desc-${item.id}`);
+                const btnEl = document.getElementById(`see-more-${item.id}`);
+                if (descEl && btnEl) {
+                    if (descEl.scrollHeight > descEl.clientHeight + 10) {
+                        descEl.classList.add('truncated');
+                        btnEl.classList.add('visible');
+                    }
+                }
+            });
+        }, 100);
         
     } catch (error) {
         console.error('❌ Erreur communauté:', error);
@@ -1040,32 +1058,6 @@ async function toggleLike(newsId, btn) {
     }
 }
 
-// Fonction pour afficher/masquer le détail d'une info communauté
-function toggleCommunityDetail(element) {
-    element.classList.toggle('expanded');
-    
-    // Incrémenter les vues si c'est la première ouverture
-    if (element.classList.contains('expanded') && !element.dataset.viewed) {
-        element.dataset.viewed = 'true';
-        
-        // Trouver l'ID de l'actualité
-        const likeBtn = element.querySelector('.like-btn');
-        if (likeBtn) {
-            const newsId = parseInt(likeBtn.id.replace('like-btn-', ''));
-            if (newsId) {
-                incrementViews(newsId);
-                
-                // Mettre à jour le compteur localement
-                const viewsEl = element.querySelector('.views-count');
-                if (viewsEl) {
-                    const currentViews = parseInt(viewsEl.textContent) || 0;
-                    viewsEl.innerHTML = `<span class="material-icons">visibility</span>${currentViews + 1}`;
-                }
-            }
-        }
-    }
-}
-
 async function incrementViews(newsId) {
     try {
         const supabaseClient = getSupabaseClient();
@@ -1074,6 +1066,40 @@ async function incrementViews(newsId) {
         await supabaseClient.rpc('increment_views', { row_id: newsId });
     } catch (error) {
         console.log('Erreur incrémentation vues:', error);
+    }
+}
+
+function toggleSeeMore(newsId) {
+    const descEl = document.getElementById(`desc-${newsId}`);
+    const btnEl = document.getElementById(`see-more-${newsId}`);
+    
+    if (!descEl || !btnEl) return;
+    
+    const isExpanded = descEl.classList.contains('expanded');
+    
+    if (isExpanded) {
+        // Réduire
+        descEl.classList.remove('expanded');
+        btnEl.classList.remove('expanded');
+        btnEl.querySelector('span:first-child').textContent = 'Voir plus';
+    } else {
+        // Déplier
+        descEl.classList.add('expanded');
+        btnEl.classList.add('expanded');
+        btnEl.querySelector('span:first-child').textContent = 'Voir moins';
+        
+        // Incrémenter les vues (une seule fois)
+        if (!descEl.dataset.viewed) {
+            descEl.dataset.viewed = 'true';
+            incrementViews(newsId);
+            
+            // Mettre à jour le compteur localement
+            const viewsEl = descEl.closest('.community-item').querySelector('.views-count');
+            if (viewsEl) {
+                const currentViews = parseInt(viewsEl.textContent) || 0;
+                viewsEl.innerHTML = `<span class="material-icons">visibility</span>${currentViews + 1}`;
+            }
+        }
     }
 }
 

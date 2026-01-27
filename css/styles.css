@@ -2221,6 +2221,63 @@ body {
     font-size: 1rem;
 }
 
+/* Système Voir plus / Voir moins */
+.community-item-desc {
+    max-height: 80px;
+    overflow: hidden;
+    position: relative;
+    transition: max-height 0.3s ease;
+}
+
+.community-item-desc.expanded {
+    max-height: 2000px;
+}
+
+.community-item-desc:not(.expanded).truncated::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(transparent, var(--bg-card));
+    pointer-events: none;
+}
+
+.see-more-btn {
+    display: none;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem 0.8rem;
+    margin-top: 0.5rem;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 20px;
+    color: var(--primary-light);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.see-more-btn.visible {
+    display: inline-flex;
+}
+
+.see-more-btn:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+.see-more-btn .material-icons {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.see-more-btn.expanded .material-icons {
+    transform: rotate(180deg);
+}
+
 /* État vide */
 .community-empty {
     text-align: center;
