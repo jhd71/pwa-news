@@ -394,6 +394,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <span class="material-icons quick-link-arrow">chevron_right</span>
                 </button>
             </div>
+            
+            <!-- Accessibilité -->
+            <div class="font-size-selector">
+                <div class="font-size-label">
+                    <span class="material-icons">text_fields</span>
+                    Texte
+                </div>
+                <div class="font-size-buttons">
+                    <button class="font-size-btn active" data-size="normal" onclick="setFontSize('normal')">A</button>
+                    <button class="font-size-btn" data-size="medium" onclick="setFontSize('medium')">A+</button>
+                    <button class="font-size-btn" data-size="large" onclick="setFontSize('large')">A++</button>
+                </div>
+            </div>
         </div>
     </aside>
 
@@ -643,28 +656,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <p>Notre <strong>site d'information local</strong> est 100% gratuit, sans publicité et créé bénévolement 
         pour la communauté de Montceau-les-Mines et ses environs : Blanzy, Saint-Vallier, Sanvignes, etc.</p>
         <p><strong>Montceau-les-Mines aujourd'hui :</strong> suivez l'actu en temps réel, consultez les événements locaux et restez connecté à votre ville !</p>
-        
-        <!-- Accessibilité -->
-        <div class="accessibility-section">
-            <div class="accessibility-title">
-                <span class="material-icons">text_fields</span>
-                Taille du texte
-            </div>
-            <div class="font-size-options">
-                <button class="font-size-btn active" data-size="normal" onclick="setFontSize('normal')">
-                    <span class="size-preview">Aa</span>
-                    <span class="size-label">Normal</span>
-                </button>
-                <button class="font-size-btn" data-size="medium" onclick="setFontSize('medium')">
-                    <span class="size-preview">Aa</span>
-                    <span class="size-label">Moyen</span>
-                </button>
-                <button class="font-size-btn" data-size="large" onclick="setFontSize('large')">
-                    <span class="size-preview">Aa</span>
-                    <span class="size-label">Grand</span>
-                </button>
-            </div>
-        </div>
     </section>
 
     <!-- Modal TV en direct -->

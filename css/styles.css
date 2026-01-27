@@ -2223,90 +2223,65 @@ body {
 }
 
 /* === ACCESSIBILITÉ - TAILLE POLICE === */
-.accessibility-section {
-    margin-top: 1.5rem;
-    padding: 1.25rem;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-}
-
-.accessibility-title {
+.font-size-selector {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-}
-
-.accessibility-title .material-icons {
-    color: var(--primary-light);
-}
-
-.font-size-options {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.font-size-btn {
-    flex: 1;
-    min-width: 80px;
+    justify-content: space-between;
     padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.03);
     border-radius: 12px;
-    color: var(--text-secondary);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    margin: 0.5rem 1rem 1rem 1rem;
+}
+
+.font-size-label {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
 }
 
-.font-size-btn:hover {
-    border-color: var(--primary);
-    background: rgba(99, 102, 241, 0.1);
-}
-
-.font-size-btn.active {
-    border-color: var(--primary);
-    background: rgba(99, 102, 241, 0.2);
-    color: var(--primary-light);
-}
-
-.font-size-btn .size-label {
-    font-size: 0.75rem;
+.font-size-label .material-icons {
+    font-size: 1.1rem;
     color: var(--text-muted);
 }
 
-.font-size-btn .size-preview {
-    font-weight: 600;
+.font-size-buttons {
+    display: flex;
+    gap: 0.25rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 0.2rem;
 }
 
-.font-size-btn[data-size="normal"] .size-preview {
-    font-size: 0.9rem;
+.font-size-btn {
+    padding: 0.4rem 0.6rem;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.font-size-btn[data-size="medium"] .size-preview {
-    font-size: 1.05rem;
+.font-size-btn:hover {
+    color: var(--text-secondary);
 }
 
-.font-size-btn[data-size="large"] .size-preview {
-    font-size: 1.2rem;
+.font-size-btn.active {
+    background: var(--primary);
+    color: white;
 }
 
 /* Application des tailles de police */
 [data-font-size="medium"] {
-    font-size: 115%;
+    font-size: 108%;
 }
 
 [data-font-size="large"] {
-    font-size: 130%;
+    font-size: 116%;
 }
 
 /* Système Voir plus / Voir moins */
