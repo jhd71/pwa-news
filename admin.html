@@ -8,6 +8,8 @@
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<!-- Cropper.js pour le recadrage -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
     
     <!-- Pas d'indexation -->
     <meta name="robots" content="noindex, nofollow">
@@ -686,7 +688,171 @@
         .rotate-preview-btn .material-icons {
             font-size: 1.25rem;
         }
-		
+        
+        /* Bouton recadrer */
+        .image-preview-crop {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            padding: 0.4rem 0.75rem;
+            background: rgba(99, 102, 241, 0.9);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .image-preview-crop:hover {
+            background: var(--primary);
+            transform: scale(1.05);
+        }
+        
+        .image-preview-crop .material-icons {
+            font-size: 1rem;
+        }
+        
+        /* Modal de recadrage */
+        .crop-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10001;
+            background: rgba(0, 0, 0, 0.95);
+            flex-direction: column;
+        }
+        
+        .crop-modal.show {
+            display: flex;
+        }
+        
+        .crop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        .crop-title {
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .crop-close-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .crop-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 1rem;
+        }
+        
+        .crop-container img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .crop-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        .crop-ratios {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .crop-ratio-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .crop-ratio-btn:hover,
+        .crop-ratio-btn.active {
+            background: rgba(99, 102, 241, 0.5);
+            border-color: var(--primary);
+        }
+        
+        .crop-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .crop-cancel-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--danger);
+            border-radius: 10px;
+            color: var(--danger);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .crop-cancel-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .crop-validate-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .crop-validate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+
         .image-preview-remove {
             position: absolute;
             top: 0.5rem;
@@ -1227,6 +1393,7 @@
                         <div class="image-preview" id="imagePreview">
                             <img id="previewImg" src="" alt="Aperçu">
                             <button type="button" class="image-preview-remove" onclick="removeImage()"><span class="material-icons">close</span></button>
+                            <button type="button" class="image-preview-crop" onclick="openCropModal()"><span class="material-icons">crop</span> Recadrer</button>
                             <div class="image-preview-rotate">
                                 <button type="button" class="rotate-preview-btn" onclick="rotatePreview(-90)"><span class="material-icons">rotate_left</span></button>
                                 <button type="button" class="rotate-preview-btn" onclick="rotatePreview(90)"><span class="material-icons">rotate_right</span></button>
@@ -1334,7 +1501,38 @@
     </div>
     
     <div class="toast" id="toast"><span class="toast-icon">✅</span><span class="toast-text">Message</span></div>
-    
+	
+    <!-- Modal de recadrage -->
+    <div class="crop-modal" id="cropModal">
+        <div class="crop-header">
+            <span class="crop-title"><span class="material-icons">crop</span> Recadrer l'image</span>
+            <button type="button" class="crop-close-btn" onclick="closeCropModal()">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="crop-container">
+            <img id="cropImage" src="">
+        </div>
+        <div class="crop-controls">
+            <div class="crop-ratios">
+                <button type="button" class="crop-ratio-btn active" onclick="setCropRatio(NaN, this)">Libre</button>
+                <button type="button" class="crop-ratio-btn" onclick="setCropRatio(1, this)">1:1</button>
+                <button type="button" class="crop-ratio-btn" onclick="setCropRatio(4/3, this)">4:3</button>
+                <button type="button" class="crop-ratio-btn" onclick="setCropRatio(16/9, this)">16:9</button>
+            </div>
+            <div class="crop-actions">
+                <button type="button" class="crop-cancel-btn" onclick="closeCropModal()">
+                    <span class="material-icons">close</span>
+                    Annuler
+                </button>
+                <button type="button" class="crop-validate-btn" onclick="applyCrop()">
+                    <span class="material-icons">check</span>
+                    Valider
+                </button>
+            </div>
+        </div>
+    </div>
+	
 	<!-- Modal Caméra -->
     <div class="camera-modal" id="cameraModal">
         <div class="camera-header">
@@ -1369,6 +1567,7 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <script>
         const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
@@ -1449,6 +1648,76 @@
         let cameraStream = null;
         let currentFacingMode = 'environment';
         let compressedImageBlob = null;
+        let cropper = null;
+        
+        // === RECADRAGE ===
+        function openCropModal() {
+            const img = document.getElementById('previewImg');
+            const cropImage = document.getElementById('cropImage');
+            cropImage.src = img.src;
+            
+            document.getElementById('cropModal').classList.add('show');
+            
+            setTimeout(function() {
+                if (cropper) {
+                    cropper.destroy();
+                }
+                cropper = new Cropper(cropImage, {
+                    viewMode: 1,
+                    dragMode: 'move',
+                    aspectRatio: NaN,
+                    autoCropArea: 0.9,
+                    responsive: true,
+                    restore: false,
+                    guides: true,
+                    center: true,
+                    highlight: true,
+                    cropBoxMovable: true,
+                    cropBoxResizable: true,
+                    toggleDragModeOnDblclick: false
+                });
+            }, 100);
+            
+            document.querySelectorAll('.crop-ratio-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.crop-ratio-btn').classList.add('active');
+        }
+        
+        function closeCropModal() {
+            document.getElementById('cropModal').classList.remove('show');
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        }
+        
+        function setCropRatio(ratio, btn) {
+            if (cropper) {
+                cropper.setAspectRatio(ratio);
+            }
+            document.querySelectorAll('.crop-ratio-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+        
+        function applyCrop() {
+            if (!cropper) return;
+            
+            const canvas = cropper.getCroppedCanvas({
+                maxWidth: 1200,
+                maxHeight: 1200,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high'
+            });
+            
+            canvas.toBlob(function(blob) {
+                compressedImageBlob = blob;
+                
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                document.getElementById('previewImg').src = dataUrl;
+                
+                closeCropModal();
+                showToast('Image recadrée ✅');
+            }, 'image/jpeg', 0.85);
+        }
         
         // Gestion de la galerie
         imageInput.addEventListener('change', (e) => {
