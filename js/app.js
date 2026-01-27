@@ -677,6 +677,9 @@ async function initCommunity() {
         // Charger le nombre de commentaires pour chaque actualité
         const newsIds = data.map(item => item.id);
         let commentCounts = {};
+        let likeCounts = {};
+        let userLikes = [];
+        const userFingerprint = getUserFingerprint();
         
         try {
             const { data: comments } = await supabaseClient
@@ -693,6 +696,29 @@ async function initCommunity() {
         } catch (e) {
             console.log('⚠️ Erreur chargement compteurs commentaires:', e);
         }
+        
+        // Charger les likes
+        try {
+            const { data: likes } = await supabaseClient
+                .from('news_likes')
+                .select('news_id, user_fingerprint')
+                .in('news_id', newsIds);
+            
+            if (likes) {
+                likes.forEach(l => {
+                    likeCounts[l.news_id] = (likeCounts[l.news_id] || 0) + 1;
+                    if (l.user_fingerprint === userFingerprint) {
+                        userLikes.push(l.news_id);
+                    }
+                });
+            }
+        } catch (e) {
+            console.log('⚠️ Erreur chargement likes:', e);
+        }
+        
+        // Stocker les likes de l'utilisateur pour référence
+        window.userLikes = userLikes;
+        window.likeCounts = likeCounts;
         
         // Afficher les infos
         contentEl.innerHTML = data.map(item => {
@@ -711,6 +737,14 @@ async function initCommunity() {
                         ${item.location ? `<span class="community-item-location"><span class="material-icons">location_on</span>${escapeHtml(item.location)}</span>` : ''}
                         <span><span class="material-icons">person</span>${escapeHtml(item.author || 'Anonyme')}</span>
                         <span><span class="material-icons">schedule</span>${formatCommunityDate(item.created_at)}</span>
+                    </div>
+                    
+                    <!-- Actions (Like + Commentaires) -->
+                    <div class="community-item-actions" onclick="event.stopPropagation()">
+                        <button class="like-btn ${userLikes.includes(item.id) ? 'liked' : ''}" id="like-btn-${item.id}" onclick="toggleLike(${item.id}, this)">
+                            <span class="material-icons">${userLikes.includes(item.id) ? 'favorite' : 'favorite_border'}</span>
+                            <span class="like-count" id="like-count-${item.id}">${likeCounts[item.id] || 0}</span>
+                        </button>
                     </div>
                     
                     <!-- Section Commentaires -->
@@ -922,6 +956,70 @@ async function submitComment(event, newsId) {
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<span class="material-icons">send</span> Envoyer';
         alert('Erreur lors de l\'envoi. Réessayez.');
+    }
+}
+
+// ============================================
+// GESTION DES LIKES
+// ============================================
+function getUserFingerprint() {
+    let fp = localStorage.getItem('user_fingerprint');
+    if (!fp) {
+        fp = 'fp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('user_fingerprint', fp);
+    }
+    return fp;
+}
+
+async function toggleLike(newsId, btn) {
+    const supabaseClient = getSupabaseClient();
+    if (!supabaseClient) return;
+    
+    const userFingerprint = getUserFingerprint();
+    const isLiked = btn.classList.contains('liked');
+    const countEl = document.getElementById(`like-count-${newsId}`);
+    const icon = btn.querySelector('.material-icons');
+    let currentCount = parseInt(countEl.textContent) || 0;
+    
+    try {
+        if (isLiked) {
+            // Retirer le like
+            const { error } = await supabaseClient
+                .from('news_likes')
+                .delete()
+                .eq('news_id', newsId)
+                .eq('user_fingerprint', userFingerprint);
+            
+            if (error) throw error;
+            
+            btn.classList.remove('liked');
+            icon.textContent = 'favorite_border';
+            countEl.textContent = Math.max(0, currentCount - 1);
+            
+            // Mettre à jour le tableau local
+            window.userLikes = window.userLikes.filter(id => id !== newsId);
+            
+        } else {
+            // Ajouter le like
+            const { error } = await supabaseClient
+                .from('news_likes')
+                .insert([{
+                    news_id: newsId,
+                    user_fingerprint: userFingerprint
+                }]);
+            
+            if (error) throw error;
+            
+            btn.classList.add('liked');
+            icon.textContent = 'favorite';
+            countEl.textContent = currentCount + 1;
+            
+            // Mettre à jour le tableau local
+            window.userLikes.push(newsId);
+        }
+    } catch (error) {
+        console.error('Erreur like:', error);
+        // En cas d'erreur (ex: déjà liké), on ne fait rien
     }
 }
 
