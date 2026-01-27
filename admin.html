@@ -1354,6 +1354,9 @@
                         <select class="form-select" id="pubType" required>
                             <option value="actualite">📰 Actualité</option>
                             <option value="evenement">🎪 Événement</option>
+                            <option value="sport">⚽ Sport</option>
+                            <option value="culture">🎭 Culture</option>
+                            <option value="economie">💼 Économie</option>
                             <option value="pratique">💡 Info pratique</option>
                             <option value="insolite">🤔 Insolite</option>
                             <option value="photo">📸 Photo/Vidéo</option>
@@ -2269,7 +2272,7 @@
         
         // === HELPERS ===
         function getSubjectLabel(s) { return { question:'❓ Question', suggestion:'💡 Suggestion', bug:'🐛 Problème', partenariat:'🤝 Partenariat', presse:'📰 Presse', autre:'📋 Autre' }[s] || s; }
-        function getTypeLabel(t) { return { actualite:'📰 Actualité', evenement:'🎪 Événement', pratique:'💡 Info pratique', insolite:'🤔 Insolite', photo:'📸 Photo/Vidéo', autre:'📋 Autre' }[t] || t; }
+        function getTypeLabel(t) { return { actualite:'📰 Actualité', evenement:'🎪 Événement', sport:'⚽ Sport', culture:'🎭 Culture', economie:'💼 Économie', pratique:'💡 Info pratique', insolite:'🤔 Insolite', photo:'📸 Photo/Vidéo', autre:'📋 Autre' }[t] || t; }
         function formatDate(d) { const date = new Date(d), diff = Date.now() - date; if (diff < 3600000) return `Il y a ${Math.floor(diff/60000)} min`; if (diff < 86400000) return `Il y a ${Math.floor(diff/3600000)}h`; return date.toLocaleDateString('fr-FR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }); }
         function escapeHtml(t) { if (!t) return ''; const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
         

@@ -810,6 +810,9 @@ function getCommunityIcon(type) {
     const icons = {
         'actualite': '📰',
         'evenement': '🎪',
+        'sport': '⚽',
+        'culture': '🎭',
+        'economie': '💼',
         'pratique': '💡',
         'insolite': '🤔',
         'photo': '📸',
