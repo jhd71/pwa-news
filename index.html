@@ -396,12 +396,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
             
             <!-- Accessibilité -->
-            <div class="font-size-selector">
-                <div class="font-size-label">📖 Lecture</div>
-                <div class="font-size-buttons">
-                    <button class="font-size-btn active" data-size="normal" onclick="setFontSize('normal')">Normal</button>
-                    <button class="font-size-btn" data-size="medium" onclick="setFontSize('medium')">Grand</button>
-                    <button class="font-size-btn" data-size="large" onclick="setFontSize('large')">Confort</button>
+            <div class="accessibility-bar">
+                <div class="font-size-group">
+                    <span class="font-size-group-label">Taille</span>
+                    <div class="font-size-buttons">
+                        <button class="font-size-btn active" data-size="normal" onclick="setFontSize('normal')">A</button>
+                        <button class="font-size-btn" data-size="large" onclick="setFontSize('large')">A+</button>
+                    </div>
+                </div>
+                <div class="comfort-toggle">
+                    <span class="comfort-toggle-label">Confort</span>
+                    <div class="comfort-switch" id="comfortSwitch" onclick="toggleComfort()"></div>
                 </div>
             </div>
         </div>

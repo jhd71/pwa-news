@@ -2223,36 +2223,43 @@ body {
 }
 
 /* === ACCESSIBILITÉ - TAILLE POLICE === */
-.font-size-selector {
+.accessibility-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.75rem 1rem;
+    gap: 0.75rem;
+    padding: 0.6rem 1rem;
     background: rgba(255, 255, 255, 0.03);
     border-radius: 12px;
     margin: 0.5rem 1rem 1rem 1rem;
 }
 
-.font-size-label {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
+.font-size-group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.font-size-group-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
 }
 
 .font-size-buttons {
     display: flex;
-    gap: 0.25rem;
-    /*background: rgba(0, 0, 0, 0.2);*/
-    border-radius: 8px;
-    padding: 0.2rem;
+    gap: 0.2rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 0.15rem;
 }
 
 .font-size-btn {
-    padding: 0.4rem 0.6rem;
+    padding: 0.3rem 0.5rem;
     background: transparent;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px;
     color: var(--text-muted);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -2267,24 +2274,72 @@ body {
     color: white;
 }
 
+/* Toggle Confort */
+.comfort-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.comfort-toggle-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.comfort-switch {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.comfort-switch.active {
+    background: var(--primary);
+}
+
+.comfort-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.comfort-switch.active::after {
+    transform: translateX(16px);
+}
+
 /* Application des tailles de police */
-[data-font-size="medium"] {
-    font-size: 110%;
-}
-
 [data-font-size="large"] {
-    font-size: 118%;
-    letter-spacing: 0.02em;
-    word-spacing: 0.05em;
+    font-size: 112%;
 }
 
-[data-font-size="large"] .community-item-desc,
-[data-font-size="large"] .community-item-title,
-[data-font-size="large"] p,
-[data-font-size="large"] .quick-link-name,
-[data-font-size="large"] .support-about p {
-    text-shadow: 0 0 1px rgba(255, 255, 255, 0.3);
-    font-weight: 500;
+/* Mode Confort - meilleure lisibilité */
+[data-comfort="true"] .community-item-desc,
+[data-comfort="true"] .community-item-title,
+[data-comfort="true"] .community-item-content,
+[data-comfort="true"] p,
+[data-comfort="true"] .quick-link-name,
+[data-comfort="true"] .support-about p,
+[data-comfort="true"] .news-title,
+[data-comfort="true"] .news-content {
+    letter-spacing: 0.03em;
+    word-spacing: 0.08em;
+    line-height: 1.6;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+[data-comfort="true"] .community-item-title,
+[data-comfort="true"] .quick-link-name,
+[data-comfort="true"] .news-title {
+    font-weight: 600;
 }
 
 /* Système Voir plus / Voir moins */

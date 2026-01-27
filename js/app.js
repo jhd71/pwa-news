@@ -1,29 +1,43 @@
 // ============================================
-// ACCESSIBILITÉ - TAILLE POLICE
+// ACCESSIBILITÉ - TAILLE POLICE ET CONFORT
 // ============================================
 function setFontSize(size) {
-    // Appliquer la taille
     document.documentElement.setAttribute('data-font-size', size);
-    
-    // Sauvegarder le choix
     localStorage.setItem('font-size', size);
-    
-    // Mettre à jour les boutons
     document.querySelectorAll('.font-size-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.size === size);
     });
 }
 
-// Charger la taille sauvegardée au démarrage
+function toggleComfort() {
+    const isActive = document.documentElement.getAttribute('data-comfort') === 'true';
+    const newValue = !isActive;
+    document.documentElement.setAttribute('data-comfort', newValue);
+    localStorage.setItem('comfort-mode', newValue);
+    
+    const switchEl = document.getElementById('comfortSwitch');
+    if (switchEl) {
+        switchEl.classList.toggle('active', newValue);
+    }
+}
+
+// Charger les préférences au démarrage
 (function() {
     const savedSize = localStorage.getItem('font-size') || 'normal';
-    document.documentElement.setAttribute('data-font-size', savedSize);
+    const savedComfort = localStorage.getItem('comfort-mode') === 'true';
     
-    // Mettre à jour les boutons quand le DOM est prêt
+    document.documentElement.setAttribute('data-font-size', savedSize);
+    document.documentElement.setAttribute('data-comfort', savedComfort);
+    
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.font-size-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.size === savedSize);
         });
+        
+        const switchEl = document.getElementById('comfortSwitch');
+        if (switchEl && savedComfort) {
+            switchEl.classList.add('active');
+        }
     });
 })();
 
