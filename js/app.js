@@ -737,6 +737,7 @@ async function initCommunity() {
                         ${item.location ? `<span class="community-item-location"><span class="material-icons">location_on</span>${escapeHtml(item.location)}</span>` : ''}
                         <span><span class="material-icons">person</span>${escapeHtml(item.author || 'Anonyme')}</span>
                         <span><span class="material-icons">schedule</span>${formatCommunityDate(item.created_at)}</span>
+                        <span class="views-count"><span class="material-icons">visibility</span>${item.views || 0}</span>
                     </div>
                     
                     <!-- Actions (Like + Commentaires) -->
@@ -1042,6 +1043,38 @@ async function toggleLike(newsId, btn) {
 // Fonction pour afficher/masquer le détail d'une info communauté
 function toggleCommunityDetail(element) {
     element.classList.toggle('expanded');
+    
+    // Incrémenter les vues si c'est la première ouverture
+    if (element.classList.contains('expanded') && !element.dataset.viewed) {
+        element.dataset.viewed = 'true';
+        
+        // Trouver l'ID de l'actualité
+        const likeBtn = element.querySelector('.like-btn');
+        if (likeBtn) {
+            const newsId = parseInt(likeBtn.id.replace('like-btn-', ''));
+            if (newsId) {
+                incrementViews(newsId);
+                
+                // Mettre à jour le compteur localement
+                const viewsEl = element.querySelector('.views-count');
+                if (viewsEl) {
+                    const currentViews = parseInt(viewsEl.textContent) || 0;
+                    viewsEl.innerHTML = `<span class="material-icons">visibility</span>${currentViews + 1}`;
+                }
+            }
+        }
+    }
+}
+
+async function incrementViews(newsId) {
+    try {
+        const supabaseClient = getSupabaseClient();
+        if (!supabaseClient) return;
+        
+        await supabaseClient.rpc('increment_views', { row_id: newsId });
+    } catch (error) {
+        console.log('Erreur incrémentation vues:', error);
+    }
 }
 
 // Fonction pour ouvrir une image en grand

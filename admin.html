@@ -2256,7 +2256,7 @@
                             <div class="article-excerpt">${escapeHtml(a.content)}</div>
                             ${a.location ? `<div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem;"><span class="material-icons" style="font-size:1rem;vertical-align:middle;">location_on</span> ${escapeHtml(a.location)}</div>` : ''}
                             ${a.link ? `<a href="${a.link}" target="_blank" class="proposition-file" style="margin-bottom:0.75rem;"><span class="material-icons" style="font-size:1rem;">link</span> Voir le lien</a>` : ''}
-                            <div class="article-meta"><span>${formatDate(a.created_at)}</span><span>${escapeHtml(a.author || 'Actu & Média')}</span></div>
+                            <div class="article-meta"><span>${formatDate(a.created_at)}</span><span>👁️ ${a.views || 0} vues</span><span>${escapeHtml(a.author || 'Actu & Média')}</span></div>
                             <div class="message-actions" style="margin-top:1rem;">
                                 <button class="action-btn" style="background:rgba(245,158,11,0.2);color:#f59e0b;" onclick="updateStatus(${a.id},'pending')"><span class="material-icons">undo</span>Dépublier</button>
                                 <button class="action-btn delete" onclick="deleteProp(${a.id})"><span class="material-icons">delete</span>Suppr</button>

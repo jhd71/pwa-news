@@ -2208,6 +2208,19 @@ body {
     font-weight: 600;
 }
 
+/* Compteur de vues */
+.views-count {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.views-count .material-icons {
+    font-size: 1rem;
+}
+
 /* État vide */
 .community-empty {
     text-align: center;
