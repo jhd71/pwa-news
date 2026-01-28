@@ -967,7 +967,7 @@ body {
     align-items: center;
     gap: 0.3rem;
     padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     color: white !important;
     font-size: 0.8rem;
     font-weight: 600;
