@@ -725,9 +725,14 @@ async function initCommunity() {
             const commentCount = commentCounts[item.id] || 0;
             return `
             <div class="community-item">
-                <div class="community-item-icon ${item.type || 'actualite'}">
-                    ${getCommunityIcon(item.type)}
+                <!-- HEADER : Emoji + Auteur + Date -->
+                <div class="community-item-header">
+                    <span class="community-item-icon">${getCommunityIcon(item.type)}</span>
+                    <span class="community-item-author">${escapeHtml(item.author || 'Actu & Média')}</span>
+                    <span class="community-item-separator">·</span>
+                    <span class="community-item-date">${formatCommunityDate(item.created_at)}</span>
                 </div>
+                
                 <div class="community-item-content">
                     <div class="community-item-title">${escapeHtml(item.title)}</div>
                     ${item.image_url ? `<div class="community-image-wrapper" onclick="event.stopPropagation(); openImageModal('${item.image_url}')"><img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image"><div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div></div>` : ''}
@@ -737,14 +742,20 @@ async function initCommunity() {
                         <span class="material-icons">expand_more</span>
                     </button>
                     ${item.link ? `<a href="${item.link}" target="_blank" class="community-item-link" onclick="event.stopPropagation()"><span class="material-icons">link</span>Voir le lien</a>` : ''}
-                    <div class="community-item-meta">
-                        ${item.location ? `<span class="community-item-location"><span class="material-icons">location_on</span>${escapeHtml(item.location)}</span>` : ''}
-                        <span><span class="material-icons">person</span>${escapeHtml(item.author || 'Anonyme')}</span>
-                        <span><span class="material-icons">schedule</span>${formatCommunityDate(item.created_at)}</span>
-                        <span class="views-count"><span class="material-icons">visibility</span>${item.views || 0}</span>
+                    
+                    <!-- FOOTER : Lieu + Vues -->
+                    <div class="community-item-footer">
+                        <div class="community-item-location">
+                            <span class="material-icons">place</span>
+                            <span>${escapeHtml(item.location || 'Montceau-les-Mines')}</span>
+                        </div>
+                        <div class="community-item-views">
+                            <span class="material-icons">visibility</span>
+                            <span>${item.views || 0}</span>
+                        </div>
                     </div>
                     
-                    <!-- Actions (Like + Commentaires) -->
+                    <!-- Actions (Like) -->
                     <div class="community-item-actions" onclick="event.stopPropagation()">
                         <button class="like-btn ${userLikes.includes(item.id) ? 'liked' : ''}" id="like-btn-${item.id}" onclick="toggleLike(${item.id}, this)">
                             <span class="material-icons">${userLikes.includes(item.id) ? 'favorite' : 'favorite_border'}</span>
@@ -1426,6 +1437,52 @@ function showToast(title, message) {
         alert(title + '\n' + message);
     }
 }
+
+// ============================================
+// SÉLECTEUR TAILLE DE TEXTE
+// ============================================
+function initFontSizeSelector() {
+    const buttons = document.querySelectorAll('.font-size-btn');
+    
+    if (buttons.length === 0) return;
+    
+    // Charger la préférence sauvegardée
+    const savedSize = localStorage.getItem('fontSize') || 'normal';
+    document.documentElement.setAttribute('data-font-size', savedSize);
+    
+    // Mettre à jour le bouton actif
+    buttons.forEach(btn => {
+        if (btn.dataset.size === savedSize) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    // Ajouter les événements de clic
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const size = btn.dataset.size;
+            
+            // Appliquer la taille
+            document.documentElement.setAttribute('data-font-size', size);
+            
+            // Sauvegarder la préférence
+            localStorage.setItem('fontSize', size);
+            
+            // Mettre à jour les boutons actifs
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            console.log('📏 Taille de texte:', size);
+        });
+    });
+    
+    console.log('✅ Sélecteur taille de texte initialisé');
+}
+
+// Initialiser au chargement
+document.addEventListener('DOMContentLoaded', initFontSizeSelector);
 
 // Exposer globalement
 window.togglePushSubscription = togglePushSubscription;
