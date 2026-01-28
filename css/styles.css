@@ -2550,6 +2550,121 @@ p,
     }
 }
 
+/* ============================================
+   NOUVELLE DISPOSITION CARTES COMMUNAUTÉ
+   ============================================ */
+
+/* Header de la carte (auteur + date en haut) */
+.community-item-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.community-item-header .community-item-icon {
+    font-size: 1.5rem;
+}
+
+.community-item-author {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.community-item-separator {
+    color: var(--text-muted);
+}
+
+.community-item-date {
+    color: var(--text-muted);
+}
+
+/* Footer de la carte (lieu + vues en bas) */
+.community-item-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.community-item-location {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.community-item-location .material-icons {
+    font-size: 1.1rem;
+    color: var(--primary-light);
+}
+
+.community-item-views {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.community-item-views .material-icons {
+    font-size: 1.1rem;
+}
+
+/* Masquer l'ancienne section meta */
+.community-item-meta {
+    display: none;
+}
+
+/* ============================================
+   CORRECTIONS VISIBILITÉ MODE SOMBRE
+   ============================================ */
+
+/* Bouton Commenter - plus visible */
+.comments-toggle-btn {
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    color: #a5b4fc;
+}
+
+.comments-toggle-btn:hover {
+    background: rgba(99, 102, 241, 0.3);
+    color: #c7d2fe;
+}
+
+/* Bouton Voir plus - plus visible */
+.see-more-btn {
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    color: #a5b4fc;
+}
+
+.see-more-btn:hover {
+    background: rgba(99, 102, 241, 0.3);
+    color: #c7d2fe;
+}
+
+/* Liens SEO - plus visibles */
+.seo-section a,
+.seo-section strong {
+    color: #a5b4fc;
+}
+
+[data-theme="light"] .seo-section a,
+[data-theme="light"] .seo-section strong {
+    color: var(--primary);
+}
+
+[data-theme="light"] .comments-toggle-btn,
+[data-theme="light"] .see-more-btn {
+    color: var(--primary);
+}
+
 /* Safe area pour iOS */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
     .footer {
