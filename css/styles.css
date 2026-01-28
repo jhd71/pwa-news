@@ -1,28 +1,31 @@
 /* ============================================
-   ACTU & MÉDIA - Styles Simplifiés v3
+   ACTU & MÉDIA - Styles Optimisés v4
    2 Thèmes : Sombre (défaut) + Clair
+   Nettoyé et sans duplications
    ============================================ */
 
 /* ============================================
-   THÈME SOMBRE (par défaut)
+   THÈME SOMBRE (par défaut) - VARIABLES
    ============================================ */
 :root {
     /* Couleurs principales */
     --primary: #6366f1;
     --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
     --accent: #f472b6;
     
-    /* Fonds */
+    /* Fonds - Valeurs optimisées pour lisibilité */
     --bg-body: #000000;
-    --bg-card: rgba(255, 255, 255, 0.08);
-    --bg-elevated: rgba(255, 255, 255, 0.12);
+    --bg-card: rgba(255, 255, 255, 0.15);
+    --bg-elevated: rgba(255, 255, 255, 0.18);
     
     /* Bordures et ombres */
     --border-color: rgba(255, 255, 255, 0.12);
+    --shadow-color: rgba(0, 0, 0, 0.3);
     
-    /* Textes */
+    /* Textes - Valeurs optimisées pour lisibilité */
     --text-primary: #ffffff;
-    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-secondary: rgba(255, 255, 255, 0.8);
     --text-muted: rgba(255, 255, 255, 0.5);
     
     /* États */
@@ -31,26 +34,27 @@
 }
 
 /* ============================================
-   THÈME CLAIR
+   THÈME CLAIR - VARIABLES
    ============================================ */
 [data-theme="light"] {
     /* Couleurs principales */
     --primary: #4f46e5;
     --primary-light: #6366f1;
+    --primary-dark: #4338ca;
     --accent: #ec4899;
     
-    /* Fonds - Plus doux pour les yeux */
+    /* Fonds */
     --bg-body: #e8ecf1;
-    --bg-card: rgba(255, 255, 255, 0.85);
+    --bg-card: rgba(255, 255, 255, 0.95);
     --bg-elevated: rgba(255, 255, 255, 0.90);
     
-    /* Bordures et ombres - Plus visibles */
+    /* Bordures et ombres */
     --border-color: rgba(0, 0, 0, 0.12);
     --shadow-color: rgba(0, 0, 0, 0.08);
     
     /* Textes */
     --text-primary: #1e293b;
-    --text-secondary: #64748b;
+    --text-secondary: #475569;
     --text-muted: #94a3b8;
 }
 
@@ -65,6 +69,8 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
     background: var(--bg-body);
     color: var(--text-primary);
     min-height: 100vh;
@@ -84,9 +90,8 @@ body {
     align-items: center;
     padding: 0.75rem 1rem;
     border-radius: 0 0 20px 20px;
-    border-top: none;
     gap: 0.6rem;
-    background: var(--bg-card);
+    background: rgb(20 20 20);
     border: 1px solid var(--border-color);
     border-top: none;
 }
@@ -106,7 +111,8 @@ body {
     justify-content: center;
 }
 
-.header-left-btns {
+.header-left-btns,
+.header-right-btns {
     display: flex;
     align-items: center;
     gap: 0.35rem;
@@ -126,239 +132,6 @@ body {
     background-clip: text;
     letter-spacing: -0.5px;
     white-space: nowrap;
-}
-
-/* ============================================
-   MODE CLAIR - Header
-   ============================================ */
-[data-theme="light"] .header {
-    background: rgba(255, 255, 255, 0.95);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-[data-theme="light"] .header-btn {
-    background: rgba(0, 0, 0, 0.05);
-    color: #1e293b;
-}
-
-[data-theme="light"] .header-btn:hover {
-    background: rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .header-title h1 {
-    color: #1e293b;
-}
-
-[data-theme="light"] .theme-toggle {
-    background: rgba(0, 0, 0, 0.05);
-    color: #1e293b;
-}
-
-[data-theme="light"] .header h1 {
-    background: linear-gradient(135deg, #1e293b 0%, var(--primary) 50%, var(--primary-light) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* ============================================
-   MODE CLAIR - Modales
-   ============================================ */
-[data-theme="light"] .modal,
-[data-theme="light"] .modal-content,
-[data-theme="light"] .support-panel,
-[data-theme="light"] .pwa-modal,
-[data-theme="light"] .install-prompt,
-[data-theme="light"] .install-banner {
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-}
-
-[data-theme="light"] .support-panel {
-    background: #ffffff;
-}
-
-[data-theme="light"] .install-prompt,
-[data-theme="light"] .install-banner,
-[data-theme="light"] .pwa-install-banner {
-    background: #ffffff;
-}
-
-/* ============================================
-   MODE CLAIR - Sections et cartes
-   ============================================ */
-[data-theme="light"] .section,
-[data-theme="light"] .card,
-[data-theme="light"] .glass {
-    background: rgb(243 244 247);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-
-[data-theme="light"] .news-carousel,
-[data-theme="light"] .news-item,
-[data-theme="light"] .cinema-section,
-[data-theme="light"] .community-section,
-[data-theme="light"] .quick-links-section,
-[data-theme="light"] .local-sites-section,
-[data-theme="light"] .footer {
-    background: #ffffff4d;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-/* ============================================
-   MODE CLAIR - Boutons et liens rapides
-   ============================================ */
-[data-theme="light"] .quick-link-item,
-[data-theme="light"] .local-site-item {
-    border: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-[data-theme="light"] .quick-link-item:hover,
-[data-theme="light"] .local-site-item:hover {
-    background: rgba(99, 102, 241, 0.1);
-    border-color: var(--primary);
-}
-
-/* ============================================
-   MODE CLAIR - Textes
-   ============================================ */
-[data-theme="light"] .section-title,
-[data-theme="light"] .card-title,
-[data-theme="light"] h1, 
-[data-theme="light"] h2, 
-[data-theme="light"] h3 {
-    color: #1e293b;
-}
-
-[data-theme="light"] p,
-[data-theme="light"] .description,
-[data-theme="light"] .subtitle {
-    color: #64748b;
-}
-
-/* ============================================
-   MODE CLAIR - Widget météo
-   ============================================ */
-[data-theme="light"] .weather-widget {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .weather-widget * {
-    color: #1e293b;
-}
-
-/* ============================================
-   MODE CLAIR - Footer
-   ============================================ */
-[data-theme="light"] .footer {
-    background: rgb(243 244 247);
-    color: #64748b;
-}
-
-[data-theme="light"] .footer a {
-    color: var(--primary);
-}
-
-/* Lien footer en mode sombre */
-.footer a {
-    color: var(--primary-light);
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.footer a:hover {
-    color: var(--accent);
-    text-decoration: underline;
-}
-
-/* ============================================
-   MODE SOMBRE - Sections principales
-   ============================================ */
-.news-carousel,
-.cinema-section,
-.community-section,
-.quick-links-section,
-.local-sites-section,
-.section,
-.card {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Items dans les sections */
-.news-item,
-.cinema-item,
-.community-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.news-item:hover,
-.cinema-item:hover,
-.community-card:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-/* ============================================
-   Header mode sombre
-   ============================================ */
-.header {
-    background: rgb(20 20 20);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* ============================================
-   Footer mode sombre
-   ============================================ */
-.footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* ============================================
-   MODE SOMBRE - Modales avec fond solide
-   ============================================ */
-
-/* Overlay des modales */
-.modal-overlay,
-.support-overlay,
-.pwa-modal-overlay,
-.install-prompt-overlay {
-    background: rgba(0, 0, 0, 0.8);
-}
-
-/* Contenu des modales - fond SOLIDE */
-.modal,
-.modal-content,
-.support-panel,
-.pwa-modal,
-.install-prompt,
-.install-banner {
-    background: #1a1a2e;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-}
-
-/* Panel support */
-.support-panel {
-    background: #1a1a2e;
-}
-
-/* Install prompt / banner */
-.install-prompt,
-.install-banner,
-.pwa-install-banner {
-    background: #1a1a2e;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.header-right-btns {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    flex-shrink: 0;
 }
 
 /* Boutons du header */
@@ -414,6 +187,241 @@ body {
 
 .theme-toggle .material-icons {
     font-size: 1.2rem;
+}
+
+/* ============================================
+   MODE CLAIR - Header
+   ============================================ */
+[data-theme="light"] .header {
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .header-btn {
+    background: rgba(0, 0, 0, 0.05);
+    color: #1e293b;
+}
+
+[data-theme="light"] .header-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .theme-toggle {
+    background: rgba(0, 0, 0, 0.05);
+    color: #1e293b;
+}
+
+[data-theme="light"] .header h1 {
+    background: linear-gradient(135deg, #1e293b 0%, var(--primary) 50%, var(--primary-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ============================================
+   MODE CLAIR - Modales
+   ============================================ */
+[data-theme="light"] .modal,
+[data-theme="light"] .modal-content,
+[data-theme="light"] .support-panel,
+[data-theme="light"] .pwa-modal,
+[data-theme="light"] .install-prompt,
+[data-theme="light"] .install-banner,
+[data-theme="light"] .pwa-install-banner {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   MODE CLAIR - Sections et cartes
+   ============================================ */
+[data-theme="light"] .section,
+[data-theme="light"] .card,
+[data-theme="light"] .glass {
+    background: rgb(243 244 247);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .news-carousel,
+[data-theme="light"] .news-item,
+[data-theme="light"] .cinema-section,
+[data-theme="light"] .community-section,
+[data-theme="light"] .quick-links-section,
+[data-theme="light"] .local-sites-section,
+[data-theme="light"] .footer {
+    background: #ffffff4d;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .tile {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .community-item {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .news-item-content {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   MODE CLAIR - Boutons et liens rapides
+   ============================================ */
+[data-theme="light"] .quick-link-item,
+[data-theme="light"] .local-site-item {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .quick-link-item:hover,
+[data-theme="light"] .local-site-item:hover {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: var(--primary);
+}
+
+/* ============================================
+   MODE CLAIR - Textes
+   ============================================ */
+[data-theme="light"] .section-title,
+[data-theme="light"] .card-title,
+[data-theme="light"] h1, 
+[data-theme="light"] h2, 
+[data-theme="light"] h3 {
+    color: #1e293b;
+}
+
+[data-theme="light"] p,
+[data-theme="light"] .description,
+[data-theme="light"] .subtitle,
+[data-theme="light"] .community-item-desc,
+[data-theme="light"] .seo-section p {
+    color: #334155 !important;
+}
+
+/* ============================================
+   MODE CLAIR - Widget météo
+   ============================================ */
+[data-theme="light"] .weather-widget {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .weather-widget * {
+    color: #1e293b;
+}
+
+[data-theme="light"] .weather-bar {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   MODE CLAIR - Footer
+   ============================================ */
+[data-theme="light"] .footer {
+    background: rgb(243 244 247);
+    color: #64748b;
+}
+
+[data-theme="light"] .footer a {
+    color: var(--primary);
+}
+
+/* ============================================
+   MODE SOMBRE - Sections principales
+   ============================================ */
+.news-carousel,
+.cinema-section,
+.community-section,
+.quick-links-section,
+.local-sites-section,
+.section,
+.card {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Items dans les sections */
+.news-item,
+.cinema-item,
+.community-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.news-item:hover,
+.cinema-item:hover,
+.community-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   MODE SOMBRE - Modales avec fond solide
+   ============================================ */
+.modal-overlay,
+.support-overlay,
+.pwa-modal-overlay,
+.install-prompt-overlay {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.modal,
+.modal-content,
+.support-panel,
+.pwa-modal,
+.install-prompt,
+.install-banner,
+.pwa-install-banner {
+    background: #1a1a2e;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+    margin: 1rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border-radius: 20px;
+    text-align: center;
+    box-sizing: border-box;
+    background: rgb(77 77 77);
+    border: 1px solid var(--border-color);
+}
+
+.footer a {
+    color: var(--primary-light);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+.footer p {
+    font-size: 0.8rem;
+    color: var(--text-primary);
+}
+
+.footer-sub {
+    margin-top: 0.5rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+@media (min-width: 768px) {
+    .footer {
+        margin: 1rem auto;
+        margin-bottom: 2rem;
+    }
 }
 
 /* ============================================
@@ -609,7 +617,6 @@ body {
     display: none;
 }
 
-/* Image par défaut quand aucune image n'est fournie */
 .news-item-image.no-image {
     display: flex;
     align-items: center;
@@ -640,7 +647,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 1rem;
+    padding: 1.2rem;
     flex: 1;
     min-width: 0;
 }
@@ -661,9 +668,9 @@ body {
 }
 
 .news-item-title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    line-height: 1.4;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.3;
     margin-bottom: 0.5rem;
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -677,42 +684,7 @@ body {
     margin-top: auto;
 }
 
-/* Mobile : image en haut */
-@media (max-width: 480px) {
-    .news-item {
-        flex-direction: column;
-        min-height: auto;
-    }
-
-    .news-item-image {
-        width: 100%;
-        min-width: 100%;
-        height: 200px;
-        min-height: 200px;
-        border-radius: 12px;
-        overflow: hidden;
-    }
-
-    .news-item-image img {
-        object-fit: cover;
-        object-position: center;
-    }
-
-    .news-item-image.no-image {
-        background-size: cover;
-        background-position: center;
-    }
-
-    .news-item-content {
-        padding: 0.75rem;
-    }
-
-    .news-item-title {
-        -webkit-line-clamp: 3;
-        font-size: 0.9rem;
-    }
-}
-
+/* Navigation ticker */
 .news-ticker-nav {
     display: flex;
     justify-content: center;
@@ -762,48 +734,6 @@ body {
     transform: scale(1.2);
 }
 
-/* Swiper PC */
-@media (min-width: 769px) {
-    .news-ticker-container {
-        min-height: auto;
-    }
-    
-    .news-item {
-        min-height: 180px;
-        max-height: 200px;
-    }
-    
-    .news-item-image {
-        height: 180px;
-        min-height: 180px;
-        max-height: 200px;
-    }
-    
-    .news-ticker-nav {
-        margin-top: 0.75rem;
-    }
-}
-
-/* Grand écran PC */
-@media (min-width: 1024px) {
-    .news-ticker-section {
-        padding: 1.25rem;
-    }
-    
-    .news-item {
-        min-height: 160px;
-        max-height: 180px;
-    }
-    
-    .news-item-image {
-        width: 180px;
-        min-width: 180px;
-        height: 160px;
-        min-height: 160px;
-        max-height: 180px;
-    }
-}
-
 /* ============================================
    TUILES SITES LOCAUX
    ============================================ */
@@ -816,7 +746,8 @@ body {
     align-items: center;
     gap: 0.5rem;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     color: var(--text-secondary);
     margin-bottom: 1rem;
     padding: 0 0.5rem;
@@ -825,6 +756,12 @@ body {
 .section-title .material-icons {
     font-size: 1.25rem;
     color: var(--primary-light);
+}
+
+/* Titres de section */
+h2, h3 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
 }
 
 .tiles-grid {
@@ -1045,23 +982,36 @@ body {
 
 .cinema-film {
     display: block;
-    padding: 1rem;
+    padding: 1.2rem;
     background: var(--bg-elevated);
     border-radius: 12px;
     text-decoration: none;
     color: inherit;
     transition: all 0.3s ease;
     flex-shrink: 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+}
+
+.cinema-film:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
 }
 
 .cinema-film:hover {
     background: rgba(99, 102, 241, 0.1);
 }
 
+/* Mode clair - séparation plus visible */
+[data-theme="light"] .cinema-film {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
 .cinema-film-title {
-    font-weight: 600;
-    font-size: 0.95rem;
-    margin-bottom: 0.25rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
     color: var(--text-primary);
 }
 
@@ -1259,154 +1209,6 @@ body {
 }
 
 /* ============================================
-   FOOTER
-   ============================================ */
-.footer {
-    margin: 1rem;
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    border-radius: 20px;
-    text-align: center;
-    box-sizing: border-box;
-    background: rgb(77 77 77);
-    border: 1px solid var(--border-color);
-}
-
-@media (min-width: 768px) {
-    .footer {
-        margin: 1rem auto;
-        margin-bottom: 2rem;
-    }
-}
-
-.footer p {
-    font-size: 0.8rem;
-    color: var(--text-primary);
-}
-
-.footer-sub {
-    margin-top: 0.5rem;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-}
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-@media (max-width: 480px) {
-    .install-prompt-content {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .install-prompt-actions {
-        width: 100%;
-        justify-content: center;
-    }
-}
-
-/* Tablette (768px - 1024px) */
-@media (min-width: 768px) and (max-width: 1024px) {
-    .tiles-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-    
-    .news-ticker-section,
-    .cinema-section,
-    .community-section,
-    .seo-section,
-    .tiles-section,
-    .footer {
-        max-width: 900px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .header {
-        max-width: 900px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .cinema-films {
-        max-height: 350px;
-    }
-}
-
-/* PC (> 1024px) */
-@media (min-width: 1025px) {
-    .tiles-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.5rem;
-    }
-    
-    .news-ticker-section,
-    .cinema-section,
-    .community-section,
-    .seo-section,
-    .tiles-section,
-    .footer {
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .header {
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .cinema-films {
-        max-height: 400px;
-    }
-    
-    .news-item {
-        min-height: 160px;
-        padding: 0.5rem;
-    }
-    
-    .news-item-title {
-        font-size: 1.15rem;
-    }
-    
-    .tile {
-        padding: 2rem 1.5rem;
-    }
-    
-    .tile-icon {
-        font-size: 3rem;
-    }
-    
-    .tile-name {
-        font-size: 1rem;
-    }
-}
-
-/* Safe area pour iOS */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-    .footer {
-        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
-    }
-    
-    .install-prompt {
-        padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
-    }
-}
-
-/* ============================================
-   ANIMATIONS
-   ============================================ */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.fade-in {
-    animation: fadeIn 0.5s ease forwards;
-}
-
-/* ============================================
    SECTION SEO
    ============================================ */
 .seo-section {
@@ -1437,6 +1239,9 @@ body {
     line-height: 1.6;
     color: var(--text-secondary);
     margin-bottom: 0.75rem;
+    max-width: 75ch;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .seo-section p:last-child {
@@ -1643,7 +1448,7 @@ body {
 .community-item {
     display: flex;
     gap: 1rem;
-    padding: 1rem;
+    padding: 1.2rem;
     background: var(--bg-elevated);
     border-radius: 12px;
     border: 1px solid var(--border-color);
@@ -1669,19 +1474,39 @@ body {
 }
 
 .community-item-title {
-    font-weight: 600;
-    font-size: 0.95rem;
+    font-weight: 700;
+    font-size: 1.05rem;
+    line-height: 1.3;
     color: var(--text-primary);
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.5rem;
 }
 
 .community-item-desc {
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     line-height: 1.5;
     margin-bottom: 0.5rem;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
+    max-height: 80px;
     overflow: hidden;
+    position: relative;
+    transition: max-height 0.3s ease;
+    max-width: 75ch;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.community-item-desc.expanded {
+    max-height: 2000px;
+}
+
+.community-item-desc:not(.expanded).truncated::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(transparent, var(--bg-card));
+    pointer-events: none;
 }
 
 .community-item.expanded .community-item-desc {
@@ -1742,20 +1567,6 @@ body {
 
 .community-image-wrapper:hover .community-image-zoom {
     opacity: 1;
-}
-
-/* Sur mobile, toujours visible mais plus discret */
-@media (max-width: 767px) {
-    .community-image-zoom {
-        opacity: 1;
-        padding: 0.5rem;
-        font-size: 0.75rem;
-        background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
-    }
-    
-    .community-image-zoom .material-icons {
-        font-size: 1rem;
-    }
 }
 
 /* Image dans les items communauté */
@@ -1871,89 +1682,64 @@ body {
     background: rgba(255, 255, 255, 0.25);
 }
 
-/* === MEDIA QUERIES IMAGES COMMUNAUTÉ === */
-
-/* Grand écran / PC (> 1024px) */
-@media (min-width: 1025px) {
-    .community-item-image {
-        max-height: 250px;
-    }
-    
-    .image-modal-content {
-        max-width: 80vw;
-    }
-    
-    .image-modal-content img {
-        max-width: 80vw;
-        max-height: 85vh;
-    }
+/* Bouton Voir plus / Voir moins */
+.see-more-btn {
+    display: none;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem 0.8rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.75rem;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 20px;
+    color: var(--primary-light);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-/* Tablette (768px - 1024px) */
-@media (min-width: 768px) and (max-width: 1024px) {
-    .community-item-image {
-        max-height: 220px;
-    }
-    
-    .image-modal-content img {
-        max-width: 90vw;
-        max-height: 80vh;
-    }
+.see-more-btn.visible {
+    display: inline-flex;
 }
 
-/* Mobile (< 768px) */
-@media (max-width: 767px) {
-    .community-item-image {
-        max-height: 250px;
-        border-radius: 10px;
-        margin: 0.5rem auto;
-    }
-    
-    .image-modal {
-        padding: 0.5rem;
-    }
-    
-    .image-modal-content {
-        max-width: 98vw;
-    }
-    
-    .image-modal-content img {
-        max-width: 98vw;
-        max-height: 75vh;
-        border-radius: 4px;
-    }
-    
-    .image-modal-close {
-        top: -40px;
-        width: 36px;
-        height: 36px;
-    }
+.see-more-btn:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.4);
 }
 
-/* Petit mobile (< 480px) */
-@media (max-width: 479px) {
-    .community-item-image {
-        max-height: 220px;
-        border-radius: 8px;
-        margin: 0.5rem auto;
-    }
-    
-    .image-modal-content img {
-        max-width: 100vw;
-        max-height: 70vh;
-        border-radius: 0;
-    }
-    
-    .image-modal-close {
-        top: 10px;
-        right: 10px;
-        position: fixed;
-    }
-    
-    .community-item-link {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
-    }
+.see-more-btn .material-icons {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.see-more-btn.expanded .material-icons {
+    transform: rotate(180deg);
+}
+
+/* État vide communauté */
+.community-empty {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-muted);
+}
+
+.community-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+    opacity: 0.5;
+}
+
+.community-empty p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.community-empty-sub {
+    font-size: 0.8rem !important;
+    margin-top: 0.35rem !important;
+    opacity: 0.7;
 }
 
 /* === COMMENTAIRES === */
@@ -2033,12 +1819,10 @@ body {
 
 .comment-item-date {
     font-size: 0.7rem;
-    /*color: var(--text-muted);*/
 }
 
 .comment-item-content {
     font-size: 0.85rem;
-    /*color: var(--text-secondary);*/
     line-height: 1.5;
 }
 
@@ -2229,90 +2013,8 @@ body {
     font-size: 1rem;
 }
 
-/* Système Voir plus / Voir moins */
-.community-item-desc {
-    max-height: 80px;
-    overflow: hidden;
-    position: relative;
-    transition: max-height 0.3s ease;
-}
-
-.community-item-desc.expanded {
-    max-height: 2000px;
-}
-
-.community-item-desc:not(.expanded).truncated::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 40px;
-    background: linear-gradient(transparent, var(--bg-card));
-    pointer-events: none;
-}
-
-.see-more-btn {
-    display: none;
-    align-items: center;
-    gap: 0.3rem;
-    padding: 0.4rem 0.8rem;
-    margin-top: 0.5rem;
-    margin-bottom: 0.75rem;
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    border-radius: 20px;
-    color: var(--primary-light);
-    font-size: 0.8rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.see-more-btn.visible {
-    display: inline-flex;
-}
-
-.see-more-btn:hover {
-    background: rgba(99, 102, 241, 0.2);
-    border-color: rgba(99, 102, 241, 0.4);
-}
-
-.see-more-btn .material-icons {
-    font-size: 1rem;
-    transition: transform 0.3s ease;
-}
-
-.see-more-btn.expanded .material-icons {
-    transform: rotate(180deg);
-}
-
-/* État vide */
-.community-empty {
-    text-align: center;
-    padding: 2rem 1rem;
-    color: var(--text-muted);
-}
-
-.community-empty-icon {
-    font-size: 3rem;
-    margin-bottom: 0.75rem;
-    opacity: 0.5;
-}
-
-.community-empty p {
-    margin: 0;
-    font-size: 0.95rem;
-}
-
-.community-empty-sub {
-    font-size: 0.8rem !important;
-    margin-top: 0.35rem !important;
-    opacity: 0.7;
-}
-
 /* ============================================
-   SECTION ADMIN (dans widget support)
+   SECTION ADMIN
    ============================================ */
 .admin-section {
     padding: 1rem;
@@ -2545,130 +2247,422 @@ body {
     color: var(--text-primary);
 }
 
-/* Amélioration globale du texte */
-body {
-    /* Augmenter légèrement la taille de base */
-    font-size: 16px; 
-    /* Améliorer l'espacement entre les lignes pour la lecture */
-    line-height: 1.6; 
-}
-
+/* ============================================
+   AMÉLIORATION GLOBALE DU TEXTE
+   ============================================ */
 /* Texte plus clair et plus grand dans les descriptions */
 p, 
 .description, 
 .community-item-desc, 
 .seo-section p, 
 .news-item-content {
-    /* Éviter le gris trop sombre en mode dark */
     color: rgba(255, 255, 255, 0.85) !important; 
-    font-size: 0.95rem; /* Environ 15.2px */
+    font-size: 0.95rem;
 }
 
-/* En mode clair, on fonce le gris pour le contraste */
-[data-theme="light"] p,
-[data-theme="light"] .description,
-[data-theme="light"] .community-item-desc,
-[data-theme="light"] .seo-section p {
-    color: #334155 !important; /* Gris ardoise foncé */
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-[data-theme="light"] .news-item-content {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
 }
 
-/* Améliorations mode clair */
-[data-theme="light"] .tile {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-[data-theme="light"] .weather-bar {
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .community-item {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-/* Titres des cartes (News, Communauté, Cinéma) */
-.news-item-title, 
-.community-item-title, 
-.cinema-film-title {
-    font-size: 1.05rem; /* Plus grand */
-    font-weight: 700;   /* Plus gras */
-    line-height: 1.3;   /* Interligne plus serré pour les titres */
-    margin-bottom: 0.5rem;
-    color: var(--text-primary); /* Blanc pur en dark mode */
-}
-
-/* Titres de section */
-.section-title, 
-h2, h3 {
-    font-weight: 800; /* Très gras */
-    letter-spacing: -0.02em; /* Resserrement léger pour un look moderne */
-}
-
-/* Mode Sombre : Fond un peu plus opaque pour mieux lire */
-:root {
-    /* Passer de 0.08 à 0.15 pour plus de lisibilité */
-    --bg-card: rgba(255, 255, 255, 0.15); 
-    --bg-elevated: rgba(255, 255, 255, 0.18);
-    
-    /* Texte secondaire plus clair (passer de 0.7 à 0.8) */
-    --text-secondary: rgba(255, 255, 255, 0.8);
-}
-
-/* Mode Clair : Fond plus blanc */
-[data-theme="light"] {
-    --bg-card: rgba(255, 255, 255, 0.95);
-    --text-secondary: #475569; /* Gris plus soutenu */
-}
-
-.news-item-content, 
-.community-item, 
-.cinema-film {
-    padding: 1.2rem; /* Plus d'espace intérieur */
-}
-
-/* Limiter la longueur des lignes de texte (confort de lecture) */
-.seo-section p, 
-.community-item-desc {
-    max-width: 75ch; /* ~75 caractères par ligne max */
-    margin-left: auto;
-    margin-right: auto;
-}
-
+/* ============================================
+   RESPONSIVE - Mobile
+   ============================================ */
 @media (max-width: 480px) {
     body {
-        font-size: 15px; /* Légèrement plus petit mais lisible */
+        font-size: 15px;
     }
     
+    .news-item {
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .news-item-image {
+        width: 100%;
+        min-width: 100%;
+        height: 200px;
+        min-height: 200px;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .news-item-image img {
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .news-item-image.no-image {
+        background-size: cover;
+        background-position: center;
+    }
+
+    .news-item-content {
+        padding: 0.75rem;
+    }
+
     .news-item-title {
+        -webkit-line-clamp: 3;
         font-size: 1rem;
     }
     
-    /* Espacement plus grand entre les paragraphes */
     p {
         margin-bottom: 1rem;
     }
+    
+    .install-prompt-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .install-prompt-actions {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .community-image-zoom {
+        opacity: 1;
+        padding: 0.5rem;
+        font-size: 0.75rem;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+    }
+    
+    .community-image-zoom .material-icons {
+        font-size: 1rem;
+    }
+    
+    .community-item-image {
+        max-height: 250px;
+        border-radius: 10px;
+        margin: 0.5rem auto;
+    }
+    
+    .image-modal {
+        padding: 0.5rem;
+    }
+    
+    .image-modal-content {
+        max-width: 98vw;
+    }
+    
+    .image-modal-content img {
+        max-width: 98vw;
+        max-height: 75vh;
+        border-radius: 4px;
+    }
+    
+    .image-modal-close {
+        top: -40px;
+        width: 36px;
+        height: 36px;
+    }
 }
 
-/* Séparation des séances cinéma */
-.cinema-film {
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
+/* Petit mobile (< 480px) */
+@media (max-width: 479px) {
+    .community-item-image {
+        max-height: 220px;
+        border-radius: 8px;
+        margin: 0.5rem auto;
+    }
+    
+    .image-modal-content img {
+        max-width: 100vw;
+        max-height: 70vh;
+        border-radius: 0;
+    }
+    
+    .image-modal-close {
+        top: 10px;
+        right: 10px;
+        position: fixed;
+    }
+    
+    .community-item-link {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
 }
 
-.cinema-film:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
+/* ============================================
+   RESPONSIVE - Tablette (768px - 1024px)
+   ============================================ */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .tiles-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .news-ticker-section,
+    .cinema-section,
+    .community-section,
+    .seo-section,
+    .tiles-section,
+    .footer {
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .header {
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .cinema-films {
+        max-height: 350px;
+    }
+    
+    .community-item-image {
+        max-height: 220px;
+    }
+    
+    .image-modal-content img {
+        max-width: 90vw;
+        max-height: 80vh;
+    }
 }
 
-/* Mode clair - séparation plus visible */
-[data-theme="light"] .cinema-film {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+/* Swiper PC */
+@media (min-width: 769px) {
+    .news-ticker-container {
+        min-height: auto;
+    }
+    
+    .news-item {
+        min-height: 180px;
+        max-height: 200px;
+    }
+    
+    .news-item-image {
+        height: 180px;
+        min-height: 180px;
+        max-height: 200px;
+    }
+    
+    .news-ticker-nav {
+        margin-top: 0.75rem;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - PC (> 1024px)
+   ============================================ */
+@media (min-width: 1025px) {
+    .tiles-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
+    
+    .news-ticker-section,
+    .cinema-section,
+    .community-section,
+    .seo-section,
+    .tiles-section,
+    .footer {
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .header {
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .cinema-films {
+        max-height: 400px;
+    }
+    
+    .news-ticker-section {
+        padding: 1.25rem;
+    }
+    
+    .news-item {
+        min-height: 160px;
+        max-height: 180px;
+        padding: 0.5rem;
+    }
+    
+    .news-item-image {
+        width: 180px;
+        min-width: 180px;
+        height: 160px;
+        min-height: 160px;
+        max-height: 180px;
+    }
+    
+    .news-item-title {
+        font-size: 1.15rem;
+    }
+    
+    .tile {
+        padding: 2rem 1.5rem;
+    }
+    
+    .tile-icon {
+        font-size: 3rem;
+    }
+    
+    .tile-name {
+        font-size: 1rem;
+    }
+    
+    .community-item-image {
+        max-height: 250px;
+    }
+    
+    .image-modal-content {
+        max-width: 80vw;
+    }
+    
+    .image-modal-content img {
+        max-width: 80vw;
+        max-height: 85vh;
+    }
+}
+
+/* Grand écran PC */
+@media (min-width: 1024px) {
+    .news-ticker-section {
+        padding: 1.25rem;
+    }
+    
+    .news-item {
+        min-height: 160px;
+        max-height: 180px;
+    }
+    
+    .news-item-image {
+        width: 180px;
+        min-width: 180px;
+        height: 160px;
+        min-height: 160px;
+        max-height: 180px;
+    }
+}
+
+/* Safe area pour iOS */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .footer {
+        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    }
+    
+    .install-prompt {
+        padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
+    }
+}
+
+/* ============================================
+   ACCESSIBILITÉ - TAILLE POLICE
+   ============================================ */
+.accessibility-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.6rem 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    margin: 0.5rem 1rem 1rem 1rem;
+}
+
+.font-size-group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.font-size-group-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.font-size-buttons {
+    display: flex;
+    gap: 0.2rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 0.15rem;
+}
+
+.font-size-btn {
+    padding: 0.3rem 0.5rem;
+    background: transparent;
+    border: none;
+    border-radius: 5px;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.font-size-btn:hover {
+    color: var(--text-secondary);
+}
+
+.font-size-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* Toggle Confort */
+.comfort-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.comfort-toggle-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.comfort-switch {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.comfort-switch.active {
+    background: var(--primary);
+}
+
+.comfort-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.comfort-switch.active::after {
+    transform: translateX(16px);
+}
+
+/* Application des tailles de police */
+[data-font-size="large"] {
+    font-size: 112%;
+}
+
+/* Mode Confort - Bionic Reading */
+.bionic-bold {
+    font-weight: 700;
 }
