@@ -2564,9 +2564,24 @@ p,
     color: #334155 !important; /* Gris ardoise foncé */
 }
 
-[data-theme="light"] .community-item,
 [data-theme="light"] .news-item-content {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Améliorations mode clair */
+[data-theme="light"] .tile {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .weather-bar {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .community-item {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 /* Titres des cartes (News, Communauté, Cinéma) */
