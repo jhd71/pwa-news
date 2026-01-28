@@ -192,7 +192,7 @@ body {
 [data-theme="light"] .section,
 [data-theme="light"] .card,
 [data-theme="light"] .glass {
-    background: rgb(254 254 254);
+    background: rgb(243 244 247);
     border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
@@ -255,7 +255,7 @@ body {
    MODE CLAIR - Footer
    ============================================ */
 [data-theme="light"] .footer {
-    background: rgba(255, 255, 255, 0.98);
+    background: rgb(243 244 247);
     color: #64748b;
 }
 
