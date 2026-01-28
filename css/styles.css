@@ -962,19 +962,21 @@ body {
     color: var(--danger);
 }
 
-.cinema-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    padding: 0.5rem 1rem;
+.cinema-link {   
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.2rem 0.7rem;
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-    color: white !important;
+    color: white;
     font-size: 0.8rem;
     font-weight: 600;
-    border-radius: 20px;
     text-decoration: none;
     transition: all 0.3s ease;
     box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    align-items: center;
 }
 
 .cinema-link:hover {
