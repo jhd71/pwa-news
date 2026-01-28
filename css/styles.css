@@ -2614,3 +2614,55 @@ p,
     background: var(--primary);
     color: white;
 }
+
+/* Toggle Confort */
+.comfort-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.comfort-toggle-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.comfort-switch {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.comfort-switch.active {
+    background: var(--primary);
+}
+
+.comfort-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.comfort-switch.active::after {
+    transform: translateX(16px);
+}
+
+/* Application des tailles de police */
+[data-font-size="large"] {
+    font-size: 112%;
+}
+
+/* Mode Confort - Bionic Reading */
+.bionic-bold {
+    font-weight: 700;
+}
