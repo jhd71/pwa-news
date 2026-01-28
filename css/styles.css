@@ -1520,7 +1520,6 @@ h2, h3 {
     gap: 0.75rem;
     font-size: 0.75rem;
     justify-content: flex-start;
-    align-items: baseline;
 }
 
 .community-item-meta span {
