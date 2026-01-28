@@ -1020,6 +1020,7 @@ h2, h3 {
     gap: 1rem;
     font-size: 0.75rem;
     margin-bottom: 0.5rem;
+	flex-direction: column;
 }
 
 .cinema-film-times {
