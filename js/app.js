@@ -1,5 +1,5 @@
 // ============================================
-// ACCESSIBILITÉ - TAILLE POLICE ET CONFORT
+// ACCESSIBILITÉ - TAILLE POLICE ET BIONIC READING
 // ============================================
 function setFontSize(size) {
     document.documentElement.setAttribute('data-font-size', size);
@@ -9,16 +9,134 @@ function setFontSize(size) {
     });
 }
 
+// Bionic Reading - stockage du contenu original
+const bionicOriginals = new Map();
+let bionicActive = false;
+
+function applyBionicReading(element) {
+    if (!element || element.dataset.bionicProcessed) return;
+    
+    const walker = document.createTreeWalker(
+        element,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+    );
+    
+    const textNodes = [];
+    while (walker.nextNode()) {
+        if (walker.currentNode.textContent.trim().length > 0) {
+            textNodes.push(walker.currentNode);
+        }
+    }
+    
+    textNodes.forEach(node => {
+        const text = node.textContent;
+        const words = text.split(/(\s+)/);
+        
+        const fragment = document.createDocumentFragment();
+        
+        words.forEach(word => {
+            if (word.trim().length === 0) {
+                fragment.appendChild(document.createTextNode(word));
+                return;
+            }
+            
+            // Calculer combien de lettres mettre en gras (environ 40-50% du mot)
+            const boldLength = Math.ceil(word.length * 0.45);
+            const boldPart = word.substring(0, boldLength);
+            const normalPart = word.substring(boldLength);
+            
+            const span = document.createElement('span');
+            span.className = 'bionic-word';
+            
+            const bold = document.createElement('b');
+            bold.className = 'bionic-bold';
+            bold.textContent = boldPart;
+            
+            span.appendChild(bold);
+            span.appendChild(document.createTextNode(normalPart));
+            
+            fragment.appendChild(span);
+        });
+        
+        node.parentNode.replaceChild(fragment, node);
+    });
+    
+    element.dataset.bionicProcessed = 'true';
+}
+
+function removeBionicReading(element) {
+    if (!element || !element.dataset.bionicProcessed) return;
+    
+    const bionicWords = element.querySelectorAll('.bionic-word');
+    bionicWords.forEach(span => {
+        const text = span.textContent;
+        const textNode = document.createTextNode(text);
+        span.parentNode.replaceChild(textNode, span);
+    });
+    
+    delete element.dataset.bionicProcessed;
+}
+
+function getBionicTargets() {
+    return document.querySelectorAll(
+        '.community-item-desc, ' +
+        '.community-item-title, ' +
+        '.news-content, ' +
+        '.news-title, ' +
+        '.tile-title, ' +
+        '.quick-link-name, ' +
+        '.quick-link-desc, ' +
+        '.support-about p, ' +
+        '.cinema-title, ' +
+        '.cinema-genre, ' +
+        '.swiper-slide p, ' +
+        '.weather-day-label'
+    );
+}
+
 function toggleComfort() {
-    const isActive = document.documentElement.getAttribute('data-comfort') === 'true';
-    const newValue = !isActive;
-    document.documentElement.setAttribute('data-comfort', newValue);
-    localStorage.setItem('comfort-mode', newValue);
+    bionicActive = !bionicActive;
+    localStorage.setItem('comfort-mode', bionicActive);
     
     const switchEl = document.getElementById('comfortSwitch');
     if (switchEl) {
-        switchEl.classList.toggle('active', newValue);
+        switchEl.classList.toggle('active', bionicActive);
     }
+    
+    const targets = getBionicTargets();
+    
+    if (bionicActive) {
+        targets.forEach(el => applyBionicReading(el));
+    } else {
+        targets.forEach(el => removeBionicReading(el));
+    }
+}
+
+// Observer pour appliquer Bionic aux nouveaux contenus
+function setupBionicObserver() {
+    if (!bionicActive) return;
+    
+    const observer = new MutationObserver((mutations) => {
+        if (!bionicActive) return;
+        
+        mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+                if (node.nodeType === 1) {
+                    const targets = node.querySelectorAll ? 
+                        node.querySelectorAll('.community-item-desc, .community-item-title, .news-content') : [];
+                    targets.forEach(el => applyBionicReading(el));
+                    
+                    if (node.matches && node.matches('.community-item-desc, .community-item-title')) {
+                        applyBionicReading(node);
+                    }
+                }
+            });
+        });
+    });
+    
+    observer.observe(document.body, { childList: true, subtree: true });
 }
 
 // Charger les préférences au démarrage
@@ -27,7 +145,7 @@ function toggleComfort() {
     const savedComfort = localStorage.getItem('comfort-mode') === 'true';
     
     document.documentElement.setAttribute('data-font-size', savedSize);
-    document.documentElement.setAttribute('data-comfort', savedComfort);
+    bionicActive = savedComfort;
     
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.font-size-btn').forEach(btn => {
@@ -37,6 +155,15 @@ function toggleComfort() {
         const switchEl = document.getElementById('comfortSwitch');
         if (switchEl && savedComfort) {
             switchEl.classList.add('active');
+        }
+        
+        // Appliquer Bionic Reading si activé
+        if (savedComfort) {
+            setTimeout(() => {
+                const targets = getBionicTargets();
+                targets.forEach(el => applyBionicReading(el));
+                setupBionicObserver();
+            }, 500);
         }
     });
 })();
