@@ -1484,6 +1484,44 @@ function initFontSizeSelector() {
 // Initialiser au chargement
 document.addEventListener('DOMContentLoaded', initFontSizeSelector);
 
+// ============================================
+// MODE LECTURE
+// ============================================
+function initReadingMode() {
+    const btn = document.getElementById('readingModeBtn');
+    if (!btn) return;
+    
+    // Charger la préférence sauvegardée
+    const savedMode = localStorage.getItem('readingMode') === 'true';
+    if (savedMode) {
+        document.documentElement.setAttribute('data-reading-mode', 'true');
+        btn.classList.add('active');
+    }
+    
+    // Événement clic
+    btn.addEventListener('click', () => {
+        const isActive = btn.classList.contains('active');
+        
+        if (isActive) {
+            // Désactiver le mode lecture
+            document.documentElement.removeAttribute('data-reading-mode');
+            btn.classList.remove('active');
+            localStorage.setItem('readingMode', 'false');
+            console.log('📖 Mode lecture désactivé');
+        } else {
+            // Activer le mode lecture
+            document.documentElement.setAttribute('data-reading-mode', 'true');
+            btn.classList.add('active');
+            localStorage.setItem('readingMode', 'true');
+            console.log('📖 Mode lecture activé');
+        }
+    });
+    
+    console.log('✅ Mode lecture initialisé');
+}
+
+document.addEventListener('DOMContentLoaded', initReadingMode);
+
 // Exposer globalement
 window.togglePushSubscription = togglePushSubscription;
 window.showNotifPrompt = showNotifPrompt;
