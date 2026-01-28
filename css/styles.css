@@ -2321,25 +2321,53 @@ body {
     font-size: 112%;
 }
 
-/* Mode Confort - meilleure lisibilité */
-[data-comfort="true"] .community-item-desc,
-[data-comfort="true"] .community-item-title,
-[data-comfort="true"] .community-item-content,
-[data-comfort="true"] p,
-[data-comfort="true"] .quick-link-name,
-[data-comfort="true"] .support-about p,
-[data-comfort="true"] .news-title,
-[data-comfort="true"] .news-content {
-    letter-spacing: 0.03em;
-    word-spacing: 0.08em;
-    line-height: 1.6;
-    text-shadow: 0 0 1px rgba(255, 255, 255, 0.2);
+/* Mode Confort - texte avec relief pour meilleure visibilité */
+[data-comfort="true"] {
+    --comfort-shadow: 
+        0 1px 0 rgba(255, 255, 255, 0.1),
+        0 -1px 0 rgba(0, 0, 0, 0.3),
+        1px 0 0 rgba(0, 0, 0, 0.2),
+        -1px 0 0 rgba(0, 0, 0, 0.2),
+        0 0 3px rgba(0, 0, 0, 0.4);
 }
 
+[data-comfort="true"] * {
+    text-shadow: var(--comfort-shadow) !important;
+}
+
+[data-comfort="true"] h1,
+[data-comfort="true"] h2,
+[data-comfort="true"] h3,
+[data-comfort="true"] .header-title h1,
 [data-comfort="true"] .community-item-title,
 [data-comfort="true"] .quick-link-name,
-[data-comfort="true"] .news-title {
-    font-weight: 600;
+[data-comfort="true"] .tile-title {
+    text-shadow: 
+        0 2px 0 rgba(0, 0, 0, 0.4),
+        0 -1px 0 rgba(255, 255, 255, 0.15),
+        1px 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Mode light - ajuster les ombres */
+[data-theme="light"][data-comfort="true"] {
+    --comfort-shadow: 
+        0 1px 0 rgba(255, 255, 255, 0.8),
+        0 -1px 0 rgba(0, 0, 0, 0.1),
+        1px 0 0 rgba(0, 0, 0, 0.08),
+        -1px 0 0 rgba(0, 0, 0, 0.08),
+        0 0 2px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"][data-comfort="true"] h1,
+[data-theme="light"][data-comfort="true"] h2,
+[data-theme="light"][data-comfort="true"] h3,
+[data-theme="light"][data-comfort="true"] .header-title h1,
+[data-theme="light"][data-comfort="true"] .community-item-title,
+[data-theme="light"][data-comfort="true"] .quick-link-name,
+[data-theme="light"][data-comfort="true"] .tile-title {
+    text-shadow: 
+        0 1px 0 rgba(255, 255, 255, 0.9),
+        0 1px 2px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* Système Voir plus / Voir moins */
