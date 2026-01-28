@@ -2565,6 +2565,11 @@ p,
     color: #334155 !important; /* Gris ardoise foncé */
 }
 
+[data-theme="light"] .community-item,
+[data-theme="light"] .news-item-content {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 /* Titres des cartes (News, Communauté, Cinéma) */
 .news-item-title, 
 .community-item-title, 
