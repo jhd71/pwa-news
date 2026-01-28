@@ -844,7 +844,7 @@ body {
     color: inherit;
     transition: all 0.3s ease;
     text-align: center;
-    background: rgb(49 49 49);
+    background: rgb(77 77 77);
     border: 1px solid var(--border-color);
 }
 
@@ -1260,7 +1260,7 @@ body {
     border-radius: 20px;
     text-align: center;
     box-sizing: border-box;
-    background: rgb(49 49 49);
+    background: rgb(77 77 77);
     border: 1px solid var(--border-color);
 }
 
@@ -1407,7 +1407,7 @@ body {
     border-radius: 20px;
     text-align: center;
     box-sizing: border-box;
-    background: rgb(49 49 49);
+    background: rgb(77 77 77);
     border: 1px solid var(--border-color);
 }
 
@@ -1683,11 +1683,10 @@ body {
 
 .community-item-meta {
     display: flex;
-    align-items: center;
     gap: 0.75rem;
     font-size: 0.75rem;
-    flex-wrap: wrap;
-	align-items: baseline;
+    justify-content: flex-start;
+    align-items: baseline;
 }
 
 .community-item-meta span {
