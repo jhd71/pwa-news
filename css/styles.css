@@ -2817,9 +2817,23 @@ p,
 
 /* Mode clair - sélecteur */
 [data-theme="light"] .font-size-selector {
-    background: rgba(0, 0, 0, 0.03);
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="light"] .font-size-btn {
-    background: white;
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #475569;
+}
+
+[data-theme="light"] .font-size-btn:hover {
+    background: #e2e8f0;
+    border-color: #6366f1;
+}
+
+[data-theme="light"] .font-size-btn.active {
+    background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+    border-color: #6366f1;
+    color: white;
 }
