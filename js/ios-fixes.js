@@ -1,4 +1,5 @@
 // ios-fixes.js - Corrections d'affichage iOS pour Actu & Média
+// Version 2.1 - Mise à jour janvier 2026
 (function() {
     'use strict';
 
@@ -18,14 +19,14 @@
             // Ajouter une classe au body pour cibler iOS
             document.body.classList.add('ios-device');
             
-            console.log('📱 iOS détecté - Application des corrections pour Actu & Média...');
+            console.log('📱 iOS détecté - Application des corrections pour Actu & Média v2.1...');
             
             // Créer et ajouter les styles CSS pour iOS
             const style = document.createElement('style');
             style.id = 'ios-fixes-styles';
             style.textContent = `
                 /* ========================================
-                   ACTU & MÉDIA - iOS FIXES
+                   ACTU & MÉDIA - iOS FIXES v2.1
                    ======================================== */
                 
                 /* Variables pour les espacements iOS */
@@ -37,69 +38,69 @@
                 }
                 
                 /* ========== HEADER ========== */
-				.ios-device .header {
-					padding-top: calc(1rem + var(--ios-safe-area-top)) !important;
-					position: sticky !important;
-					top: 0 !important;
-					z-index: 100 !important;
-				}
+                .ios-device .header {
+                    padding-top: calc(1rem + var(--ios-safe-area-top)) !important;
+                    position: sticky !important;
+                    top: 0 !important;
+                    z-index: 100 !important;
+                }
 
-				.ios-device .header-actions {
-					top: calc(1rem + var(--ios-safe-area-top)) !important;
-				}
+                .ios-device .header-actions {
+                    top: calc(1rem + var(--ios-safe-area-top)) !important;
+                }
 
-				/* Fix icônes header alignement horizontal */
-				.ios-device .header-left {
-					display: flex !important;
-					flex-direction: row !important;
-					align-items: center !important;
-					gap: 0.5rem !important;
-				}
+                /* Fix icônes header alignement horizontal */
+                .ios-device .header-left {
+                    display: flex !important;
+                    flex-direction: row !important;
+                    align-items: center !important;
+                    gap: 0.5rem !important;
+                }
 
-				.ios-device .header-left .header-btn {
-					display: flex !important;
-					flex-shrink: 0 !important;
-				}
+                .ios-device .header-left .header-btn {
+                    display: flex !important;
+                    flex-shrink: 0 !important;
+                }
 
-				/* ========== MÉTÉO - Supprimer surbrillance ========== */
-				.ios-device .weather-widget,
-				.ios-device .weather-widget * {
-					-webkit-tap-highlight-color: transparent !important;
-					-webkit-touch-callout: none !important;
-					-webkit-user-select: none !important;
-					user-select: none !important;
-					background-color: transparent !important;
-				}
+                /* ========== MÉTÉO - Supprimer surbrillance ========== */
+                .ios-device .weather-widget,
+                .ios-device .weather-widget * {
+                    -webkit-tap-highlight-color: transparent !important;
+                    -webkit-touch-callout: none !important;
+                    -webkit-user-select: none !important;
+                    user-select: none !important;
+                    background-color: transparent !important;
+                }
 
-				.ios-device .weather-day {
-					-webkit-tap-highlight-color: transparent !important;
-				}
+                .ios-device .weather-day {
+                    -webkit-tap-highlight-color: transparent !important;
+                }
 
-				/* ========== TUILES - Espacement uniforme ========== */
-				.ios-device .quick-links-grid,
-				.ios-device .tiles-grid {
-					display: grid !important;
-					grid-template-columns: repeat(2, 1fr) !important;
-					gap: 1rem !important;
-				}
+                /* ========== TUILES - Espacement uniforme ========== */
+                .ios-device .quick-links-grid,
+                .ios-device .tiles-grid {
+                    display: grid !important;
+                    grid-template-columns: repeat(2, 1fr) !important;
+                    gap: 1rem !important;
+                }
 
-				.ios-device .quick-link-tile,
-				.ios-device .tile {
-					margin: 0 !important;
-				}
+                .ios-device .quick-link-tile,
+                .ios-device .tile {
+                    margin: 0 !important;
+                }
 
-				/* Fix tuiles supplémentaires */
-				.ios-device .extra-tiles {
-					display: grid !important;
-					grid-template-columns: repeat(2, 1fr) !important;
-					gap: 1rem !important;
-					margin-top: 1rem !important;
-				}
+                /* Fix tuiles supplémentaires */
+                .ios-device .extra-tiles {
+                    display: grid !important;
+                    grid-template-columns: repeat(2, 1fr) !important;
+                    gap: 1rem !important;
+                    margin-top: 1rem !important;
+                }
 
-				.ios-device .extra-tiles .quick-link-tile,
-				.ios-device .extra-tiles .tile {
-					margin: 0 !important;
-				}
+                .ios-device .extra-tiles .quick-link-tile,
+                .ios-device .extra-tiles .tile {
+                    margin: 0 !important;
+                }
                 
                 /* ========== NAVIGATION ========== */
                 .ios-device .nav-tabs {
@@ -150,8 +151,9 @@
                     -webkit-overflow-scrolling: touch !important;
                 }
                 
-                /* ========== WIDGETS PANEL ========== */
-                .ios-device .widgets-panel {
+                /* ========== WIDGETS PANEL / SUPPORT PANEL ========== */
+                .ios-device .widgets-panel,
+                .ios-device .support-panel {
                     padding-top: calc(1rem + var(--ios-safe-area-top)) !important;
                     padding-bottom: calc(1rem + var(--ios-safe-area-bottom)) !important;
                     max-height: 100vh !important;
@@ -165,7 +167,8 @@
                 }
                 
                 /* ========== MODALS ========== */
-                .ios-device .modal-overlay {
+                .ios-device .modal-overlay,
+                .ios-device .image-modal {
                     padding-bottom: var(--ios-safe-area-bottom) !important;
                 }
                 
@@ -191,7 +194,9 @@
                 .ios-device .news-feed,
                 .ios-device .widgets-panel-content,
                 .ios-device .radio-stations-container,
-                .ios-device .modal-content {
+                .ios-device .modal-content,
+                .ios-device .support-content,
+                .ios-device .comments-container {
                     -webkit-overflow-scrolling: touch !important;
                     overscroll-behavior-y: contain !important;
                 }
@@ -215,6 +220,119 @@
                     -webkit-overflow-scrolling: touch !important;
                 }
                 
+                /* ========== NOUVELLE DISPOSITION CARTES COMMUNAUTÉ ========== */
+                .ios-device .community-item-header {
+                    display: flex !important;
+                    flex-wrap: nowrap !important;
+                    align-items: center !important;
+                }
+                
+                .ios-device .community-item-footer {
+                    display: flex !important;
+                    justify-content: space-between !important;
+                    align-items: center !important;
+                }
+                
+                .ios-device .community-item-location,
+                .ios-device .community-item-views {
+                    display: flex !important;
+                    align-items: center !important;
+                    white-space: nowrap !important;
+                }
+                
+                /* ========== BOUTONS VOIR PLUS / COMMENTER ========== */
+                .ios-device .see-more-btn,
+                .ios-device .comments-toggle-btn {
+                    -webkit-tap-highlight-color: transparent !important;
+                    touch-action: manipulation !important;
+                }
+                
+                /* ========== SÉLECTEUR TAILLE DE TEXTE ========== */
+                .ios-device .font-size-selector {
+                    display: flex !important;
+                    flex-wrap: nowrap !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                }
+                
+                .ios-device .font-size-btn {
+                    -webkit-tap-highlight-color: transparent !important;
+                    touch-action: manipulation !important;
+                    min-width: 44px !important;
+                    min-height: 44px !important;
+                }
+                
+                /* ========== SECTION COMMENTAIRES ========== */
+                .ios-device .comments-container {
+                    -webkit-overflow-scrolling: touch !important;
+                }
+                
+                .ios-device .comment-input,
+                .ios-device .comment-textarea {
+                    font-size: 16px !important;
+                    -webkit-appearance: none !important;
+                    border-radius: 8px !important;
+                }
+                
+                .ios-device .comment-submit-btn {
+                    min-height: 44px !important;
+                }
+                
+                /* ========== BOUTON LIKE ========== */
+                .ios-device .like-btn {
+                    -webkit-tap-highlight-color: transparent !important;
+                    touch-action: manipulation !important;
+                    min-width: 44px !important;
+                    min-height: 44px !important;
+                }
+                
+                /* ========== IMAGE MODAL (Agrandir) ========== */
+                .ios-device .image-modal {
+                    -webkit-overflow-scrolling: touch !important;
+                }
+                
+                .ios-device .image-modal-content img {
+                    max-height: calc(90vh - var(--ios-safe-area-top) - var(--ios-safe-area-bottom)) !important;
+                }
+                
+                .ios-device .image-modal-close {
+                    top: calc(1rem + var(--ios-safe-area-top)) !important;
+                }
+                
+                /* ========== SECTION SEO ========== */
+                .ios-device .seo-section {
+                    padding-bottom: calc(1rem + var(--ios-safe-area-bottom)) !important;
+                }
+                
+                /* ========== NEWS TICKER / SWIPER ========== */
+                .ios-device .news-ticker-container {
+                    -webkit-overflow-scrolling: touch !important;
+                }
+                
+                .ios-device .ticker-nav-btn {
+                    min-width: 44px !important;
+                    min-height: 44px !important;
+                }
+                
+                /* ========== CINEMA SECTION ========== */
+                .ios-device .cinema-films {
+                    -webkit-overflow-scrolling: touch !important;
+                }
+                
+                .ios-device .cinema-film {
+                    -webkit-tap-highlight-color: transparent !important;
+                }
+                
+                /* ========== INSTALL PROMPT ========== */
+                .ios-device .install-prompt {
+                    bottom: calc(1rem + var(--ios-safe-area-bottom)) !important;
+                }
+                
+                /* ========== NOTIFICATION PROMPT ========== */
+                .ios-device .notif-prompt {
+                    bottom: calc(1rem + var(--ios-safe-area-bottom)) !important;
+                }
+                
                 /* ========== MODE PAYSAGE ========== */
                 @media (orientation: landscape) {
                     .ios-device #radioWidget {
@@ -227,6 +345,11 @@
                     
                     .ios-device .main-content {
                         padding-bottom: calc(80px + var(--ios-safe-area-bottom)) !important;
+                    }
+                    
+                    .ios-device .support-panel {
+                        width: 50vw !important;
+                        max-width: 400px !important;
                     }
                 }
                 
@@ -245,6 +368,22 @@
                         min-width: 160px !important;
                         padding: 10px !important;
                     }
+                    
+                    .ios-device .community-item-header {
+                        flex-wrap: wrap !important;
+                        gap: 0.25rem !important;
+                    }
+                    
+                    .ios-device .font-size-selector {
+                        flex-wrap: wrap !important;
+                        gap: 0.5rem !important;
+                    }
+                    
+                    .ios-device .font-size-btn {
+                        min-width: 40px !important;
+                        min-height: 40px !important;
+                        padding: 0.4rem 0.8rem !important;
+                    }
                 }
                 
                 /* ========== GRANDS ÉCRANS (iPad) ========== */
@@ -254,8 +393,15 @@
                         margin: 0 auto !important;
                     }
                     
-                    .ios-device .widgets-panel {
+                    .ios-device .widgets-panel,
+                    .ios-device .support-panel {
                         width: 400px !important;
+                    }
+                    
+                    .ios-device .community-item {
+                        max-width: 600px !important;
+                        margin-left: auto !important;
+                        margin-right: auto !important;
                     }
                 }
                 
@@ -269,6 +415,11 @@
                     display: none !important;
                 }
                 
+                .ios-device.keyboard-visible .install-prompt,
+                .ios-device.keyboard-visible .notif-prompt {
+                    display: none !important;
+                }
+                
                 /* ========== PWA STANDALONE MODE ========== */
                 @media (display-mode: standalone) {
                     .ios-device .header {
@@ -278,11 +429,25 @@
                     .ios-device .footer {
                         padding-bottom: calc(1.5rem + var(--ios-safe-area-bottom)) !important;
                     }
+                    
+                    .ios-device .support-panel {
+                        padding-top: calc(1.5rem + var(--ios-safe-area-top)) !important;
+                    }
+                }
+                
+                /* ========== ACCESSIBILITÉ - TAILLE MINIMALE TOUCH ========== */
+                .ios-device .header-btn,
+                .ios-device .ticker-nav-btn,
+                .ios-device .theme-option,
+                .ios-device .support-close,
+                .ios-device .tiles-toggle {
+                    min-width: 44px !important;
+                    min-height: 44px !important;
                 }
             `;
             document.head.appendChild(style);
             
-            console.log('✅ iOS fixes CSS appliqués pour Actu & Média');
+            console.log('✅ iOS fixes CSS appliqués pour Actu & Média v2.1');
             
             // ========== DÉTECTION DU CLAVIER VIRTUEL ==========
             let initialHeight = window.innerHeight;
@@ -301,13 +466,24 @@
             // ========== FIX SCROLL BOUNCE ==========
             document.body.addEventListener('touchmove', function(e) {
                 const radioModal = document.querySelector('.radio-modal-overlay.show');
-                if (radioModal) {
-                    const stationsContainer = document.querySelector('.radio-stations-container');
-                    if (stationsContainer && !stationsContainer.contains(e.target)) {
-                        // Permettre le scroll uniquement dans le conteneur des stations
-                        if (!e.target.closest('.radio-stations-container')) {
-                            e.preventDefault();
+                const imageModal = document.querySelector('.image-modal.show');
+                
+                if (radioModal || imageModal) {
+                    const scrollableContainers = [
+                        '.radio-stations-container',
+                        '.image-modal-content'
+                    ];
+                    
+                    let isInsideScrollable = false;
+                    scrollableContainers.forEach(selector => {
+                        const container = document.querySelector(selector);
+                        if (container && container.contains(e.target)) {
+                            isInsideScrollable = true;
                         }
+                    });
+                    
+                    if (!isInsideScrollable) {
+                        e.preventDefault();
                     }
                 }
             }, { passive: false });
@@ -317,18 +493,57 @@
                 el.addEventListener('touchstart', function() {}, { passive: true });
             });
             
-            console.log('📱 iOS fixes complets appliqués pour Actu & Média');
+            // ========== FIX DOUBLE-TAP ZOOM ==========
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(e) {
+                const now = Date.now();
+                if (now - lastTouchEnd <= 300) {
+                    // Éviter le double-tap zoom sauf sur les inputs
+                    if (!e.target.matches('input, textarea, select')) {
+                        e.preventDefault();
+                    }
+                }
+                lastTouchEnd = now;
+            }, { passive: false });
+            
+            // ========== OBSERVER POUR LES ÉLÉMENTS DYNAMIQUES ==========
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) {
+                            // Appliquer les fixes aux nouveaux boutons/liens
+                            const interactiveElements = node.querySelectorAll ? 
+                                node.querySelectorAll('a, button') : [];
+                            interactiveElements.forEach(el => {
+                                el.addEventListener('touchstart', function() {}, { passive: true });
+                            });
+                        }
+                    });
+                });
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            
+            console.log('📱 iOS fixes complets appliqués pour Actu & Média v2.1');
         }
     });
     
     // Exposer pour debug
     window.checkiOS = function() {
+        console.log('=== iOS Debug Info ===');
         console.log('iOS:', isiOS());
         console.log('iPadOS:', isIPadOS());
         console.log('User Agent:', navigator.userAgent);
         console.log('Platform:', navigator.platform);
         console.log('Max Touch Points:', navigator.maxTouchPoints);
         console.log('Standalone:', window.navigator.standalone);
+        console.log('Screen:', window.screen.width + 'x' + window.screen.height);
+        console.log('Viewport:', window.innerWidth + 'x' + window.innerHeight);
+        console.log('Device Pixel Ratio:', window.devicePixelRatio);
+        console.log('=====================');
     };
     
 })();
