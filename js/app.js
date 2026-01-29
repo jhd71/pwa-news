@@ -1500,6 +1500,7 @@ async function initAgenda() {
         
         const today = new Date();
         const todayStr = today.toISOString().split('T')[0];
+        const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
         
         // 1. Charger les événements NON récurrents à venir
         const { data: regularEvents, error: err1 } = await supabase
@@ -1509,9 +1510,9 @@ async function initAgenda() {
             .eq('is_recurring', false)
             .gte('event_date', todayStr)
             .order('event_date', { ascending: true })
-            .limit(10);
+            .limit(5);
         
-        // 2. Charger les événements RÉCURRENTS
+        // 2. Charger les événements RÉCURRENTS (UNE SEULE FOIS chacun)
         const { data: recurringEvents, error: err2 } = await supabase
             .from('events')
             .select('*')
@@ -1521,38 +1522,24 @@ async function initAgenda() {
         if (err1) console.error('Erreur events réguliers:', err1);
         if (err2) console.error('Erreur events récurrents:', err2);
         
-        // 3. Générer les prochaines dates pour les événements récurrents
-        const expandedRecurring = [];
-        if (recurringEvents && recurringEvents.length > 0) {
-            const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-            
-            recurringEvents.forEach(event => {
-                if (!event.recurrence_days) return;
-                
-                const days = event.recurrence_days.split(',').map(d => parseInt(d));
-                
-                // Générer les 4 prochaines semaines
-                for (let i = 0; i < 28; i++) {
-                    const date = new Date(today);
-                    date.setDate(today.getDate() + i);
-                    const dayOfWeek = date.getDay();
-                    
-                    if (days.includes(dayOfWeek)) {
-                        expandedRecurring.push({
-                            ...event,
-                            event_date: date.toISOString().split('T')[0],
-                            _isExpanded: true,
-                            _recurrenceLabel: `Tous les ${days.map(d => dayNames[d]).join(', ')}`
-                        });
-                    }
-                }
-            });
-        }
+        // 3. Préparer les événements récurrents avec leur label
+        const processedRecurring = (recurringEvents || []).map(event => {
+            const days = event.recurrence_days ? event.recurrence_days.split(',').map(d => dayNames[parseInt(d)]) : [];
+            return {
+                ...event,
+                _recurrenceLabel: `Tous les ${days.join(', ')}`,
+                _sortOrder: 0 // Les récurrents en premier
+            };
+        });
         
-        // 4. Combiner et trier tous les événements
-        const allEvents = [...(regularEvents || []), ...expandedRecurring]
-            .sort((a, b) => new Date(a.event_date) - new Date(b.event_date))
-            .slice(0, 5); // Garder les 5 premiers
+        // 4. Préparer les événements réguliers
+        const processedRegular = (regularEvents || []).map(event => ({
+            ...event,
+            _sortOrder: 1
+        }));
+        
+        // 5. Combiner : récurrents d'abord, puis par date
+        const allEvents = [...processedRecurring, ...processedRegular].slice(0, 5);
         
         if (!allEvents || allEvents.length === 0) {
             contentEl.innerHTML = '';
@@ -1563,13 +1550,33 @@ async function initAgenda() {
         if (emptyEl) emptyEl.style.display = 'none';
         
         contentEl.innerHTML = allEvents.map(event => {
+            // Pour les récurrents : afficher le label au lieu de la date
+            if (event.is_recurring) {
+                return `
+                    <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
+                        <div class="agenda-item-date" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                            <span class="agenda-item-day">🔄</span>
+                            <span class="agenda-item-month" style="font-size:0.55rem;">RÉCUR.</span>
+                        </div>
+                        <div class="agenda-item-content">
+                            <div class="agenda-item-title">${escapeHtml(event.title)}</div>
+                            <div class="agenda-item-info">
+                                <span style="color:#f59e0b;font-weight:600;">📅 ${event._recurrenceLabel}</span>
+                                ${event.event_time ? `<span>🕐 ${formatAgendaTime(event.event_time)}</span>` : ''}
+                            </div>
+                            <div class="agenda-item-info">
+                                ${event.location ? `<span>📍 ${escapeHtml(event.location)}</span>` : ''}
+                            </div>
+                            <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
+                        </div>
+                    </a>
+                `;
+            }
+            
+            // Pour les événements uniques : afficher la date
             const date = new Date(event.event_date);
             const day = date.getDate();
             const month = date.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '').toUpperCase();
-            
-            const recurringBadge = event.is_recurring 
-                ? `<span style="background:rgba(245,158,11,0.2);color:#f59e0b;padding:0.15rem 0.4rem;border-radius:10px;font-size:0.65rem;margin-left:0.5rem;">🔄</span>` 
-                : '';
             
             return `
                 <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
@@ -1578,7 +1585,7 @@ async function initAgenda() {
                         <span class="agenda-item-month">${month}</span>
                     </div>
                     <div class="agenda-item-content">
-                        <div class="agenda-item-title">${escapeHtml(event.title)}${recurringBadge}</div>
+                        <div class="agenda-item-title">${escapeHtml(event.title)}</div>
                         <div class="agenda-item-info">
                             ${event.event_time ? `<span>🕐 ${formatAgendaTime(event.event_time)}</span>` : ''}
                             ${event.location ? `<span>📍 ${escapeHtml(event.location)}</span>` : ''}
