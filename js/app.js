@@ -1486,29 +1486,75 @@ function initFontSizeSelector() {
 document.addEventListener('DOMContentLoaded', initFontSizeSelector);
 
 // ============================================
-// AGENDA LOCAL
+// AGENDA HOMEPAGE
 // ============================================
-
 async function initAgenda() {
     const contentEl = document.getElementById('agendaContent');
     const emptyEl = document.getElementById('agendaEmpty');
     
-    if (!contentEl) return; // Pas sur la page d'accueil
+    if (!contentEl) return;
     
     try {
-        const today = new Date().toISOString().split('T')[0];
+        const supabase = getSupabaseClient();
+        if (!supabase) return;
         
-        const { data, error } = await supabaseClient
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0];
+        
+        // 1. Charger les événements NON récurrents à venir
+        const { data: regularEvents, error: err1 } = await supabase
             .from('events')
             .select('*')
             .eq('status', 'approved')
-            .gte('event_date', today)
+            .eq('is_recurring', false)
+            .gte('event_date', todayStr)
             .order('event_date', { ascending: true })
-            .limit(5);
+            .limit(10);
         
-        if (error) throw error;
+        // 2. Charger les événements RÉCURRENTS
+        const { data: recurringEvents, error: err2 } = await supabase
+            .from('events')
+            .select('*')
+            .eq('status', 'approved')
+            .eq('is_recurring', true);
         
-        if (!data || data.length === 0) {
+        if (err1) console.error('Erreur events réguliers:', err1);
+        if (err2) console.error('Erreur events récurrents:', err2);
+        
+        // 3. Générer les prochaines dates pour les événements récurrents
+        const expandedRecurring = [];
+        if (recurringEvents && recurringEvents.length > 0) {
+            const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+            
+            recurringEvents.forEach(event => {
+                if (!event.recurrence_days) return;
+                
+                const days = event.recurrence_days.split(',').map(d => parseInt(d));
+                
+                // Générer les 4 prochaines semaines
+                for (let i = 0; i < 28; i++) {
+                    const date = new Date(today);
+                    date.setDate(today.getDate() + i);
+                    const dayOfWeek = date.getDay();
+                    
+                    if (days.includes(dayOfWeek)) {
+                        expandedRecurring.push({
+                            ...event,
+                            event_date: date.toISOString().split('T')[0],
+                            _isExpanded: true,
+                            _recurrenceLabel: `Tous les ${days.map(d => dayNames[d]).join(', ')}`
+                        });
+                    }
+                }
+            });
+        }
+        
+        // 4. Combiner et trier tous les événements
+        const allEvents = [...(regularEvents || []), ...expandedRecurring]
+            .sort((a, b) => new Date(a.event_date) - new Date(b.event_date))
+            .slice(0, 5); // Garder les 5 premiers
+        
+        if (!allEvents || allEvents.length === 0) {
             contentEl.innerHTML = '';
             if (emptyEl) emptyEl.style.display = 'block';
             return;
@@ -1516,12 +1562,14 @@ async function initAgenda() {
         
         if (emptyEl) emptyEl.style.display = 'none';
         
-        contentEl.innerHTML = data.map(event => {
+        contentEl.innerHTML = allEvents.map(event => {
             const date = new Date(event.event_date);
             const day = date.getDate();
             const month = date.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '').toUpperCase();
-            const categoryIcon = getAgendaCategoryIcon(event.category);
-            const categoryLabel = getAgendaCategoryLabel(event.category);
+            
+            const recurringBadge = event.is_recurring 
+                ? `<span style="background:rgba(245,158,11,0.2);color:#f59e0b;padding:0.15rem 0.4rem;border-radius:10px;font-size:0.65rem;margin-left:0.5rem;">🔄</span>` 
+                : '';
             
             return `
                 <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
@@ -1530,45 +1578,38 @@ async function initAgenda() {
                         <span class="agenda-item-month">${month}</span>
                     </div>
                     <div class="agenda-item-content">
-                        <div class="agenda-item-title">${escapeHtml(event.title)}</div>
+                        <div class="agenda-item-title">${escapeHtml(event.title)}${recurringBadge}</div>
                         <div class="agenda-item-info">
                             ${event.event_time ? `<span>🕐 ${formatAgendaTime(event.event_time)}</span>` : ''}
                             ${event.location ? `<span>📍 ${escapeHtml(event.location)}</span>` : ''}
                         </div>
-                        <span class="agenda-item-category ${event.category}">${categoryIcon} ${categoryLabel}</span>
+                        <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
                     </div>
                 </a>
             `;
         }).join('');
         
-        console.log(`📅 ${data.length} événements chargés sur l'accueil`);
+        console.log(`📅 ${allEvents.length} événements agenda chargés`);
         
     } catch (error) {
-        console.error('❌ Erreur chargement agenda:', error);
-        contentEl.innerHTML = '<div class="agenda-empty"><span class="agenda-empty-icon">❌</span><span class="agenda-empty-text">Erreur de chargement</span></div>';
+        console.error('❌ Erreur initAgenda:', error);
     }
-}
-
-function getAgendaCategoryIcon(category) {
-    const icons = {
-        'sport': '⚽', 'culture': '🎭', 'marche': '🛒', 'brocante': '🏷️',
-        'concert': '🎵', 'fete': '🎉', 'reunion': '👥', 'autre': '📌'
-    };
-    return icons[category] || '📌';
-}
-
-function getAgendaCategoryLabel(category) {
-    const labels = {
-        'sport': 'Sport', 'culture': 'Culture', 'marche': 'Marché', 'brocante': 'Brocante',
-        'concert': 'Concert', 'fete': 'Fête', 'reunion': 'Réunion', 'autre': 'Événement'
-    };
-    return labels[category] || 'Événement';
 }
 
 function formatAgendaTime(timeStr) {
     if (!timeStr) return '';
-    const [hours, minutes] = timeStr.split(':');
-    return `${hours}h${minutes !== '00' ? minutes : ''}`;
+    const [h, m] = timeStr.split(':');
+    return `${h}h${m !== '00' ? m : ''}`;
+}
+
+function getAgendaCategoryIcon(category) {
+    const icons = { 'sport': '⚽', 'culture': '🎭', 'marche': '🛒', 'brocante': '🏷️', 'concert': '🎵', 'fete': '🎉' };
+    return icons[category] || '📅';
+}
+
+function getAgendaCategoryLabel(category) {
+    const labels = { 'sport': 'Sport', 'culture': 'Culture', 'marche': 'Marché', 'brocante': 'Brocante', 'concert': 'Concert', 'fete': 'Fête' };
+    return labels[category] || 'Événement';
 }
 
 // Ajouter à l'initialisation
