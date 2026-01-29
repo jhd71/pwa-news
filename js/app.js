@@ -1554,9 +1554,9 @@ async function initAgenda() {
             if (event.is_recurring) {
                 return `
                     <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
-                        <div class="agenda-item-date" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                        <div class="agenda-item-date">
                             <span class="agenda-item-day">🔄</span>
-                            <span class="agenda-item-month" style="font-size:0.55rem;">RÉCUR.</span>
+                            <span class="agenda-item-month" style="font-size:0.6rem;">HEBDO</span>
                         </div>
                         <div class="agenda-item-content">
                             <div class="agenda-item-title">${escapeHtml(event.title)}</div>
