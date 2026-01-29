@@ -10,18 +10,12 @@
     <title>Proposer un événement - Actu & Média Montceau</title>
     <meta name="description" content="Proposez un événement à Montceau-les-Mines : concert, marché, brocante, fête, sport...">
     
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="icon-192.png">
-    
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* ============================================
-           VARIABLES - THÈME SOMBRE (défaut)
-           ============================================ */
         :root {
             --primary: #6366f1;
             --primary-light: #818cf8;
@@ -35,7 +29,6 @@
             --border-color: rgba(255, 255, 255, 0.1);
         }
         
-        /* THÈME CLAIR */
         [data-theme="light"] {
             --bg-primary: #f8fafc;
             --bg-secondary: #f1f5f9;
@@ -47,11 +40,7 @@
             --border-color: #e2e8f0;
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -61,9 +50,6 @@
             line-height: 1.6;
         }
         
-        /* ============================================
-           HEADER
-           ============================================ */
         .page-header {
             display: flex;
             align-items: center;
@@ -96,20 +82,9 @@
             color: white;
         }
         
-        .page-title h1 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
+        .page-title h1 { font-size: 1.2rem; font-weight: 700; }
+        .page-title p { font-size: 0.8rem; color: var(--text-muted); }
         
-        .page-title p {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-        
-        /* ============================================
-           FORMULAIRE
-           ============================================ */
         .form-container {
             padding: 1rem;
             max-width: 600px;
@@ -125,56 +100,25 @@
             border: 1px solid rgba(99, 102, 241, 0.2);
         }
         
-        .form-intro-icon {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-        }
+        .form-intro-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+        .form-intro-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-intro-text { font-size: 0.9rem; color: var(--text-secondary); }
         
-        .form-intro-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .form-intro-text {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-        
-        .event-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-        }
-        
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
+        .event-form { display: flex; flex-direction: column; gap: 1.25rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
         
         .form-label {
             font-size: 0.9rem;
             font-weight: 600;
-            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 0.4rem;
         }
         
-        .form-label .material-icons {
-            font-size: 1.1rem;
-            color: var(--primary-light);
-        }
+        .form-label .material-icons { font-size: 1.1rem; color: var(--primary-light); }
+        .form-label .required { color: #ef4444; }
         
-        .form-label .required {
-            color: #ef4444;
-        }
-        
-        .form-input,
-        .form-select,
-        .form-textarea {
+        .form-input, .form-select, .form-textarea {
             padding: 0.75rem 1rem;
             background: var(--bg-elevated);
             border: 1px solid var(--border-color);
@@ -185,51 +129,22 @@
             transition: all 0.2s;
         }
         
-        .form-input:focus,
-        .form-select:focus,
-        .form-textarea:focus {
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
         
-        .form-input::placeholder,
-        .form-textarea::placeholder {
-            color: var(--text-muted);
-        }
+        .form-input::placeholder, .form-textarea::placeholder { color: var(--text-muted); }
+        .form-textarea { min-height: 120px; resize: vertical; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-hint { font-size: 0.8rem; color: var(--text-muted); }
         
-        .form-textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-        
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-        
-        .form-hint {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-        
-        /* Mode clair - inputs */
         [data-theme="light"] .form-input,
         [data-theme="light"] .form-select,
-        [data-theme="light"] .form-textarea {
-            background: white;
-            border-color: #e2e8f0;
-        }
+        [data-theme="light"] .form-textarea { background: white; border-color: #e2e8f0; }
         
-        /* ============================================
-           SÉLECTION CATÉGORIE
-           ============================================ */
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.75rem;
-        }
+        .category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
         
         .category-option {
             display: flex;
@@ -244,45 +159,84 @@
             transition: all 0.2s;
         }
         
-        .category-option:hover {
-            border-color: var(--primary-light);
+        .category-option:hover { border-color: var(--primary-light); }
+        .category-option.selected { border-color: var(--primary); background: rgba(99, 102, 241, 0.1); }
+        .category-option input { display: none; }
+        .category-option-icon { font-size: 1.5rem; }
+        .category-option-name { font-size: 0.8rem; font-weight: 500; color: var(--text-secondary); }
+        .category-option.selected .category-option-name { color: var(--primary-light); }
+        
+        [data-theme="light"] .category-option { background: white; }
+        [data-theme="light"] .category-option.selected { background: rgba(99, 102, 241, 0.08); }
+        
+        /* Récurrence */
+        .recurrence-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
         
-        .category-option.selected {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.1);
+        .recurrence-toggle:hover { border-color: var(--primary-light); }
+        .recurrence-toggle.active { border-color: var(--primary); background: rgba(99, 102, 241, 0.1); }
+        .recurrence-toggle input { display: none; }
+        
+        .recurrence-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
         }
         
-        .category-option input {
+        .recurrence-toggle.active .recurrence-checkbox { background: var(--primary); border-color: var(--primary); }
+        .recurrence-checkbox .material-icons { font-size: 1rem; color: white; opacity: 0; }
+        .recurrence-toggle.active .recurrence-checkbox .material-icons { opacity: 1; }
+        .recurrence-text { flex: 1; }
+        .recurrence-text strong { display: block; font-size: 0.9rem; }
+        .recurrence-text small { font-size: 0.8rem; color: var(--text-muted); }
+        
+        .recurrence-options {
             display: none;
+            margin-top: 0.75rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
         }
         
-        .category-option-icon {
-            font-size: 1.5rem;
-        }
+        .recurrence-options.show { display: block; }
+        .recurrence-days { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
         
-        .category-option-name {
+        .recurrence-day {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: var(--bg-elevated);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
             font-size: 0.8rem;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
         }
         
-        .category-option.selected .category-option-name {
-            color: var(--primary-light);
-        }
+        .recurrence-day:hover { border-color: var(--primary-light); }
+        .recurrence-day.selected { background: var(--primary); border-color: var(--primary); color: white; }
+        .recurrence-day input { display: none; }
         
-        /* Mode clair */
-        [data-theme="light"] .category-option {
-            background: white;
-        }
-        
-        [data-theme="light"] .category-option.selected {
-            background: rgba(99, 102, 241, 0.08);
-        }
-        
-        /* ============================================
-           UPLOAD IMAGE
-           ============================================ */
+        /* Image upload */
         .image-upload {
             position: relative;
             border: 2px dashed var(--border-color);
@@ -293,51 +247,15 @@
             transition: all 0.2s;
         }
         
-        .image-upload:hover {
-            border-color: var(--primary-light);
-            background: rgba(99, 102, 241, 0.05);
-        }
+        .image-upload:hover { border-color: var(--primary-light); background: rgba(99, 102, 241, 0.05); }
+        .image-upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+        .image-upload-icon { font-size: 2.5rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .image-upload-text { font-size: 0.9rem; color: var(--text-secondary); }
+        .image-upload-hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
         
-        .image-upload input {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
-        
-        .image-upload-icon {
-            font-size: 2.5rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-        }
-        
-        .image-upload-text {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-        
-        .image-upload-hint {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
-        }
-        
-        .image-preview {
-            display: none;
-            position: relative;
-            margin-top: 1rem;
-        }
-        
-        .image-preview.show {
-            display: block;
-        }
-        
-        .image-preview img {
-            width: 100%;
-            max-height: 200px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
+        .image-preview { display: none; position: relative; margin-top: 1rem; }
+        .image-preview.show { display: block; }
+        .image-preview img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px; }
         
         .image-preview-remove {
             position: absolute;
@@ -355,13 +273,8 @@
             justify-content: center;
         }
         
-        .image-preview-remove:hover {
-            background: #ef4444;
-        }
+        .image-preview-remove:hover { background: #ef4444; }
         
-        /* ============================================
-           BOUTON SUBMIT
-           ============================================ */
         .submit-btn {
             display: flex;
             align-items: center;
@@ -379,29 +292,12 @@
             margin-top: 1rem;
         }
         
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
-        }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4); }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .submit-btn .material-icons.spinning { animation: spin 1s linear infinite; }
         
-        .submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
-        .submit-btn .material-icons.spinning {
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        /* ============================================
-           MESSAGE SUCCÈS
-           ============================================ */
         .success-message {
             display: none;
             text-align: center;
@@ -412,64 +308,39 @@
             margin-top: 1rem;
         }
         
-        .success-message.show {
-            display: block;
-        }
+        .success-message.show { display: block; }
+        .success-message-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+        .success-message-title { font-size: 1.2rem; font-weight: 600; color: #22c55e; margin-bottom: 0.5rem; }
+        .success-message-text { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
+        .success-buttons { display: flex; flex-direction: column; gap: 0.75rem; }
         
-        .success-message-icon {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .success-message-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #22c55e;
-            margin-bottom: 0.5rem;
-        }
-        
-        .success-message-text {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-        
-        .success-message-btn {
+        .success-btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.3rem;
+            justify-content: center;
+            gap: 0.4rem;
             padding: 0.75rem 1.5rem;
-            background: var(--primary);
             border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 0.9rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
             font-weight: 500;
             text-decoration: none;
             cursor: pointer;
             transition: all 0.2s;
         }
         
-        .success-message-btn:hover {
-            background: var(--primary-light);
-        }
+        .success-btn.primary { background: var(--primary); color: white; }
+        .success-btn.primary:hover { background: var(--primary-light); }
+        .success-btn.secondary { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); }
+        .success-btn.secondary:hover { background: var(--bg-elevated); }
         
-        /* ============================================
-           RESPONSIVE
-           ============================================ */
         @media (max-width: 480px) {
-            .category-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .form-row {
-                grid-template-columns: 1fr;
-            }
+            .category-grid { grid-template-columns: repeat(2, 1fr); }
+            .form-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header class="page-header">
         <a href="agenda.html" class="back-btn">
             <span class="material-icons">arrow_back</span>
@@ -480,7 +351,6 @@
         </div>
     </header>
     
-    <!-- Formulaire -->
     <div class="form-container">
         <div class="form-intro">
             <div class="form-intro-icon">🎉</div>
@@ -492,7 +362,6 @@
         </div>
         
         <form class="event-form" id="eventForm">
-            <!-- Titre -->
             <div class="form-group">
                 <label class="form-label">
                     <span class="material-icons">title</span>
@@ -501,7 +370,6 @@
                 <input type="text" class="form-input" id="eventTitle" placeholder="Ex: Marché de Noël, Concert Jazz..." maxlength="200" required>
             </div>
             
-            <!-- Catégorie -->
             <div class="form-group">
                 <label class="form-label">
                     <span class="material-icons">category</span>
@@ -541,33 +409,81 @@
                 </div>
             </div>
             
-            <!-- Date et heure -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">
-                        <span class="material-icons">event</span>
-                        Date <span class="required">*</span>
+            <div class="form-group">
+                <label class="recurrence-toggle" id="recurrenceToggle">
+                    <input type="checkbox" id="isRecurrent">
+                    <span class="recurrence-checkbox">
+                        <span class="material-icons">check</span>
+                    </span>
+                    <span class="recurrence-text">
+                        <strong>Événement récurrent</strong>
+                        <small>Se répète chaque semaine (ex: marché du jeudi)</small>
+                    </span>
+                </label>
+                
+                <div class="recurrence-options" id="recurrenceOptions">
+                    <label class="form-label" style="margin-bottom: 0.5rem;">
+                        <span class="material-icons">repeat</span>
+                        Jours de la semaine
                     </label>
-                    <input type="date" class="form-input" id="eventDate" required>
+                    <div class="recurrence-days" id="recurrenceDays">
+                        <label class="recurrence-day"><input type="checkbox" name="recurrence_day" value="1">Lun</label>
+                        <label class="recurrence-day"><input type="checkbox" name="recurrence_day" value="2">Mar</label>
+                        <label class="recurrence-day"><input type="checkbox" name="recurrence_day" value="3">Mer</label>
+                        <label class="recurrence-day"><input type="checkbox" name="recurrence_day" value="4">Jeu</label>
+                        <label class="recurrence-day"><input type="checkbox" name="recurrence_day" value="5">Ven</label>
+                        <label class="recurrence-day"><input type="checkbox" name="recurrence_day" value="6">Sam</label>
+                        <label class="recurrence-day"><input type="checkbox" name="recurrence_day" value="0">Dim</label>
+                    </div>
+                    <p class="form-hint" style="margin-top: 0.75rem;">Les événements seront créés pour les 8 prochaines semaines.</p>
+                </div>
+            </div>
+            
+            <div id="singleDateFields">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="material-icons">event</span>
+                            Date <span class="required">*</span>
+                        </label>
+                        <input type="date" class="form-input" id="eventDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="material-icons">schedule</span>
+                            Heure de début
+                        </label>
+                        <input type="time" class="form-input" id="eventTime">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">
                         <span class="material-icons">schedule</span>
-                        Heure de début
+                        Heure de fin
                     </label>
-                    <input type="time" class="form-input" id="eventTime">
+                    <input type="time" class="form-input" id="eventEndTime">
                 </div>
             </div>
             
-            <div class="form-group">
-                <label class="form-label">
-                    <span class="material-icons">schedule</span>
-                    Heure de fin
-                </label>
-                <input type="time" class="form-input" id="eventEndTime">
+            <div id="recurringTimeFields" style="display: none;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="material-icons">schedule</span>
+                            Heure de début
+                        </label>
+                        <input type="time" class="form-input" id="eventTimeRecurring">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="material-icons">schedule</span>
+                            Heure de fin
+                        </label>
+                        <input type="time" class="form-input" id="eventEndTimeRecurring">
+                    </div>
+                </div>
             </div>
             
-            <!-- Lieu -->
             <div class="form-group">
                 <label class="form-label">
                     <span class="material-icons">place</span>
@@ -576,7 +492,6 @@
                 <input type="text" class="form-input" id="eventLocation" placeholder="Ex: Place de la Mairie, Salle des fêtes..." maxlength="200" required>
             </div>
             
-            <!-- Description -->
             <div class="form-group">
                 <label class="form-label">
                     <span class="material-icons">description</span>
@@ -586,17 +501,14 @@
                 <span class="form-hint">Max. 1000 caractères</span>
             </div>
             
-            <!-- Lien -->
             <div class="form-group">
                 <label class="form-label">
                     <span class="material-icons">link</span>
                     Lien (optionnel)
                 </label>
                 <input type="url" class="form-input" id="eventLink" placeholder="https://...">
-                <span class="form-hint">Page Facebook, site web, billetterie...</span>
             </div>
             
-            <!-- Image -->
             <div class="form-group">
                 <label class="form-label">
                     <span class="material-icons">image</span>
@@ -616,7 +528,6 @@
                 </div>
             </div>
             
-            <!-- Organisateur -->
             <div class="form-group">
                 <label class="form-label">
                     <span class="material-icons">person</span>
@@ -625,64 +536,58 @@
                 <input type="text" class="form-input" id="eventAuthor" placeholder="Ex: Mairie de Montceau, Association..." maxlength="100" required>
             </div>
             
-            <!-- Bouton submit -->
             <button type="submit" class="submit-btn" id="submitBtn">
                 <span class="material-icons">send</span>
                 Proposer l'événement
             </button>
         </form>
         
-        <!-- Message succès -->
         <div class="success-message" id="successMessage">
             <div class="success-message-icon">✅</div>
             <div class="success-message-title">Événement proposé !</div>
-            <div class="success-message-text">
-                Merci ! Votre événement sera validé et publié prochainement.
+            <div class="success-message-text">Merci ! Votre événement sera validé et publié prochainement.</div>
+            <div class="success-buttons">
+                <a href="agenda.html" class="success-btn primary">
+                    <span class="material-icons">event</span>
+                    Retour à l'agenda
+                </a>
+                <a href="index.html" class="success-btn secondary">
+                    <span class="material-icons">home</span>
+                    Retour à l'accueil
+                </a>
             </div>
-            <a href="agenda.html" class="success-message-btn">
-                <span class="material-icons">arrow_back</span>
-                Retour à l'agenda
-            </a>
         </div>
     </div>
     
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Configuration Supabase
         const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
-        
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         let selectedImage = null;
         
-        // Initialisation
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             initCategorySelection();
+            initRecurrence();
             initImageUpload();
             initForm();
             setMinDate();
         });
         
-        // Thème - suivre le thème du site principal
         function initTheme() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             if (savedTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
-            } else {
-                document.documentElement.removeAttribute('data-theme');
             }
         }
         
-        // Date minimum = aujourd'hui
         function setMinDate() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('eventDate').setAttribute('min', today);
         }
         
-        // Sélection catégorie
         function initCategorySelection() {
             const options = document.querySelectorAll('.category-option');
             options.forEach(option => {
@@ -693,7 +598,35 @@
             });
         }
         
-        // Upload image
+        function initRecurrence() {
+            const toggle = document.getElementById('recurrenceToggle');
+            const checkbox = document.getElementById('isRecurrent');
+            const options = document.getElementById('recurrenceOptions');
+            const singleDateFields = document.getElementById('singleDateFields');
+            const recurringTimeFields = document.getElementById('recurringTimeFields');
+            
+            toggle.addEventListener('click', () => {
+                checkbox.checked = !checkbox.checked;
+                toggle.classList.toggle('active', checkbox.checked);
+                options.classList.toggle('show', checkbox.checked);
+                
+                if (checkbox.checked) {
+                    singleDateFields.style.display = 'none';
+                    recurringTimeFields.style.display = 'block';
+                } else {
+                    singleDateFields.style.display = 'block';
+                    recurringTimeFields.style.display = 'none';
+                }
+            });
+            
+            const days = document.querySelectorAll('.recurrence-day');
+            days.forEach(day => {
+                day.addEventListener('click', () => {
+                    day.classList.toggle('selected');
+                });
+            });
+        }
+        
         function initImageUpload() {
             const input = document.getElementById('eventImage');
             const preview = document.getElementById('imagePreview');
@@ -703,15 +636,12 @@
             input.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    // Vérifier la taille (max 5 Mo)
                     if (file.size > 5 * 1024 * 1024) {
                         alert('Image trop volumineuse (max 5 Mo)');
                         input.value = '';
                         return;
                     }
-                    
                     selectedImage = file;
-                    
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         previewImg.src = e.target.result;
@@ -725,11 +655,30 @@
                 input.value = '';
                 selectedImage = null;
                 preview.classList.remove('show');
-                previewImg.src = '';
             });
         }
         
-        // Formulaire
+        function generateRecurringDates(selectedDays, weeks = 8) {
+            const dates = [];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            for (let w = 0; w < weeks; w++) {
+                for (const dayOfWeek of selectedDays) {
+                    const date = new Date(today);
+                    const currentDay = date.getDay();
+                    let daysUntil = dayOfWeek - currentDay;
+                    if (daysUntil < 0) daysUntil += 7;
+                    daysUntil += w * 7;
+                    date.setDate(date.getDate() + daysUntil);
+                    if (date >= today) {
+                        dates.push(date.toISOString().split('T')[0]);
+                    }
+                }
+            }
+            return [...new Set(dates)].sort();
+        }
+        
         function initForm() {
             const form = document.getElementById('eventForm');
             const submitBtn = document.getElementById('submitBtn');
@@ -738,72 +687,99 @@
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
-                // Vérifier catégorie
                 const category = document.querySelector('input[name="category"]:checked');
                 if (!category) {
                     alert('Veuillez sélectionner une catégorie');
                     return;
                 }
                 
-                // Désactiver le bouton
+                const isRecurrent = document.getElementById('isRecurrent').checked;
+                
+                if (isRecurrent) {
+                    const selectedDays = document.querySelectorAll('input[name="recurrence_day"]:checked');
+                    if (selectedDays.length === 0) {
+                        alert('Veuillez sélectionner au moins un jour');
+                        return;
+                    }
+                } else {
+                    if (!document.getElementById('eventDate').value) {
+                        alert('Veuillez sélectionner une date');
+                        return;
+                    }
+                }
+                
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<span class="material-icons spinning">sync</span> Envoi en cours...';
                 
                 try {
-                    // Préparer les données
-                    const eventData = {
-                        title: document.getElementById('eventTitle').value.trim(),
-                        category: category.value,
-                        event_date: document.getElementById('eventDate').value,
-                        event_time: document.getElementById('eventTime').value || null,
-                        end_time: document.getElementById('eventEndTime').value || null,
-                        location: document.getElementById('eventLocation').value.trim(),
-                        description: document.getElementById('eventDescription').value.trim() || null,
-                        link: document.getElementById('eventLink').value.trim() || null,
-                        author: document.getElementById('eventAuthor').value.trim(),
-                        status: 'pending',
-                        image_url: null
-                    };
-                    
-                    // Upload image si présente
+                    let imageUrl = null;
                     if (selectedImage) {
                         const fileName = `event_${Date.now()}_${selectedImage.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                        
-                        const { data: uploadData, error: uploadError } = await supabaseClient
-                            .storage
-                            .from('event-images')
-                            .upload(fileName, selectedImage);
-                        
-                        if (uploadError) {
-                            console.warn('Erreur upload image:', uploadError);
-                            // Continuer sans image
-                        } else {
-                            const { data: urlData } = supabaseClient
-                                .storage
-                                .from('event-images')
-                                .getPublicUrl(fileName);
-                            
-                            eventData.image_url = urlData.publicUrl;
+                        const { error: uploadError } = await supabaseClient.storage.from('event-images').upload(fileName, selectedImage);
+                        if (!uploadError) {
+                            const { data: urlData } = supabaseClient.storage.from('event-images').getPublicUrl(fileName);
+                            imageUrl = urlData.publicUrl;
                         }
                     }
                     
-                    // Insérer dans Supabase
-                    const { error } = await supabaseClient
-                        .from('events')
-                        .insert([eventData]);
+                    const title = document.getElementById('eventTitle').value.trim();
+                    const location = document.getElementById('eventLocation').value.trim();
+                    const description = document.getElementById('eventDescription').value.trim() || null;
+                    const link = document.getElementById('eventLink').value.trim() || null;
+                    const author = document.getElementById('eventAuthor').value.trim();
                     
+                    let eventsToInsert = [];
+                    
+                    if (isRecurrent) {
+                        const selectedDays = [...document.querySelectorAll('input[name="recurrence_day"]:checked')].map(cb => parseInt(cb.value));
+                        const dates = generateRecurringDates(selectedDays);
+                        const eventTime = document.getElementById('eventTimeRecurring').value || null;
+                        const endTime = document.getElementById('eventEndTimeRecurring').value || null;
+                        
+                        eventsToInsert = dates.map(date => ({
+                            title, category: category.value, event_date: date,
+                            event_time: eventTime, end_time: endTime, location,
+                            description, link, author, image_url: imageUrl, status: 'pending'
+                        }));
+                    } else {
+                        eventsToInsert = [{
+                            title, category: category.value,
+                            event_date: document.getElementById('eventDate').value,
+                            event_time: document.getElementById('eventTime').value || null,
+                            end_time: document.getElementById('eventEndTime').value || null,
+                            location, description, link, author, image_url: imageUrl, status: 'pending'
+                        }];
+                    }
+                    
+                    const { error } = await supabaseClient.from('events').insert(eventsToInsert);
                     if (error) throw error;
                     
-                    // Succès
+                    // Notification email
+                    try {
+                        await fetch('/api/sendEmail', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                type: 'evenement',
+                                title: title,
+                                author: author,
+                                content: `📅 ${isRecurrent ? eventsToInsert.length + ' dates créées' : document.getElementById('eventDate').value}\n📍 ${location}\n🏷️ ${category.value}\n\n${description || 'Pas de description'}`,
+                                category: category.value,
+                                isRecurrent: isRecurrent,
+                                count: eventsToInsert.length
+                            })
+                        });
+                    } catch (e) {
+                        console.log('Email notification non envoyée:', e);
+                    }
+                    
                     form.style.display = 'none';
                     successMessage.classList.add('show');
-                    
-                    console.log('✅ Événement proposé avec succès');
+                    console.log(`✅ ${eventsToInsert.length} événement(s) proposé(s)`);
                     
                 } catch (error) {
                     console.error('❌ Erreur:', error);
                     alert('Erreur lors de l\'envoi. Veuillez réessayer.');
-                    
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = '<span class="material-icons">send</span> Proposer l\'événement';
                 }

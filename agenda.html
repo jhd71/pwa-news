@@ -8,20 +8,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <title>Agenda local - Actu & Média Montceau</title>
-    <meta name="description" content="Découvrez tous les événements à Montceau-les-Mines et ses environs : concerts, marchés, brocantes, sport, culture...">
+    <meta name="description" content="Découvrez tous les événements à Montceau-les-Mines et ses environs">
     
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="icon-192.png">
-    
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* ============================================
-           VARIABLES - THÈME SOMBRE (défaut)
-           ============================================ */
         :root {
             --primary: #6366f1;
             --primary-light: #818cf8;
@@ -35,7 +29,6 @@
             --border-color: rgba(255, 255, 255, 0.1);
         }
         
-        /* THÈME CLAIR */
         [data-theme="light"] {
             --bg-primary: #f8fafc;
             --bg-secondary: #f1f5f9;
@@ -47,11 +40,7 @@
             --border-color: #e2e8f0;
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -61,18 +50,9 @@
             line-height: 1.6;
         }
         
-        .spinning {
-            animation: spin 1s linear infinite;
-        }
+        .spinning { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        /* ============================================
-           HEADER
-           ============================================ */
         .page-header {
             display: flex;
             align-items: center;
@@ -105,27 +85,10 @@
             color: white;
         }
         
-        .page-title {
-            flex: 1;
-        }
+        .page-title { flex: 1; }
+        .page-title h1 { font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+        .page-title p { font-size: 0.8rem; color: var(--text-muted); }
         
-        .page-title h1 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .page-title p {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-        
-        /* ============================================
-           FILTRES
-           ============================================ */
         .agenda-filters {
             display: flex;
             gap: 0.5rem;
@@ -137,9 +100,7 @@
             border-bottom: 1px solid var(--border-color);
         }
         
-        .agenda-filters::-webkit-scrollbar {
-            display: none;
-        }
+        .agenda-filters::-webkit-scrollbar { display: none; }
         
         .filter-btn {
             display: flex;
@@ -157,10 +118,7 @@
             transition: all 0.2s;
         }
         
-        .filter-btn:hover {
-            border-color: var(--primary-light);
-        }
-        
+        .filter-btn:hover { border-color: var(--primary-light); }
         .filter-btn.active {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             border-color: var(--primary);
@@ -179,9 +137,6 @@
             font-size: 0.75rem;
         }
         
-        /* ============================================
-           SÉLECTEUR MOIS
-           ============================================ */
         .month-selector {
             display: flex;
             align-items: center;
@@ -215,31 +170,14 @@
         .current-month {
             font-size: 1.1rem;
             font-weight: 600;
-            color: var(--text-primary);
             min-width: 150px;
             text-align: center;
             text-transform: capitalize;
         }
         
-        /* ============================================
-           LISTE ÉVÉNEMENTS
-           ============================================ */
-        .events-container {
-            padding: 1rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .events-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        /* Groupe par date */
-        .events-date-group {
-            margin-bottom: 1.5rem;
-        }
+        .events-container { padding: 1rem; max-width: 800px; margin: 0 auto; }
+        .events-list { display: flex; flex-direction: column; gap: 1rem; }
+        .events-date-group { margin-bottom: 1.5rem; }
         
         .events-date-header {
             display: flex;
@@ -262,25 +200,10 @@
             color: white;
         }
         
-        .events-date-day {
-            font-size: 1.5rem;
-            font-weight: 700;
-            line-height: 1;
-        }
+        .events-date-day { font-size: 1.5rem; font-weight: 700; line-height: 1; }
+        .events-date-weekday { font-size: 0.7rem; text-transform: uppercase; opacity: 0.9; }
+        .events-date-full { font-size: 1rem; font-weight: 600; }
         
-        .events-date-weekday {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            opacity: 0.9;
-        }
-        
-        .events-date-full {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-        
-        /* Carte événement */
         .event-card {
             display: flex;
             flex-direction: column;
@@ -288,14 +211,11 @@
             border: 1px solid var(--border-color);
             border-radius: 16px;
             overflow: hidden;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             margin-bottom: 0.75rem;
         }
         
-        [data-theme="light"] .event-card {
-            background: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
+        [data-theme="light"] .event-card { background: white; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); }
         
         .event-card:hover {
             border-color: var(--primary-light);
@@ -303,20 +223,12 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         }
         
-        [data-theme="light"] .event-card:hover {
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        .event-card.highlighted {
+            box-shadow: 0 0 0 3px var(--primary);
         }
         
-        .event-card-image {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            background: var(--bg-card);
-        }
-        
-        .event-card-content {
-            padding: 1rem;
-        }
+        .event-card-image { width: 100%; height: 150px; object-fit: cover; background: var(--bg-card); }
+        .event-card-content { padding: 1rem; }
         
         .event-card-header {
             display: flex;
@@ -326,12 +238,7 @@
             margin-bottom: 0.5rem;
         }
         
-        .event-card-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            line-height: 1.3;
-        }
+        .event-card-title { font-size: 1.1rem; font-weight: 600; line-height: 1.3; }
         
         .event-card-category {
             display: inline-flex;
@@ -372,16 +279,8 @@
             color: var(--text-muted);
         }
         
-        .event-card-meta span {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-        
-        .event-card-meta .material-icons {
-            font-size: 1rem;
-            color: var(--primary-light);
-        }
+        .event-card-meta span { display: flex; align-items: center; gap: 0.25rem; }
+        .event-card-meta .material-icons { font-size: 1rem; color: var(--primary-light); }
         
         .event-card-link {
             display: inline-flex;
@@ -403,31 +302,10 @@
             box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
         
-        /* ============================================
-           ÉTATS VIDE / LOADING
-           ============================================ */
-        .events-empty {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--text-muted);
-        }
-        
-        .events-empty-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-        
-        .events-empty-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .events-empty-text {
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-        }
+        .events-empty { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
+        .events-empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+        .events-empty-title { font-size: 1.2rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; }
+        .events-empty-text { font-size: 0.9rem; margin-bottom: 1.5rem; }
         
         .events-loading {
             display: flex;
@@ -439,14 +317,8 @@
             color: var(--text-muted);
         }
         
-        .events-loading .material-icons {
-            font-size: 2.5rem;
-            color: var(--primary-light);
-        }
+        .events-loading .material-icons { font-size: 2.5rem; color: var(--primary-light); }
         
-        /* ============================================
-           BOUTONS
-           ============================================ */
         .propose-event-btn {
             display: inline-flex;
             align-items: center;
@@ -494,28 +366,14 @@
             box-shadow: 0 6px 24px rgba(245, 158, 11, 0.5);
         }
         
-        /* ============================================
-           RESPONSIVE
-           ============================================ */
         @media (min-width: 768px) {
-            .event-card {
-                flex-direction: row;
-            }
-            
-            .event-card-image {
-                width: 200px;
-                height: auto;
-                min-height: 180px;
-            }
-            
-            .event-card-content {
-                flex: 1;
-            }
+            .event-card { flex-direction: row; }
+            .event-card-image { width: 200px; height: auto; min-height: 180px; }
+            .event-card-content { flex: 1; }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header class="page-header">
         <a href="index.html" class="back-btn" title="Retour">
             <span class="material-icons">arrow_back</span>
@@ -529,32 +387,16 @@
         </a>
     </header>
     
-    <!-- Filtres catégories -->
     <div class="agenda-filters" id="agendaFilters">
-        <button class="filter-btn active" data-filter="all">
-            Tous <span class="filter-count" id="countAll">0</span>
-        </button>
-        <button class="filter-btn" data-filter="sport">
-            ⚽ Sport <span class="filter-count" id="countSport">0</span>
-        </button>
-        <button class="filter-btn" data-filter="culture">
-            🎭 Culture <span class="filter-count" id="countCulture">0</span>
-        </button>
-        <button class="filter-btn" data-filter="marche">
-            🛒 Marchés <span class="filter-count" id="countMarche">0</span>
-        </button>
-        <button class="filter-btn" data-filter="brocante">
-            🏷️ Brocantes <span class="filter-count" id="countBrocante">0</span>
-        </button>
-        <button class="filter-btn" data-filter="concert">
-            🎵 Concerts <span class="filter-count" id="countConcert">0</span>
-        </button>
-        <button class="filter-btn" data-filter="fete">
-            🎉 Fêtes <span class="filter-count" id="countFete">0</span>
-        </button>
+        <button class="filter-btn active" data-filter="all">Tous <span class="filter-count" id="countAll">0</span></button>
+        <button class="filter-btn" data-filter="sport">⚽ Sport <span class="filter-count" id="countSport">0</span></button>
+        <button class="filter-btn" data-filter="culture">🎭 Culture <span class="filter-count" id="countCulture">0</span></button>
+        <button class="filter-btn" data-filter="marche">🛒 Marchés <span class="filter-count" id="countMarche">0</span></button>
+        <button class="filter-btn" data-filter="brocante">🏷️ Brocantes <span class="filter-count" id="countBrocante">0</span></button>
+        <button class="filter-btn" data-filter="concert">🎵 Concerts <span class="filter-count" id="countConcert">0</span></button>
+        <button class="filter-btn" data-filter="fete">🎉 Fêtes <span class="filter-count" id="countFete">0</span></button>
     </div>
     
-    <!-- Sélecteur de mois -->
     <div class="month-selector">
         <button class="month-nav-btn" id="prevMonth">
             <span class="material-icons">chevron_left</span>
@@ -565,7 +407,6 @@
         </button>
     </div>
     
-    <!-- Liste des événements -->
     <div class="events-container">
         <div class="events-list" id="eventsList">
             <div class="events-loading">
@@ -585,21 +426,16 @@
         </div>
     </div>
     
-    <!-- Bouton flottant proposer -->
     <a href="proposer-evenement.html" class="fab-propose" title="Proposer un événement">
         <span class="material-icons">add</span>
     </a>
     
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Configuration Supabase
         const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
-        
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
-        // État de l'application
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
         let currentFilter = 'all';
@@ -611,43 +447,37 @@
             initFilters();
             initMonthSelector();
             loadEvents().then(() => {
-                // Scroll vers l'événement si paramètre dans l'URL
                 scrollToEventFromUrl();
             });
         });
         
-        // Scroll vers un événement depuis l'URL
+        // Scroll vers événement depuis URL
         function scrollToEventFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
             const eventId = urlParams.get('event');
             
             if (eventId) {
-                // Attendre un peu que le DOM soit rendu
                 setTimeout(() => {
                     const eventCard = document.querySelector(`[data-event-id="${eventId}"]`);
                     if (eventCard) {
                         eventCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        // Effet de highlight
                         eventCard.style.boxShadow = '0 0 0 3px var(--primary)';
+                        eventCard.style.transition = 'box-shadow 0.3s ease';
                         setTimeout(() => {
                             eventCard.style.boxShadow = '';
                         }, 2000);
                     }
-                }, 300);
+                }, 500);
             }
         }
         
-        // Thème - suivre le thème du site principal
         function initTheme() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             if (savedTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
-            } else {
-                document.documentElement.removeAttribute('data-theme');
             }
         }
         
-        // Filtres
         function initFilters() {
             const filterBtns = document.querySelectorAll('.filter-btn');
             filterBtns.forEach(btn => {
@@ -660,52 +490,37 @@
             });
         }
         
-        // Sélecteur de mois
         function initMonthSelector() {
             updateMonthDisplay();
             
             document.getElementById('prevMonth').addEventListener('click', () => {
                 currentMonth--;
-                if (currentMonth < 0) {
-                    currentMonth = 11;
-                    currentYear--;
-                }
+                if (currentMonth < 0) { currentMonth = 11; currentYear--; }
                 updateMonthDisplay();
                 loadEvents();
             });
             
             document.getElementById('nextMonth').addEventListener('click', () => {
                 currentMonth++;
-                if (currentMonth > 11) {
-                    currentMonth = 0;
-                    currentYear++;
-                }
+                if (currentMonth > 11) { currentMonth = 0; currentYear++; }
                 updateMonthDisplay();
                 loadEvents();
             });
         }
         
         function updateMonthDisplay() {
-            const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 
-                               'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+            const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
             document.getElementById('currentMonth').textContent = `${monthNames[currentMonth]} ${currentYear}`;
         }
         
-        // Charger les événements
         async function loadEvents() {
             const listEl = document.getElementById('eventsList');
             const emptyEl = document.getElementById('eventsEmpty');
             
-            listEl.innerHTML = `
-                <div class="events-loading">
-                    <span class="material-icons spinning">sync</span>
-                    <span>Chargement des événements...</span>
-                </div>
-            `;
+            listEl.innerHTML = `<div class="events-loading"><span class="material-icons spinning">sync</span><span>Chargement...</span></div>`;
             emptyEl.style.display = 'none';
             
             try {
-                // Calculer les dates du mois
                 const startDate = new Date(currentYear, currentMonth, 1).toISOString().split('T')[0];
                 const endDate = new Date(currentYear, currentMonth + 1, 0).toISOString().split('T')[0];
                 
@@ -726,34 +541,14 @@
                 console.log(`📅 ${allEvents.length} événements chargés pour ${currentMonth + 1}/${currentYear}`);
                 
             } catch (error) {
-                console.error('❌ Erreur chargement événements:', error);
-                listEl.innerHTML = `
-                    <div class="events-empty">
-                        <div class="events-empty-icon">❌</div>
-                        <div class="events-empty-title">Erreur de chargement</div>
-                        <div class="events-empty-text">Impossible de charger les événements</div>
-                    </div>
-                `;
+                console.error('❌ Erreur:', error);
+                listEl.innerHTML = `<div class="events-empty"><div class="events-empty-icon">❌</div><div class="events-empty-title">Erreur</div></div>`;
             }
         }
         
-        // Mettre à jour les compteurs de filtres
         function updateFilterCounts() {
-            const counts = {
-                all: allEvents.length,
-                sport: 0,
-                culture: 0,
-                marche: 0,
-                brocante: 0,
-                concert: 0,
-                fete: 0
-            };
-            
-            allEvents.forEach(event => {
-                if (counts[event.category] !== undefined) {
-                    counts[event.category]++;
-                }
-            });
+            const counts = { all: allEvents.length, sport: 0, culture: 0, marche: 0, brocante: 0, concert: 0, fete: 0 };
+            allEvents.forEach(e => { if (counts[e.category] !== undefined) counts[e.category]++; });
             
             document.getElementById('countAll').textContent = counts.all;
             document.getElementById('countSport').textContent = counts.sport;
@@ -764,16 +559,11 @@
             document.getElementById('countFete').textContent = counts.fete;
         }
         
-        // Afficher les événements
         function renderEvents() {
             const listEl = document.getElementById('eventsList');
             const emptyEl = document.getElementById('eventsEmpty');
             
-            // Filtrer les événements
-            let filteredEvents = allEvents;
-            if (currentFilter !== 'all') {
-                filteredEvents = allEvents.filter(e => e.category === currentFilter);
-            }
+            let filteredEvents = currentFilter === 'all' ? allEvents : allEvents.filter(e => e.category === currentFilter);
             
             if (filteredEvents.length === 0) {
                 listEl.innerHTML = '';
@@ -783,19 +573,14 @@
             
             emptyEl.style.display = 'none';
             
-            // Grouper par date
             const groupedEvents = {};
             filteredEvents.forEach(event => {
                 const dateKey = event.event_date;
-                if (!groupedEvents[dateKey]) {
-                    groupedEvents[dateKey] = [];
-                }
+                if (!groupedEvents[dateKey]) groupedEvents[dateKey] = [];
                 groupedEvents[dateKey].push(event);
             });
             
-            // Générer le HTML
             let html = '';
-            
             Object.keys(groupedEvents).sort().forEach(dateKey => {
                 const events = groupedEvents[dateKey];
                 const date = new Date(dateKey);
@@ -810,7 +595,7 @@
                                 <span class="events-date-day">${day}</span>
                                 <span class="events-date-weekday">${weekday}</span>
                             </div>
-                            <span class="events-date-full">${capitalizeFirst(fullDate)}</span>
+                            <span class="events-date-full">${fullDate.charAt(0).toUpperCase() + fullDate.slice(1)}</span>
                         </div>
                         ${events.map(event => renderEventCard(event)).join('')}
                     </div>
@@ -820,10 +605,11 @@
             listEl.innerHTML = html;
         }
         
-        // Générer une carte événement
         function renderEventCard(event) {
-            const categoryIcon = getCategoryIcon(event.category);
-            const categoryLabel = getCategoryLabel(event.category);
+            const icons = { 'sport': '⚽', 'culture': '🎭', 'marche': '🛒', 'brocante': '🏷️', 'concert': '🎵', 'fete': '🎉', 'reunion': '👥', 'autre': '📌' };
+            const labels = { 'sport': 'Sport', 'culture': 'Culture', 'marche': 'Marché', 'brocante': 'Brocante', 'concert': 'Concert', 'fete': 'Fête', 'reunion': 'Réunion', 'autre': 'Événement' };
+            const icon = icons[event.category] || '📌';
+            const label = labels[event.category] || 'Événement';
             
             return `
                 <div class="event-card" data-event-id="${event.id}">
@@ -831,55 +617,39 @@
                     <div class="event-card-content">
                         <div class="event-card-header">
                             <h3 class="event-card-title">${escapeHtml(event.title)}</h3>
-                            <span class="event-card-category ${event.category}">${categoryIcon} ${categoryLabel}</span>
+                            <span class="event-card-category ${event.category}">${icon} ${label}</span>
                         </div>
                         ${event.description ? `<p class="event-card-description">${escapeHtml(event.description)}</p>` : ''}
                         <div class="event-card-meta">
-                            ${event.event_time ? `
-                                <span>
-                                    <span class="material-icons">schedule</span>
-                                    ${formatTime(event.event_time)}${event.end_time ? ' - ' + formatTime(event.end_time) : ''}
-                                </span>
-                            ` : ''}
-                            ${event.location ? `
-                                <span>
-                                    <span class="material-icons">place</span>
-                                    ${escapeHtml(event.location)}
-                                </span>
-                            ` : ''}
+                            ${event.event_time ? `<span><span class="material-icons">schedule</span>${formatTime(event.event_time)}${event.end_time ? ' - ' + formatTime(event.end_time) : ''}</span>` : ''}
+                            ${event.location ? `<span><span class="material-icons">place</span>${escapeHtml(event.location)}</span>` : ''}
                         </div>
-                        ${event.link ? `
-                            <a href="${event.link}" target="_blank" class="event-card-link">
-                                <span class="material-icons">open_in_new</span>
-                                Plus d'infos
-                            </a>
-                        ` : ''}
+                        ${event.link ? `<a href="${event.link}" target="_blank" class="event-card-link"><span class="material-icons">open_in_new</span>Plus d'infos</a>` : ''}
                     </div>
                 </div>
             `;
         }
         
-        // Utilitaires
-        function getCategoryIcon(category) {
-            const icons = {
-                'sport': '⚽', 'culture': '🎭', 'marche': '🛒', 'brocante': '🏷️',
-                'concert': '🎵', 'fete': '🎉', 'reunion': '👥', 'autre': '📌'
-            };
-            return icons[category] || '📌';
-        }
-        
-        function getCategoryLabel(category) {
-            const labels = {
-                'sport': 'Sport', 'culture': 'Culture', 'marche': 'Marché', 'brocante': 'Brocante',
-                'concert': 'Concert', 'fete': 'Fête', 'reunion': 'Réunion', 'autre': 'Événement'
-            };
-            return labels[category] || 'Événement';
+        function scrollToEventFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventId = urlParams.get('event');
+            
+            if (eventId) {
+                setTimeout(() => {
+                    const eventCard = document.querySelector(`[data-event-id="${eventId}"]`);
+                    if (eventCard) {
+                        eventCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        eventCard.classList.add('highlighted');
+                        setTimeout(() => eventCard.classList.remove('highlighted'), 2500);
+                    }
+                }, 500);
+            }
         }
         
         function formatTime(timeStr) {
             if (!timeStr) return '';
-            const [hours, minutes] = timeStr.split(':');
-            return `${hours}h${minutes !== '00' ? minutes : ''}`;
+            const [h, m] = timeStr.split(':');
+            return `${h}h${m !== '00' ? m : ''}`;
         }
         
         function escapeHtml(text) {
@@ -887,10 +657,6 @@
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
-        }
-        
-        function capitalizeFirst(str) {
-            return str.charAt(0).toUpperCase() + str.slice(1);
         }
     </script>
 </body>

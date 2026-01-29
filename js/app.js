@@ -1493,7 +1493,7 @@ async function initAgenda() {
     const contentEl = document.getElementById('agendaContent');
     const emptyEl = document.getElementById('agendaEmpty');
     
-    if (!contentEl) return;
+    if (!contentEl) return; // Pas sur la page d'accueil
     
     try {
         const today = new Date().toISOString().split('T')[0];
@@ -1519,28 +1519,29 @@ async function initAgenda() {
         contentEl.innerHTML = data.map(event => {
             const date = new Date(event.event_date);
             const day = date.getDate();
-            const month = date.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '');
-            const categoryIcon = getCategoryIcon(event.category);
+            const month = date.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '').toUpperCase();
+            const categoryIcon = getAgendaCategoryIcon(event.category);
+            const categoryLabel = getAgendaCategoryLabel(event.category);
             
             return `
                 <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
                     <div class="agenda-item-date">
                         <span class="agenda-item-day">${day}</span>
-                        <span class="agenda-item-month">${month.toUpperCase()}</span>
+                        <span class="agenda-item-month">${month}</span>
                     </div>
                     <div class="agenda-item-content">
                         <div class="agenda-item-title">${escapeHtml(event.title)}</div>
                         <div class="agenda-item-info">
-                            ${event.event_time ? `<span>🕐 ${formatEventTime(event.event_time)}</span>` : ''}
+                            ${event.event_time ? `<span>🕐 ${formatAgendaTime(event.event_time)}</span>` : ''}
                             ${event.location ? `<span>📍 ${escapeHtml(event.location)}</span>` : ''}
                         </div>
-                        <span class="agenda-item-category ${event.category}">${categoryIcon} ${getCategoryLabel(event.category)}</span>
+                        <span class="agenda-item-category ${event.category}">${categoryIcon} ${categoryLabel}</span>
                     </div>
                 </a>
             `;
         }).join('');
         
-        console.log(`📅 ${data.length} événements chargés`);
+        console.log(`📅 ${data.length} événements chargés sur l'accueil`);
         
     } catch (error) {
         console.error('❌ Erreur chargement agenda:', error);
@@ -1548,7 +1549,7 @@ async function initAgenda() {
     }
 }
 
-function getCategoryIcon(category) {
+function getAgendaCategoryIcon(category) {
     const icons = {
         'sport': '⚽', 'culture': '🎭', 'marche': '🛒', 'brocante': '🏷️',
         'concert': '🎵', 'fete': '🎉', 'reunion': '👥', 'autre': '📌'
@@ -1556,7 +1557,7 @@ function getCategoryIcon(category) {
     return icons[category] || '📌';
 }
 
-function getCategoryLabel(category) {
+function getAgendaCategoryLabel(category) {
     const labels = {
         'sport': 'Sport', 'culture': 'Culture', 'marche': 'Marché', 'brocante': 'Brocante',
         'concert': 'Concert', 'fete': 'Fête', 'reunion': 'Réunion', 'autre': 'Événement'
@@ -1564,7 +1565,7 @@ function getCategoryLabel(category) {
     return labels[category] || 'Événement';
 }
 
-function formatEventTime(timeStr) {
+function formatAgendaTime(timeStr) {
     if (!timeStr) return '';
     const [hours, minutes] = timeStr.split(':');
     return `${hours}h${minutes !== '00' ? minutes : ''}`;
