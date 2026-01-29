@@ -3001,7 +3001,6 @@ p,
     font-size: 0.7rem;
     color: var(--primary-light);
     margin-top: 0.35rem;
-	box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
 }
 
 /* Empty state */
