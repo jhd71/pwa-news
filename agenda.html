@@ -20,7 +20,7 @@
     
     <style>
         /* ============================================
-           VARIABLES ET BASE
+           VARIABLES - THÈME SOMBRE (défaut)
            ============================================ */
         :root {
             --primary: #6366f1;
@@ -33,9 +33,9 @@
             --text-secondary: rgba(255, 255, 255, 0.8);
             --text-muted: rgba(255, 255, 255, 0.5);
             --border-color: rgba(255, 255, 255, 0.1);
-            --glass-bg: rgba(255, 255, 255, 0.05);
         }
         
+        /* THÈME CLAIR */
         [data-theme="light"] {
             --bg-primary: #f8fafc;
             --bg-secondary: #f1f5f9;
@@ -45,7 +45,6 @@
             --text-secondary: #475569;
             --text-muted: #94a3b8;
             --border-color: #e2e8f0;
-            --glass-bg: rgba(255, 255, 255, 0.9);
         }
         
         * {
@@ -86,7 +85,7 @@
             z-index: 100;
         }
         
-        .back-btn {
+        .back-btn, .home-btn {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -100,7 +99,7 @@
             transition: all 0.2s;
         }
         
-        .back-btn:hover {
+        .back-btn:hover, .home-btn:hover {
             background: var(--primary);
             border-color: var(--primary);
             color: white;
@@ -122,25 +121,6 @@
         .page-title p {
             font-size: 0.8rem;
             color: var(--text-muted);
-        }
-        
-        .home-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        
-        .home-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
         }
         
         /* ============================================
@@ -312,10 +292,19 @@
             margin-bottom: 0.75rem;
         }
         
+        [data-theme="light"] .event-card {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
         .event-card:hover {
             border-color: var(--primary-light);
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        [data-theme="light"] .event-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
         }
         
         .event-card-image {
@@ -849,28 +838,16 @@
         // Utilitaires
         function getCategoryIcon(category) {
             const icons = {
-                'sport': '⚽',
-                'culture': '🎭',
-                'marche': '🛒',
-                'brocante': '🏷️',
-                'concert': '🎵',
-                'fete': '🎉',
-                'reunion': '👥',
-                'autre': '📌'
+                'sport': '⚽', 'culture': '🎭', 'marche': '🛒', 'brocante': '🏷️',
+                'concert': '🎵', 'fete': '🎉', 'reunion': '👥', 'autre': '📌'
             };
             return icons[category] || '📌';
         }
         
         function getCategoryLabel(category) {
             const labels = {
-                'sport': 'Sport',
-                'culture': 'Culture',
-                'marche': 'Marché',
-                'brocante': 'Brocante',
-                'concert': 'Concert',
-                'fete': 'Fête',
-                'reunion': 'Réunion',
-                'autre': 'Événement'
+                'sport': 'Sport', 'culture': 'Culture', 'marche': 'Marché', 'brocante': 'Brocante',
+                'concert': 'Concert', 'fete': 'Fête', 'reunion': 'Réunion', 'autre': 'Événement'
             };
             return labels[category] || 'Événement';
         }
