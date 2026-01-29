@@ -79,7 +79,6 @@
                 /* ========== TUILES - Espacement uniforme ========== */
                 .ios-device .quick-links-grid,
                 .ios-device .tiles-grid {
-                    display: grid !important;
                     grid-template-columns: repeat(2, 1fr) !important;
                     gap: 1rem !important;
                 }
