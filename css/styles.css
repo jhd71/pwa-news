@@ -871,7 +871,7 @@ h2, h3 {
 /* ============================================
    WIDGET CINÉMA
    ============================================ */
-.cinema-section {
+.agenda-section, .cinema-section {
     margin: 1rem;
     padding: 1.25rem;
     border-radius: 20px;
