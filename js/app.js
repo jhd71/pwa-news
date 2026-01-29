@@ -1484,6 +1484,118 @@ function initFontSizeSelector() {
 // Initialiser au chargement
 document.addEventListener('DOMContentLoaded', initFontSizeSelector);
 
+// ============================================
+// AGENDA LOCAL
+// ============================================
+async function initAgenda() {
+    const contentEl = document.getElementById('agendaContent');
+    const emptyEl = document.getElementById('agendaEmpty');
+    
+    if (!contentEl) return;
+    
+    try {
+        const supabaseClient = getSupabaseClient();
+        if (!supabaseClient) {
+            console.log('⚠️ Supabase non disponible pour l\'agenda');
+            return;
+        }
+        
+        // Récupérer les 5 prochains événements
+        const today = new Date().toISOString().split('T')[0];
+        
+        const { data, error } = await supabaseClient
+            .from('events')
+            .select('*')
+            .eq('status', 'approved')
+            .gte('event_date', today)
+            .order('event_date', { ascending: true })
+            .limit(5);
+        
+        if (error) throw error;
+        
+        if (!data || data.length === 0) {
+            contentEl.style.display = 'none';
+            emptyEl.style.display = 'block';
+            console.log('📅 Aucun événement à venir');
+            return;
+        }
+        
+        // Afficher les événements
+        contentEl.innerHTML = data.map(event => {
+            const date = new Date(event.event_date);
+            const day = date.getDate();
+            const month = date.toLocaleDateString('fr-FR', { month: 'short' });
+            const categoryIcon = getCategoryIcon(event.category);
+            const categoryLabel = getCategoryLabel(event.category);
+            
+            return `
+                <a href="${event.link || '#'}" class="agenda-item" ${event.link ? 'target="_blank"' : ''}>
+                    <div class="agenda-item-date">
+                        <span class="agenda-item-day">${day}</span>
+                        <span class="agenda-item-month">${month}</span>
+                    </div>
+                    <div class="agenda-item-content">
+                        <div class="agenda-item-title">${escapeHtml(event.title)}</div>
+                        <div class="agenda-item-info">
+                            ${event.event_time ? `<span><span class="material-icons">schedule</span>${formatTime(event.event_time)}</span>` : ''}
+                            ${event.location ? `<span><span class="material-icons">place</span>${escapeHtml(event.location)}</span>` : ''}
+                        </div>
+                        <span class="agenda-item-category ${event.category}">${categoryIcon} ${categoryLabel}</span>
+                    </div>
+                </a>
+            `;
+        }).join('');
+        
+        console.log(`📅 ${data.length} événements chargés`);
+        
+    } catch (error) {
+        console.error('❌ Erreur agenda:', error);
+        contentEl.innerHTML = `
+            <div class="agenda-empty">
+                <div class="agenda-empty-icon">📅</div>
+                <div class="agenda-empty-text">Erreur de chargement</div>
+            </div>
+        `;
+    }
+}
+
+function getCategoryIcon(category) {
+    const icons = {
+        'sport': '⚽',
+        'culture': '🎭',
+        'marche': '🛒',
+        'brocante': '🏷️',
+        'concert': '🎵',
+        'fete': '🎉',
+        'reunion': '👥',
+        'autre': '📌'
+    };
+    return icons[category] || '📌';
+}
+
+function getCategoryLabel(category) {
+    const labels = {
+        'sport': 'Sport',
+        'culture': 'Culture',
+        'marche': 'Marché',
+        'brocante': 'Brocante',
+        'concert': 'Concert',
+        'fete': 'Fête',
+        'reunion': 'Réunion',
+        'autre': 'Événement'
+    };
+    return labels[category] || 'Événement';
+}
+
+function formatTime(timeStr) {
+    if (!timeStr) return '';
+    const [hours, minutes] = timeStr.split(':');
+    return `${hours}h${minutes !== '00' ? minutes : ''}`;
+}
+
+// Ajouter à l'initialisation
+document.addEventListener('DOMContentLoaded', initAgenda);
+
 // Exposer globalement
 window.togglePushSubscription = togglePushSubscription;
 window.showNotifPrompt = showNotifPrompt;

@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#1e1b4b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <title>Proposer un événement - Actu & Média Montceau</title>
+    <meta name="description" content="Proposez un événement à Montceau-les-Mines : concert, marché, brocante, fête, sport...">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ============================================
+           STYLES PAGE PROPOSER ÉVÉNEMENT
+           ============================================ */
+        
+        .propose-page {
+            min-height: 100vh;
+            padding-bottom: 2rem;
+        }
+        
+        /* Header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .back-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .back-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+        
+        .page-title h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .page-title p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+        
+        /* Formulaire */
+        .form-container {
+            padding: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-intro {
+            text-align: center;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        
+        .form-intro-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-intro-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-intro-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .event-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .form-label .material-icons {
+            font-size: 1.1rem;
+            color: var(--primary-light);
+        }
+        
+        .form-label .required {
+            color: #ef4444;
+        }
+        
+        .form-input,
+        .form-select,
+        .form-textarea {
+            padding: 0.75rem 1rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .form-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        /* Sélection catégorie */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+        
+        .category-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.75rem;
+            background: var(--bg-elevated);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .category-option:hover {
+            border-color: var(--primary-light);
+        }
+        
+        .category-option.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .category-option input {
+            display: none;
+        }
+        
+        .category-option-icon {
+            font-size: 1.5rem;
+        }
+        
+        .category-option-name {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .category-option.selected .category-option-name {
+            color: var(--primary);
+        }
+        
+        /* Upload image */
+        .image-upload {
+            position: relative;
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .image-upload:hover {
+            border-color: var(--primary-light);
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
+        .image-upload input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .image-upload-icon {
+            font-size: 2.5rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        .image-upload-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .image-upload-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+        
+        .image-preview {
+            display: none;
+            position: relative;
+            margin-top: 1rem;
+        }
+        
+        .image-preview.show {
+            display: block;
+        }
+        
+        .image-preview img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        
+        .image-preview-remove {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 32px;
+            height: 32px;
+            background: rgba(239, 68, 68, 0.9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Bouton submit */
+        .submit-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .submit-btn .material-icons.spinning {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Message succès */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 16px;
+            margin-top: 1rem;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .success-message-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .success-message-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #22c55e;
+            margin-bottom: 0.5rem;
+        }
+        
+        .success-message-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .success-message-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        /* Mode clair */
+        [data-theme="light"] .page-header {
+            background: white;
+        }
+        
+        [data-theme="light"] .form-input,
+        [data-theme="light"] .form-select,
+        [data-theme="light"] .form-textarea,
+        [data-theme="light"] .category-option {
+            background: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 480px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="propose-page">
+        <!-- Header -->
+        <header class="page-header">
+            <a href="agenda.html" class="back-btn">
+                <span class="material-icons">arrow_back</span>
+            </a>
+            <div class="page-title">
+                <h1>📅 Proposer un événement</h1>
+                <p>Partagez avec la communauté</p>
+            </div>
+        </header>
+        
+        <!-- Formulaire -->
+        <div class="form-container">
+            <div class="form-intro">
+                <div class="form-intro-icon">🎉</div>
+                <div class="form-intro-title">Vous organisez un événement ?</div>
+                <div class="form-intro-text">
+                    Partagez-le avec les habitants de Montceau et environs !<br>
+                    Votre proposition sera validée avant publication.
+                </div>
+            </div>
+            
+            <form class="event-form" id="eventForm">
+                <!-- Titre -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons">title</span>
+                        Titre de l'événement <span class="required">*</span>
+                    </label>
+                    <input type="text" class="form-input" id="eventTitle" placeholder="Ex: Marché de Noël, Concert Jazz..." maxlength="200" required>
+                </div>
+                
+                <!-- Catégorie -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons">category</span>
+                        Catégorie <span class="required">*</span>
+                    </label>
+                    <div class="category-grid" id="categoryGrid">
+                        <label class="category-option">
+                            <input type="radio" name="category" value="sport">
+                            <span class="category-option-icon">⚽</span>
+                            <span class="category-option-name">Sport</span>
+                        </label>
+                        <label class="category-option">
+                            <input type="radio" name="category" value="culture">
+                            <span class="category-option-icon">🎭</span>
+                            <span class="category-option-name">Culture</span>
+                        </label>
+                        <label class="category-option">
+                            <input type="radio" name="category" value="marche">
+                            <span class="category-option-icon">🛒</span>
+                            <span class="category-option-name">Marché</span>
+                        </label>
+                        <label class="category-option">
+                            <input type="radio" name="category" value="brocante">
+                            <span class="category-option-icon">🏷️</span>
+                            <span class="category-option-name">Brocante</span>
+                        </label>
+                        <label class="category-option">
+                            <input type="radio" name="category" value="concert">
+                            <span class="category-option-icon">🎵</span>
+                            <span class="category-option-name">Concert</span>
+                        </label>
+                        <label class="category-option">
+                            <input type="radio" name="category" value="fete">
+                            <span class="category-option-icon">🎉</span>
+                            <span class="category-option-name">Fête</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Date et heure -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="material-icons">event</span>
+                            Date <span class="required">*</span>
+                        </label>
+                        <input type="date" class="form-input" id="eventDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="material-icons">schedule</span>
+                            Heure de début
+                        </label>
+                        <input type="time" class="form-input" id="eventTime">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="material-icons">schedule</span>
+                            Heure de fin
+                        </label>
+                        <input type="time" class="form-input" id="eventEndTime">
+                    </div>
+                    <div class="form-group"></div>
+                </div>
+                
+                <!-- Lieu -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons">place</span>
+                        Lieu <span class="required">*</span>
+                    </label>
+                    <input type="text" class="form-input" id="eventLocation" placeholder="Ex: Place de la Mairie, Salle des fêtes..." maxlength="200" required>
+                </div>
+                
+                <!-- Description -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons">description</span>
+                        Description
+                    </label>
+                    <textarea class="form-textarea" id="eventDescription" placeholder="Décrivez votre événement..." maxlength="1000"></textarea>
+                    <span class="form-hint">Max. 1000 caractères</span>
+                </div>
+                
+                <!-- Lien -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons">link</span>
+                        Lien (optionnel)
+                    </label>
+                    <input type="url" class="form-input" id="eventLink" placeholder="https://...">
+                    <span class="form-hint">Page Facebook, site web, billetterie...</span>
+                </div>
+                
+                <!-- Image -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons">image</span>
+                        Image (optionnel)
+                    </label>
+                    <div class="image-upload" id="imageUpload">
+                        <input type="file" accept="image/*" id="eventImage">
+                        <div class="image-upload-icon">📷</div>
+                        <div class="image-upload-text">Cliquez ou glissez une image</div>
+                        <div class="image-upload-hint">JPG, PNG • Max 5 Mo</div>
+                    </div>
+                    <div class="image-preview" id="imagePreview">
+                        <img src="" alt="Aperçu" id="previewImg">
+                        <button type="button" class="image-preview-remove" id="removeImage">
+                            <span class="material-icons">close</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Organisateur -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="material-icons">person</span>
+                        Votre nom / organisation <span class="required">*</span>
+                    </label>
+                    <input type="text" class="form-input" id="eventAuthor" placeholder="Ex: Mairie de Montceau, Association..." maxlength="100" required>
+                </div>
+                
+                <!-- Bouton submit -->
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="material-icons">send</span>
+                    Proposer l'événement
+                </button>
+            </form>
+            
+            <!-- Message succès -->
+            <div class="success-message" id="successMessage">
+                <div class="success-message-icon">✅</div>
+                <div class="success-message-title">Événement proposé !</div>
+                <div class="success-message-text">
+                    Merci ! Votre événement sera validé et publié prochainement.
+                </div>
+                <a href="agenda.html" class="success-message-btn">
+                    <span class="material-icons">arrow_back</span>
+                    Retour à l'agenda
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Configuration Supabase
+        const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
+        
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        let selectedImage = null;
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initCategorySelection();
+            initImageUpload();
+            initForm();
+            setMinDate();
+        });
+        
+        // Thème
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        }
+        
+        // Date minimum = aujourd'hui
+        function setMinDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('eventDate').setAttribute('min', today);
+        }
+        
+        // Sélection catégorie
+        function initCategorySelection() {
+            const options = document.querySelectorAll('.category-option');
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    options.forEach(o => o.classList.remove('selected'));
+                    option.classList.add('selected');
+                });
+            });
+        }
+        
+        // Upload image
+        function initImageUpload() {
+            const input = document.getElementById('eventImage');
+            const preview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            const removeBtn = document.getElementById('removeImage');
+            
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    // Vérifier la taille (max 5 Mo)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('Image trop volumineuse (max 5 Mo)');
+                        input.value = '';
+                        return;
+                    }
+                    
+                    selectedImage = file;
+                    
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        previewImg.src = e.target.result;
+                        preview.classList.add('show');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            removeBtn.addEventListener('click', () => {
+                input.value = '';
+                selectedImage = null;
+                preview.classList.remove('show');
+                previewImg.src = '';
+            });
+        }
+        
+        // Formulaire
+        function initForm() {
+            const form = document.getElementById('eventForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const successMessage = document.getElementById('successMessage');
+            
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Vérifier catégorie
+                const category = document.querySelector('input[name="category"]:checked');
+                if (!category) {
+                    alert('Veuillez sélectionner une catégorie');
+                    return;
+                }
+                
+                // Désactiver le bouton
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="material-icons spinning">sync</span> Envoi en cours...';
+                
+                try {
+                    // Préparer les données
+                    const eventData = {
+                        title: document.getElementById('eventTitle').value.trim(),
+                        category: category.value,
+                        event_date: document.getElementById('eventDate').value,
+                        event_time: document.getElementById('eventTime').value || null,
+                        end_time: document.getElementById('eventEndTime').value || null,
+                        location: document.getElementById('eventLocation').value.trim(),
+                        description: document.getElementById('eventDescription').value.trim() || null,
+                        link: document.getElementById('eventLink').value.trim() || null,
+                        author: document.getElementById('eventAuthor').value.trim(),
+                        status: 'pending',
+                        image_url: null
+                    };
+                    
+                    // Upload image si présente
+                    if (selectedImage) {
+                        const fileName = `event_${Date.now()}_${selectedImage.name}`;
+                        
+                        const { data: uploadData, error: uploadError } = await supabaseClient
+                            .storage
+                            .from('event-images')
+                            .upload(fileName, selectedImage);
+                        
+                        if (uploadError) {
+                            console.warn('Erreur upload image:', uploadError);
+                            // Continuer sans image
+                        } else {
+                            const { data: urlData } = supabaseClient
+                                .storage
+                                .from('event-images')
+                                .getPublicUrl(fileName);
+                            
+                            eventData.image_url = urlData.publicUrl;
+                        }
+                    }
+                    
+                    // Insérer dans Supabase
+                    const { error } = await supabaseClient
+                        .from('events')
+                        .insert([eventData]);
+                    
+                    if (error) throw error;
+                    
+                    // Succès
+                    form.style.display = 'none';
+                    successMessage.classList.add('show');
+                    
+                    console.log('✅ Événement proposé avec succès');
+                    
+                } catch (error) {
+                    console.error('❌ Erreur:', error);
+                    alert('Erreur lors de l\'envoi. Veuillez réessayer.');
+                    
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span class="material-icons">send</span> Proposer l\'événement';
+                }
+            });
+        }
+    </script>
+    
+    <!-- iOS fixes -->
+    <script src="ios-fixes.js"></script>
+</body>
+</html>
