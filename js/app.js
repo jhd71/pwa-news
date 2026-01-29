@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initInstallPrompt();
     initExtraTiles();
     initPushNotifications();
+	initAgenda();
 });
 
 // ============================================
@@ -1487,6 +1488,7 @@ document.addEventListener('DOMContentLoaded', initFontSizeSelector);
 // ============================================
 // AGENDA LOCAL
 // ============================================
+
 async function initAgenda() {
     const contentEl = document.getElementById('agendaContent');
     const emptyEl = document.getElementById('agendaEmpty');
@@ -1494,13 +1496,6 @@ async function initAgenda() {
     if (!contentEl) return;
     
     try {
-        const supabaseClient = getSupabaseClient();
-        if (!supabaseClient) {
-            console.log('⚠️ Supabase non disponible pour l\'agenda');
-            return;
-        }
-        
-        // Récupérer les 5 prochains événements
         const today = new Date().toISOString().split('T')[0];
         
         const { data, error } = await supabaseClient
@@ -1514,33 +1509,32 @@ async function initAgenda() {
         if (error) throw error;
         
         if (!data || data.length === 0) {
-            contentEl.style.display = 'none';
-            emptyEl.style.display = 'block';
-            console.log('📅 Aucun événement à venir');
+            contentEl.innerHTML = '';
+            if (emptyEl) emptyEl.style.display = 'block';
             return;
         }
         
-        // Afficher les événements
+        if (emptyEl) emptyEl.style.display = 'none';
+        
         contentEl.innerHTML = data.map(event => {
             const date = new Date(event.event_date);
             const day = date.getDate();
-            const month = date.toLocaleDateString('fr-FR', { month: 'short' });
+            const month = date.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '');
             const categoryIcon = getCategoryIcon(event.category);
-            const categoryLabel = getCategoryLabel(event.category);
             
             return `
-                <a href="${event.link || '#'}" class="agenda-item" ${event.link ? 'target="_blank"' : ''}>
+                <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
                     <div class="agenda-item-date">
                         <span class="agenda-item-day">${day}</span>
-                        <span class="agenda-item-month">${month}</span>
+                        <span class="agenda-item-month">${month.toUpperCase()}</span>
                     </div>
                     <div class="agenda-item-content">
                         <div class="agenda-item-title">${escapeHtml(event.title)}</div>
                         <div class="agenda-item-info">
-                            ${event.event_time ? `<span><span class="material-icons">schedule</span>${formatTime(event.event_time)}</span>` : ''}
-                            ${event.location ? `<span><span class="material-icons">place</span>${escapeHtml(event.location)}</span>` : ''}
+                            ${event.event_time ? `<span>🕐 ${formatEventTime(event.event_time)}</span>` : ''}
+                            ${event.location ? `<span>📍 ${escapeHtml(event.location)}</span>` : ''}
                         </div>
-                        <span class="agenda-item-category ${event.category}">${categoryIcon} ${categoryLabel}</span>
+                        <span class="agenda-item-category ${event.category}">${categoryIcon} ${getCategoryLabel(event.category)}</span>
                     </div>
                 </a>
             `;
@@ -1549,45 +1543,28 @@ async function initAgenda() {
         console.log(`📅 ${data.length} événements chargés`);
         
     } catch (error) {
-        console.error('❌ Erreur agenda:', error);
-        contentEl.innerHTML = `
-            <div class="agenda-empty">
-                <div class="agenda-empty-icon">📅</div>
-                <div class="agenda-empty-text">Erreur de chargement</div>
-            </div>
-        `;
+        console.error('❌ Erreur chargement agenda:', error);
+        contentEl.innerHTML = '<div class="agenda-empty"><span class="agenda-empty-icon">❌</span><span class="agenda-empty-text">Erreur de chargement</span></div>';
     }
 }
 
 function getCategoryIcon(category) {
     const icons = {
-        'sport': '⚽',
-        'culture': '🎭',
-        'marche': '🛒',
-        'brocante': '🏷️',
-        'concert': '🎵',
-        'fete': '🎉',
-        'reunion': '👥',
-        'autre': '📌'
+        'sport': '⚽', 'culture': '🎭', 'marche': '🛒', 'brocante': '🏷️',
+        'concert': '🎵', 'fete': '🎉', 'reunion': '👥', 'autre': '📌'
     };
     return icons[category] || '📌';
 }
 
 function getCategoryLabel(category) {
     const labels = {
-        'sport': 'Sport',
-        'culture': 'Culture',
-        'marche': 'Marché',
-        'brocante': 'Brocante',
-        'concert': 'Concert',
-        'fete': 'Fête',
-        'reunion': 'Réunion',
-        'autre': 'Événement'
+        'sport': 'Sport', 'culture': 'Culture', 'marche': 'Marché', 'brocante': 'Brocante',
+        'concert': 'Concert', 'fete': 'Fête', 'reunion': 'Réunion', 'autre': 'Événement'
     };
     return labels[category] || 'Événement';
 }
 
-function formatTime(timeStr) {
+function formatEventTime(timeStr) {
     if (!timeStr) return '';
     const [hours, minutes] = timeStr.split(':');
     return `${hours}h${minutes !== '00' ? minutes : ''}`;

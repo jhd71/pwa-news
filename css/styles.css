@@ -3040,3 +3040,14 @@ p,
 [data-theme="light"] .agenda-item:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
+
+/* Agenda items cliquables */
+a.agenda-item {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+a.agenda-item:hover {
+    border-color: var(--primary);
+}

@@ -610,8 +610,32 @@
             initTheme();
             initFilters();
             initMonthSelector();
-            loadEvents();
+            loadEvents().then(() => {
+                // Scroll vers l'événement si paramètre dans l'URL
+                scrollToEventFromUrl();
+            });
         });
+        
+        // Scroll vers un événement depuis l'URL
+        function scrollToEventFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventId = urlParams.get('event');
+            
+            if (eventId) {
+                // Attendre un peu que le DOM soit rendu
+                setTimeout(() => {
+                    const eventCard = document.querySelector(`[data-event-id="${eventId}"]`);
+                    if (eventCard) {
+                        eventCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // Effet de highlight
+                        eventCard.style.boxShadow = '0 0 0 3px var(--primary)';
+                        setTimeout(() => {
+                            eventCard.style.boxShadow = '';
+                        }, 2000);
+                    }
+                }, 300);
+            }
+        }
         
         // Thème - suivre le thème du site principal
         function initTheme() {
@@ -802,7 +826,7 @@
             const categoryLabel = getCategoryLabel(event.category);
             
             return `
-                <div class="event-card">
+                <div class="event-card" data-event-id="${event.id}">
                     ${event.image_url ? `<img src="${event.image_url}" alt="${escapeHtml(event.title)}" class="event-card-image">` : ''}
                     <div class="event-card-content">
                         <div class="event-card-header">
