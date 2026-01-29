@@ -2404,6 +2404,7 @@ p,
     .community-section,
     .seo-section,
     .tiles-section,
+	.agenda-section,
     .footer {
         max-width: 900px;
         margin-left: auto;
@@ -2466,6 +2467,7 @@ p,
     .community-section,
     .seo-section,
     .tiles-section,
+	.agenda-section,
     .footer {
         max-width: 1200px;
         margin-left: auto;
@@ -2843,7 +2845,6 @@ p,
    ============================================ */
 
 .agenda-section {
-    margin: 1rem;
     padding: 1rem;
     border-radius: 16px;
 }
