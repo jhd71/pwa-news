@@ -12,7 +12,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Méthode non autorisée' });
     }
     
-    const { type, title, author, content, newsTitle, category, isRecurrent, count } = req.body;
+    const { type, title, author, content, newsTitle, category, isRecurrent } = req.body;
     
     if (!type || !content) {
         return res.status(400).json({ error: 'Données manquantes' });
@@ -54,21 +54,21 @@ export default async function handler(req, res) {
             </p>
         `;
     } else if (type === 'evenement') {
-        // Nouveau type pour les événements
+        // Type événement
         const categoryEmojis = {
             'sport': '⚽', 'culture': '🎭', 'marche': '🛒', 'brocante': '🏷️',
             'concert': '🎵', 'fete': '🎉', 'reunion': '👥', 'autre': '📌'
         };
         const emoji = categoryEmojis[category] || '📅';
-        const recurrentInfo = isRecurrent ? ` (${count} dates)` : '';
+        const recurrentBadge = isRecurrent ? ' 🔄 (récurrent)' : '';
         
-        subject = `📅 Nouvel événement : ${title || 'Sans titre'}${recurrentInfo}`;
+        subject = `📅 Nouvel événement : ${title || 'Sans titre'}${recurrentBadge}`;
         htmlContent = `
-            <h2>${emoji} Nouvel événement à valider${recurrentInfo}</h2>
+            <h2>${emoji} Nouvel événement à valider</h2>
             <p><strong>Titre :</strong> ${title || 'Non spécifié'}</p>
             <p><strong>Catégorie :</strong> ${emoji} ${category || 'Non spécifié'}</p>
+            ${isRecurrent ? '<p><strong>🔄 Événement récurrent</strong></p>' : ''}
             <p><strong>Proposé par :</strong> ${author || 'Anonyme'}</p>
-            ${isRecurrent ? `<p><strong>📆 Événement récurrent :</strong> ${count} dates créées</p>` : ''}
             <p><strong>Détails :</strong></p>
             <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 10px 0;">
                 ${content.replace(/\n/g, '<br>')}

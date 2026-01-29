@@ -224,7 +224,12 @@
         }
         
         .event-card.highlighted {
-            box-shadow: 0 0 0 3px var(--primary);
+            animation: highlight 2s ease-out;
+        }
+        
+        @keyframes highlight {
+            0%, 50% { box-shadow: 0 0 0 3px var(--primary); }
+            100% { box-shadow: none; }
         }
         
         .event-card-image { width: 100%; height: 150px; object-fit: cover; background: var(--bg-card); }
@@ -239,6 +244,8 @@
         }
         
         .event-card-title { font-size: 1.1rem; font-weight: 600; line-height: 1.3; }
+        
+        .event-card-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         
         .event-card-category {
             display: inline-flex;
@@ -259,6 +266,18 @@
         .event-card-category.fete { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
         .event-card-category.reunion { background: rgba(107, 114, 128, 0.15); color: #6b7280; }
         .event-card-category.autre { background: rgba(99, 102, 241, 0.15); color: #6366f1; }
+        
+        .recurring-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.6rem;
+            background: rgba(245, 158, 11, 0.15);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #f59e0b;
+        }
         
         .event-card-description {
             font-size: 0.9rem;
@@ -441,7 +460,9 @@
         let currentFilter = 'all';
         let allEvents = [];
         
-        // Initialisation
+        const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+        const dayNamesFull = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+        
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             initFilters();
@@ -450,26 +471,6 @@
                 scrollToEventFromUrl();
             });
         });
-        
-        // Scroll vers événement depuis URL
-        function scrollToEventFromUrl() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const eventId = urlParams.get('event');
-            
-            if (eventId) {
-                setTimeout(() => {
-                    const eventCard = document.querySelector(`[data-event-id="${eventId}"]`);
-                    if (eventCard) {
-                        eventCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        eventCard.style.boxShadow = '0 0 0 3px var(--primary)';
-                        eventCard.style.transition = 'box-shadow 0.3s ease';
-                        setTimeout(() => {
-                            eventCard.style.boxShadow = '';
-                        }, 2000);
-                    }
-                }, 500);
-            }
-        }
         
         function initTheme() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -524,17 +525,33 @@
                 const startDate = new Date(currentYear, currentMonth, 1).toISOString().split('T')[0];
                 const endDate = new Date(currentYear, currentMonth + 1, 0).toISOString().split('T')[0];
                 
-                const { data, error } = await supabaseClient
+                // Charger événements non-récurrents du mois
+                const { data: regularEvents, error: err1 } = await supabaseClient
                     .from('events')
                     .select('*')
                     .eq('status', 'approved')
+                    .eq('is_recurring', false)
                     .gte('event_date', startDate)
                     .lte('event_date', endDate)
                     .order('event_date', { ascending: true });
                 
-                if (error) throw error;
+                // Charger événements récurrents
+                const { data: recurringEvents, error: err2 } = await supabaseClient
+                    .from('events')
+                    .select('*')
+                    .eq('status', 'approved')
+                    .eq('is_recurring', true);
                 
-                allEvents = data || [];
+                if (err1) throw err1;
+                if (err2) throw err2;
+                
+                // Générer les dates pour les événements récurrents
+                const expandedRecurring = expandRecurringEvents(recurringEvents || [], currentYear, currentMonth);
+                
+                // Combiner et trier
+                allEvents = [...(regularEvents || []), ...expandedRecurring]
+                    .sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
+                
                 updateFilterCounts();
                 renderEvents();
                 
@@ -544,6 +561,34 @@
                 console.error('❌ Erreur:', error);
                 listEl.innerHTML = `<div class="events-empty"><div class="events-empty-icon">❌</div><div class="events-empty-title">Erreur</div></div>`;
             }
+        }
+        
+        // Générer les dates pour les événements récurrents
+        function expandRecurringEvents(events, year, month) {
+            const expanded = [];
+            
+            events.forEach(event => {
+                if (!event.recurrence_days) return;
+                
+                const days = event.recurrence_days.split(',').map(d => parseInt(d));
+                
+                // Parcourir chaque jour du mois
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const date = new Date(year, month, day);
+                    const dayOfWeek = date.getDay();
+                    
+                    if (days.includes(dayOfWeek)) {
+                        expanded.push({
+                            ...event,
+                            event_date: date.toISOString().split('T')[0],
+                            _generated: true
+                        });
+                    }
+                }
+            });
+            
+            return expanded;
         }
         
         function updateFilterCounts() {
@@ -611,13 +656,23 @@
             const icon = icons[event.category] || '📌';
             const label = labels[event.category] || 'Événement';
             
+            // Badge récurrent
+            let recurringBadge = '';
+            if (event.is_recurring && event.recurrence_days) {
+                const days = event.recurrence_days.split(',').map(d => dayNames[parseInt(d)]);
+                recurringBadge = `<span class="recurring-badge">🔄 Tous les ${days.join(', ')}</span>`;
+            }
+            
             return `
                 <div class="event-card" data-event-id="${event.id}">
                     ${event.image_url ? `<img src="${event.image_url}" alt="${escapeHtml(event.title)}" class="event-card-image">` : ''}
                     <div class="event-card-content">
                         <div class="event-card-header">
                             <h3 class="event-card-title">${escapeHtml(event.title)}</h3>
-                            <span class="event-card-category ${event.category}">${icon} ${label}</span>
+                            <div class="event-card-badges">
+                                <span class="event-card-category ${event.category}">${icon} ${label}</span>
+                                ${recurringBadge}
+                            </div>
                         </div>
                         ${event.description ? `<p class="event-card-description">${escapeHtml(event.description)}</p>` : ''}
                         <div class="event-card-meta">
@@ -640,7 +695,6 @@
                     if (eventCard) {
                         eventCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         eventCard.classList.add('highlighted');
-                        setTimeout(() => eventCard.classList.remove('highlighted'), 2500);
                     }
                 }, 500);
             }

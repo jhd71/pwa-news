@@ -8,8 +8,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <title>Proposer un événement - Actu & Média Montceau</title>
-    <meta name="description" content="Proposez un événement à Montceau-les-Mines : concert, marché, brocante, fête, sport...">
-    
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -76,20 +74,11 @@
             transition: all 0.2s;
         }
         
-        .back-btn:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
-        }
-        
+        .back-btn:hover { background: var(--primary); border-color: var(--primary); color: white; }
         .page-title h1 { font-size: 1.2rem; font-weight: 700; }
         .page-title p { font-size: 0.8rem; color: var(--text-muted); }
         
-        .form-container {
-            padding: 1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
+        .form-container { padding: 1rem; max-width: 600px; margin: 0 auto; }
         
         .form-intro {
             text-align: center;
@@ -144,6 +133,7 @@
         [data-theme="light"] .form-select,
         [data-theme="light"] .form-textarea { background: white; border-color: #e2e8f0; }
         
+        /* Catégories */
         .category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
         
         .category-option {
@@ -160,14 +150,14 @@
         }
         
         .category-option:hover { border-color: var(--primary-light); }
-        .category-option.selected { border-color: var(--primary); background: rgba(99, 102, 241, 0.1); }
+        .category-option.selected { border-color: var(--primary); background: rgba(99, 102, 241, 0.15); }
         .category-option input { display: none; }
         .category-option-icon { font-size: 1.5rem; }
         .category-option-name { font-size: 0.8rem; font-weight: 500; color: var(--text-secondary); }
-        .category-option.selected .category-option-name { color: var(--primary-light); }
+        .category-option.selected .category-option-name { color: var(--primary-light); font-weight: 600; }
         
         [data-theme="light"] .category-option { background: white; }
-        [data-theme="light"] .category-option.selected { background: rgba(99, 102, 241, 0.08); }
+        [data-theme="light"] .category-option.selected { background: rgba(99, 102, 241, 0.1); }
         
         /* Récurrence */
         .recurrence-toggle {
@@ -195,6 +185,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
+            flex-shrink: 0;
         }
         
         .recurrence-toggle.active .recurrence-checkbox { background: var(--primary); border-color: var(--primary); }
@@ -216,25 +207,45 @@
         .recurrence-options.show { display: block; }
         .recurrence-days { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
         
+        /* JOURS - CSS CORRIGÉ */
         .recurrence-day {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             background: var(--bg-elevated);
             border: 2px solid var(--border-color);
-            border-radius: 10px;
-            font-size: 0.8rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
             font-weight: 600;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
+            user-select: none;
         }
         
-        .recurrence-day:hover { border-color: var(--primary-light); }
-        .recurrence-day.selected { background: var(--primary); border-color: var(--primary); color: white; }
+        .recurrence-day:hover { 
+            border-color: var(--primary-light); 
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        /* ÉTAT SÉLECTIONNÉ - TRÈS VISIBLE */
+        .recurrence-day.selected { 
+            background: var(--primary) !important; 
+            border-color: var(--primary) !important; 
+            color: white !important;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+        
         .recurrence-day input { display: none; }
+        
+        [data-theme="light"] .recurrence-day { background: white; }
+        [data-theme="light"] .recurrence-day.selected { 
+            background: var(--primary) !important; 
+            color: white !important; 
+        }
         
         /* Image upload */
         .image-upload {
@@ -337,6 +348,7 @@
         @media (max-width: 480px) {
             .category-grid { grid-template-columns: repeat(2, 1fr); }
             .form-row { grid-template-columns: 1fr; }
+            .recurrence-day { width: 42px; height: 42px; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -427,15 +439,17 @@
                         Jours de la semaine
                     </label>
                     <div class="recurrence-days" id="recurrenceDays">
-                        <label class="recurrence-day"><input type="checkbox" name="recurrence_day" value="1">Lun</label>
-                        <label class="recurrence-day"><input type="checkbox" name="recurrence_day" value="2">Mar</label>
-                        <label class="recurrence-day"><input type="checkbox" name="recurrence_day" value="3">Mer</label>
-                        <label class="recurrence-day"><input type="checkbox" name="recurrence_day" value="4">Jeu</label>
-                        <label class="recurrence-day"><input type="checkbox" name="recurrence_day" value="5">Ven</label>
-                        <label class="recurrence-day"><input type="checkbox" name="recurrence_day" value="6">Sam</label>
-                        <label class="recurrence-day"><input type="checkbox" name="recurrence_day" value="0">Dim</label>
+                        <div class="recurrence-day" data-day="1">Lun</div>
+                        <div class="recurrence-day" data-day="2">Mar</div>
+                        <div class="recurrence-day" data-day="3">Mer</div>
+                        <div class="recurrence-day" data-day="4">Jeu</div>
+                        <div class="recurrence-day" data-day="5">Ven</div>
+                        <div class="recurrence-day" data-day="6">Sam</div>
+                        <div class="recurrence-day" data-day="0">Dim</div>
                     </div>
-                    <p class="form-hint" style="margin-top: 0.75rem;">Les événements seront créés pour les 8 prochaines semaines.</p>
+                    <p class="form-hint" style="margin-top: 0.75rem;">
+                        L'événement sera affiché automatiquement chaque semaine aux jours sélectionnés.
+                    </p>
                 </div>
             </div>
             
@@ -566,6 +580,7 @@
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         let selectedImage = null;
+        let selectedDays = [];
         
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
@@ -605,7 +620,8 @@
             const singleDateFields = document.getElementById('singleDateFields');
             const recurringTimeFields = document.getElementById('recurringTimeFields');
             
-            toggle.addEventListener('click', () => {
+            toggle.addEventListener('click', (e) => {
+                e.preventDefault();
                 checkbox.checked = !checkbox.checked;
                 toggle.classList.toggle('active', checkbox.checked);
                 options.classList.toggle('show', checkbox.checked);
@@ -619,10 +635,28 @@
                 }
             });
             
+            // Jours de la semaine - CLIC CORRIGÉ
             const days = document.querySelectorAll('.recurrence-day');
             days.forEach(day => {
-                day.addEventListener('click', () => {
+                day.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const dayValue = day.dataset.day;
+                    
+                    // Toggle la sélection
                     day.classList.toggle('selected');
+                    
+                    // Mettre à jour le tableau des jours sélectionnés
+                    if (day.classList.contains('selected')) {
+                        if (!selectedDays.includes(dayValue)) {
+                            selectedDays.push(dayValue);
+                        }
+                    } else {
+                        selectedDays = selectedDays.filter(d => d !== dayValue);
+                    }
+                    
+                    console.log('Jours sélectionnés:', selectedDays);
                 });
             });
         }
@@ -658,27 +692,6 @@
             });
         }
         
-        function generateRecurringDates(selectedDays, weeks = 8) {
-            const dates = [];
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            for (let w = 0; w < weeks; w++) {
-                for (const dayOfWeek of selectedDays) {
-                    const date = new Date(today);
-                    const currentDay = date.getDay();
-                    let daysUntil = dayOfWeek - currentDay;
-                    if (daysUntil < 0) daysUntil += 7;
-                    daysUntil += w * 7;
-                    date.setDate(date.getDate() + daysUntil);
-                    if (date >= today) {
-                        dates.push(date.toISOString().split('T')[0]);
-                    }
-                }
-            }
-            return [...new Set(dates)].sort();
-        }
-        
         function initForm() {
             const form = document.getElementById('eventForm');
             const submitBtn = document.getElementById('submitBtn');
@@ -696,9 +709,8 @@
                 const isRecurrent = document.getElementById('isRecurrent').checked;
                 
                 if (isRecurrent) {
-                    const selectedDays = document.querySelectorAll('input[name="recurrence_day"]:checked');
                     if (selectedDays.length === 0) {
-                        alert('Veuillez sélectionner au moins un jour');
+                        alert('Veuillez sélectionner au moins un jour de la semaine');
                         return;
                     }
                 } else {
@@ -728,33 +740,36 @@
                     const link = document.getElementById('eventLink').value.trim() || null;
                     const author = document.getElementById('eventAuthor').value.trim();
                     
-                    let eventsToInsert = [];
+                    // Créer UN SEUL événement (récurrent ou non)
+                    const eventData = {
+                        title,
+                        category: category.value,
+                        location,
+                        description,
+                        link,
+                        author,
+                        image_url: imageUrl,
+                        status: 'pending',
+                        is_recurring: isRecurrent,
+                        recurrence_days: isRecurrent ? selectedDays.sort().join(',') : null,
+                        event_date: isRecurrent ? null : document.getElementById('eventDate').value,
+                        event_time: isRecurrent 
+                            ? (document.getElementById('eventTimeRecurring').value || null)
+                            : (document.getElementById('eventTime').value || null),
+                        end_time: isRecurrent 
+                            ? (document.getElementById('eventEndTimeRecurring').value || null)
+                            : (document.getElementById('eventEndTime').value || null)
+                    };
                     
-                    if (isRecurrent) {
-                        const selectedDays = [...document.querySelectorAll('input[name="recurrence_day"]:checked')].map(cb => parseInt(cb.value));
-                        const dates = generateRecurringDates(selectedDays);
-                        const eventTime = document.getElementById('eventTimeRecurring').value || null;
-                        const endTime = document.getElementById('eventEndTimeRecurring').value || null;
-                        
-                        eventsToInsert = dates.map(date => ({
-                            title, category: category.value, event_date: date,
-                            event_time: eventTime, end_time: endTime, location,
-                            description, link, author, image_url: imageUrl, status: 'pending'
-                        }));
-                    } else {
-                        eventsToInsert = [{
-                            title, category: category.value,
-                            event_date: document.getElementById('eventDate').value,
-                            event_time: document.getElementById('eventTime').value || null,
-                            end_time: document.getElementById('eventEndTime').value || null,
-                            location, description, link, author, image_url: imageUrl, status: 'pending'
-                        }];
-                    }
-                    
-                    const { error } = await supabaseClient.from('events').insert(eventsToInsert);
+                    const { error } = await supabaseClient.from('events').insert([eventData]);
                     if (error) throw error;
                     
                     // Notification email
+                    const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+                    const recurrenceInfo = isRecurrent 
+                        ? `Tous les ${selectedDays.map(d => dayNames[parseInt(d)]).join(', ')}`
+                        : document.getElementById('eventDate').value;
+                    
                     try {
                         await fetch('/api/sendEmail', {
                             method: 'POST',
@@ -763,10 +778,9 @@
                                 type: 'evenement',
                                 title: title,
                                 author: author,
-                                content: `📅 ${isRecurrent ? eventsToInsert.length + ' dates créées' : document.getElementById('eventDate').value}\n📍 ${location}\n🏷️ ${category.value}\n\n${description || 'Pas de description'}`,
+                                content: `📅 ${recurrenceInfo}\n📍 ${location}\n🏷️ ${category.value}\n\n${description || 'Pas de description'}`,
                                 category: category.value,
-                                isRecurrent: isRecurrent,
-                                count: eventsToInsert.length
+                                isRecurrent: isRecurrent
                             })
                         });
                     } catch (e) {
@@ -775,7 +789,7 @@
                     
                     form.style.display = 'none';
                     successMessage.classList.add('show');
-                    console.log(`✅ ${eventsToInsert.length} événement(s) proposé(s)`);
+                    console.log('✅ Événement proposé');
                     
                 } catch (error) {
                     console.error('❌ Erreur:', error);

@@ -229,6 +229,44 @@
 			color: var(--primary-light);
 		}
 
+        /* Boutons jours de la semaine */
+        .day-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .day-btn input { display: none; }
+        
+        .day-btn span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--glass-border);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+        
+        .day-btn:hover span {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .day-btn input:checked + span {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
         .tab-badge {
             display: inline-flex;
             align-items: center;
@@ -1319,6 +1357,46 @@
 			font-size: 0.75rem;
 		}
 		
+		/* Boutons jours de la semaine */
+        .day-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .day-btn input {
+            display: none;
+        }
+        
+        .day-btn span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--glass-border);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+        
+        .day-btn:hover span {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .day-btn input:checked + span {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+		
     </style>
 </head>
 <body>
@@ -1474,26 +1552,132 @@
 		
 		<!-- ÉVÉNEMENTS -->
         <div class="tab-content" id="tabEvents">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-                <h3 style="display:flex;align-items:center;gap:0.5rem;">
-                    <span class="material-icons" style="color:var(--primary-light);">event</span>
-                    Événements proposés
-                </h3>
-                <button class="refresh-btn" onclick="loadPendingEvents()">
-                    <span class="material-icons">refresh</span> Actualiser
+            <!-- Sous-onglets -->
+            <div class="sub-tabs" style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+                <button class="sub-tab active" id="subTabPublishEvent" onclick="showEventSubTab('publish')">
+                    ➕ Publier
                 </button>
-            </div>
-            
-            <div class="sub-tabs" style="display:flex;gap:0.5rem;margin-bottom:1rem;">
-                <button class="sub-tab active" id="tabPendingEvents" onclick="showEventTab('pending')">
+                <button class="sub-tab" id="subTabPendingEvents" onclick="showEventSubTab('pending')">
                     🕐 En attente <span id="countPendingEvents">0</span>
                 </button>
-                <button class="sub-tab" id="tabApprovedEvents" onclick="showEventTab('approved')">
+                <button class="sub-tab" id="subTabApprovedEvents" onclick="showEventSubTab('approved')">
                     ✅ Approuvés <span id="countApprovedEvents">0</span>
                 </button>
             </div>
             
-            <div id="pendingEventsList" class="messages-list"></div>
+            <!-- FORMULAIRE PUBLIER ÉVÉNEMENT DIRECTEMENT -->
+            <div id="publishEventSection" class="publish-form">
+                <h3 style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+                    <span class="material-icons" style="color:var(--primary-light);">event</span>
+                    Publier un événement
+                </h3>
+                
+                <form id="adminEventForm">
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">title</span> Titre <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="eventPubTitle" placeholder="Titre de l'événement" required maxlength="200">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">category</span> Catégorie <span class="required">*</span></label>
+                        <select class="form-select" id="eventPubCategory" required>
+                            <option value="sport">⚽ Sport</option>
+                            <option value="culture">🎭 Culture</option>
+                            <option value="marche">🛒 Marché</option>
+                            <option value="brocante">🏷️ Brocante</option>
+                            <option value="concert">🎵 Concert</option>
+                            <option value="fete">🎉 Fête</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Option récurrent -->
+                    <div class="form-group">
+                        <label style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:10px;cursor:pointer;">
+                            <input type="checkbox" id="eventPubRecurring" style="width:18px;height:18px;accent-color:var(--primary);">
+                            <span>
+                                <strong style="display:block;">Événement récurrent</strong>
+                                <small style="color:var(--text-muted);">Se répète chaque semaine</small>
+                            </span>
+                        </label>
+                    </div>
+                    
+                    <!-- Jours récurrents -->
+                    <div class="form-group" id="eventPubDaysGroup" style="display:none;">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">repeat</span> Jours de la semaine</label>
+                        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;">
+                            <label class="day-btn"><input type="checkbox" name="pubDay" value="1"><span>Lun</span></label>
+                            <label class="day-btn"><input type="checkbox" name="pubDay" value="2"><span>Mar</span></label>
+                            <label class="day-btn"><input type="checkbox" name="pubDay" value="3"><span>Mer</span></label>
+                            <label class="day-btn"><input type="checkbox" name="pubDay" value="4"><span>Jeu</span></label>
+                            <label class="day-btn"><input type="checkbox" name="pubDay" value="5"><span>Ven</span></label>
+                            <label class="day-btn"><input type="checkbox" name="pubDay" value="6"><span>Sam</span></label>
+                            <label class="day-btn"><input type="checkbox" name="pubDay" value="0"><span>Dim</span></label>
+                        </div>
+                    </div>
+                    
+                    <!-- Date unique -->
+                    <div id="eventPubDateGroup">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                            <div class="form-group">
+                                <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">event</span> Date <span class="required">*</span></label>
+                                <input type="date" class="form-input" id="eventPubDate">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">schedule</span> Heure début</label>
+                                <input type="time" class="form-input" id="eventPubTime">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Heures récurrentes -->
+                    <div id="eventPubTimeRecurringGroup" style="display:none;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                            <div class="form-group">
+                                <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">schedule</span> Heure début</label>
+                                <input type="time" class="form-input" id="eventPubTimeRecurring">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">schedule</span> Heure fin</label>
+                                <input type="time" class="form-input" id="eventPubEndTimeRecurring">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="eventPubEndTimeGroup">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">schedule</span> Heure fin</label>
+                        <input type="time" class="form-input" id="eventPubEndTime">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">place</span> Lieu <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="eventPubLocation" placeholder="Ex: Place de la Mairie" required maxlength="200">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">description</span> Description</label>
+                        <textarea class="form-textarea" id="eventPubDescription" placeholder="Décrivez l'événement..." maxlength="1000" style="min-height:100px;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">link</span> Lien externe</label>
+                        <input type="url" class="form-input" id="eventPubLink" placeholder="https://...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">person</span> Organisateur</label>
+                        <input type="text" class="form-input" id="eventPubAuthor" placeholder="Ex: Mairie, Association..." maxlength="100" value="Admin">
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="eventPublishBtn">
+                        <span class="material-icons">publish</span> Publier l'événement
+                    </button>
+                </form>
+            </div>
+            
+            <!-- LISTE EN ATTENTE -->
+            <div id="pendingEventsList" class="messages-list" style="display:none;"></div>
+            
+            <!-- LISTE APPROUVÉS -->
             <div id="approvedEventsList" class="messages-list" style="display:none;"></div>
         </div>
 		
@@ -2568,6 +2752,22 @@
         }
 		
 		// === ÉVÉNEMENTS ===
+        
+        // Sous-onglets événements
+        function showEventSubTab(tab) {
+            document.getElementById('subTabPublishEvent').classList.toggle('active', tab === 'publish');
+            document.getElementById('subTabPendingEvents').classList.toggle('active', tab === 'pending');
+            document.getElementById('subTabApprovedEvents').classList.toggle('active', tab === 'approved');
+            
+            document.getElementById('publishEventSection').style.display = tab === 'publish' ? 'block' : 'none';
+            document.getElementById('pendingEventsList').style.display = tab === 'pending' ? 'block' : 'none';
+            document.getElementById('approvedEventsList').style.display = tab === 'approved' ? 'block' : 'none';
+            
+            if (tab === 'pending' || tab === 'approved') {
+                loadPendingEvents();
+            }
+        }
+        
         async function loadPendingEvents() {
             const pendingContainer = document.getElementById('pendingEventsList');
             const approvedContainer = document.getElementById('approvedEventsList');
@@ -2590,7 +2790,8 @@
                     .from('events')
                     .select('*')
                     .eq('status', 'approved')
-                    .order('event_date', { ascending: true });
+                    .order('created_at', { ascending: false })
+                    .limit(50);
                 
                 if (errApproved) throw errApproved;
                 
@@ -2623,27 +2824,41 @@
                 'sport': '⚽', 'culture': '🎭', 'marche': '🛒', 'brocante': '🏷️',
                 'concert': '🎵', 'fete': '🎉', 'reunion': '👥', 'autre': '📌'
             };
+            const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
             const icon = categoryIcons[event.category] || '📌';
-            const eventDate = new Date(event.event_date).toLocaleDateString('fr-FR', {
-                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-            });
+            
+            // Affichage date ou récurrence
+            let dateDisplay = '';
+            if (event.is_recurring && event.recurrence_days) {
+                const days = event.recurrence_days.split(',').map(d => dayNames[parseInt(d)]);
+                dateDisplay = `<span style="color:var(--warning);font-weight:600;">🔄 Tous les ${days.join(', ')}</span>`;
+            } else if (event.event_date) {
+                const eventDate = new Date(event.event_date).toLocaleDateString('fr-FR', {
+                    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+                });
+                dateDisplay = `📅 ${eventDate}`;
+            }
+            
+            const recurringBadge = event.is_recurring 
+                ? '<span style="background:rgba(245,158,11,0.15);color:#f59e0b;padding:0.2rem 0.5rem;border-radius:20px;font-size:0.7rem;margin-left:0.5rem;">🔄 Récurrent</span>' 
+                : '';
             
             return `
                 <div class="message-card ${status === 'pending' ? 'unread' : ''}">
                     <div class="message-header">
-                        <span class="proposition-type evenement">${icon} ${event.category || 'Événement'}</span>
+                        <span class="proposition-type evenement">${icon} ${event.category || 'Événement'}${recurringBadge}</span>
                         <span class="message-date">${formatDate(event.created_at)}</span>
                     </div>
                     <div class="proposition-title">${escapeHtml(event.title)}</div>
                     <div style="display:flex;flex-wrap:wrap;gap:1rem;margin:0.5rem 0;color:var(--text-muted);font-size:0.85rem;">
                         <span style="display:flex;align-items:center;gap:0.25rem;">
                             <span class="material-icons" style="font-size:1rem;color:var(--primary-light);">event</span>
-                            ${eventDate}
+                            ${dateDisplay}
                         </span>
                         ${event.event_time ? `
                             <span style="display:flex;align-items:center;gap:0.25rem;">
                                 <span class="material-icons" style="font-size:1rem;color:var(--primary-light);">schedule</span>
-                                ${event.event_time.substring(0, 5)}
+                                ${event.event_time.substring(0, 5)}${event.end_time ? ' - ' + event.end_time.substring(0, 5) : ''}
                             </span>
                         ` : ''}
                         ${event.location ? `
@@ -2663,13 +2878,6 @@
                     </div>
                 </div>
             `;
-        }
-        
-        function showEventTab(tab) {
-            document.getElementById('tabPendingEvents').classList.toggle('active', tab === 'pending');
-            document.getElementById('tabApprovedEvents').classList.toggle('active', tab === 'approved');
-            document.getElementById('pendingEventsList').style.display = tab === 'pending' ? 'block' : 'none';
-            document.getElementById('approvedEventsList').style.display = tab === 'approved' ? 'block' : 'none';
         }
         
         async function approveEvent(id) {
@@ -2705,6 +2913,99 @@
                 showToast('Erreur: ' + error.message, true);
             }
         }
+        
+        // Formulaire publication événement admin
+        document.getElementById('adminEventForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('eventPublishBtn');
+            const originalContent = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-icons" style="animation:spin 0.8s linear infinite;">sync</span> Publication...';
+            
+            const isRecurring = document.getElementById('eventPubRecurring').checked;
+            
+            if (isRecurring) {
+                const checkedDays = document.querySelectorAll('input[name="pubDay"]:checked');
+                if (checkedDays.length === 0) {
+                    alert('Veuillez sélectionner au moins un jour');
+                    btn.disabled = false;
+                    btn.innerHTML = originalContent;
+                    return;
+                }
+            } else {
+                if (!document.getElementById('eventPubDate').value) {
+                    alert('Veuillez sélectionner une date');
+                    btn.disabled = false;
+                    btn.innerHTML = originalContent;
+                    return;
+                }
+            }
+            
+            try {
+                const selectedDays = isRecurring 
+                    ? [...document.querySelectorAll('input[name="pubDay"]:checked')].map(cb => cb.value).join(',')
+                    : null;
+                
+                const eventData = {
+                    title: document.getElementById('eventPubTitle').value.trim(),
+                    category: document.getElementById('eventPubCategory').value,
+                    is_recurring: isRecurring,
+                    recurrence_days: selectedDays,
+                    event_date: isRecurring ? null : document.getElementById('eventPubDate').value,
+                    event_time: isRecurring 
+                        ? (document.getElementById('eventPubTimeRecurring').value || null)
+                        : (document.getElementById('eventPubTime').value || null),
+                    end_time: isRecurring
+                        ? (document.getElementById('eventPubEndTimeRecurring').value || null)
+                        : (document.getElementById('eventPubEndTime').value || null),
+                    location: document.getElementById('eventPubLocation').value.trim(),
+                    description: document.getElementById('eventPubDescription').value.trim() || null,
+                    link: document.getElementById('eventPubLink').value.trim() || null,
+                    author: document.getElementById('eventPubAuthor').value.trim() || 'Admin',
+                    status: 'approved'
+                };
+                
+                const { error } = await supabaseClient.from('events').insert([eventData]);
+                if (error) throw error;
+                
+                showToast('Événement publié ! 📅');
+                document.getElementById('adminEventForm').reset();
+                document.getElementById('eventPubAuthor').value = 'Admin';
+                document.getElementById('eventPubRecurring').checked = false;
+                document.getElementById('eventPubDaysGroup').style.display = 'none';
+                document.getElementById('eventPubDateGroup').style.display = 'block';
+                document.getElementById('eventPubTimeRecurringGroup').style.display = 'none';
+                document.getElementById('eventPubEndTimeGroup').style.display = 'block';
+                loadPendingEvents();
+                
+            } catch (error) {
+                console.error('Erreur publication événement:', error);
+                showToast('Erreur: ' + error.message, true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+            }
+        });
+        
+        // Toggle récurrence
+        document.getElementById('eventPubRecurring').addEventListener('change', function() {
+            const isRecurring = this.checked;
+            document.getElementById('eventPubDaysGroup').style.display = isRecurring ? 'block' : 'none';
+            document.getElementById('eventPubDateGroup').style.display = isRecurring ? 'none' : 'block';
+            document.getElementById('eventPubTimeRecurringGroup').style.display = isRecurring ? 'block' : 'none';
+            document.getElementById('eventPubEndTimeGroup').style.display = isRecurring ? 'none' : 'block';
+        });
+        
+        // Date minimum
+        (function() {
+            const dateInput = document.getElementById('eventPubDate');
+            if (dateInput) {
+                const today = new Date().toISOString().split('T')[0];
+                dateInput.setAttribute('min', today);
+            }
+        })();
 		
         checkSession();
     </script>

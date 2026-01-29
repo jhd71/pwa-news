@@ -925,10 +925,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     .select('id', { count: 'exact' })
                     .eq('status', 'pending');
                 
+                // AJOUT : Vérifier les événements en attente
+                const { data: eventsData } = await supabaseClient
+                    .from('events')
+                    .select('id', { count: 'exact' })
+                    .eq('status', 'pending');
+                
                 const unreadContacts = contactData ? contactData.length : 0;
                 const pendingNews = newsData ? newsData.length : 0;
                 const pendingComments = commentsData ? commentsData.length : 0;
-                const totalUnread = unreadContacts + pendingNews + pendingComments;
+                const pendingEvents = eventsData ? eventsData.length : 0;
+                const totalUnread = unreadContacts + pendingNews + pendingComments + pendingEvents;
                 
                 const adminBadge = document.getElementById('adminBadge');
                 if (adminBadge && totalUnread > 0) {
@@ -940,18 +947,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 const now = Date.now();
                 
                 if (totalUnread > 0 && (now - parseInt(lastNotified)) > 30 * 60 * 1000) {
-                    showAdminNotification(unreadContacts, pendingNews, pendingComments);
+                    showAdminNotification(unreadContacts, pendingNews, pendingComments, pendingEvents);
                     localStorage.setItem('admin_last_notified', now.toString());
                 }
                 
-                console.log(`📬 Admin: ${unreadContacts} messages, ${pendingNews} propositions, ${pendingComments} commentaires`);
+                console.log(`📬 Admin: ${unreadContacts} messages, ${pendingNews} propositions, ${pendingComments} commentaires, ${pendingEvents} événements`);
                 
             } catch (error) {
                 console.error('Erreur vérification admin:', error);
             }
         }
         
-        function showAdminNotification(contacts, news, comments) {
+        function showAdminNotification(contacts, news, comments, events) {
             const notification = document.getElementById('adminNotification');
             const text = document.getElementById('notificationText');
             
@@ -964,6 +971,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             }
             if (comments > 0) {
                 parts.push(`${comments} commentaire${comments > 1 ? 's' : ''}`);
+            }
+            if (events > 0) {
+                parts.push(`${events} événement${events > 1 ? 's' : ''}`);
             }
             
             let message = parts.join(', ');
