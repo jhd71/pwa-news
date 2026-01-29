@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#1e1b4b">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <title>Proposer un événement - Actu & Média Montceau</title>
@@ -14,26 +14,60 @@
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     
-    <!-- CSS -->
-    <link rel="stylesheet" href="styles.css">
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         /* ============================================
-           STYLES PAGE PROPOSER ÉVÉNEMENT
+           VARIABLES - THÈME SOMBRE (défaut)
            ============================================ */
-        
-        .propose-page {
-            min-height: 100vh;
-            padding-bottom: 2rem;
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --bg-elevated: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --border-color: rgba(255, 255, 255, 0.1);
         }
         
-        /* Header */
+        /* THÈME CLAIR */
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-elevated: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* ============================================
+           HEADER
+           ============================================ */
         .page-header {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
             padding: 1rem;
             background: var(--bg-elevated);
             border-bottom: 1px solid var(--border-color);
@@ -63,19 +97,19 @@
         }
         
         .page-title h1 {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: var(--text-primary);
-            margin: 0;
         }
         
         .page-title p {
             font-size: 0.8rem;
             color: var(--text-muted);
-            margin: 0;
         }
         
-        /* Formulaire */
+        /* ============================================
+           FORMULAIRE
+           ============================================ */
         .form-container {
             padding: 1rem;
             max-width: 600px;
@@ -159,6 +193,11 @@
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
         
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--text-muted);
+        }
+        
         .form-textarea {
             min-height: 120px;
             resize: vertical;
@@ -175,7 +214,17 @@
             color: var(--text-muted);
         }
         
-        /* Sélection catégorie */
+        /* Mode clair - inputs */
+        [data-theme="light"] .form-input,
+        [data-theme="light"] .form-select,
+        [data-theme="light"] .form-textarea {
+            background: white;
+            border-color: #e2e8f0;
+        }
+        
+        /* ============================================
+           SÉLECTION CATÉGORIE
+           ============================================ */
         .category-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -219,10 +268,21 @@
         }
         
         .category-option.selected .category-option-name {
-            color: var(--primary);
+            color: var(--primary-light);
         }
         
-        /* Upload image */
+        /* Mode clair */
+        [data-theme="light"] .category-option {
+            background: white;
+        }
+        
+        [data-theme="light"] .category-option.selected {
+            background: rgba(99, 102, 241, 0.08);
+        }
+        
+        /* ============================================
+           UPLOAD IMAGE
+           ============================================ */
         .image-upload {
             position: relative;
             border: 2px dashed var(--border-color);
@@ -295,7 +355,13 @@
             justify-content: center;
         }
         
-        /* Bouton submit */
+        .image-preview-remove:hover {
+            background: #ef4444;
+        }
+        
+        /* ============================================
+           BOUTON SUBMIT
+           ============================================ */
         .submit-btn {
             display: flex;
             align-items: center;
@@ -333,7 +399,9 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Message succès */
+        /* ============================================
+           MESSAGE SUCCÈS
+           ============================================ */
         .success-message {
             display: none;
             text-align: center;
@@ -379,21 +447,16 @@
             font-weight: 500;
             text-decoration: none;
             cursor: pointer;
+            transition: all 0.2s;
         }
         
-        /* Mode clair */
-        [data-theme="light"] .page-header {
-            background: white;
+        .success-message-btn:hover {
+            background: var(--primary-light);
         }
         
-        [data-theme="light"] .form-input,
-        [data-theme="light"] .form-select,
-        [data-theme="light"] .form-textarea,
-        [data-theme="light"] .category-option {
-            background: white;
-        }
-        
-        /* Responsive */
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
         @media (max-width: 480px) {
             .category-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -406,185 +469,180 @@
     </style>
 </head>
 <body>
-    <div class="propose-page">
-        <!-- Header -->
-        <header class="page-header">
-            <a href="agenda.html" class="back-btn">
-                <span class="material-icons">arrow_back</span>
-            </a>
-            <div class="page-title">
-                <h1>📅 Proposer un événement</h1>
-                <p>Partagez avec la communauté</p>
+    <!-- Header -->
+    <header class="page-header">
+        <a href="agenda.html" class="back-btn">
+            <span class="material-icons">arrow_back</span>
+        </a>
+        <div class="page-title">
+            <h1>📅 Proposer un événement</h1>
+            <p>Partagez avec la communauté</p>
+        </div>
+    </header>
+    
+    <!-- Formulaire -->
+    <div class="form-container">
+        <div class="form-intro">
+            <div class="form-intro-icon">🎉</div>
+            <div class="form-intro-title">Vous organisez un événement ?</div>
+            <div class="form-intro-text">
+                Partagez-le avec les habitants de Montceau et environs !<br>
+                Votre proposition sera validée avant publication.
             </div>
-        </header>
+        </div>
         
-        <!-- Formulaire -->
-        <div class="form-container">
-            <div class="form-intro">
-                <div class="form-intro-icon">🎉</div>
-                <div class="form-intro-title">Vous organisez un événement ?</div>
-                <div class="form-intro-text">
-                    Partagez-le avec les habitants de Montceau et environs !<br>
-                    Votre proposition sera validée avant publication.
+        <form class="event-form" id="eventForm">
+            <!-- Titre -->
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="material-icons">title</span>
+                    Titre de l'événement <span class="required">*</span>
+                </label>
+                <input type="text" class="form-input" id="eventTitle" placeholder="Ex: Marché de Noël, Concert Jazz..." maxlength="200" required>
+            </div>
+            
+            <!-- Catégorie -->
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="material-icons">category</span>
+                    Catégorie <span class="required">*</span>
+                </label>
+                <div class="category-grid" id="categoryGrid">
+                    <label class="category-option">
+                        <input type="radio" name="category" value="sport">
+                        <span class="category-option-icon">⚽</span>
+                        <span class="category-option-name">Sport</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="radio" name="category" value="culture">
+                        <span class="category-option-icon">🎭</span>
+                        <span class="category-option-name">Culture</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="radio" name="category" value="marche">
+                        <span class="category-option-icon">🛒</span>
+                        <span class="category-option-name">Marché</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="radio" name="category" value="brocante">
+                        <span class="category-option-icon">🏷️</span>
+                        <span class="category-option-name">Brocante</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="radio" name="category" value="concert">
+                        <span class="category-option-icon">🎵</span>
+                        <span class="category-option-name">Concert</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="radio" name="category" value="fete">
+                        <span class="category-option-icon">🎉</span>
+                        <span class="category-option-name">Fête</span>
+                    </label>
                 </div>
             </div>
             
-            <form class="event-form" id="eventForm">
-                <!-- Titre -->
+            <!-- Date et heure -->
+            <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">
-                        <span class="material-icons">title</span>
-                        Titre de l'événement <span class="required">*</span>
+                        <span class="material-icons">event</span>
+                        Date <span class="required">*</span>
                     </label>
-                    <input type="text" class="form-input" id="eventTitle" placeholder="Ex: Marché de Noël, Concert Jazz..." maxlength="200" required>
+                    <input type="date" class="form-input" id="eventDate" required>
                 </div>
-                
-                <!-- Catégorie -->
                 <div class="form-group">
                     <label class="form-label">
-                        <span class="material-icons">category</span>
-                        Catégorie <span class="required">*</span>
+                        <span class="material-icons">schedule</span>
+                        Heure de début
                     </label>
-                    <div class="category-grid" id="categoryGrid">
-                        <label class="category-option">
-                            <input type="radio" name="category" value="sport">
-                            <span class="category-option-icon">⚽</span>
-                            <span class="category-option-name">Sport</span>
-                        </label>
-                        <label class="category-option">
-                            <input type="radio" name="category" value="culture">
-                            <span class="category-option-icon">🎭</span>
-                            <span class="category-option-name">Culture</span>
-                        </label>
-                        <label class="category-option">
-                            <input type="radio" name="category" value="marche">
-                            <span class="category-option-icon">🛒</span>
-                            <span class="category-option-name">Marché</span>
-                        </label>
-                        <label class="category-option">
-                            <input type="radio" name="category" value="brocante">
-                            <span class="category-option-icon">🏷️</span>
-                            <span class="category-option-name">Brocante</span>
-                        </label>
-                        <label class="category-option">
-                            <input type="radio" name="category" value="concert">
-                            <span class="category-option-icon">🎵</span>
-                            <span class="category-option-name">Concert</span>
-                        </label>
-                        <label class="category-option">
-                            <input type="radio" name="category" value="fete">
-                            <span class="category-option-icon">🎉</span>
-                            <span class="category-option-name">Fête</span>
-                        </label>
-                    </div>
+                    <input type="time" class="form-input" id="eventTime">
                 </div>
-                
-                <!-- Date et heure -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">
-                            <span class="material-icons">event</span>
-                            Date <span class="required">*</span>
-                        </label>
-                        <input type="date" class="form-input" id="eventDate" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">
-                            <span class="material-icons">schedule</span>
-                            Heure de début
-                        </label>
-                        <input type="time" class="form-input" id="eventTime">
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">
-                            <span class="material-icons">schedule</span>
-                            Heure de fin
-                        </label>
-                        <input type="time" class="form-input" id="eventEndTime">
-                    </div>
-                    <div class="form-group"></div>
-                </div>
-                
-                <!-- Lieu -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <span class="material-icons">place</span>
-                        Lieu <span class="required">*</span>
-                    </label>
-                    <input type="text" class="form-input" id="eventLocation" placeholder="Ex: Place de la Mairie, Salle des fêtes..." maxlength="200" required>
-                </div>
-                
-                <!-- Description -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <span class="material-icons">description</span>
-                        Description
-                    </label>
-                    <textarea class="form-textarea" id="eventDescription" placeholder="Décrivez votre événement..." maxlength="1000"></textarea>
-                    <span class="form-hint">Max. 1000 caractères</span>
-                </div>
-                
-                <!-- Lien -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <span class="material-icons">link</span>
-                        Lien (optionnel)
-                    </label>
-                    <input type="url" class="form-input" id="eventLink" placeholder="https://...">
-                    <span class="form-hint">Page Facebook, site web, billetterie...</span>
-                </div>
-                
-                <!-- Image -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <span class="material-icons">image</span>
-                        Image (optionnel)
-                    </label>
-                    <div class="image-upload" id="imageUpload">
-                        <input type="file" accept="image/*" id="eventImage">
-                        <div class="image-upload-icon">📷</div>
-                        <div class="image-upload-text">Cliquez ou glissez une image</div>
-                        <div class="image-upload-hint">JPG, PNG • Max 5 Mo</div>
-                    </div>
-                    <div class="image-preview" id="imagePreview">
-                        <img src="" alt="Aperçu" id="previewImg">
-                        <button type="button" class="image-preview-remove" id="removeImage">
-                            <span class="material-icons">close</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Organisateur -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <span class="material-icons">person</span>
-                        Votre nom / organisation <span class="required">*</span>
-                    </label>
-                    <input type="text" class="form-input" id="eventAuthor" placeholder="Ex: Mairie de Montceau, Association..." maxlength="100" required>
-                </div>
-                
-                <!-- Bouton submit -->
-                <button type="submit" class="submit-btn" id="submitBtn">
-                    <span class="material-icons">send</span>
-                    Proposer l'événement
-                </button>
-            </form>
-            
-            <!-- Message succès -->
-            <div class="success-message" id="successMessage">
-                <div class="success-message-icon">✅</div>
-                <div class="success-message-title">Événement proposé !</div>
-                <div class="success-message-text">
-                    Merci ! Votre événement sera validé et publié prochainement.
-                </div>
-                <a href="agenda.html" class="success-message-btn">
-                    <span class="material-icons">arrow_back</span>
-                    Retour à l'agenda
-                </a>
             </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="material-icons">schedule</span>
+                    Heure de fin
+                </label>
+                <input type="time" class="form-input" id="eventEndTime">
+            </div>
+            
+            <!-- Lieu -->
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="material-icons">place</span>
+                    Lieu <span class="required">*</span>
+                </label>
+                <input type="text" class="form-input" id="eventLocation" placeholder="Ex: Place de la Mairie, Salle des fêtes..." maxlength="200" required>
+            </div>
+            
+            <!-- Description -->
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="material-icons">description</span>
+                    Description
+                </label>
+                <textarea class="form-textarea" id="eventDescription" placeholder="Décrivez votre événement..." maxlength="1000"></textarea>
+                <span class="form-hint">Max. 1000 caractères</span>
+            </div>
+            
+            <!-- Lien -->
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="material-icons">link</span>
+                    Lien (optionnel)
+                </label>
+                <input type="url" class="form-input" id="eventLink" placeholder="https://...">
+                <span class="form-hint">Page Facebook, site web, billetterie...</span>
+            </div>
+            
+            <!-- Image -->
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="material-icons">image</span>
+                    Image (optionnel)
+                </label>
+                <div class="image-upload" id="imageUpload">
+                    <input type="file" accept="image/*" id="eventImage">
+                    <div class="image-upload-icon">📷</div>
+                    <div class="image-upload-text">Cliquez ou glissez une image</div>
+                    <div class="image-upload-hint">JPG, PNG • Max 5 Mo</div>
+                </div>
+                <div class="image-preview" id="imagePreview">
+                    <img src="" alt="Aperçu" id="previewImg">
+                    <button type="button" class="image-preview-remove" id="removeImage">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Organisateur -->
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="material-icons">person</span>
+                    Votre nom / organisation <span class="required">*</span>
+                </label>
+                <input type="text" class="form-input" id="eventAuthor" placeholder="Ex: Mairie de Montceau, Association..." maxlength="100" required>
+            </div>
+            
+            <!-- Bouton submit -->
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span class="material-icons">send</span>
+                Proposer l'événement
+            </button>
+        </form>
+        
+        <!-- Message succès -->
+        <div class="success-message" id="successMessage">
+            <div class="success-message-icon">✅</div>
+            <div class="success-message-title">Événement proposé !</div>
+            <div class="success-message-text">
+                Merci ! Votre événement sera validé et publié prochainement.
+            </div>
+            <a href="agenda.html" class="success-message-btn">
+                <span class="material-icons">arrow_back</span>
+                Retour à l'agenda
+            </a>
         </div>
     </div>
     
@@ -608,11 +666,13 @@
             setMinDate();
         });
         
-        // Thème
+        // Thème - suivre le thème du site principal
         function initTheme() {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             if (savedTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
             }
         }
         
@@ -707,7 +767,7 @@
                     
                     // Upload image si présente
                     if (selectedImage) {
-                        const fileName = `event_${Date.now()}_${selectedImage.name}`;
+                        const fileName = `event_${Date.now()}_${selectedImage.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
                         
                         const { data: uploadData, error: uploadError } = await supabaseClient
                             .storage
@@ -750,8 +810,5 @@
             });
         }
     </script>
-    
-    <!-- iOS fixes -->
-    <script src="ios-fixes.js"></script>
 </body>
 </html>
