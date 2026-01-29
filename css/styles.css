@@ -2871,14 +2871,21 @@ p,
     color: var(--primary-light);
 }
 
-.agenda-link {
+.agenda-link {    
     display: flex;
-    align-items: center;
     gap: 0.25rem;
-    font-size: 0.85rem;
-    color: var(--primary-light);
+    padding: 0.2rem 0.7rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
     text-decoration: none;
-    transition: color 0.2s;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    align-items: center;
 }
 
 .agenda-link:hover {
