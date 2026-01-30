@@ -189,7 +189,7 @@
         }
         
         .events-date-badge.recurring {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         }
         
         .events-date-day { font-size: 1.5rem; font-weight: 700; line-height: 1; }
@@ -205,7 +205,6 @@
             overflow: hidden;
             transition: all 0.3s ease;
             margin-bottom: 0.75rem;
-            cursor: pointer;
         }
         
         [data-theme="light"] .event-card { background: white; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); }
@@ -273,16 +272,38 @@
             color: #f59e0b;
         }
         
+        /* Description avec voir plus/voir moins */
         .event-card-description {
             font-size: 0.9rem;
             color: var(--text-secondary);
             line-height: 1.5;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .event-card-description.collapsed {
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
+        
+        .see-more-btn {
+            background: none;
+            border: none;
+            color: var(--primary-light);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0;
+            margin-bottom: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .see-more-btn:hover { text-decoration: underline; }
+        .see-more-btn .material-icons { font-size: 1rem; transition: transform 0.2s; }
+        .see-more-btn.expanded .material-icons { transform: rotate(180deg); }
         
         .event-card-meta {
             display: flex;
@@ -450,7 +471,7 @@
         let currentFilter = 'all';
         let allEvents = [];
         
-        // MAPPING JOURS CORRIGÉ : 0=Dim, 1=Lun, 2=Mar, 3=Mer, 4=Jeu, 5=Ven, 6=Sam
+        // MAPPING JOURS : 0=Dim, 1=Lun, 2=Mar, 3=Mer, 4=Jeu, 5=Ven, 6=Sam
         const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
         
         document.addEventListener('DOMContentLoaded', () => {
@@ -501,6 +522,14 @@
             document.getElementById('currentMonth').textContent = `${monthNames[currentMonth]} ${currentYear}`;
         }
         
+        // *** CORRECTION BUG TIMEZONE ***
+        // Utiliser format local YYYY-MM-DD au lieu de toISOString() qui convertit en UTC
+        function formatDateLocal(year, month, day) {
+            const m = String(month + 1).padStart(2, '0');
+            const d = String(day).padStart(2, '0');
+            return `${year}-${m}-${d}`;
+        }
+        
         async function loadEvents() {
             const listEl = document.getElementById('eventsList');
             const emptyEl = document.getElementById('eventsEmpty');
@@ -509,16 +538,21 @@
             emptyEl.style.display = 'none';
             
             try {
-                const startDate = new Date(currentYear, currentMonth, 1).toISOString().split('T')[0];
-                const endDate = new Date(currentYear, currentMonth + 1, 0).toISOString().split('T')[0];
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                const todayStr = today.toISOString().split('T')[0];
+                // CORRECTION: Utiliser formatDateLocal au lieu de toISOString
+                const startDate = formatDateLocal(currentYear, currentMonth, 1);
+                const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
+                const endDate = formatDateLocal(currentYear, currentMonth, lastDay);
                 
-                // Charger événements non-récurrents du mois (à partir d'aujourd'hui si mois courant)
-                const isCurrentMonth = currentYear === new Date().getFullYear() && currentMonth === new Date().getMonth();
+                const today = new Date();
+                const todayStr = formatDateLocal(today.getFullYear(), today.getMonth(), today.getDate());
+                
+                // Vérifier si on est dans le mois courant
+                const isCurrentMonth = currentYear === today.getFullYear() && currentMonth === today.getMonth();
                 const effectiveStart = isCurrentMonth ? todayStr : startDate;
                 
+                console.log(`📅 Chargement du ${effectiveStart} au ${endDate}`);
+                
+                // Charger événements non-récurrents du mois
                 const { data: regularEvents, error: err1 } = await supabaseClient
                     .from('events')
                     .select('*')
@@ -538,7 +572,7 @@
                 if (err1) throw err1;
                 if (err2) throw err2;
                 
-                // Préparer les événements récurrents (UNE SEULE entrée chacun avec badge)
+                // Préparer les événements récurrents
                 const processedRecurring = (recurringEvents || []).map(event => {
                     if (!event.recurrence_days) return null;
                     
@@ -589,7 +623,7 @@
             const recurring = filteredEvents.filter(e => e._isRecurringDisplay);
             const regular = filteredEvents.filter(e => !e._isRecurringDisplay);
             
-            // Afficher les événements récurrents en premier (UNE SEULE entrée)
+            // Afficher les événements récurrents en premier
             if (recurring.length > 0) {
                 html += `
                     <div class="events-date-group">
@@ -615,7 +649,8 @@
             
             Object.keys(groupedEvents).sort().forEach(dateKey => {
                 const events = groupedEvents[dateKey];
-                const date = new Date(dateKey);
+                // CORRECTION: Ajouter T12:00:00 pour éviter problèmes timezone
+                const date = new Date(dateKey + 'T12:00:00');
                 const day = date.getDate();
                 const weekday = date.toLocaleDateString('fr-FR', { weekday: 'short' }).replace('.', '').toUpperCase();
                 const fullDate = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -635,17 +670,6 @@
             });
             
             listEl.innerHTML = html;
-            
-            // Ajouter les event listeners pour les clics
-            document.querySelectorAll('.event-card').forEach(card => {
-                card.addEventListener('click', function(e) {
-                    // Ne pas compter si c'est un clic sur un lien
-                    if (e.target.closest('a')) return;
-                    
-                    const eventId = this.dataset.eventId;
-                    incrementViews(eventId, this);
-                });
-            });
         }
         
         function renderEventCard(event) {
@@ -660,6 +684,9 @@
             }
             
             const views = event.views || 0;
+            const description = event.description || '';
+            const needsSeeMore = description.length > 100;
+            const uniqueId = 'desc-' + event.id;
             
             return `
                 <div class="event-card" data-event-id="${event.id}">
@@ -672,13 +699,21 @@
                                 ${recurringBadge}
                             </div>
                         </div>
-                        ${event.description ? `<p class="event-card-description">${escapeHtml(event.description)}</p>` : ''}
+                        ${description ? `
+                            <p class="event-card-description ${needsSeeMore ? 'collapsed' : ''}" id="${uniqueId}">${escapeHtml(description)}</p>
+                            ${needsSeeMore ? `
+                                <button class="see-more-btn" onclick="toggleDescription('${uniqueId}', this)">
+                                    <span>Voir plus</span>
+                                    <span class="material-icons">expand_more</span>
+                                </button>
+                            ` : ''}
+                        ` : ''}
                         <div class="event-card-meta">
                             ${event.event_time ? `<span><span class="material-icons">schedule</span>${formatTime(event.event_time)}${event.end_time ? ' - ' + formatTime(event.end_time) : ''}</span>` : ''}
                             ${event.location ? `<span><span class="material-icons">place</span>${escapeHtml(event.location)}</span>` : ''}
                         </div>
                         <div class="event-card-footer">
-                            <span class="event-views" id="views-${event.id}">
+                            <span class="event-views">
                                 <span class="material-icons" style="font-size:1rem;">visibility</span>
                                 ${views} vue${views > 1 ? 's' : ''}
                             </span>
@@ -689,51 +724,19 @@
             `;
         }
         
-        // Incrémenter les vues au clic
-        async function incrementViews(eventId, cardElement) {
-            // Vérifier si déjà vu dans cette session
-            const viewedKey = `event_viewed_${eventId}`;
-            if (sessionStorage.getItem(viewedKey)) {
-                console.log('Événement déjà vu dans cette session');
-                return;
-            }
+        // Fonction voir plus/voir moins
+        function toggleDescription(descId, btn) {
+            const description = document.getElementById(descId);
+            const isExpanded = !description.classList.contains('collapsed');
             
-            try {
-                // Appeler la fonction RPC
-                const { error } = await supabaseClient.rpc('increment_event_views', { event_id: parseInt(eventId) });
-                
-                if (error) {
-                    console.error('Erreur RPC:', error);
-                    // Fallback: update direct
-                    const { data: current } = await supabaseClient
-                        .from('events')
-                        .select('views')
-                        .eq('id', eventId)
-                        .single();
-                    
-                    if (current) {
-                        await supabaseClient
-                            .from('events')
-                            .update({ views: (current.views || 0) + 1 })
-                            .eq('id', eventId);
-                    }
-                }
-                
-                // Marquer comme vu
-                sessionStorage.setItem(viewedKey, 'true');
-                
-                // Mettre à jour l'affichage
-                const viewsEl = document.getElementById(`views-${eventId}`);
-                if (viewsEl) {
-                    const currentViews = parseInt(viewsEl.textContent.match(/\d+/)[0]) || 0;
-                    const newViews = currentViews + 1;
-                    viewsEl.innerHTML = `<span class="material-icons" style="font-size:1rem;">visibility</span> ${newViews} vue${newViews > 1 ? 's' : ''}`;
-                }
-                
-                console.log(`👁️ Vue comptée pour événement ${eventId}`);
-                
-            } catch (e) {
-                console.error('Erreur increment views:', e);
+            if (isExpanded) {
+                description.classList.add('collapsed');
+                btn.innerHTML = '<span>Voir plus</span><span class="material-icons">expand_more</span>';
+                btn.classList.remove('expanded');
+            } else {
+                description.classList.remove('collapsed');
+                btn.innerHTML = '<span>Voir moins</span><span class="material-icons">expand_more</span>';
+                btn.classList.add('expanded');
             }
         }
         
@@ -747,8 +750,6 @@
                     if (eventCard) {
                         eventCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         eventCard.classList.add('highlighted');
-                        // Compter la vue
-                        incrementViews(eventId, eventCard);
                     }
                 }, 500);
             }

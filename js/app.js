@@ -1499,7 +1499,7 @@ async function initAgenda() {
         if (!supabase) return;
         
         const today = new Date();
-        const todayStr = today.toISOString().split('T')[0];
+		const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
         const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
         
         // 1. Charger les événements NON récurrents à venir
@@ -1575,9 +1575,9 @@ async function initAgenda() {
             }
             
             // Pour les événements uniques : afficher la date
-            const date = new Date(event.event_date);
-            const day = date.getDate();
-            const month = date.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '').toUpperCase();
+            const date = new Date(event.event_date + 'T12:00:00');
+			const day = date.getDate();
+			const month = date.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '').toUpperCase();
             
             return `
                 <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
