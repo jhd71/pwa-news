@@ -1566,6 +1566,7 @@ async function initAgenda() {
                             </div>
                             <div class="agenda-item-info">
                                 ${event.location ? `<span>📍 ${escapeHtml(event.location)}</span>` : ''}
+                                <span style="font-size:0.75rem;color:var(--text-muted);">👁️ ${event.views || 0}</span>
                             </div>
                             <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
                         </div>
@@ -1589,6 +1590,7 @@ async function initAgenda() {
                         <div class="agenda-item-info">
                             ${event.event_time ? `<span>🕐 ${formatAgendaTime(event.event_time)}</span>` : ''}
                             ${event.location ? `<span>📍 ${escapeHtml(event.location)}</span>` : ''}
+                            <span style="font-size:0.75rem;color:var(--text-muted);">👁️ ${event.views || 0}</span>
                         </div>
                         <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
                     </div>
