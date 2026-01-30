@@ -1397,6 +1397,71 @@
             box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
         }
 		
+		/* Upload photo stylisé */
+		.photo-buttons {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 0.75rem;
+			margin-bottom: 0.75rem;
+		}
+
+		.photo-btn {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 0.5rem;
+			padding: 1rem;
+			background: rgba(99, 102, 241, 0.1);
+			border: 2px solid var(--primary);
+			border-radius: 12px;
+			color: var(--primary-light);
+			font-size: 0.85rem;
+			font-weight: 600;
+			font-family: inherit;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.photo-btn:hover {
+			background: rgba(99, 102, 241, 0.2);
+			transform: translateY(-2px);
+		}
+
+		.photo-btn .material-icons {
+			font-size: 1.75rem;
+		}
+
+		.photo-preview-admin {
+			display: none;
+			position: relative;
+			border: 2px solid var(--primary);
+			border-radius: 12px;
+			overflow: hidden;
+			margin-top: 0.5rem;
+		}
+
+		.photo-preview-admin img {
+			width: 100%;
+			max-height: 200px;
+			object-fit: cover;
+		}
+
+		.photo-preview-admin .photo-remove {
+			position: absolute;
+			top: 0.5rem;
+			right: 0.5rem;
+			width: 32px;
+			height: 32px;
+			background: rgba(239, 68, 68, 0.9);
+			border: none;
+			border-radius: 50%;
+			color: white;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
     </style>
 </head>
 <body>
@@ -1670,14 +1735,34 @@
                     
                     <!-- UPLOAD IMAGE -->
                     <div class="form-group">
-                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">image</span> Image</label>
-                        <input type="file" class="form-input" id="eventPubImage" accept="image/*" style="padding:0.5rem;">
-                        <small style="color:var(--text-muted);">JPG, PNG • Max 5 Mo</small>
-                        <div id="eventImagePreview" style="display:none;margin-top:0.5rem;">
-                            <img id="eventPreviewImg" src="" alt="Aperçu" style="max-width:200px;max-height:150px;border-radius:8px;">
-                            <button type="button" onclick="removeEventImage()" style="margin-left:0.5rem;background:var(--danger);border:none;color:white;padding:0.25rem 0.5rem;border-radius:4px;cursor:pointer;">✕</button>
-                        </div>
-                    </div>
+    <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">image</span> Image</label>
+    
+    <!-- Boutons stylisés -->
+    <div class="photo-buttons" id="eventPhotoButtons">
+        <button type="button" class="photo-btn" id="eventTakePhotoBtn">
+            <span class="material-icons">photo_camera</span>
+            <span>Prendre une photo</span>
+        </button>
+        <button type="button" class="photo-btn" id="eventChoosePhotoBtn">
+            <span class="material-icons">photo_library</span>
+            <span>Galerie</span>
+        </button>
+    </div>
+    
+    <!-- Input caché -->
+    <input type="file" id="eventPubImage" accept="image/*" style="display:none;">
+    <input type="file" id="eventCameraInput" accept="image/*" capture="environment" style="display:none;">
+    
+    <small style="color:var(--text-muted);">📷 Prenez une photo ou choisissez dans votre galerie</small>
+    
+    <!-- Preview -->
+    <div class="photo-preview-admin" id="eventImagePreview">
+        <img id="eventPreviewImg" src="" alt="Aperçu">
+        <button type="button" class="photo-remove" onclick="removeEventImage()">
+            <span class="material-icons" style="font-size:1.2rem;">close</span>
+        </button>
+    </div>
+</div>
                     
                     <div class="form-group">
                         <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">person</span> Organisateur</label>
@@ -2774,30 +2859,52 @@
         
         let eventImageFile = null;
         
-        // Preview image événement
-        document.getElementById('eventPubImage').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('Image trop volumineuse (max 5 Mo)');
-                    this.value = '';
-                    return;
-                }
-                eventImageFile = file;
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('eventPreviewImg').src = e.target.result;
-                    document.getElementById('eventImagePreview').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-        
-        function removeEventImage() {
-            eventImageFile = null;
-            document.getElementById('eventPubImage').value = '';
-            document.getElementById('eventImagePreview').style.display = 'none';
-        }
+        // Preview image événement - GALERIE
+		document.getElementById('eventPubImage').addEventListener('change', function(e) {
+			handleEventImageSelect(e.target.files[0]);
+		});
+
+		// Preview image événement - CAMERA
+		document.getElementById('eventCameraInput').addEventListener('change', function(e) {
+			handleEventImageSelect(e.target.files[0]);
+		});
+
+		// Bouton Galerie
+		document.getElementById('eventChoosePhotoBtn').addEventListener('click', function() {
+			document.getElementById('eventPubImage').click();
+		});
+
+		// Bouton Camera
+		document.getElementById('eventTakePhotoBtn').addEventListener('click', function() {
+			document.getElementById('eventCameraInput').click();
+		});
+
+		function handleEventImageSelect(file) {
+			if (!file) return;
+			
+			if (file.size > 5 * 1024 * 1024) {
+				alert('Image trop volumineuse (max 5 Mo)');
+				return;
+			}
+			
+			eventImageFile = file;
+			
+			const reader = new FileReader();
+			reader.onload = function(e) {
+				document.getElementById('eventPreviewImg').src = e.target.result;
+				document.getElementById('eventImagePreview').style.display = 'block';
+				document.getElementById('eventPhotoButtons').style.display = 'none';
+			};
+			reader.readAsDataURL(file);
+		}
+
+		function removeEventImage() {
+			eventImageFile = null;
+			document.getElementById('eventPubImage').value = '';
+			document.getElementById('eventCameraInput').value = '';
+			document.getElementById('eventImagePreview').style.display = 'none';
+			document.getElementById('eventPhotoButtons').style.display = 'grid';
+		}
         
         // Sous-onglets événements
         function showEventSubTab(tab) {
