@@ -1462,6 +1462,83 @@
 			justify-content: center;
 		}
 
+		.photo-preview-admin .photo-crop {
+			position: absolute;
+			top: 0.5rem;
+			left: 0.5rem;
+			padding: 0.4rem 0.75rem;
+			background: rgba(99, 102, 241, 0.9);
+			border: none;
+			border-radius: 8px;
+			color: white;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			gap: 0.35rem;
+			font-size: 0.8rem;
+			font-weight: 500;
+			transition: all 0.3s ease;
+		}
+
+		.photo-preview-admin .photo-crop:hover {
+			background: #6366f1;
+			transform: scale(1.05);
+		}
+
+		.photo-preview-admin .photo-rotate-btns {
+			position: absolute;
+			bottom: 2.5rem;
+			left: 50%;
+			transform: translateX(-50%);
+			display: flex;
+			gap: 0.5rem;
+		}
+
+		.photo-preview-admin .photo-rotate-btn {
+			width: 40px;
+			height: 40px;
+			background: rgba(99, 102, 241, 0.9);
+			border: none;
+			border-radius: 50%;
+			color: white;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: all 0.3s ease;
+		}
+
+		.photo-preview-admin .photo-rotate-btn:hover {
+			background: #6366f1;
+			transform: scale(1.1);
+		}
+
+		.photo-preview-admin .photo-info {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			padding: 0.5rem 0.75rem;
+			background: rgba(0, 0, 0, 0.6);
+			color: white;
+			font-size: 0.75rem;
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.event-crop-modal {
+			display: none;
+			position: fixed;
+			inset: 0;
+			z-index: 10001;
+			background: rgba(0, 0, 0, 0.95);
+			flex-direction: column;
+		}
+
+		.event-crop-modal.show {
+			display: flex;
+		}
+
     </style>
 </head>
 <body>
@@ -1761,6 +1838,21 @@
         <button type="button" class="photo-remove" onclick="removeEventImage()">
             <span class="material-icons" style="font-size:1.2rem;">close</span>
         </button>
+        <button type="button" class="photo-crop" onclick="openEventCropModal()">
+            <span class="material-icons">crop</span> Recadrer
+        </button>
+        <div class="photo-rotate-btns">
+            <button type="button" class="photo-rotate-btn" onclick="rotateEventPreview(-90)" title="Pivoter à gauche">
+                <span class="material-icons">rotate_left</span>
+            </button>
+            <button type="button" class="photo-rotate-btn" onclick="rotateEventPreview(90)" title="Pivoter à droite">
+                <span class="material-icons">rotate_right</span>
+            </button>
+        </div>
+        <div class="photo-info">
+            <span id="eventPhotoSize">0 Ko</span>
+            <span>✓ Compressée</span>
+        </div>
     </div>
 </div>
                     
@@ -1906,6 +1998,37 @@
             <span class="material-icons">close</span>
         </button>
         <img id="modalImage" src="" alt="Image agrandie" onclick="event.stopPropagation()">
+    </div>
+    
+    <!-- Modal de recadrage ÉVÉNEMENTS -->
+    <div class="crop-modal event-crop-modal" id="eventCropModal">
+        <div class="crop-header">
+            <span class="crop-title"><span class="material-icons">crop</span> Recadrer l'image</span>
+            <button type="button" class="crop-close-btn" onclick="closeEventCropModal()">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="crop-container">
+            <img id="eventCropImage" src="">
+        </div>
+        <div class="crop-controls">
+            <div class="crop-ratios">
+                <button type="button" class="crop-ratio-btn active" onclick="setEventCropRatio(NaN, this)">Libre</button>
+                <button type="button" class="crop-ratio-btn" onclick="setEventCropRatio(1, this)">1:1</button>
+                <button type="button" class="crop-ratio-btn" onclick="setEventCropRatio(4/3, this)">4:3</button>
+                <button type="button" class="crop-ratio-btn" onclick="setEventCropRatio(16/9, this)">16:9</button>
+            </div>
+            <div class="crop-actions">
+                <button type="button" class="crop-cancel-btn" onclick="closeEventCropModal()">
+                    <span class="material-icons">close</span>
+                    Annuler
+                </button>
+                <button type="button" class="crop-validate-btn" onclick="applyEventCrop()">
+                    <span class="material-icons">check</span>
+                    Valider
+                </button>
+            </div>
+        </div>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2855,18 +2978,19 @@
             }
         }
 		
-		// === ÉVÉNEMENTS ===
+		// === ÉVÉNEMENTS - AVEC COMPRESSION/ROTATION/RECADRAGE ===
         
-        let eventImageFile = null;
+        let eventImageBlob = null;
+        let eventCropper = null;
         
         // Preview image événement - GALERIE
 		document.getElementById('eventPubImage').addEventListener('change', function(e) {
-			handleEventImageSelect(e.target.files[0]);
+			processEventPhoto(e.target.files[0]);
 		});
 
 		// Preview image événement - CAMERA
 		document.getElementById('eventCameraInput').addEventListener('change', function(e) {
-			handleEventImageSelect(e.target.files[0]);
+			processEventPhoto(e.target.files[0]);
 		});
 
 		// Bouton Galerie
@@ -2879,29 +3003,179 @@
 			document.getElementById('eventCameraInput').click();
 		});
 
-		function handleEventImageSelect(file) {
+		// Traiter la photo (avec compression)
+		function processEventPhoto(file) {
 			if (!file) return;
 			
-			if (file.size > 5 * 1024 * 1024) {
-				alert('Image trop volumineuse (max 5 Mo)');
+			if (file.size > 10 * 1024 * 1024) {
+				showToast('Image trop volumineuse (max 10 Mo)', true);
 				return;
 			}
 			
-			eventImageFile = file;
-			
-			const reader = new FileReader();
-			reader.onload = function(e) {
-				document.getElementById('eventPreviewImg').src = e.target.result;
+			// Compresser l'image
+			compressEventImage(file, 1200, 0.8, function(blob, dataUrl) {
+				eventImageBlob = blob;
+				
+				document.getElementById('eventPreviewImg').src = dataUrl;
 				document.getElementById('eventImagePreview').style.display = 'block';
 				document.getElementById('eventPhotoButtons').style.display = 'none';
+				
+				// Afficher la taille
+				const sizeKo = Math.round(blob.size / 1024);
+				document.getElementById('eventPhotoSize').textContent = sizeKo + ' Ko';
+				
+				showToast('Image compressée');
+			});
+		}
+		
+		// Compression d'image pour événements
+		function compressEventImage(file, maxWidth, quality, callback) {
+			const reader = new FileReader();
+			reader.onload = function(e) {
+				const img = new Image();
+				img.onload = function() {
+					let width = img.width;
+					let height = img.height;
+					
+					if (width > maxWidth) {
+						height = Math.round((height * maxWidth) / width);
+						width = maxWidth;
+					}
+					
+					const canvas = document.createElement('canvas');
+					canvas.width = width;
+					canvas.height = height;
+					
+					const ctx = canvas.getContext('2d');
+					ctx.drawImage(img, 0, 0, width, height);
+					
+					canvas.toBlob(function(blob) {
+						const dataUrl = canvas.toDataURL('image/jpeg', quality);
+						callback(blob, dataUrl);
+					}, 'image/jpeg', quality);
+				};
+				img.src = e.target.result;
 			};
 			reader.readAsDataURL(file);
 		}
+		
+		// Rotation de la preview événement
+		function rotateEventPreview(degrees) {
+			const img = document.getElementById('eventPreviewImg');
+			const canvas = document.createElement('canvas');
+			const ctx = canvas.getContext('2d');
+			
+			const image = new Image();
+			image.onload = function() {
+				if (Math.abs(degrees) === 90) {
+					canvas.width = image.height;
+					canvas.height = image.width;
+				} else {
+					canvas.width = image.width;
+					canvas.height = image.height;
+				}
+				
+				ctx.translate(canvas.width / 2, canvas.height / 2);
+				ctx.rotate((degrees * Math.PI) / 180);
+				ctx.drawImage(image, -image.width / 2, -image.height / 2);
+				
+				const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+				img.src = dataUrl;
+				
+				canvas.toBlob(function(blob) {
+					eventImageBlob = blob;
+					document.getElementById('eventPhotoSize').textContent = Math.round(blob.size / 1024) + ' Ko';
+				}, 'image/jpeg', 0.85);
+				
+				showToast('Image pivotée');
+			};
+			image.src = img.src;
+		}
+		
+		// Ouvrir le modal de recadrage événement
+		function openEventCropModal() {
+			const modal = document.getElementById('eventCropModal');
+			const cropImage = document.getElementById('eventCropImage');
+			
+			cropImage.src = document.getElementById('eventPreviewImg').src;
+			modal.classList.add('show');
+			
+			setTimeout(function() {
+				if (eventCropper) eventCropper.destroy();
+				eventCropper = new Cropper(cropImage, {
+					viewMode: 1,
+					dragMode: 'move',
+					aspectRatio: NaN,
+					autoCropArea: 0.9,
+					responsive: true,
+					restore: false,
+					guides: true,
+					center: true,
+					highlight: true,
+					cropBoxMovable: true,
+					cropBoxResizable: true,
+					toggleDragModeOnDblclick: false
+				});
+			}, 100);
+			
+			// Reset des boutons ratio
+			document.querySelectorAll('#eventCropModal .crop-ratio-btn').forEach(function(btn) {
+				btn.classList.remove('active');
+			});
+			document.querySelector('#eventCropModal .crop-ratio-btn').classList.add('active');
+		}
+		
+		// Fermer le modal de recadrage événement
+		function closeEventCropModal() {
+			document.getElementById('eventCropModal').classList.remove('show');
+			if (eventCropper) {
+				eventCropper.destroy();
+				eventCropper = null;
+			}
+		}
+		
+		// Définir le ratio de recadrage événement
+		function setEventCropRatio(ratio, btn) {
+			if (eventCropper) {
+				eventCropper.setAspectRatio(ratio);
+			}
+			document.querySelectorAll('#eventCropModal .crop-ratio-btn').forEach(function(b) {
+				b.classList.remove('active');
+			});
+			btn.classList.add('active');
+		}
+		
+		// Appliquer le recadrage événement
+		function applyEventCrop() {
+			if (!eventCropper) return;
+			
+			const canvas = eventCropper.getCroppedCanvas({
+				maxWidth: 1200,
+				maxHeight: 1200,
+				imageSmoothingEnabled: true,
+				imageSmoothingQuality: 'high'
+			});
+			
+			canvas.toBlob(function(blob) {
+				eventImageBlob = blob;
+				
+				const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+				document.getElementById('eventPreviewImg').src = dataUrl;
+				
+				const sizeKo = Math.round(blob.size / 1024);
+				document.getElementById('eventPhotoSize').textContent = sizeKo + ' Ko';
+				
+				closeEventCropModal();
+				showToast('Image recadrée');
+			}, 'image/jpeg', 0.85);
+		}
 
+		// Supprimer la photo événement
 		function removeEventImage() {
-			eventImageFile = null;
+			eventImageBlob = null;
 			document.getElementById('eventPubImage').value = '';
 			document.getElementById('eventCameraInput').value = '';
+			document.getElementById('eventPreviewImg').src = '';
 			document.getElementById('eventImagePreview').style.display = 'none';
 			document.getElementById('eventPhotoButtons').style.display = 'grid';
 		}
@@ -3175,9 +3449,9 @@
             try {
                 // Upload image si présente
                 let imageUrl = null;
-                if (eventImageFile) {
-                    const fileName = `event_${Date.now()}_${eventImageFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                    const { error: uploadError } = await supabaseClient.storage.from('event-images').upload(fileName, eventImageFile);
+                if (eventImageBlob) {
+                    const fileName = `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.jpg`;
+                    const { error: uploadError } = await supabaseClient.storage.from('event-images').upload(fileName, eventImageBlob, { contentType: 'image/jpeg' });
                     if (!uploadError) {
                         const { data: urlData } = supabaseClient.storage.from('event-images').getPublicUrl(fileName);
                         imageUrl = urlData.publicUrl;
