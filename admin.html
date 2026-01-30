@@ -1561,11 +1561,14 @@
                     🕐 En attente <span id="countPendingEvents">0</span>
                 </button>
                 <button class="sub-tab" id="subTabApprovedEvents" onclick="showEventSubTab('approved')">
-                    ✅ Approuvés <span id="countApprovedEvents">0</span>
+                    ✅ Publiés <span id="countApprovedEvents">0</span>
+                </button>
+                <button class="sub-tab" id="subTabUnpublishedEvents" onclick="showEventSubTab('unpublished')">
+                    📦 Dépubliés <span id="countUnpublishedEvents">0</span>
                 </button>
             </div>
             
-            <!-- FORMULAIRE PUBLIER ÉVÉNEMENT DIRECTEMENT -->
+            <!-- FORMULAIRE PUBLIER ÉVÉNEMENT -->
             <div id="publishEventSection" class="publish-form">
                 <h3 style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
                     <span class="material-icons" style="color:var(--primary-light);">event</span>
@@ -1587,6 +1590,7 @@
                             <option value="brocante">🏷️ Brocante</option>
                             <option value="concert">🎵 Concert</option>
                             <option value="fete">🎉 Fête</option>
+                            <option value="autre">📌 Autre</option>
                         </select>
                     </div>
                     
@@ -1601,7 +1605,7 @@
                         </label>
                     </div>
                     
-                    <!-- Jours récurrents -->
+                    <!-- Jours récurrents (MAPPING CORRIGÉ) -->
                     <div class="form-group" id="eventPubDaysGroup" style="display:none;">
                         <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">repeat</span> Jours de la semaine</label>
                         <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;">
@@ -1613,6 +1617,7 @@
                             <label class="day-btn"><input type="checkbox" name="pubDay" value="6"><span>Sam</span></label>
                             <label class="day-btn"><input type="checkbox" name="pubDay" value="0"><span>Dim</span></label>
                         </div>
+                        <small style="color:var(--text-muted);margin-top:0.5rem;display:block;">0=Dim, 1=Lun, 2=Mar, 3=Mer, 4=Jeu, 5=Ven, 6=Sam</small>
                     </div>
                     
                     <!-- Date unique -->
@@ -1663,6 +1668,17 @@
                         <input type="url" class="form-input" id="eventPubLink" placeholder="https://...">
                     </div>
                     
+                    <!-- UPLOAD IMAGE -->
+                    <div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">image</span> Image</label>
+                        <input type="file" class="form-input" id="eventPubImage" accept="image/*" style="padding:0.5rem;">
+                        <small style="color:var(--text-muted);">JPG, PNG • Max 5 Mo</small>
+                        <div id="eventImagePreview" style="display:none;margin-top:0.5rem;">
+                            <img id="eventPreviewImg" src="" alt="Aperçu" style="max-width:200px;max-height:150px;border-radius:8px;">
+                            <button type="button" onclick="removeEventImage()" style="margin-left:0.5rem;background:var(--danger);border:none;color:white;padding:0.25rem 0.5rem;border-radius:4px;cursor:pointer;">✕</button>
+                        </div>
+                    </div>
+                    
                     <div class="form-group">
                         <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">person</span> Organisateur</label>
                         <input type="text" class="form-input" id="eventPubAuthor" placeholder="Ex: Mairie, Association..." maxlength="100" value="Admin">
@@ -1677,8 +1693,11 @@
             <!-- LISTE EN ATTENTE -->
             <div id="pendingEventsList" class="messages-list" style="display:none;"></div>
             
-            <!-- LISTE APPROUVÉS -->
+            <!-- LISTE PUBLIÉS -->
             <div id="approvedEventsList" class="messages-list" style="display:none;"></div>
+            
+            <!-- LISTE DÉPUBLIÉS -->
+            <div id="unpublishedEventsList" class="messages-list" style="display:none;"></div>
         </div>
 		
         <!-- PUBLIÉES -->
@@ -2753,17 +2772,46 @@
 		
 		// === ÉVÉNEMENTS ===
         
+        let eventImageFile = null;
+        
+        // Preview image événement
+        document.getElementById('eventPubImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Image trop volumineuse (max 5 Mo)');
+                    this.value = '';
+                    return;
+                }
+                eventImageFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('eventPreviewImg').src = e.target.result;
+                    document.getElementById('eventImagePreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        function removeEventImage() {
+            eventImageFile = null;
+            document.getElementById('eventPubImage').value = '';
+            document.getElementById('eventImagePreview').style.display = 'none';
+        }
+        
         // Sous-onglets événements
         function showEventSubTab(tab) {
             document.getElementById('subTabPublishEvent').classList.toggle('active', tab === 'publish');
             document.getElementById('subTabPendingEvents').classList.toggle('active', tab === 'pending');
             document.getElementById('subTabApprovedEvents').classList.toggle('active', tab === 'approved');
+            document.getElementById('subTabUnpublishedEvents').classList.toggle('active', tab === 'unpublished');
             
             document.getElementById('publishEventSection').style.display = tab === 'publish' ? 'block' : 'none';
             document.getElementById('pendingEventsList').style.display = tab === 'pending' ? 'block' : 'none';
             document.getElementById('approvedEventsList').style.display = tab === 'approved' ? 'block' : 'none';
+            document.getElementById('unpublishedEventsList').style.display = tab === 'unpublished' ? 'block' : 'none';
             
-            if (tab === 'pending' || tab === 'approved') {
+            if (tab !== 'publish') {
                 loadPendingEvents();
             }
         }
@@ -2771,46 +2819,65 @@
         async function loadPendingEvents() {
             const pendingContainer = document.getElementById('pendingEventsList');
             const approvedContainer = document.getElementById('approvedEventsList');
+            const unpublishedContainer = document.getElementById('unpublishedEventsList');
             
             if (!pendingContainer) return;
             
             pendingContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
             approvedContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
+            unpublishedContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
             
             try {
-                const { data: pending, error: errPending } = await supabaseClient
+                const { data: pending, error: err1 } = await supabaseClient
                     .from('events')
                     .select('*')
                     .eq('status', 'pending')
                     .order('created_at', { ascending: false });
                 
-                if (errPending) throw errPending;
-                
-                const { data: approved, error: errApproved } = await supabaseClient
+                const { data: approved, error: err2 } = await supabaseClient
                     .from('events')
                     .select('*')
                     .eq('status', 'approved')
                     .order('created_at', { ascending: false })
                     .limit(50);
                 
-                if (errApproved) throw errApproved;
+                const { data: unpublished, error: err3 } = await supabaseClient
+                    .from('events')
+                    .select('*')
+                    .eq('status', 'unpublished')
+                    .order('created_at', { ascending: false });
                 
-                document.getElementById('statPendingEvents').textContent = pending.length;
-                document.getElementById('badgeEvents').textContent = pending.length;
-                document.getElementById('badgeEvents').style.display = pending.length > 0 ? 'inline-flex' : 'none';
-                document.getElementById('countPendingEvents').textContent = pending.length;
-                document.getElementById('countApprovedEvents').textContent = approved.length;
+                if (err1) throw err1;
+                if (err2) throw err2;
+                if (err3) throw err3;
                 
-                if (pending.length === 0) {
+                // Compteurs
+                document.getElementById('statPendingEvents').textContent = pending ? pending.length : 0;
+                document.getElementById('badgeEvents').textContent = pending ? pending.length : 0;
+                document.getElementById('badgeEvents').style.display = pending && pending.length > 0 ? 'inline-flex' : 'none';
+                document.getElementById('countPendingEvents').textContent = pending ? pending.length : 0;
+                document.getElementById('countApprovedEvents').textContent = approved ? approved.length : 0;
+                document.getElementById('countUnpublishedEvents').textContent = unpublished ? unpublished.length : 0;
+                
+                // Render pending
+                if (!pending || pending.length === 0) {
                     pendingContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><p>Aucun événement en attente</p></div>';
                 } else {
                     pendingContainer.innerHTML = pending.map(e => renderEventCard(e, 'pending')).join('');
                 }
                 
-                if (approved.length === 0) {
-                    approvedContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">✅</div><p>Aucun événement approuvé</p></div>';
+                // Render approved
+                if (!approved || approved.length === 0) {
+                    approvedContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">✅</div><p>Aucun événement publié</p></div>';
                 } else {
                     approvedContainer.innerHTML = approved.map(e => renderEventCard(e, 'approved')).join('');
+                }
+                
+                // Render unpublished
+                if (!unpublished || unpublished.length === 0) {
+                    unpublishedContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><p>Aucun événement dépublié</p></div>';
+                } else {
+                    unpublishedContainer.innerHTML = unpublished.map(e => renderEventCard(e, 'unpublished')).join('');
                 }
                 
             } catch (error) {
@@ -2843,11 +2910,35 @@
                 ? '<span style="background:rgba(245,158,11,0.15);color:#f59e0b;padding:0.2rem 0.5rem;border-radius:20px;font-size:0.7rem;margin-left:0.5rem;">🔄 Récurrent</span>' 
                 : '';
             
+            // Compteur de vues
+            const viewsDisplay = event.views !== undefined ? `<span style="color:var(--text-muted);font-size:0.8rem;">👁️ ${event.views || 0} vues</span>` : '';
+            
+            // Actions selon le status
+            let actions = '';
+            if (status === 'pending') {
+                actions = `
+                    <button class="action-btn mark-read" onclick="approveEvent(${event.id})"><span class="material-icons">check</span>Approuver</button>
+                    <button class="action-btn delete" onclick="deleteEvent(${event.id})"><span class="material-icons">delete</span>Supprimer</button>
+                `;
+            } else if (status === 'approved') {
+                actions = `
+                    <button class="action-btn" onclick="unpublishEvent(${event.id})" style="background:rgba(245,158,11,0.2);border-color:var(--warning);color:var(--warning);">
+                        <span class="material-icons">archive</span>Dépublier
+                    </button>
+                    <button class="action-btn delete" onclick="deleteEvent(${event.id})"><span class="material-icons">delete</span>Supprimer</button>
+                `;
+            } else if (status === 'unpublished') {
+                actions = `
+                    <button class="action-btn mark-read" onclick="republishEvent(${event.id})"><span class="material-icons">publish</span>Republier</button>
+                    <button class="action-btn delete" onclick="deleteEvent(${event.id})"><span class="material-icons">delete</span>Supprimer</button>
+                `;
+            }
+            
             return `
                 <div class="message-card ${status === 'pending' ? 'unread' : ''}">
                     <div class="message-header">
                         <span class="proposition-type evenement">${icon} ${event.category || 'Événement'}${recurringBadge}</span>
-                        <span class="message-date">${formatDate(event.created_at)}</span>
+                        <span class="message-date">${formatDate(event.created_at)} ${viewsDisplay}</span>
                     </div>
                     <div class="proposition-title">${escapeHtml(event.title)}</div>
                     <div style="display:flex;flex-wrap:wrap;gap:1rem;margin:0.5rem 0;color:var(--text-muted);font-size:0.85rem;">
@@ -2873,8 +2964,7 @@
                     ${event.link ? `<a href="${event.link}" target="_blank" class="proposition-file"><span class="material-icons">link</span> Lien</a>` : ''}
                     ${event.image_url ? `<img src="${event.image_url}" style="max-width:200px;max-height:150px;border-radius:8px;margin-top:0.5rem;cursor:pointer;" onclick="window.open('${event.image_url}', '_blank')">` : ''}
                     <div class="message-actions" style="margin-top:1rem;">
-                        ${status === 'pending' ? `<button class="action-btn mark-read" onclick="approveEvent(${event.id})"><span class="material-icons">check</span>Approuver</button>` : ''}
-                        <button class="action-btn delete" onclick="deleteEvent(${event.id})"><span class="material-icons">delete</span>Supprimer</button>
+                        ${actions}
                     </div>
                 </div>
             `;
@@ -2896,8 +2986,40 @@
             }
         }
         
+        async function unpublishEvent(id) {
+            try {
+                const { error } = await supabaseClient
+                    .from('events')
+                    .update({ status: 'unpublished' })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                showToast('Événement dépublié 📦');
+                loadPendingEvents();
+            } catch (error) {
+                console.error('Erreur dépublication:', error);
+                showToast('Erreur: ' + error.message, true);
+            }
+        }
+        
+        async function republishEvent(id) {
+            try {
+                const { error } = await supabaseClient
+                    .from('events')
+                    .update({ status: 'approved' })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                showToast('Événement republié ✅');
+                loadPendingEvents();
+            } catch (error) {
+                console.error('Erreur republication:', error);
+                showToast('Erreur: ' + error.message, true);
+            }
+        }
+        
         async function deleteEvent(id) {
-            if (!confirm('Supprimer cet événement ?')) return;
+            if (!confirm('Supprimer définitivement cet événement ?')) return;
             
             try {
                 const { error } = await supabaseClient
@@ -2944,6 +3066,17 @@
             }
             
             try {
+                // Upload image si présente
+                let imageUrl = null;
+                if (eventImageFile) {
+                    const fileName = `event_${Date.now()}_${eventImageFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                    const { error: uploadError } = await supabaseClient.storage.from('event-images').upload(fileName, eventImageFile);
+                    if (!uploadError) {
+                        const { data: urlData } = supabaseClient.storage.from('event-images').getPublicUrl(fileName);
+                        imageUrl = urlData.publicUrl;
+                    }
+                }
+                
                 const selectedDays = isRecurring 
                     ? [...document.querySelectorAll('input[name="pubDay"]:checked')].map(cb => cb.value).join(',')
                     : null;
@@ -2964,7 +3097,9 @@
                     description: document.getElementById('eventPubDescription').value.trim() || null,
                     link: document.getElementById('eventPubLink').value.trim() || null,
                     author: document.getElementById('eventPubAuthor').value.trim() || 'Admin',
-                    status: 'approved'
+                    image_url: imageUrl,
+                    status: 'approved',
+                    views: 0
                 };
                 
                 const { error } = await supabaseClient.from('events').insert([eventData]);
@@ -2978,6 +3113,7 @@
                 document.getElementById('eventPubDateGroup').style.display = 'block';
                 document.getElementById('eventPubTimeRecurringGroup').style.display = 'none';
                 document.getElementById('eventPubEndTimeGroup').style.display = 'block';
+                removeEventImage();
                 loadPendingEvents();
                 
             } catch (error) {
