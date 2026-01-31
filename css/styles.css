@@ -2255,8 +2255,7 @@ p,
 .description, 
 .community-item-desc, 
 .seo-section p, 
-.news-item-content {
-    color: rgba(255, 255, 255, 0.85) !important; 
+.news-item-content { 
     font-size: 0.95rem;
 }
 
