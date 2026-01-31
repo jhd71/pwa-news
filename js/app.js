@@ -1121,19 +1121,6 @@ function toggleSeeMore(newsId) {
         descEl.classList.add('expanded');
         btnEl.classList.add('expanded');
         btnEl.querySelector('span:first-child').textContent = 'Voir moins';
-        
-        // Incrémenter les vues (une seule fois)
-        if (!descEl.dataset.viewed) {
-            descEl.dataset.viewed = 'true';
-            incrementViews(newsId);
-            
-            // Mettre à jour le compteur localement
-            const viewsEl = descEl.closest('.community-item').querySelector('.views-count');
-            if (viewsEl) {
-                const currentViews = parseInt(viewsEl.textContent) || 0;
-                viewsEl.innerHTML = `<span class="material-icons">visibility</span>${currentViews + 1}`;
-            }
-        }
     }
 }
 
@@ -1639,9 +1626,6 @@ function getAgendaCategoryLabel(category) {
     const labels = { 'sport': 'Sport', 'culture': 'Culture', 'marche': 'Marché', 'brocante': 'Brocante', 'concert': 'Concert', 'fete': 'Fête' };
     return labels[category] || 'Événement';
 }
-
-// Ajouter à l'initialisation
-document.addEventListener('DOMContentLoaded', initAgenda);
 
 // Exposer globalement
 window.togglePushSubscription = togglePushSubscription;
