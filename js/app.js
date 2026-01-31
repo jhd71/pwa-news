@@ -1628,11 +1628,16 @@ document.addEventListener('DOMContentLoaded', initAgenda);
 // COMPTEUR DE VUES - INFOS COMMUNAUTÉ
 // ============================================
 document.addEventListener('click', async (e) => {
-    // Ignorer les clics sur les boutons, liens et images
-    if (e.target.closest('button') || 
-        e.target.closest('a') || 
-        e.target.closest('.see-more-btn') ||
-        e.target.closest('.community-image-wrapper')) {
+    // Ignorer les clics sur les éléments interactifs
+    const clickedElement = e.target;
+    const isButton = clickedElement.closest('button');
+    const isLink = clickedElement.closest('a');
+    const isSeeMore = clickedElement.closest('.see-more-btn');
+    const isImage = clickedElement.closest('.community-image-wrapper');
+    const isActions = clickedElement.closest('.community-item-actions');
+    
+    if (isButton || isLink || isSeeMore || isImage || isActions) {
+        console.log('👆 Clic sur élément interactif, vue non comptée');
         return;
     }
     
