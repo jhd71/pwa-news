@@ -725,7 +725,7 @@ async function initCommunity() {
         contentEl.innerHTML = data.map(item => {
             const commentCount = commentCounts[item.id] || 0;
             return `
-            <div class="community-item">
+            <div class="community-item" data-id="${item.id}">
                 <!-- HEADER : Emoji + Auteur + Date -->
                 <div class="community-item-header">
                     <span class="community-item-icon">${getCommunityIcon(item.type)}</span>
@@ -1600,32 +1600,6 @@ async function initAgenda() {
         
         console.log(`📅 ${allEvents.length} événements agenda chargés`);
         
-        // *** COMPTEUR DE VUES SUR L'ACCUEIL ***
-        // Intercepter les clics sur les cartes pour compter les vues
-        contentEl.addEventListener('click', async (e) => {
-            const agendaItem = e.target.closest('.agenda-item');
-            if (!agendaItem) return;
-            
-            const eventId = agendaItem.dataset.eventId;
-            if (!eventId) return;
-            
-            // Vérifier si déjà vu dans cette session
-            const viewedKey = `event_viewed_${eventId}`;
-            if (sessionStorage.getItem(viewedKey)) return;
-            
-            try {
-                // Appeler la fonction Supabase pour incrémenter les vues
-                const { error } = await supabase.rpc('increment_event_views', { event_id: parseInt(eventId) });
-                
-                if (!error) {
-                    sessionStorage.setItem(viewedKey, 'true');
-                    console.log(`👁️ Vue comptée pour événement #${eventId} (depuis accueil)`);
-                }
-            } catch (err) {
-                console.error('Erreur compteur vues:', err);
-            }
-        });
-        
     } catch (error) {
         console.error('❌ Erreur initAgenda:', error);
     }
@@ -1655,7 +1629,7 @@ document.addEventListener('DOMContentLoaded', initAgenda);
 // ============================================
 document.addEventListener('click', async (e) => {
     // Vérifier si on clique sur une carte d'info communauté
-    const communityCard = e.target.closest('.community-card');
+    const communityCard = e.target.closest('.community-item');
     if (!communityCard) return;
     
     const submissionId = communityCard.dataset.id;
