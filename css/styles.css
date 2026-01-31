@@ -668,7 +668,7 @@ body {
 }
 
 .news-item-title {
-    font-size: 1.05rem;
+    font-size: 0.9rem;
     font-weight: 700;
     line-height: 1.3;
     margin-bottom: 0.5rem;
@@ -1476,14 +1476,14 @@ h2, h3 {
 
 .community-item-title {
     font-weight: 700;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     line-height: 1.3;
     color: var(--text-primary);
     margin-bottom: 0.5rem;
 }
 
 .community-item-desc {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     line-height: 1.5;
     margin-bottom: 0.5rem;
     max-height: 80px;
@@ -2796,24 +2796,24 @@ p,
     color: white;
 }
 
-/* Appliquer la taille moyenne (plus subtile) */
+/* Appliquer la taille moyenne (pour malvoyants) */
 [data-font-size="medium"] {
-    font-size: 105%;
+    font-size: 110%;
 }
 
 [data-font-size="medium"] .news-item-title,
 [data-font-size="medium"] .community-item-title,
 [data-font-size="medium"] .cinema-film-title {
-    font-size: 1.08rem;
+    font-size: 1.05rem;
 }
 
 [data-font-size="medium"] .news-item-excerpt,
 [data-font-size="medium"] .community-item-desc {
-    font-size: 1rem;
+    font-size: 0.95rem;
 }
 
 [data-font-size="medium"] .seo-section p {
-    font-size: 1rem;
+    font-size: 0.95rem;
 }
 
 /* Mode clair - sélecteur */
