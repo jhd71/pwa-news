@@ -3635,10 +3635,10 @@
                     <p style="margin-bottom:0.75rem;font-weight:600;">Total : ${totalViews} vues</p>
                     <div style="max-height:300px;overflow-y:auto;">
                         ${data.map(e => `
-                            <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem;border-bottom:1px solid var(--glass-border);">
-                                <span style="font-size:0.85rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(e.title)}</span>
-                                <span style="font-weight:600;color:var(--primary-light);margin-left:1rem;">${e.views || 0}</span>
-                                <button onclick="resetSingleEventView(${e.id})" style="margin-left:0.5rem;padding:0.25rem 0.5rem;background:var(--danger);border:none;border-radius:4px;color:white;font-size:0.7rem;cursor:pointer;">Reset</button>
+                            <div style="display:flex;align-items:center;padding:0.5rem;border-bottom:1px solid var(--glass-border);gap:0.5rem;">
+                                <span style="font-size:0.8rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(e.title)}</span>
+                                <span style="font-weight:600;color:var(--primary-light);flex-shrink:0;">${e.views || 0}</span>
+                                <button onclick="resetSingleEventView(${e.id})" style="padding:0.25rem 0.5rem;background:var(--danger);border:none;border-radius:4px;color:white;font-size:0.7rem;cursor:pointer;flex-shrink:0;">Reset</button>
                             </div>
                         `).join('')}
                     </div>
@@ -3675,10 +3675,10 @@
                     <p style="margin-bottom:0.75rem;font-weight:600;">Total : ${totalViews} vues</p>
                     <div style="max-height:300px;overflow-y:auto;">
                         ${data.map(e => `
-                            <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem;border-bottom:1px solid var(--glass-border);">
-                                <span style="font-size:0.85rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(e.title)}</span>
-                                <span style="font-weight:600;color:var(--success);margin-left:1rem;">${e.views || 0}</span>
-                                <button onclick="resetSingleSubmissionView(${e.id})" style="margin-left:0.5rem;padding:0.25rem 0.5rem;background:var(--danger);border:none;border-radius:4px;color:white;font-size:0.7rem;cursor:pointer;">Reset</button>
+                            <div style="display:flex;align-items:center;padding:0.5rem;border-bottom:1px solid var(--glass-border);gap:0.5rem;">
+                                <span style="font-size:0.8rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(e.title)}</span>
+                                <span style="font-weight:600;color:var(--success);flex-shrink:0;">${e.views || 0}</span>
+                                <button onclick="resetSingleSubmissionView(${e.id})" style="padding:0.25rem 0.5rem;background:var(--danger);border:none;border-radius:4px;color:white;font-size:0.7rem;cursor:pointer;flex-shrink:0;">Reset</button>
                             </div>
                         `).join('')}
                     </div>
