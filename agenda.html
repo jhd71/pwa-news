@@ -754,10 +754,56 @@
                     if (eventCard) {
                         eventCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         eventCard.classList.add('highlighted');
+                        
+                        // Compter la vue automatiquement (depuis l'accueil)
+                        incrementEventViews(eventId);
                     }
                 }, 500);
             }
         }
+        
+        // *** FONCTION COMPTEUR DE VUES ***
+        async function incrementEventViews(eventId) {
+            const viewedKey = `event_viewed_${eventId}`;
+            
+            // Vérifier si déjà vu dans cette session
+            if (sessionStorage.getItem(viewedKey)) {
+                console.log(`👁️ Événement #${eventId} déjà vu cette session`);
+                return;
+            }
+            
+            try {
+                const { error } = await supabaseClient.rpc('increment_event_views', { event_id: parseInt(eventId) });
+                
+                if (!error) {
+                    sessionStorage.setItem(viewedKey, 'true');
+                    
+                    // Mettre à jour l'affichage
+                    const eventCard = document.querySelector(`[data-event-id="${eventId}"]`);
+                    if (eventCard) {
+                        const viewsSpan = eventCard.querySelector('.event-views');
+                        if (viewsSpan) {
+                            const currentViews = parseInt(viewsSpan.textContent.match(/\d+/)?.[0] || 0) + 1;
+                            viewsSpan.innerHTML = `<span class="material-icons" style="font-size:1rem;">visibility</span>${currentViews} vue${currentViews > 1 ? 's' : ''}`;
+                        }
+                    }
+                    console.log(`👁️ Vue comptée pour événement #${eventId}`);
+                }
+            } catch (err) {
+                console.error('Erreur compteur vues:', err);
+            }
+        }
+        
+        // *** COMPTEUR DE VUES AU CLIC ***
+        document.addEventListener('click', (e) => {
+            const eventCard = e.target.closest('.event-card');
+            if (!eventCard) return;
+            
+            const eventId = eventCard.dataset.eventId;
+            if (eventId) {
+                incrementEventViews(eventId);
+            }
+        });
         
         function formatTime(timeStr) {
             if (!timeStr) return '';
