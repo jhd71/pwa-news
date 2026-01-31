@@ -2750,6 +2750,96 @@ p,
 }
 
 /* ============================================
+   3. SÉLECTEUR TAILLE DE TEXTE
+   ============================================ */
+
+/* Container du sélecteur */
+.font-size-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px dashed var(--border-color);
+}
+
+.font-size-selector-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-right: 0.25rem;
+}
+
+/* Boutons de taille */
+.font-size-btn {
+    padding: 0.5rem 1rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.font-size-btn:hover {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: var(--primary-light);
+}
+
+.font-size-btn.active {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    border-color: var(--primary);
+    color: white;
+}
+
+/* Appliquer la taille moyenne (plus subtile) */
+[data-font-size="medium"] {
+    font-size: 105%;
+}
+
+[data-font-size="medium"] .news-item-title,
+[data-font-size="medium"] .community-item-title,
+[data-font-size="medium"] .cinema-film-title {
+    font-size: 1.08rem;
+}
+
+[data-font-size="medium"] .news-item-excerpt,
+[data-font-size="medium"] .community-item-desc {
+    font-size: 1rem;
+}
+
+[data-font-size="medium"] .seo-section p {
+    font-size: 1rem;
+}
+
+/* Mode clair - sélecteur */
+[data-theme="light"] .font-size-selector {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .font-size-btn {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #475569;
+}
+
+[data-theme="light"] .font-size-btn:hover {
+    background: #e2e8f0;
+    border-color: #6366f1;
+}
+
+[data-theme="light"] .font-size-btn.active {
+    background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+    border-color: #6366f1;
+    color: white;
+}
+
+/* ============================================
    AGENDA LOCAL
    ============================================ */
 
