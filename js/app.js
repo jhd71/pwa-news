@@ -675,6 +675,25 @@ async function initCommunity() {
             return;
         }
         
+        // *** COMPTEUR DE VUES AU CHARGEMENT ***
+        // Compter une vue pour chaque info affichée (1 fois par jour par info)
+        const today = new Date().toISOString().split('T')[0];
+        for (const item of data) {
+            const viewedKey = `submission_viewed_${item.id}_${today}`;
+            if (!localStorage.getItem(viewedKey)) {
+                try {
+                    const { error: viewError } = await supabaseClient.rpc('increment_submission_views', { submission_id: item.id });
+                    if (!viewError) {
+                        localStorage.setItem(viewedKey, 'true');
+                        item.views = (item.views || 0) + 1; // Mettre à jour localement pour l'affichage
+                        console.log(`👁️ Vue comptée pour info #${item.id}`);
+                    }
+                } catch (e) {
+                    console.log('⚠️ Erreur compteur vue:', e);
+                }
+            }
+        }
+        
         // Charger le nombre de commentaires pour chaque actualité
         const newsIds = data.map(item => item.id);
         let commentCounts = {};
@@ -1623,63 +1642,6 @@ function getAgendaCategoryLabel(category) {
 
 // Ajouter à l'initialisation
 document.addEventListener('DOMContentLoaded', initAgenda);
-
-// ============================================
-// COMPTEUR DE VUES - INFOS COMMUNAUTÉ
-// ============================================
-document.addEventListener('click', async (e) => {
-    // Ignorer les clics sur les éléments interactifs
-    const clickedElement = e.target;
-    const isButton = clickedElement.closest('button');
-    const isLink = clickedElement.closest('a');
-    const isSeeMore = clickedElement.closest('.see-more-btn');
-    const isImage = clickedElement.closest('.community-image-wrapper');
-    const isActions = clickedElement.closest('.community-item-actions');
-    
-    if (isButton || isLink || isSeeMore || isImage || isActions) {
-        console.log('👆 Clic sur élément interactif, vue non comptée');
-        return;
-    }
-    
-    // Vérifier si on clique sur une carte d'info communauté
-    const communityCard = e.target.closest('.community-item');
-    if (!communityCard) return;
-    
-    const submissionId = communityCard.dataset.id;
-    if (!submissionId) return;
-    
-    // Clé unique par info ET par jour
-    const today = new Date().toISOString().split('T')[0];
-    const viewedKey = `submission_viewed_${submissionId}_${today}`;
-    
-    // Vérifier si déjà vu aujourd'hui
-    if (localStorage.getItem(viewedKey)) {
-        console.log(`👁️ Info #${submissionId} déjà vue aujourd'hui`);
-        return;
-    }
-    
-    try {
-        const supabase = getSupabaseClient();
-        if (!supabase) return;
-        
-        const { error } = await supabase.rpc('increment_submission_views', { submission_id: parseInt(submissionId) });
-        
-        if (!error) {
-            localStorage.setItem(viewedKey, 'true');
-            
-            // Mettre à jour l'affichage
-            const viewsSpan = communityCard.querySelector('.community-views');
-            if (viewsSpan) {
-                const match = viewsSpan.textContent.match(/\d+/);
-                const currentViews = (match ? parseInt(match[0]) : 0) + 1;
-                viewsSpan.textContent = `👁️ ${currentViews}`;
-            }
-            console.log(`👁️ Vue comptée pour info #${submissionId}`);
-        }
-    } catch (err) {
-        console.error('Erreur compteur vues info:', err);
-    }
-});
 
 // Exposer globalement
 window.togglePushSubscription = togglePushSubscription;
