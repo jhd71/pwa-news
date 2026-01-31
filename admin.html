@@ -3584,7 +3584,7 @@
             if (!confirm('⚠️ Remettre TOUTES les vues des événements à 0 ?')) return;
             
             try {
-                const { error } = await supabaseClient.rpc('reset_event_views');
+                const { error } = await supabaseClient.rpc('reset_all_event_views');
                 if (error) throw error;
                 showToast('✅ Vues des événements remises à 0');
                 showEventViewsStats();
@@ -3599,7 +3599,7 @@
             if (!confirm('⚠️ Remettre TOUTES les vues des infos communauté à 0 ?')) return;
             
             try {
-                const { error } = await supabaseClient.rpc('reset_submission_views');
+                const { error } = await supabaseClient.rpc('reset_all_submission_views');
                 if (error) throw error;
                 showToast('✅ Vues des infos remises à 0');
                 showSubmissionViewsStats();
@@ -3691,7 +3691,7 @@
         // Reset une seule vue événement
         async function resetSingleEventView(id) {
             try {
-                const { error } = await supabaseClient.rpc('reset_event_views', { event_id: id });
+                const { error } = await supabaseClient.rpc('reset_single_event_view', { event_id: id });
                 if (error) throw error;
                 showToast('Vue remise à 0');
                 showEventViewsStats();
@@ -3703,7 +3703,7 @@
         // Reset une seule vue info
         async function resetSingleSubmissionView(id) {
             try {
-                const { error } = await supabaseClient.rpc('reset_submission_views', { submission_id: id });
+                const { error } = await supabaseClient.rpc('reset_single_submission_view', { submission_id: id });
                 if (error) throw error;
                 showToast('Vue remise à 0');
                 showSubmissionViewsStats();

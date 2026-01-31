@@ -1650,6 +1650,50 @@ function getAgendaCategoryLabel(category) {
 // Ajouter à l'initialisation
 document.addEventListener('DOMContentLoaded', initAgenda);
 
+// ============================================
+// COMPTEUR DE VUES - INFOS COMMUNAUTÉ
+// ============================================
+document.addEventListener('click', async (e) => {
+    // Vérifier si on clique sur une carte d'info communauté
+    const communityCard = e.target.closest('.community-card');
+    if (!communityCard) return;
+    
+    const submissionId = communityCard.dataset.id;
+    if (!submissionId) return;
+    
+    // Clé unique par info ET par jour
+    const today = new Date().toISOString().split('T')[0];
+    const viewedKey = `submission_viewed_${submissionId}_${today}`;
+    
+    // Vérifier si déjà vu aujourd'hui
+    if (localStorage.getItem(viewedKey)) {
+        console.log(`👁️ Info #${submissionId} déjà vue aujourd'hui`);
+        return;
+    }
+    
+    try {
+        const supabase = getSupabaseClient();
+        if (!supabase) return;
+        
+        const { error } = await supabase.rpc('increment_submission_views', { submission_id: parseInt(submissionId) });
+        
+        if (!error) {
+            localStorage.setItem(viewedKey, 'true');
+            
+            // Mettre à jour l'affichage
+            const viewsSpan = communityCard.querySelector('.community-views');
+            if (viewsSpan) {
+                const match = viewsSpan.textContent.match(/\d+/);
+                const currentViews = (match ? parseInt(match[0]) : 0) + 1;
+                viewsSpan.textContent = `👁️ ${currentViews}`;
+            }
+            console.log(`👁️ Vue comptée pour info #${submissionId}`);
+        }
+    } catch (err) {
+        console.error('Erreur compteur vues info:', err);
+    }
+});
+
 // Exposer globalement
 window.togglePushSubscription = togglePushSubscription;
 window.showNotifPrompt = showNotifPrompt;
