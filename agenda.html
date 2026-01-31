@@ -287,23 +287,27 @@
             overflow: hidden;
         }
         
-        .see-more-btn {
-            background: none;
-            border: none;
-            color: var(--primary-light);
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            padding: 0;
-            margin-bottom: 0.5rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-        
-        .see-more-btn:hover { text-decoration: underline; }
-        .see-more-btn .material-icons { font-size: 1rem; transition: transform 0.2s; }
-        .see-more-btn.expanded .material-icons { transform: rotate(180deg); }
+        /* Bouton Voir plus - style jaune/orange */
+		.see-more-btn {
+			display: inline-flex !important;
+			align-items: center;
+			gap: 0.3rem;
+			padding: 0.5rem 1rem !important;
+			background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+			border: none !important;
+			border-radius: 20px !important;
+			color: white !important;
+			font-weight: 600 !important;
+			font-size: 0.85rem !important;
+			box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+			transition: all 0.2s ease;
+		}
+
+		.see-more-btn:hover {
+			background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+		}
         
         .event-card-meta {
             display: flex;
