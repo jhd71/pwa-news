@@ -2977,7 +2977,6 @@ p,
     flex-wrap: wrap;
     gap: 0.5rem;
     font-size: 0.8rem;
-    color: var(--text-muted);
 }
 
 .agenda-item-info span {
