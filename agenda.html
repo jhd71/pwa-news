@@ -755,20 +755,22 @@
                         eventCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         eventCard.classList.add('highlighted');
                         
-                        // Compter la vue automatiquement (depuis l'accueil)
-                        incrementEventViews(eventId);
+                        // Compter la vue (depuis l'accueil)
+                        incrementEventViews(eventId, eventCard);
                     }
                 }, 500);
             }
         }
         
-        // *** FONCTION COMPTEUR DE VUES ***
-        async function incrementEventViews(eventId) {
-            const viewedKey = `event_viewed_${eventId}`;
+        // *** COMPTEUR DE VUES UNIQUE ***
+        async function incrementEventViews(eventId, eventCard) {
+            // Clé unique par événement ET par jour (évite spam mais permet stats quotidiennes)
+            const today = new Date().toISOString().split('T')[0];
+            const viewedKey = `event_viewed_${eventId}_${today}`;
             
-            // Vérifier si déjà vu dans cette session
-            if (sessionStorage.getItem(viewedKey)) {
-                console.log(`👁️ Événement #${eventId} déjà vu cette session`);
+            // Vérifier si déjà vu aujourd'hui
+            if (localStorage.getItem(viewedKey)) {
+                console.log(`👁️ Événement #${eventId} déjà vu aujourd'hui`);
                 return;
             }
             
@@ -776,34 +778,26 @@
                 const { error } = await supabaseClient.rpc('increment_event_views', { event_id: parseInt(eventId) });
                 
                 if (!error) {
-                    sessionStorage.setItem(viewedKey, 'true');
+                    // Marquer comme vu pour aujourd'hui
+                    localStorage.setItem(viewedKey, 'true');
                     
                     // Mettre à jour l'affichage
-                    const eventCard = document.querySelector(`[data-event-id="${eventId}"]`);
                     if (eventCard) {
                         const viewsSpan = eventCard.querySelector('.event-views');
                         if (viewsSpan) {
-                            const currentViews = parseInt(viewsSpan.textContent.match(/\d+/)?.[0] || 0) + 1;
+                            const match = viewsSpan.textContent.match(/\d+/);
+                            const currentViews = (match ? parseInt(match[0]) : 0) + 1;
                             viewsSpan.innerHTML = `<span class="material-icons" style="font-size:1rem;">visibility</span>${currentViews} vue${currentViews > 1 ? 's' : ''}`;
                         }
                     }
                     console.log(`👁️ Vue comptée pour événement #${eventId}`);
+                } else {
+                    console.error('Erreur RPC:', error);
                 }
             } catch (err) {
                 console.error('Erreur compteur vues:', err);
             }
         }
-        
-        // *** COMPTEUR DE VUES AU CLIC ***
-        document.addEventListener('click', (e) => {
-            const eventCard = e.target.closest('.event-card');
-            if (!eventCard) return;
-            
-            const eventId = eventCard.dataset.eventId;
-            if (eventId) {
-                incrementEventViews(eventId);
-            }
-        });
         
         function formatTime(timeStr) {
             if (!timeStr) return '';
@@ -817,40 +811,6 @@
             div.textContent = text;
             return div.innerHTML;
         }
-        
-        // *** COMPTEUR DE VUES ***
-        // Incrémenter les vues quand on clique sur un événement
-        document.addEventListener('click', async (e) => {
-            const eventCard = e.target.closest('.event-card');
-            if (!eventCard) return;
-            
-            const eventId = eventCard.dataset.eventId;
-            if (!eventId) return;
-            
-            // Vérifier si déjà vu dans cette session
-            const viewedKey = `event_viewed_${eventId}`;
-            if (sessionStorage.getItem(viewedKey)) return;
-            
-            try {
-                // Appeler la fonction Supabase pour incrémenter les vues
-                const { error } = await supabaseClient.rpc('increment_event_views', { event_id: parseInt(eventId) });
-                
-                if (!error) {
-                    // Marquer comme vu pour cette session
-                    sessionStorage.setItem(viewedKey, 'true');
-                    
-                    // Mettre à jour l'affichage des vues
-                    const viewsSpan = eventCard.querySelector('.event-views');
-                    if (viewsSpan) {
-                        const currentViews = parseInt(viewsSpan.textContent.match(/\d+/)[0]) + 1;
-                        viewsSpan.innerHTML = `<span class="material-icons" style="font-size:1rem;">visibility</span>${currentViews} vue${currentViews > 1 ? 's' : ''}`;
-                    }
-                    console.log(`👁️ Vue comptée pour événement #${eventId}`);
-                }
-            } catch (err) {
-                console.error('Erreur compteur vues:', err);
-            }
-        });
     </script>
 </body>
 </html>
