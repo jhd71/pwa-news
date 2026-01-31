@@ -1628,6 +1628,14 @@ document.addEventListener('DOMContentLoaded', initAgenda);
 // COMPTEUR DE VUES - INFOS COMMUNAUTÉ
 // ============================================
 document.addEventListener('click', async (e) => {
+    // Ignorer les clics sur les boutons, liens et images
+    if (e.target.closest('button') || 
+        e.target.closest('a') || 
+        e.target.closest('.see-more-btn') ||
+        e.target.closest('.community-image-wrapper')) {
+        return;
+    }
+    
     // Vérifier si on clique sur une carte d'info communauté
     const communityCard = e.target.closest('.community-item');
     if (!communityCard) return;
