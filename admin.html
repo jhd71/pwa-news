@@ -16,18 +16,27 @@
     
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-light: #818cf8;
-            --bg-dark: #0f0f1a;
-            --bg-card: #1a1a2e;
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --text-muted: rgba(255, 255, 255, 0.5);
-            --danger: #ef4444;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --glass-border: rgba(255, 255, 255, 0.1);
-        }
+			--primary: #6366f1;
+			--primary-light: #818cf8;
+			--bg-dark: #0f0f1a;
+			--bg-card: #1a1a2e;
+			--text-primary: #ffffff;
+			--text-secondary: rgba(255, 255, 255, 0.7);
+			--text-muted: rgba(255, 255, 255, 0.5);
+			--danger: #ef4444;
+			--success: #10b981;
+			--warning: #f59e0b;
+			--glass-border: rgba(255, 255, 255, 0.1);
+		}
+
+		[data-theme="light"] {
+			--bg-dark: #f1f5f9;
+			--bg-card: #ffffff;
+			--text-primary: #1e293b;
+			--text-secondary: #475569;
+			--text-muted: #94a3b8;
+			--glass-border: #e2e8f0;
+		}
         
         * {
             margin: 0;
@@ -1564,9 +1573,10 @@
         <header class="admin-header">
             <div class="admin-title"><span>📊</span> Administration</div>
             <div class="admin-header-actions">
-                <a href="index.html" class="home-btn" title="Accueil"><span class="material-icons">home</span></a>
-                <button class="logout-btn" onclick="logout()"><span class="material-icons">logout</span> Déco</button>
-            </div>
+			<button onclick="toggleTheme()" class="home-btn" title="Changer le thème"><span class="material-icons" id="themeIcon">light_mode</span></button>
+			<a href="index.html" class="home-btn" title="Accueil"><span class="material-icons">home</span></a>
+			<button class="logout-btn" onclick="logout()"><span class="material-icons">logout</span> Déco</button>
+			</div>
         </header>
         
         <div class="stats-grid">
@@ -3711,6 +3721,32 @@
             }
         }
         
+        // === THÈME ===
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('admin_theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+        
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.textContent = theme === 'light' ? 'dark_mode' : 'light_mode';
+            }
+        }
+        
+        function initTheme() {
+            const savedTheme = localStorage.getItem('admin_theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+            updateThemeIcon(savedTheme);
+        }
+        
+        initTheme();
         checkSession();
     </script>
 </body>
