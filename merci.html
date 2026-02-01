@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merci ! - Actu & Média</title>
+    <link rel="stylesheet" href="style.css"> <style>
+        .thanks-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+        .thanks-card {
+            background: rgba(30, 30, 40, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem 2rem;
+            border-radius: 32px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .thanks-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            animation: celebrate 1s cubic-bezier(0.17, 0.89, 0.32, 1.49);
+        }
+        @keyframes celebrate {
+            0% { transform: scale(0) rotate(-20deg); }
+            70% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        .thanks-title {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        .thanks-text {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        .countdown {
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body class="thanks-container">
+
+    <div class="thanks-card">
+        <div class="thanks-icon">🎉</div>
+        <h1 class="thanks-title">Merci infiniment !</h1>
+        <p class="thanks-text">
+            Ton soutien compte énormément pour <strong>Actu & Média</strong>.<br>
+            Grâce à toi, le site reste gratuit, indépendant et sans publicité. 
+            <br><br>
+            Le café est en train de couler ! ☕
+        </p>
+        
+        <a href="index.html" class="donation-btn">
+            Retourner sur le site
+        </a>
+
+        <p class="countdown">Redirection automatique dans <span id="timer">10</span> secondes...</p>
+    </div>
+
+    <script>
+        // Redirection automatique après 10 secondes
+        let timeLeft = 10;
+        const timerElement = document.getElementById('timer');
+        
+        const countdown = setInterval(() => {
+            timeLeft--;
+            timerElement.textContent = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                window.location.href = 'index.html';
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
