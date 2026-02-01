@@ -24,6 +24,27 @@
             width: 100%;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
+		.thanks-card .donation-btn {
+            margin-top: 1rem;
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #ffffff !important; /* Force le texte en blanc */
+            background: linear-gradient(135deg, #0070ba 0%, #003087 100%);
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 112, 186, 0.3);
+            border: none;
+        }
+
+        .thanks-card .donation-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 112, 186, 0.4);
+            color: #ffffff !important;
+        }
         .thanks-icon {
             font-size: 5rem;
             margin-bottom: 1.5rem;
@@ -51,6 +72,7 @@
             color: #666;
         }
     </style>
+	<meta name="robots" content="noindex, nofollow">
 </head>
 <body class="thanks-container">
 
@@ -64,9 +86,7 @@
             Le café est en train de couler ! ☕
         </p>
         
-        <a href="index.html" class="donation-btn">
-            Retourner sur le site
-        </a>
+        <a href="index.html" class="donation-btn">Retourner sur le site</a>
 
         <p class="countdown">Redirection automatique dans <span id="timer">10</span> secondes...</p>
     </div>

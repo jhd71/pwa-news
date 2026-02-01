@@ -1,50 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- Page d'accueil - priorité maximale -->
   <url>
     <loc>https://actuetmedia.fr/</loc>
-    <lastmod>2025-01-31</lastmod>
+    <lastmod>2026-02-01</lastmod>
     <changefreq>hourly</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Agenda local - nouvelle page importante -->
   <url>
     <loc>https://actuetmedia.fr/agenda.html</loc>
-    <lastmod>2025-01-31</lastmod>
+    <lastmod>2026-02-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
 
-  <!-- Météo -->
   <url>
     <loc>https://actuetmedia.fr/meteo.html</loc>
-    <lastmod>2025-01-31</lastmod>
+    <lastmod>2026-02-01</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.7</priority>
   </url>
 
-  <!-- Proposer une actualité -->
   <url>
     <loc>https://actuetmedia.fr/proposer.html</loc>
-    <lastmod>2025-01-31</lastmod>
+    <lastmod>2026-02-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
-  <!-- Proposer un événement - nouvelle page -->
   <url>
     <loc>https://actuetmedia.fr/proposer-evenement.html</loc>
-    <lastmod>2025-01-31</lastmod>
+    <lastmod>2026-02-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
-  <!-- Contact -->
   <url>
     <loc>https://actuetmedia.fr/contact.html</loc>
-    <lastmod>2025-01-31</lastmod>
+    <lastmod>2026-02-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
