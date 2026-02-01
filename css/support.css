@@ -123,7 +123,7 @@
 /* ============================================
    POPUP DON (Style Actu & Média)
    ============================================ */
-.donation-popup .donation-btn {
+.donation-popup {
     position: fixed;
     bottom: 2rem;
     left: 50%;
@@ -297,6 +297,63 @@
     .donation-popup {
         bottom: calc(1.5rem + env(safe-area-inset-bottom));
     }
+}
+
+/* ============================================
+   BOUTON DONATION STATIQUE (Page À Propos)
+   ============================================ */
+.donation-section {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.donation-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 320px; /* On évite qu'il soit trop large sur PC */
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #0070ba 0%, #003087 100%);
+    border: none;
+    border-radius: 16px;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0, 112, 186, 0.3);
+}
+
+.donation-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 112, 186, 0.5);
+    filter: brightness(1.1);
+}
+
+.donation-btn:active {
+    transform: scale(0.97);
+}
+
+.donation-icon {
+    font-size: 1.4rem;
+}
+
+.donation-note {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted, #888);
+    margin-top: 0.75rem;
+    line-height: 1.4;
+    opacity: 0.8;
+}
+
+/* Adaptation si le bouton est dans un container sombre */
+[data-theme="light"] .donation-note {
+    color: #666;
 }
 
 /* Actions */
