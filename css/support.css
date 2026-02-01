@@ -338,6 +338,37 @@
     transform: scale(0.97);
 }
 
+/* Animation de battement douce sur le bouton */
+.donation-btn.heartbeat {
+    animation: simple-pulse 4s ease-in-out infinite;
+}
+
+/* On stoppe l'animation au survol pour que l'utilisateur garde le contrôle */
+.donation-btn.heartbeat:hover {
+    animation-play-state: paused;
+}
+
+@keyframes simple-pulse {
+    0% { transform: scale(1); }
+    5% { transform: scale(1.03); }
+    10% { transform: scale(1); }
+    15% { transform: scale(1.03); }
+    20% { transform: scale(1); }
+    100% { transform: scale(1); }
+}
+
+/* Animation de l'icône (Rotation légère) */
+.pulse-icon {
+    animation: icon-swing 4s ease-in-out infinite;
+    transform-origin: center;
+}
+
+@keyframes icon-swing {
+    0%, 15%, 100% { transform: rotate(0deg); }
+    5% { transform: rotate(-10deg); }
+    10% { transform: rotate(10deg); }
+}
+
 .donation-icon {
     font-size: 1.4rem;
 }
