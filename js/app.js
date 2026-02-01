@@ -52,7 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initInstallPrompt();
     initExtraTiles();
     initPushNotifications();
-	initAgenda();
+    initAgenda();
+    initFontSizeSelector();
 });
 
 // ============================================
@@ -73,7 +74,6 @@ async function initWeather() {
 
         // Aujourd'hui (J+0)
         const tempToday = Math.round(data.current_weather.temperature);
-        const iconToday = getWeatherEmoji(data.current_weather.weathercode);
         
         const icon0 = document.getElementById('weatherIcon0');
         const temp0 = document.getElementById('weatherTemp0');
@@ -83,7 +83,6 @@ async function initWeather() {
         // Demain (J+1)
         if (data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length > 1) {
             const tempJ1 = Math.round(data.daily.temperature_2m_max[1]);
-            const iconJ1 = getWeatherEmoji(data.daily.weathercode[1]);
             
             const icon1 = document.getElementById('weatherIcon1');
             const temp1 = document.getElementById('weatherTemp1');
@@ -94,7 +93,6 @@ async function initWeather() {
         // Après-demain (J+2)
         if (data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length > 2) {
             const tempJ2 = Math.round(data.daily.temperature_2m_max[2]);
-            const iconJ2 = getWeatherEmoji(data.daily.weathercode[2]);
             const dayNameJ2 = getDayName(2);
             
             const label2 = document.getElementById('weatherLabel2');
@@ -377,13 +375,6 @@ function resetNewsAutoPlay() {
         newsAutoPlayInterval = null;
     }
     startNewsAutoPlay();
-}
-
-function stopNewsAutoPlay() {
-    if (newsAutoPlayInterval) {
-        clearInterval(newsAutoPlayInterval);
-        newsAutoPlayInterval = null;
-    }
 }
 
 function showNewsError(message) {
@@ -1092,17 +1083,6 @@ async function toggleLike(newsId, btn) {
     }
 }
 
-async function incrementViews(newsId) {
-    try {
-        const supabaseClient = getSupabaseClient();
-        if (!supabaseClient) return;
-        
-        await supabaseClient.rpc('increment_views', { row_id: newsId });
-    } catch (error) {
-        console.log('Erreur incrémentation vues:', error);
-    }
-}
-
 function toggleSeeMore(newsId) {
     const descEl = document.getElementById(`desc-${newsId}`);
     const btnEl = document.getElementById(`see-more-${newsId}`);
@@ -1488,9 +1468,6 @@ function initFontSizeSelector() {
     console.log('✅ Sélecteur taille de texte initialisé');
 }
 
-// Initialiser au chargement
-document.addEventListener('DOMContentLoaded', initFontSizeSelector);
-
 // ============================================
 // AGENDA HOMEPAGE
 // ============================================
@@ -1632,3 +1609,9 @@ window.togglePushSubscription = togglePushSubscription;
 window.showNotifPrompt = showNotifPrompt;
 window.closeNotifPrompt = closeNotifPrompt;
 window.acceptNotifPrompt = acceptNotifPrompt;
+window.toggleSeeMore = toggleSeeMore;
+window.toggleComments = toggleComments;
+window.submitComment = submitComment;
+window.toggleLike = toggleLike;
+window.openImageModal = openImageModal;
+window.closeImageModal = closeImageModal;
