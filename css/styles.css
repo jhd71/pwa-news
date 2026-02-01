@@ -2592,7 +2592,7 @@ p,
 }
 
 .community-item-date {
-    color: var(--text-muted);
+    color: #f59e0b;
 }
 
 /* Footer de la carte (Lieu + Vues EN BAS) */
@@ -2610,7 +2610,6 @@ p,
     align-items: center;
     gap: 0.3rem;
     font-size: 0.85rem;
-    color: var(--text-muted);
 }
 
 .community-item-footer .community-item-location .material-icons {
@@ -2623,7 +2622,6 @@ p,
     align-items: center;
     gap: 0.3rem;
     font-size: 0.85rem;
-    color: var(--text-muted);
 }
 
 .community-item-footer .community-item-views .material-icons {
