@@ -338,14 +338,16 @@
     transform: scale(0.97);
 }
 
-/* Animation de battement douce sur le bouton */
-.donation-btn.heartbeat {
+/* --- Animation de battement commune --- */
+.donation-btn.heartbeat, 
+.donation-popup-btn.heartbeat {
     animation: simple-pulse 4s ease-in-out infinite;
 }
 
-/* On stoppe l'animation au survol pour que l'utilisateur garde le contrôle */
-.donation-btn.heartbeat:hover {
+.donation-btn.heartbeat:hover, 
+.donation-popup-btn.heartbeat:hover {
     animation-play-state: paused;
+    filter: brightness(1.1);
 }
 
 @keyframes simple-pulse {
@@ -357,16 +359,25 @@
     100% { transform: scale(1); }
 }
 
-/* Animation de l'icône (Rotation légère) */
+/* Animation de l'icône PayPal (inclinaison) */
 .pulse-icon {
     animation: icon-swing 4s ease-in-out infinite;
     transform-origin: center;
+    display: inline-block;
 }
 
 @keyframes icon-swing {
     0%, 15%, 100% { transform: rotate(0deg); }
     5% { transform: rotate(-10deg); }
     10% { transform: rotate(10deg); }
+}
+
+/* On s'assure que les deux boutons ont le même dégradé exact */
+.donation-btn, 
+.donation-popup-btn {
+    background: linear-gradient(135deg, #0070ba 0%, #003087 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(0, 112, 186, 0.3);
 }
 
 .donation-icon {
