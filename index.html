@@ -1019,20 +1019,32 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <!-- Popup Don -->
     <div class="donation-popup" id="donationPopup">
-        <button class="donation-popup-close" onclick="closeDonationPopup()">&times;</button>
-        <div class="donation-popup-icon">☕</div>
-        <div class="donation-popup-title">Vous aimez Actu & Média ?</div>
-        <div class="donation-popup-text">
-            Ce site est 100% gratuit et sans pub.<br>
-            Un petit café pour soutenir le projet ?
+    <button class="donation-popup-close" onclick="closeDonationPopup(false)" aria-label="Fermer">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    
+    <div class="donation-popup-content">
+        <div class="donation-icon-wrapper">
+            <span class="donation-emoji">☕</span>
         </div>
+        
+        <h3 class="donation-popup-title">Vous aimez Actu & Média ?</h3>
+        
+        <p class="donation-popup-text">
+            Ce site est <strong>100% gratuit et sans pub</strong>.<br>
+            Un petit café pour soutenir le projet ?
+        </p>
+        
         <a href="https://www.paypal.com/paypalme/actuetmedia" target="_blank" rel="noopener" class="donation-popup-btn" onclick="closeDonationPopup()">
-            ☕ Offrir un café (2-3€)
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right:8px;"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.946 5.438-3.158 7.12-6.591 7.12h-1.2l-.58 3.684zm9.602-12.872c-.172-.943-.75-2.028-2.612-2.028H8.16L6.59 16.438h3.38c1.644 0 3.036-.575 3.903-2.035.534-.9.993-2.316 1.307-4.16.146-.86.257-1.46.298-1.778z"/></svg>
+            Offrir un café (2-3€)
         </a>
+        
         <button class="donation-popup-later" onclick="closeDonationPopup(true)">
-            Plus tard
+            Non, peut-être plus tard
         </button>
     </div>
+</div>
 
     <script>
     // === POPUP DON ===
