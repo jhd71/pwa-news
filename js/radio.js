@@ -1242,9 +1242,3 @@ document.addEventListener('DOMContentLoaded', () => {
     window.openRadio = () => radioPlayer.openModal();
     window.radioPlayer = radioPlayer;
 });
-
-function openRadio() {
-    if (radioPlayer) {
-        radioPlayer.openModal();
-    }
-}
