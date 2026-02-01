@@ -566,6 +566,7 @@ body {
     transition: all 0.3s ease;
     border: 1px solid transparent;
     overflow: hidden;
+	align-items: flex-start;
 }
 
 .news-item:hover {
