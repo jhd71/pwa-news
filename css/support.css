@@ -338,38 +338,42 @@
     transform: scale(0.97);
 }
 
-/* --- Animation de battement commune --- */
+/* --- Animation de battement commune (CORRECTIF) --- */
+
+/* On cible très précisément les boutons avec heartbeat */
 .donation-btn.heartbeat, 
 .donation-popup-btn.heartbeat {
-    animation: simple-pulse 4s ease-in-out infinite;
+    display: flex !important; /* S'assure que le bouton traite bien les transformations */
+    animation: simple-pulse 4s ease-in-out infinite !important;
 }
 
+/* On stoppe au survol */
 .donation-btn.heartbeat:hover, 
 .donation-popup-btn.heartbeat:hover {
-    animation-play-state: paused;
-    filter: brightness(1.1);
+    animation-play-state: paused !important;
 }
 
 @keyframes simple-pulse {
     0% { transform: scale(1); }
-    5% { transform: scale(1.03); }
+    5% { transform: scale(1.05); } /* Un peu plus prononcé pour être sûr de le voir */
     10% { transform: scale(1); }
-    15% { transform: scale(1.03); }
+    15% { transform: scale(1.05); }
     20% { transform: scale(1); }
     100% { transform: scale(1); }
 }
 
-/* Animation de l'icône PayPal (inclinaison) */
+/* On s'assure que l'icône dans la popup a bien la classe pulse-icon */
 .pulse-icon {
-    animation: icon-swing 4s ease-in-out infinite;
+    animation: icon-swing 4s ease-in-out infinite !important;
     transform-origin: center;
     display: inline-block;
+    margin-right: 8px;
 }
 
 @keyframes icon-swing {
     0%, 15%, 100% { transform: rotate(0deg); }
-    5% { transform: rotate(-10deg); }
-    10% { transform: rotate(10deg); }
+    5% { transform: rotate(-12deg); }
+    10% { transform: rotate(12deg); }
 }
 
 /* On s'assure que les deux boutons ont le même dégradé exact */
