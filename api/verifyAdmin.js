@@ -15,13 +15,23 @@ export default async function handler(req, res) {
         const { password } = req.body;
         const adminPassword = process.env.ADMIN_PASSWORD;
         
+        // DEBUG - À supprimer après résolution
+        console.log('Password reçu:', password ? 'OUI (longueur: ' + password.length + ')' : 'NON');
+        console.log('Password env existe:', adminPassword ? 'OUI (longueur: ' + adminPassword.length + ')' : 'NON');
+        
         if (!password) {
             return res.status(400).json({ success: false, error: 'Mot de passe requis' });
+        }
+        
+        if (!adminPassword) {
+            console.log('ERREUR: Variable ADMIN_PASSWORD non définie dans Vercel');
+            return res.status(500).json({ success: false, error: 'Configuration serveur manquante' });
         }
         
         if (password === adminPassword) {
             return res.status(200).json({ success: true });
         } else {
+            console.log('Mot de passe incorrect');
             return res.status(401).json({ success: false, error: 'Mot de passe incorrect' });
         }
         
