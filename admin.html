@@ -2096,6 +2096,7 @@
     <script>
         const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
+        const ADMIN_PASSWORD = 'fc35>$wL72iZA^';
         const ADMIN_SESSION_KEY = 'admin_session';
         const SESSION_DURATION = 24 * 60 * 60 * 1000;
         
@@ -2112,26 +2113,13 @@
             }
         }
         
-        async function login(password) {
-            try {
-                const response = await fetch('/api/verifyAdmin', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({ logged: true, expires: Date.now() + SESSION_DURATION }));
-                    showDashboard();
-                    return true;
-                }
-                return false;
-            } catch (error) {
-                console.error('Erreur connexion:', error);
-                return false;
+        function login(password) {
+            if (password === ADMIN_PASSWORD) {
+                localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({ logged: true, expires: Date.now() + SESSION_DURATION }));
+                showDashboard();
+                return true;
             }
+            return false;
         }
         
         function logout() { localStorage.removeItem(ADMIN_SESSION_KEY); location.reload(); }
@@ -2158,20 +2146,11 @@
             });
         });
         
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const btn = e.target.querySelector('button');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<span class="material-icons" style="animation: spin 1s linear infinite;">sync</span> Vérification...';
-            btn.disabled = true;
-            
-            const success = await login(document.getElementById('passwordInput').value);
-            
-            if (!success) {
+            if (!login(document.getElementById('passwordInput').value)) {
                 document.getElementById('loginError').style.display = 'block';
                 document.getElementById('passwordInput').value = '';
-                btn.innerHTML = originalText;
-                btn.disabled = false;
             }
         });
         
@@ -2521,7 +2500,7 @@
                                 title: '📢 ' + title.substring(0, 45),
                                 body: content.substring(0, 100) + (content.length > 100 ? '...' : ''),
                                 url: linkUrl || '/',
-                                adminKey: 'notif_SecretKey_2025!'
+                                adminKey: ADMIN_PASSWORD
                             })
                         });
                         showToast('Actualité publiée + notification envoyée ! 🔔🎉');
