@@ -33,8 +33,8 @@ export default async function handler(req, res) {
         const { title, body, url, adminKey } = req.body;
 
         // Vérifier la clé admin
-        const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-        if (adminKey !== ADMIN_PASSWORD) {
+        const NOTIFICATION_SECRET = process.env.NOTIFICATION_SECRET;
+        if (adminKey !== NOTIFICATION_SECRET) {
             return res.status(401).json({ error: 'Clé admin invalide' });
         }
 
