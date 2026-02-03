@@ -33,7 +33,11 @@ export default async function handler(req, res) {
         const { title, body, url, adminKey } = req.body;
 
         // Vérifier la clé admin
-        const ADMIN_PASSWORD = process.env.ADMIN_NOTIFICATION_KEY || 'fc35>$wL72iZA^';
+        const ADMIN_PASSWORD = process.env.ADMIN_NOTIFICATION_KEY;
+        if (!ADMIN_PASSWORD) {
+            console.error('Variable ADMIN_NOTIFICATION_KEY non configurée');
+            return res.status(500).json({ error: 'Configuration serveur manquante' });
+        }
         if (adminKey !== ADMIN_PASSWORD) {
             return res.status(401).json({ error: 'Clé admin invalide' });
         }
