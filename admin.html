@@ -2100,12 +2100,15 @@
         const SESSION_DURATION = 24 * 60 * 60 * 1000;
         
         let supabaseClient;
+        let adminKey = null;
         let selectedImageFile = null;
         
         // === AUTH ===
         function checkSession() {
             const session = JSON.parse(localStorage.getItem(ADMIN_SESSION_KEY));
             if (session && session.logged && session.expires > Date.now()) {
+                // Session valide mais adminKey pas encore défini
+                // L'utilisateur devra se reconnecter pour envoyer des notifications
                 showDashboard();
             } else {
                 localStorage.removeItem(ADMIN_SESSION_KEY);
@@ -2123,6 +2126,7 @@
                 const result = await response.json();
                 
                 if (result.success) {
+                    adminKey = password;
                     localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({ logged: true, expires: Date.now() + SESSION_DURATION }));
                     showDashboard();
                     return true;
@@ -2523,7 +2527,7 @@
                                 title: '📢 ' + title.substring(0, 45),
                                 body: content.substring(0, 100) + (content.length > 100 ? '...' : ''),
                                 url: linkUrl || '/',
-                                adminKey: ADMIN_PASSWORD
+                                adminKey: adminKey
                             })
                         });
                         showToast('Actualité publiée + notification envoyée ! 🔔🎉');
@@ -2895,7 +2899,7 @@
                         title,
                         body,
                         url: url || '/',
-                        adminKey: ADMIN_PASSWORD
+                        adminKey: adminKey
                     })
                 });
                 
