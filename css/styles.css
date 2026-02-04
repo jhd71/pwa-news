@@ -3114,6 +3114,7 @@ a.agenda-item:hover {
     .agenda-item-date {
         min-width: 50px; /* Badge un peu plus petit sur mobile */
         padding: 0.5rem 0.3rem;
+		flex-shrink: 0; /* Empêche le badge de s'écraser sur petit écran */
     }
 
     .agenda-item-day {
