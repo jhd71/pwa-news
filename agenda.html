@@ -435,21 +435,38 @@
         
         .fab-propose {
             position: fixed;
-            bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
-            right: 1rem;
+            bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 56px;
-            height: 56px;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             border: none;
-            border-radius: 50%;
+            border-radius: 30px;
             color: white;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.5);
             text-decoration: none;
             z-index: 90;
+            transition: all 0.3s ease;
+        }
+        
+        .fab-propose:hover {
+            transform: translateX(-50%) translateY(-3px);
+            box-shadow: 0 6px 25px rgba(245, 158, 11, 0.6);
+        }
+        
+        .fab-propose .material-icons {
+            font-size: 1.2rem;
+        }
+        
+        /* Espace en bas pour ne pas que le bouton cache les cartes */
+        .events-container {
+            padding-bottom: 5rem;
         }
         
         @media (min-width: 768px) {
@@ -513,7 +530,8 @@
     </div>
 	
     <a href="proposer-evenement.html" class="fab-propose" title="Proposer un événement">
-        <span class="material-icons">add</span>
+        <span class="material-icons">edit_calendar</span>
+        <span>Proposer un événement</span>
     </a>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
