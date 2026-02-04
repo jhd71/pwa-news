@@ -1578,16 +1578,18 @@ async function initAgenda() {
                 </a>`;
         }).join('');
 
-        // 7. Ajouter le bouton "Voir tout" à la fin du HTML
-        html += `
-            <div class="agenda-view-all-container">
-                <a href="agenda.html" class="agenda-view-all-bottom">
-                    <span class="material-icons">calendar_month</span>
-                    Voir tout l'agenda
-                </a>
-            </div>`;
+        // 7. Ajouter le bouton "Voir tout" à la fin
+        const btnWrapper = document.createElement('div');
+        btnWrapper.className = 'agenda-view-all-container';
+        btnWrapper.innerHTML = `
+            <a href="agenda.html" class="agenda-view-all-bottom">
+                <span class="material-icons">calendar_month</span>
+                Voir tout l'agenda
+            </a>
+        `;
 
-        contentEl.innerHTML = html;
+        contentEl.innerHTML = html; // On met d'abord les 3 cartes
+        contentEl.appendChild(btnWrapper); // On "colle" le bouton proprement en dessous
         
     } catch (error) {
         console.error('❌ Erreur initAgenda:', error);

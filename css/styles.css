@@ -3143,27 +3143,38 @@ a.agenda-item:hover {
     }
 }
 
-/* Style du bouton "Voir tout" sous la liste */
+/* Conteneur du bouton pour éviter les décalages */
 .agenda-view-all-container {
-    text-align: center;
-    margin-top: 1.5rem;
-    width: 100%;
-    padding-bottom: 0.5rem;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin: 1.5rem 0 0.5rem 0 !important;
+    flex-basis: 100%; /* Force le bouton à prendre toute la largeur sur mobile */
 }
 
 .agenda-view-all-bottom {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 0.7rem 2rem;
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.4);
     border-radius: 50px;
     color: #a5b4fc;
     text-decoration: none;
     font-weight: 600;
     font-size: 0.9rem;
-    transition: all 0.3s ease;
+    white-space: nowrap; /* Empêche le texte du bouton de revenir à la ligne */
+}
+
+/* Ajustement spécifique pour les très petits écrans */
+@media (max-width: 480px) {
+    .agenda-view-all-bottom {
+        width: 90%; /* Le bouton prend presque toute la largeur sur petit mobile */
+        font-size: 0.85rem;
+    }
 }
 
 .agenda-view-all-bottom:hover {
