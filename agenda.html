@@ -367,6 +367,58 @@
         
         .events-loading .material-icons { font-size: 2.5rem; color: var(--primary-light); }
         
+		/* Lightbox pour images */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .lightbox.show {
+            display: flex;
+        }
+        
+        .lightbox-image {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            z-index: 10000;
+            transition: color 0.2s;
+        }
+        
+        .lightbox-close:hover {
+            color: var(--primary-light);
+        }
+        
+        .event-card-image {
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        
+        .event-card-image:hover {
+            transform: scale(1.02);
+            opacity: 0.9;
+        }
+		
         .propose-event-btn {
             display: inline-flex;
             align-items: center;
@@ -454,6 +506,12 @@
         </div>
     </div>
     
+	<!-- Lightbox pour agrandir les images -->
+    <div id="imageLightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <img id="lightboxImage" class="lightbox-image" src="" alt="Image agrandie">
+    </div>
+	
     <a href="proposer-evenement.html" class="fab-propose" title="Proposer un événement">
         <span class="material-icons">add</span>
     </a>
@@ -621,7 +679,7 @@
                 const date = new Date(dateKey + 'T12:00:00');
                 const day = date.getDate();
                 const weekday = date.toLocaleDateString('fr-FR', { weekday: 'short' }).replace('.', '').toUpperCase();
-                const fullDate = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+                const fullDate = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
                 
                 html += `
                     <div class="events-date-group">
@@ -658,7 +716,7 @@
             
             return `
                 <div class="event-card" data-event-id="${event.id}">
-                    ${event.image_url ? `<img src="${event.image_url}" alt="${escapeHtml(event.title)}" class="event-card-image">` : ''}
+                    ${event.image_url ? `<img src="${event.image_url}" alt="${escapeHtml(event.title)}" class="event-card-image" onclick="openLightbox('${event.image_url}', event)">` : ''}
                     <div class="event-card-content">
                         <div class="event-card-header">
                             <h3 class="event-card-title">${escapeHtml(event.title)}</h3>
@@ -769,6 +827,27 @@
             return `${h}h${m !== '00' ? m : ''}`;
         }
         
+		// Lightbox pour agrandir les images
+        function openLightbox(imageUrl, e) {
+            e.stopPropagation(); // Empêcher le clic de se propager
+            const lightbox = document.getElementById('imageLightbox');
+            const lightboxImg = document.getElementById('lightboxImage');
+            lightboxImg.src = imageUrl;
+            lightbox.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Bloquer le scroll
+        }
+        
+        function closeLightbox() {
+            const lightbox = document.getElementById('imageLightbox');
+            lightbox.classList.remove('show');
+            document.body.style.overflow = ''; // Réactiver le scroll
+        }
+        
+        // Fermer avec Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+		
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
