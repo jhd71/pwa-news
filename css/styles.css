@@ -2922,7 +2922,7 @@ p,
     min-width: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    align-items: baseline;
 }
 
 .agenda-item-title {
