@@ -2922,10 +2922,10 @@ p,
 /* Contenu à droite */
 .agenda-item-content {
     flex: 1;
-    min-width: 0; 
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Aligne le texte au milieu de la hauteur du badge date */
+    align-items: baseline;
 }
 
 .agenda-item-title {
@@ -2940,18 +2940,16 @@ p,
 
 .agenda-item-info {
     display: flex;
-    flex-wrap: wrap; /* PERMET LE RETOUR À LA LIGNE SUR MOBILE */
-    gap: 0.4rem 0.8rem; /* Espace horizontal et vertical */
+    flex-wrap: wrap;
+    gap: 0.6rem;
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.75);
-    margin-bottom: 4px;
 }
 
 .agenda-item-info span {
-    display: inline-flex; /* Garde l'icône et le texte sur la même ligne */
+    display: flex;
     align-items: center;
     gap: 0.25rem;
-    white-space: nowrap; /* Empêche l'icône de se séparer de son texte */
 }
 
 .agenda-item-info .material-icons {
@@ -3109,69 +3107,38 @@ a.agenda-item:hover {
    ============================================ */
 @media (max-width: 768px) {
     .agenda-item {
-        gap: 0.8rem;
-        padding: 0.75rem;
+        gap: 0.75rem; /* Réduit l'espace entre la date et le contenu */
+        padding: 0.8rem;
     }
 
     .agenda-item-date {
-        min-width: 55px;
+        min-width: 55px; /* Badge un peu plus petit sur mobile */
         padding: 0.5rem 0.3rem;
     }
 
     .agenda-item-day {
-        font-size: 1.2rem;
+        font-size: 1.1rem; /* Chiffre de la date plus petit */
+    }
+
+    .agenda-item-month {
+        font-size: 0.6rem;
     }
 
     .agenda-item-title {
         font-size: 0.95rem;
-        margin-bottom: 4px;
+        white-space: normal; /* Permet au titre de s'afficher sur 2 lignes si besoin */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     .agenda-item-info {
-        gap: 0.3rem 0.6rem;
-        font-size: 0.75rem;
+        gap: 0.4rem;
+        font-size: 0.75rem; /* Textes d'infos plus petits */
     }
-
-    /* Centre le bouton "Voir tout" sur mobile */
-    .agenda-view-all-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 1rem;
+    
+    .agenda-item-info span {
+        width: 100%; /* Force l'adresse et l'heure à passer l'une sous l'autre si trop long */
     }
-}
-
-/* Style du bouton "Voir tout" sous la liste */
-.agenda-view-all-container {
-    text-align: center;
-    margin-top: 1.5rem;
-    width: 100%;
-    padding-bottom: 0.5rem;
-}
-
-.agenda-view-all-bottom {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 0.7rem 2rem;
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    border-radius: 50px;
-    color: #a5b4fc;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-}
-
-.agenda-view-all-bottom:hover {
-    background: #6366f1;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-}
-
-/* Adaptation mode clair */
-[data-theme="light"] .agenda-view-all-bottom {
-    background: rgba(99, 102, 241, 0.05);
-    color: #4f46e5;
 }

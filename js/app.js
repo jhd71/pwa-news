@@ -1482,10 +1482,10 @@ async function initAgenda() {
         if (!supabase) return;
         
         const today = new Date();
-        const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+		const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
         const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
         
-        // 1. Charger les événements NON récurrents à venir (Limité à 3 pour l'accueil)
+        // 1. Charger les événements NON récurrents à venir
         const { data: regularEvents, error: err1 } = await supabase
             .from('events')
             .select('*')
@@ -1493,9 +1493,9 @@ async function initAgenda() {
             .eq('is_recurring', false)
             .gte('event_date', todayStr)
             .order('event_date', { ascending: true })
-            .limit(3);
+            .limit(5);
         
-        // 2. Charger les événements RÉCURRENTS
+        // 2. Charger les événements RÉCURRENTS (UNE SEULE FOIS chacun)
         const { data: recurringEvents, error: err2 } = await supabase
             .from('events')
             .select('*')
@@ -1505,24 +1505,24 @@ async function initAgenda() {
         if (err1) console.error('Erreur events réguliers:', err1);
         if (err2) console.error('Erreur events récurrents:', err2);
         
-        // 3. Préparer les récurrents
+        // 3. Préparer les événements récurrents avec leur label
         const processedRecurring = (recurringEvents || []).map(event => {
             const days = event.recurrence_days ? event.recurrence_days.split(',').map(d => dayNames[parseInt(d)]) : [];
             return {
                 ...event,
                 _recurrenceLabel: `Tous les ${days.join(', ')}`,
-                _sortOrder: 0
+                _sortOrder: 0 // Les récurrents en premier
             };
         });
         
-        // 4. Préparer les réguliers
+        // 4. Préparer les événements réguliers
         const processedRegular = (regularEvents || []).map(event => ({
             ...event,
             _sortOrder: 1
         }));
         
-        // 5. Combiner et limiter à 3 au total pour l'accueil
-        const allEvents = [...processedRecurring, ...processedRegular].slice(0, 3);
+        // 5. Combiner : récurrents d'abord, puis par date
+        const allEvents = [...processedRecurring, ...processedRegular].slice(0, 5);
         
         if (!allEvents || allEvents.length === 0) {
             contentEl.innerHTML = '';
@@ -1532,60 +1532,56 @@ async function initAgenda() {
         
         if (emptyEl) emptyEl.style.display = 'none';
         
-        // 6. Générer le HTML (Version optimisée pour Mobile)
-		let html = allEvents.map(event => {
-			if (event.is_recurring) {
-				return `
-					<a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
-						<div class="agenda-item-date recurring">
-							<span class="material-icons">history</span>
-							<span class="agenda-item-month">HEBDO</span>
-						</div>
-						<div class="agenda-item-content">
-							<div class="agenda-item-title">${escapeHtml(event.title)}</div>
-							<div class="agenda-item-details">
-								<span class="detail-badge-date"><span class="material-icons">calendar_today</span> ${event._recurrenceLabel}</span>
-								${event.event_time ? `<span><span class="material-icons">schedule</span> ${formatAgendaTime(event.event_time)}</span>` : ''}
-								${event.location ? `<span><span class="material-icons">location_on</span> ${escapeHtml(event.location)}</span>` : ''}
-								<span class="detail-views"><span class="material-icons">visibility</span> ${event.views || 0}</span>
-							</div>
-							<span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
-						</div>
-					</a>`;
-			}
-			
-			const date = new Date(event.event_date + 'T12:00:00');
+        contentEl.innerHTML = allEvents.map(event => {
+            // Pour les récurrents : afficher le label au lieu de la date
+            if (event.is_recurring) {
+                return `
+                    <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
+                        <div class="agenda-item-date">
+                            <span class="agenda-item-day">🔄</span>
+                            <span class="agenda-item-month" style="font-size:0.6rem;">HEBDO</span>
+                        </div>
+                        <div class="agenda-item-content">
+                            <div class="agenda-item-title">${escapeHtml(event.title)}</div>
+                            <div class="agenda-item-info">
+                                <span style="color:#f59e0b;font-weight:600;">📅 ${event._recurrenceLabel}</span>
+                                ${event.event_time ? `<span>🕐 ${formatAgendaTime(event.event_time)}</span>` : ''}
+                            </div>
+                            <div class="agenda-item-info">
+                                ${event.location ? `<span>📍 ${escapeHtml(event.location)}</span>` : ''}
+                                <span style="font-size:0.75rem;color:var(--text-muted);">👁️ ${event.views || 0}</span>
+                            </div>
+                            <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
+                        </div>
+                    </a>
+                `;
+            }
+            
+            // Pour les événements uniques : afficher la date
+            const date = new Date(event.event_date + 'T12:00:00');
 			const day = date.getDate();
 			const month = date.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '').toUpperCase();
-			
-			return `
-				<a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
-					<div class="agenda-item-date">
-						<span class="agenda-item-day">${day}</span>
-						<span class="agenda-item-month">${month}</span>
-					</div>
-					<div class="agenda-item-content">
-						<div class="agenda-item-title">${escapeHtml(event.title)}</div>
-						<div class="agenda-item-details">
-							${event.event_time ? `<span><span class="material-icons">schedule</span> ${formatAgendaTime(event.event_time)}</span>` : ''}
-							${event.location ? `<span><span class="material-icons">location_on</span> ${escapeHtml(event.location)}</span>` : ''}
-							<span class="detail-views"><span class="material-icons">visibility</span> ${event.views || 0}</span>
-						</div>
-						<span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
-					</div>
-				</a>`;
-		}).join('');
-
-        // 7. Ajouter le bouton "Voir tout" à la fin du HTML
-        html += `
-            <div class="agenda-view-all-container">
-                <a href="agenda.html" class="agenda-view-all-bottom">
-                    <span class="material-icons">calendar_month</span>
-                    Voir tout l'agenda
+            
+            return `
+                <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
+                    <div class="agenda-item-date">
+                        <span class="agenda-item-day">${day}</span>
+                        <span class="agenda-item-month">${month}</span>
+                    </div>
+                    <div class="agenda-item-content">
+                        <div class="agenda-item-title">${escapeHtml(event.title)}</div>
+                        <div class="agenda-item-info">
+                            ${event.event_time ? `<span>🕐 ${formatAgendaTime(event.event_time)}</span>` : ''}
+                            ${event.location ? `<span>📍 ${escapeHtml(event.location)}</span>` : ''}
+                            <span style="font-size:0.75rem;color:var(--text-muted);">👁️ ${event.views || 0}</span>
+                        </div>
+                        <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
+                    </div>
                 </a>
-            </div>`;
-
-        contentEl.innerHTML = html;
+            `;
+        }).join('');
+        
+        console.log(`📅 ${allEvents.length} événements agenda chargés`);
         
     } catch (error) {
         console.error('❌ Erreur initAgenda:', error);
