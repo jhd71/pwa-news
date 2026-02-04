@@ -3047,11 +3047,11 @@ p,
 }
 
 [data-theme="light"] .agenda-item-info {
-    color: #64748b;
+    color: #000000;
 }
 
 [data-theme="light"] .agenda-item-info .material-icons {
-    color: #64748b;
+    color: #000000;
 }
 
 /* Catégories - Couleurs pour mode clair */
