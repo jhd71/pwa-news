@@ -2886,16 +2886,16 @@ p,
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 65px; /* Augmenté légèrement pour éviter que le texte touche les bords */
-    height: fit-content; /* EMPÊCHE LE RECTANGLE DE S'ÉTIRER */
-    align-self: flex-start; /* Aligne le badge en haut */
+    min-width: 65px;
+    height: fit-content; /* Garde la taille naturelle du badge */
+    flex-shrink: 0;      /* EMPÊCHE L'ÉCRASEMENT SUR MOBILE */
+    align-self: flex-start;
     padding: 0.8rem 0.5rem;
     background: linear-gradient(145deg, #6366f1 0%, #8b5cf6 100%);
     border-radius: 12px;
     color: white;
     text-align: center;
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-	flex-shrink: 0; /* Empêche le badge de s'écraser sur petit écran */
 }
 
 .agenda-item-date.recurring {
@@ -3112,13 +3112,12 @@ a.agenda-item:hover {
     }
 
     .agenda-item-date {
-        min-width: 50px; /* Badge un peu plus petit sur mobile */
+        min-width: 55px; /* Badge un peu plus petit sur mobile */
         padding: 0.5rem 0.3rem;
-		flex-shrink: 0; /* Empêche le badge de s'écraser sur petit écran */
     }
 
     .agenda-item-day {
-        font-size: 1.2rem; /* Chiffre de la date plus petit */
+        font-size: 1.1rem; /* Chiffre de la date plus petit */
     }
 
     .agenda-item-month {
