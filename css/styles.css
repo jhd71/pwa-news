@@ -2930,7 +2930,6 @@ p,
     font-size: 1rem;
     color: #ffffff;
     margin-bottom: 0.35rem;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 1.3;
