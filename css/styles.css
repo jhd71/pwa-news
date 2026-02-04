@@ -3107,18 +3107,21 @@ a.agenda-item:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 0.85rem 1.5rem;
-    margin-top: 1rem;
+    gap: 0.4rem;
+    padding: 0.65rem 1.25rem;
+    margin-top: 0.75rem;
     background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
     border: none;
-    border-radius: 30px;
+    border-radius: 25px;
     color: white;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
     text-decoration: none;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 3px 12px rgba(99, 102, 241, 0.35);
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .agenda-voir-tout:hover {
@@ -3178,4 +3181,153 @@ a.agenda-item:hover {
 
 .agenda-item-date.recurring .agenda-item-month {
     font-size: 0.6rem;
+}
+
+/* ============================================
+   AGENDA - RESPONSIVE MOBILE/TABLETTE
+   ============================================ */
+
+/* Tablette */
+@media (max-width: 768px) {
+    .agenda-item {
+        padding: 0.85rem;
+        gap: 0.75rem;
+    }
+    
+    .agenda-item-date {
+        min-width: 50px;
+        padding: 0.5rem 0.4rem;
+    }
+    
+    .agenda-item-day {
+        font-size: 1.3rem;
+    }
+    
+    .agenda-item-month {
+        font-size: 0.65rem;
+    }
+    
+    .agenda-item-title {
+        font-size: 0.95rem;
+        white-space: normal;
+        line-height: 1.3;
+    }
+    
+    .agenda-item-info {
+        gap: 0.4rem;
+        font-size: 0.75rem;
+    }
+    
+    .agenda-item-info .material-icons {
+        font-size: 0.9rem;
+    }
+    
+    .agenda-item-category {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .agenda-section {
+        padding: 0.75rem;
+    }
+    
+    .agenda-item {
+        padding: 0.75rem;
+        gap: 0.6rem;
+        border-radius: 12px;
+    }
+    
+    .agenda-item-date {
+        min-width: 45px;
+        padding: 0.4rem;
+        border-radius: 10px;
+    }
+    
+    .agenda-item-day {
+        font-size: 1.2rem;
+    }
+    
+    .agenda-item-month {
+        font-size: 0.6rem;
+    }
+    
+    .agenda-item-date.recurring .agenda-item-day {
+        font-size: 1.2rem;
+    }
+    
+    .agenda-item-content {
+        gap: 0.25rem;
+    }
+    
+    .agenda-item-title {
+        font-size: 0.9rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    .agenda-item-info {
+        flex-direction: column;
+        gap: 0.2rem;
+        font-size: 0.75rem;
+    }
+    
+    .agenda-item-info > span {
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+    }
+    
+    .agenda-item-info .material-icons {
+        font-size: 0.85rem;
+    }
+    
+    .agenda-views {
+        font-size: 0.7rem;
+    }
+    
+    .agenda-item-category {
+        font-size: 0.68rem;
+        padding: 0.2rem 0.45rem;
+        margin-top: 0.35rem;
+    }
+    
+    .agenda-voir-tout {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+        gap: 0.3rem;
+    }
+    
+    .agenda-voir-tout .material-icons {
+        font-size: 1.1rem;
+    }
+    
+    .agenda-info-highlight {
+        font-size: 0.75rem;
+    }
+}
+
+/* Très petit écran */
+@media (max-width: 360px) {
+    .agenda-item {
+        padding: 0.6rem;
+        gap: 0.5rem;
+    }
+    
+    .agenda-item-date {
+        min-width: 40px;
+    }
+    
+    .agenda-item-day {
+        font-size: 1.1rem;
+    }
+    
+    .agenda-item-title {
+        font-size: 0.85rem;
+    }
+    
+    .agenda-item-info {
+        font-size: 0.7rem;
+    }
 }
