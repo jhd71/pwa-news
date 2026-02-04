@@ -478,10 +478,37 @@
         // MAPPING JOURS : 0=Dim, 1=Lun, 2=Mar, 3=Mer, 4=Jeu, 5=Ven, 6=Sam
         const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
         
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             initTheme();
             initFilters();
             initMonthSelector();
+            
+            // Vérifier si un événement spécifique est demandé dans l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventId = urlParams.get('event');
+            
+            if (eventId) {
+                // Récupérer la date de l'événement pour naviguer au bon mois
+                try {
+                    const { data: event, error } = await supabaseClient
+                        .from('events')
+                        .select('event_date, is_recurring')
+                        .eq('id', eventId)
+                        .single();
+                    
+                    if (!error && event && event.event_date && !event.is_recurring) {
+                        // Événement non-récurrent : naviguer vers son mois
+                        const eventDate = new Date(event.event_date + 'T12:00:00');
+                        currentMonth = eventDate.getMonth();
+                        currentYear = eventDate.getFullYear();
+                        updateMonthDisplay();
+                        console.log(`📅 Navigation vers ${currentMonth + 1}/${currentYear} pour événement #${eventId}`);
+                    }
+                } catch (err) {
+                    console.error('Erreur récupération événement:', err);
+                }
+            }
+            
             loadEvents().then(() => scrollToEventFromUrl());
         });
         
