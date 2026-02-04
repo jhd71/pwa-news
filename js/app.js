@@ -1532,51 +1532,49 @@ async function initAgenda() {
         
         if (emptyEl) emptyEl.style.display = 'none';
         
-        // 6. Générer le HTML
-        let html = allEvents.map(event => {
-            if (event.is_recurring) {
-                return `
-                    <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
-                        <div class="agenda-item-date recurring">
-                            <span class="material-icons">history</span>
-                            <span class="agenda-item-month">HEBDO</span>
-                        </div>
-                        <div class="agenda-item-content">
-                            <div class="agenda-item-title">${escapeHtml(event.title)}</div>
-                            <div class="agenda-item-info">
-                                <span style="color:#f59e0b;font-weight:600;"><span class="material-icons" style="font-size:1rem;">calendar_today</span> ${event._recurrenceLabel}</span>
-                                ${event.event_time ? `<span><span class="material-icons" style="font-size:1rem;">schedule</span> ${formatAgendaTime(event.event_time)}</span>` : ''}
-                            </div>
-                            <div class="agenda-item-info">
-                                ${event.location ? `<span><span class="material-icons" style="font-size:1rem;">location_on</span> ${escapeHtml(event.location)}</span>` : ''}
-                                <span><span class="material-icons" style="font-size:1rem;">visibility</span> ${event.views || 0}</span>
-                            </div>
-                            <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
-                        </div>
-                    </a>`;
-            }
-            
-            const date = new Date(event.event_date + 'T12:00:00');
-            const day = date.getDate();
-            const month = date.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '').toUpperCase();
-            
-            return `
-                <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
-                    <div class="agenda-item-date">
-                        <span class="agenda-item-day">${day}</span>
-                        <span class="agenda-item-month">${month}</span>
-                    </div>
-                    <div class="agenda-item-content">
-                        <div class="agenda-item-title">${escapeHtml(event.title)}</div>
-                        <div class="agenda-item-info">
-                            ${event.event_time ? `<span><span class="material-icons" style="font-size:1rem;">schedule</span> ${formatAgendaTime(event.event_time)}</span>` : ''}
-                            ${event.location ? `<span><span class="material-icons" style="font-size:1rem;">location_on</span> ${escapeHtml(event.location)}</span>` : ''}
-                            <span><span class="material-icons" style="font-size:1rem;">visibility</span> ${event.views || 0}</span>
-                        </div>
-                        <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
-                    </div>
-                </a>`;
-        }).join('');
+        // 6. Générer le HTML (Version optimisée pour Mobile)
+		let html = allEvents.map(event => {
+			if (event.is_recurring) {
+				return `
+					<a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
+						<div class="agenda-item-date recurring">
+							<span class="material-icons">history</span>
+							<span class="agenda-item-month">HEBDO</span>
+						</div>
+						<div class="agenda-item-content">
+							<div class="agenda-item-title">${escapeHtml(event.title)}</div>
+							<div class="agenda-item-details">
+								<span class="detail-badge-date"><span class="material-icons">calendar_today</span> ${event._recurrenceLabel}</span>
+								${event.event_time ? `<span><span class="material-icons">schedule</span> ${formatAgendaTime(event.event_time)}</span>` : ''}
+								${event.location ? `<span><span class="material-icons">location_on</span> ${escapeHtml(event.location)}</span>` : ''}
+								<span class="detail-views"><span class="material-icons">visibility</span> ${event.views || 0}</span>
+							</div>
+							<span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
+						</div>
+					</a>`;
+			}
+			
+			const date = new Date(event.event_date + 'T12:00:00');
+			const day = date.getDate();
+			const month = date.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '').toUpperCase();
+			
+			return `
+				<a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
+					<div class="agenda-item-date">
+						<span class="agenda-item-day">${day}</span>
+						<span class="agenda-item-month">${month}</span>
+					</div>
+					<div class="agenda-item-content">
+						<div class="agenda-item-title">${escapeHtml(event.title)}</div>
+						<div class="agenda-item-details">
+							${event.event_time ? `<span><span class="material-icons">schedule</span> ${formatAgendaTime(event.event_time)}</span>` : ''}
+							${event.location ? `<span><span class="material-icons">location_on</span> ${escapeHtml(event.location)}</span>` : ''}
+							<span class="detail-views"><span class="material-icons">visibility</span> ${event.views || 0}</span>
+						</div>
+						<span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
+					</div>
+				</a>`;
+		}).join('');
 
         // 7. Ajouter le bouton "Voir tout" à la fin du HTML
         html += `
