@@ -433,13 +433,7 @@
     </div>
     
     <div class="month-selector">
-        <button class="month-nav-btn" id="prevMonth">
-            <span class="material-icons">chevron_left</span>
-        </button>
-        <span class="current-month" id="currentMonth">Janvier 2026</span>
-        <button class="month-nav-btn" id="nextMonth">
-            <span class="material-icons">chevron_right</span>
-        </button>
+        <span class="current-month" id="currentMonth">📅 Événements à venir</span>
     </div>
     
     <div class="events-container">
@@ -469,70 +463,16 @@
         const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        let currentMonth = new Date().getMonth();
-        let currentYear = new Date().getFullYear();
-        let currentFilter = 'all';
+		
+		let currentFilter = 'all';
         let allEvents = [];
         
         // MAPPING JOURS : 0=Dim, 1=Lun, 2=Mar, 3=Mer, 4=Jeu, 5=Ven, 6=Sam
         const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
         
-        document.addEventListener('DOMContentLoaded', async () => {
+        document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             initFilters();
-            initMonthSelector();
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const eventId = urlParams.get('event');
-            
-            if (eventId) {
-                // Événement spécifique demandé : naviguer vers son mois
-                try {
-                    const { data: event, error } = await supabaseClient
-                        .from('events')
-                        .select('event_date, is_recurring')
-                        .eq('id', eventId)
-                        .single();
-                    
-                    if (!error && event && event.event_date && !event.is_recurring) {
-                        const eventDate = new Date(event.event_date + 'T12:00:00');
-                        currentMonth = eventDate.getMonth();
-                        currentYear = eventDate.getFullYear();
-                        updateMonthDisplay();
-                        console.log(`📅 Navigation vers ${currentMonth + 1}/${currentYear} pour événement #${eventId}`);
-                    }
-                } catch (err) {
-                    console.error('Erreur récupération événement:', err);
-                }
-            } else {
-                // Pas d'événement spécifique : chercher le prochain événement à venir
-                try {
-                    const today = formatDateLocal(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-                    
-                    const { data: nextEvent, error } = await supabaseClient
-                        .from('events')
-                        .select('event_date')
-                        .eq('status', 'approved')
-                        .or('is_recurring.is.null,is_recurring.eq.false')
-                        .gte('event_date', today)
-                        .order('event_date', { ascending: true })
-                        .limit(1)
-                        .single();
-                    
-                    if (!error && nextEvent && nextEvent.event_date) {
-                        const nextDate = new Date(nextEvent.event_date + 'T12:00:00');
-                        currentMonth = nextDate.getMonth();
-                        currentYear = nextDate.getFullYear();
-                        updateMonthDisplay();
-                        console.log(`📅 Prochain événement : navigation vers ${currentMonth + 1}/${currentYear}`);
-                    }
-                } catch (err) {
-                    // Pas de prochain événement, on reste sur le mois actuel
-                    console.log('📅 Aucun événement à venir, affichage du mois actuel');
-                }
-            }
-            
             loadEvents().then(() => scrollToEventFromUrl());
         });
         
@@ -553,30 +493,7 @@
                 });
             });
         }
-        
-        function initMonthSelector() {
-            updateMonthDisplay();
-            
-            document.getElementById('prevMonth').addEventListener('click', () => {
-                currentMonth--;
-                if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-                updateMonthDisplay();
-                loadEvents();
-            });
-            
-            document.getElementById('nextMonth').addEventListener('click', () => {
-                currentMonth++;
-                if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-                updateMonthDisplay();
-                loadEvents();
-            });
-        }
-        
-        function updateMonthDisplay() {
-            const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-            document.getElementById('currentMonth').textContent = `${monthNames[currentMonth]} ${currentYear}`;
-        }
-        
+               
         // *** CORRECTION BUG TIMEZONE ***
         // Utiliser format local YYYY-MM-DD au lieu de toISOString() qui convertit en UTC
         function formatDateLocal(year, month, day) {
@@ -593,27 +510,23 @@
             emptyEl.style.display = 'none';
             
             try {
-                // CORRECTION: Utiliser formatDateLocal au lieu de toISOString
-                const startDate = formatDateLocal(currentYear, currentMonth, 1);
-                const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
-                const endDate = formatDateLocal(currentYear, currentMonth, lastDay);
-                
                 const today = new Date();
                 const todayStr = formatDateLocal(today.getFullYear(), today.getMonth(), today.getDate());
                 
-                // Vérifier si on est dans le mois courant
-                const isCurrentMonth = currentYear === today.getFullYear() && currentMonth === today.getMonth();
-                const effectiveStart = isCurrentMonth ? todayStr : startDate;
+                // Date limite : 1 an dans le futur
+                const nextYear = new Date(today);
+                nextYear.setFullYear(nextYear.getFullYear() + 1);
+                const endDate = formatDateLocal(nextYear.getFullYear(), nextYear.getMonth(), nextYear.getDate());
                 
-                console.log(`📅 Chargement du ${effectiveStart} au ${endDate}`);
+                console.log(`📅 Chargement du ${todayStr} au ${endDate}`);
                 
-                // Charger événements non-récurrents du mois
+                // Charger TOUS les événements non-récurrents à venir (1 an)
                 const { data: regularEvents, error: err1 } = await supabaseClient
                     .from('events')
                     .select('*')
                     .eq('status', 'approved')
                     .or('is_recurring.is.null,is_recurring.eq.false')
-                    .gte('event_date', effectiveStart)
+                    .gte('event_date', todayStr)
                     .lte('event_date', endDate)
                     .order('event_date', { ascending: true });
                 
