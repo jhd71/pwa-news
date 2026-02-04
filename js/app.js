@@ -1537,19 +1537,19 @@ async function initAgenda() {
             if (event.is_recurring) {
                 return `
                     <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
-                        <div class="agenda-item-date">
-                            <span class="agenda-item-day">🔄</span>
-                            <span class="agenda-item-month" style="font-size:0.6rem;">HEBDO</span>
+                        <div class="agenda-item-date recurring">
+                            <span class="material-icons agenda-item-day">sync</span>
+                            <span class="agenda-item-month">HEBDO</span>
                         </div>
                         <div class="agenda-item-content">
                             <div class="agenda-item-title">${escapeHtml(event.title)}</div>
                             <div class="agenda-item-info">
-                                <span style="color:#f59e0b;font-weight:600;">📅 ${event._recurrenceLabel}</span>
-                                ${event.event_time ? `<span>🕐 ${formatAgendaTime(event.event_time)}</span>` : ''}
+                                <span class="agenda-info-highlight"><span class="material-icons">event_repeat</span>${event._recurrenceLabel}</span>
+                                ${event.event_time ? `<span><span class="material-icons">schedule</span>${formatAgendaTime(event.event_time)}</span>` : ''}
                             </div>
                             <div class="agenda-item-info">
-                                ${event.location ? `<span>📍 ${escapeHtml(event.location)}</span>` : ''}
-                                <span style="font-size:0.75rem;color:var(--text-muted);">👁️ ${event.views || 0}</span>
+                                ${event.location ? `<span><span class="material-icons">place</span>${escapeHtml(event.location)}</span>` : ''}
+                                <span class="agenda-views"><span class="material-icons">visibility</span>${event.views || 0}</span>
                             </div>
                             <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
                         </div>
@@ -1571,9 +1571,9 @@ async function initAgenda() {
                     <div class="agenda-item-content">
                         <div class="agenda-item-title">${escapeHtml(event.title)}</div>
                         <div class="agenda-item-info">
-                            ${event.event_time ? `<span>🕐 ${formatAgendaTime(event.event_time)}</span>` : ''}
-                            ${event.location ? `<span>📍 ${escapeHtml(event.location)}</span>` : ''}
-                            <span style="font-size:0.75rem;color:var(--text-muted);">👁️ ${event.views || 0}</span>
+                            ${event.event_time ? `<span><span class="material-icons">schedule</span>${formatAgendaTime(event.event_time)}</span>` : ''}
+                            ${event.location ? `<span><span class="material-icons">place</span>${escapeHtml(event.location)}</span>` : ''}
+                            <span class="agenda-views"><span class="material-icons">visibility</span>${event.views || 0}</span>
                         </div>
                         <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
                     </div>
