@@ -483,12 +483,11 @@
             initFilters();
             initMonthSelector();
             
-            // Vérifier si un événement spécifique est demandé dans l'URL
             const urlParams = new URLSearchParams(window.location.search);
             const eventId = urlParams.get('event');
             
             if (eventId) {
-                // Récupérer la date de l'événement pour naviguer au bon mois
+                // Événement spécifique demandé : naviguer vers son mois
                 try {
                     const { data: event, error } = await supabaseClient
                         .from('events')
@@ -497,7 +496,6 @@
                         .single();
                     
                     if (!error && event && event.event_date && !event.is_recurring) {
-                        // Événement non-récurrent : naviguer vers son mois
                         const eventDate = new Date(event.event_date + 'T12:00:00');
                         currentMonth = eventDate.getMonth();
                         currentYear = eventDate.getFullYear();
@@ -506,6 +504,32 @@
                     }
                 } catch (err) {
                     console.error('Erreur récupération événement:', err);
+                }
+            } else {
+                // Pas d'événement spécifique : chercher le prochain événement à venir
+                try {
+                    const today = formatDateLocal(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+                    
+                    const { data: nextEvent, error } = await supabaseClient
+                        .from('events')
+                        .select('event_date')
+                        .eq('status', 'approved')
+                        .or('is_recurring.is.null,is_recurring.eq.false')
+                        .gte('event_date', today)
+                        .order('event_date', { ascending: true })
+                        .limit(1)
+                        .single();
+                    
+                    if (!error && nextEvent && nextEvent.event_date) {
+                        const nextDate = new Date(nextEvent.event_date + 'T12:00:00');
+                        currentMonth = nextDate.getMonth();
+                        currentYear = nextDate.getFullYear();
+                        updateMonthDisplay();
+                        console.log(`📅 Prochain événement : navigation vers ${currentMonth + 1}/${currentYear}`);
+                    }
+                } catch (err) {
+                    // Pas de prochain événement, on reste sur le mois actuel
+                    console.log('📅 Aucun événement à venir, affichage du mois actuel');
                 }
             }
             
