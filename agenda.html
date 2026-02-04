@@ -433,40 +433,75 @@
             text-decoration: none;
         }
         
-        .fab-propose {
+        /* Barre de boutons fixe en bas */
+        .bottom-actions {
             position: fixed;
-            bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+            background: linear-gradient(to top, var(--bg-primary) 0%, var(--bg-primary) 70%, transparent 100%);
+            z-index: 90;
+        }
+        
+        .fab-propose, .fab-home {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.25rem;
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            gap: 0.4rem;
+            padding: 0.7rem 1rem;
             border: none;
-            border-radius: 30px;
+            border-radius: 25px;
             color: white;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.5);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             text-decoration: none;
-            z-index: 90;
             transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .fab-propose {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+        
+        .fab-home {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+        
+        .fab-propose:hover, .fab-home:hover {
+            transform: translateY(-2px);
         }
         
         .fab-propose:hover {
-            transform: translateX(-50%) translateY(-3px);
-            box-shadow: 0 6px 25px rgba(245, 158, 11, 0.6);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
         }
         
-        .fab-propose .material-icons {
-            font-size: 1.2rem;
+        .fab-home:hover {
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
         }
         
-        /* Espace en bas pour ne pas que le bouton cache les cartes */
+        .fab-propose .material-icons, .fab-home .material-icons {
+            font-size: 1.1rem;
+        }
+        
+        /* Espace en bas pour ne pas que les boutons cachent les cartes */
         .events-container {
-            padding-bottom: 5rem;
+            padding-bottom: 6rem;
+        }
+        
+        /* Mobile : texte plus court */
+        @media (max-width: 400px) {
+            .fab-propose, .fab-home {
+                padding: 0.65rem 0.85rem;
+                font-size: 0.8rem;
+            }
         }
         
         @media (min-width: 768px) {
@@ -529,10 +564,16 @@
         <img id="lightboxImage" class="lightbox-image" src="" alt="Image agrandie">
     </div>
 	
-    <a href="proposer-evenement.html" class="fab-propose" title="Proposer un événement">
-        <span class="material-icons">edit_calendar</span>
-        <span>Proposer un événement</span>
-    </a>
+    <div class="bottom-actions">
+        <a href="index.html" class="fab-home" title="Retour à l'accueil">
+            <span class="material-icons">home</span>
+            <span>Accueil</span>
+        </a>
+        <a href="proposer-evenement.html" class="fab-propose" title="Proposer un événement">
+            <span class="material-icons">edit_calendar</span>
+            <span>Proposer</span>
+        </a>
+    </div>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
