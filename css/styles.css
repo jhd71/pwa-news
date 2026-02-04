@@ -2895,6 +2895,7 @@ p,
     color: white;
     text-align: center;
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+	flex-shrink: 0; /* Empêche le badge de s'écraser sur petit écran */
 }
 
 .agenda-item-date.recurring {
