@@ -3102,6 +3102,43 @@ a.agenda-item:hover {
     border-color: var(--primary);
 }
 
+/* Bouton Voir tout l'agenda */
+.agenda-voir-tout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin-top: 0.75rem;
+    background: transparent;
+    border: 1px dashed var(--primary-light);
+    border-radius: 12px;
+    color: var(--primary-light);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.agenda-voir-tout:hover {
+    background: rgba(99, 102, 241, 0.1);
+    border-style: solid;
+    transform: translateY(-2px);
+}
+
+.agenda-voir-tout .material-icons {
+    font-size: 1.2rem;
+}
+
+[data-theme="light"] .agenda-voir-tout {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+[data-theme="light"] .agenda-voir-tout:hover {
+    background: rgba(99, 102, 241, 0.08);
+}
+
 /* ============================================
    RESPONSIVE : Mobile et Tablettes
    ============================================ */

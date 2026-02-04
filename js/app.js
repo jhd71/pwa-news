@@ -1521,8 +1521,8 @@ async function initAgenda() {
             _sortOrder: 1
         }));
         
-        // 5. Combiner : récurrents d'abord, puis par date
-        const allEvents = [...processedRecurring, ...processedRegular].slice(0, 5);
+        // 5. Combiner : récurrents d'abord, puis par date (limité à 3 pour l'accueil)
+        const allEvents = [...processedRecurring, ...processedRegular].slice(0, 3);
         
         if (!allEvents || allEvents.length === 0) {
             contentEl.innerHTML = '';
@@ -1580,6 +1580,14 @@ async function initAgenda() {
                 </a>
             `;
         }).join('');
+        
+        // Ajouter le bouton "Voir tout l'agenda" en bas
+        contentEl.innerHTML += `
+            <a href="agenda.html" class="agenda-voir-tout">
+                <span>Voir tout l'agenda</span>
+                <span class="material-icons">calendar_month</span>
+            </a>
+        `;
         
         console.log(`📅 ${allEvents.length} événements agenda chargés`);
         
