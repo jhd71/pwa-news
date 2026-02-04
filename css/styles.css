@@ -2886,8 +2886,10 @@ p,
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 55px;
-    padding: 0.6rem 0.5rem;
+    min-width: 65px; /* Augmenté légèrement pour éviter que le texte touche les bords */
+    height: fit-content; /* EMPÊCHE LE RECTANGLE DE S'ÉTIRER */
+    align-self: flex-start; /* Aligne le badge en haut */
+    padding: 0.8rem 0.5rem;
     background: linear-gradient(145deg, #6366f1 0%, #8b5cf6 100%);
     border-radius: 12px;
     color: white;
@@ -3097,4 +3099,45 @@ a.agenda-item {
 
 a.agenda-item:hover {
     border-color: var(--primary);
+}
+
+/* ============================================
+   RESPONSIVE : Mobile et Tablettes
+   ============================================ */
+@media (max-width: 768px) {
+    .agenda-item {
+        gap: 0.75rem; /* Réduit l'espace entre la date et le contenu */
+        padding: 0.8rem;
+    }
+
+    .agenda-item-date {
+        min-width: 50px; /* Badge un peu plus petit sur mobile */
+        padding: 0.5rem 0.3rem;
+    }
+
+    .agenda-item-day {
+        font-size: 1.2rem; /* Chiffre de la date plus petit */
+    }
+
+    .agenda-item-month {
+        font-size: 0.6rem;
+    }
+
+    .agenda-item-title {
+        font-size: 0.95rem;
+        white-space: normal; /* Permet au titre de s'afficher sur 2 lignes si besoin */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .agenda-item-info {
+        gap: 0.4rem;
+        font-size: 0.75rem; /* Textes d'infos plus petits */
+    }
+    
+    .agenda-item-info span {
+        width: 100%; /* Force l'adresse et l'heure à passer l'une sous l'autre si trop long */
+    }
 }
