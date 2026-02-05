@@ -937,11 +937,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     .select('id', { count: 'exact' })
                     .eq('status', 'pending');
                 
+                // AJOUT : Vérifier les commentaires d'événements en attente
+                const { data: eventCommentsData } = await supabaseClient
+                    .from('event_comments')
+                    .select('id', { count: 'exact' })
+                    .eq('status', 'pending');
+                
                 const unreadContacts = contactData ? contactData.length : 0;
                 const pendingNews = newsData ? newsData.length : 0;
                 const pendingComments = commentsData ? commentsData.length : 0;
                 const pendingEvents = eventsData ? eventsData.length : 0;
-                const totalUnread = unreadContacts + pendingNews + pendingComments + pendingEvents;
+                const pendingEventComments = eventCommentsData ? eventCommentsData.length : 0;
+                const totalUnread = unreadContacts + pendingNews + pendingComments + pendingEvents + pendingEventComments;
                 
                 const adminBadge = document.getElementById('adminBadge');
                 if (adminBadge && totalUnread > 0) {
@@ -953,18 +960,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 const now = Date.now();
                 
                 if (totalUnread > 0 && (now - parseInt(lastNotified)) > 30 * 60 * 1000) {
-                    showAdminNotification(unreadContacts, pendingNews, pendingComments, pendingEvents);
+                    showAdminNotification(unreadContacts, pendingNews, pendingComments, pendingEvents, pendingEventComments);
                     localStorage.setItem('admin_last_notified', now.toString());
                 }
                 
-                console.log(`📬 Admin: ${unreadContacts} messages, ${pendingNews} propositions, ${pendingComments} commentaires, ${pendingEvents} événements`);
+                console.log(`📬 Admin: ${unreadContacts} messages, ${pendingNews} propositions, ${pendingComments} commentaires communauté, ${pendingEvents} événements, ${pendingEventComments} commentaires événements`);
                 
             } catch (error) {
                 console.error('Erreur vérification admin:', error);
             }
         }
         
-        function showAdminNotification(contacts, news, comments, events) {
+        function showAdminNotification(contacts, news, comments, events, eventComments = 0) {
             const notification = document.getElementById('adminNotification');
             const text = document.getElementById('notificationText');
             
@@ -976,7 +983,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 parts.push(`${news} proposition${news > 1 ? 's' : ''}`);
             }
             if (comments > 0) {
-                parts.push(`${comments} commentaire${comments > 1 ? 's' : ''}`);
+                parts.push(`${comments} commentaire${comments > 1 ? 's' : ''} communauté`);
+            }
+            if (eventComments > 0) {
+                parts.push(`${eventComments} commentaire${eventComments > 1 ? 's' : ''} événement`);
             }
             if (events > 0) {
                 parts.push(`${events} événement${events > 1 ? 's' : ''}`);
