@@ -11,8 +11,6 @@ const STATIC_ASSETS = [
     '/css/quick-links.css',
     '/css/support.css',
     '/css/radio.css',
-	'/css/meteo.css',
-	'/css/weather-icons.css',
     '/js/app.js',
     '/js/quick-links.js',
     '/js/support.js',
