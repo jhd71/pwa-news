@@ -504,6 +504,176 @@
             }
         }
         
+		/* Section commentaires */
+        .event-comments-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .comments-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 10px;
+            color: var(--primary-light);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .comments-toggle:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+        
+        .comments-toggle .material-icons {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .comments-toggle.expanded .material-icons {
+            transform: rotate(180deg);
+        }
+        
+        .comments-container {
+            display: none;
+            margin-top: 0.75rem;
+        }
+        
+        .comments-container.show {
+            display: block;
+        }
+        
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .comment-item {
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+        
+        [data-theme="light"] .comment-item {
+            background: rgba(0, 0, 0, 0.03);
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.4rem;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--primary-light);
+        }
+        
+        .comment-date {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        .comment-content {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .no-comments {
+            text-align: center;
+            padding: 1rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        /* Formulaire commentaire */
+        .comment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            padding: 0.75rem;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+        
+        .comment-form input,
+        .comment-form textarea {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+        
+        .comment-form input:focus,
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+        }
+        
+        .comment-form textarea {
+            min-height: 70px;
+            resize: vertical;
+        }
+        
+        .comment-form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .comment-form-hint {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        .comment-submit-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .comment-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+        
+        .comment-submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .comment-submit-btn .material-icons {
+            font-size: 1rem;
+        }
+		
         @media (min-width: 768px) {
             .event-card { flex-direction: row; }
             .event-card-image { width: 200px; height: auto; min-height: 180px; }
@@ -587,6 +757,133 @@
         // MAPPING JOURS : 0=Dim, 1=Lun, 2=Mar, 3=Mer, 4=Jeu, 5=Ven, 6=Sam
         const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
         
+		// ============================================
+        // COMMENTAIRES D'ÉVÉNEMENTS
+        // ============================================
+        
+        function toggleEventComments(eventId, btn) {
+            const container = document.getElementById(`comments-${eventId}`);
+            const isExpanded = container.classList.contains('show');
+            
+            if (isExpanded) {
+                container.classList.remove('show');
+                btn.classList.remove('expanded');
+            } else {
+                container.classList.add('show');
+                btn.classList.add('expanded');
+                loadEventComments(eventId);
+            }
+        }
+        
+        async function loadEventComments(eventId) {
+            const listEl = document.getElementById(`comments-list-${eventId}`);
+            if (!listEl) return;
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('event_comments')
+                    .select('*')
+                    .eq('event_id', eventId)
+                    .eq('status', 'approved')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                if (!data || data.length === 0) {
+                    listEl.innerHTML = '<div class="no-comments">💬 Aucun commentaire pour le moment. Soyez le premier !</div>';
+                    return;
+                }
+                
+                listEl.innerHTML = data.map(comment => {
+                    const date = new Date(comment.created_at);
+                    const dateStr = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+                    return `
+                        <div class="comment-item">
+                            <div class="comment-header">
+                                <span class="comment-author">${escapeHtml(comment.author_name)}</span>
+                                <span class="comment-date">${dateStr}</span>
+                            </div>
+                            <div class="comment-content">${escapeHtml(comment.content)}</div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (err) {
+                console.error('Erreur chargement commentaires:', err);
+                listEl.innerHTML = '<div class="no-comments">❌ Erreur de chargement</div>';
+            }
+        }
+        
+        async function submitEventComment(e, eventId) {
+            e.preventDefault();
+            
+            const authorInput = document.getElementById(`comment-author-${eventId}`);
+            const contentInput = document.getElementById(`comment-content-${eventId}`);
+            const submitBtn = e.target.querySelector('.comment-submit-btn');
+            
+            const author = authorInput.value.trim();
+            const content = contentInput.value.trim();
+            
+            if (!author || !content) {
+                alert('Veuillez remplir tous les champs');
+                return;
+            }
+            
+            // Désactiver le bouton
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="material-icons">hourglass_empty</span> Envoi...';
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('event_comments')
+                    .insert({
+                        event_id: eventId,
+                        author_name: author,
+                        content: content,
+                        status: 'pending'
+                    });
+                
+                if (error) throw error;
+                
+                // Succès
+                authorInput.value = '';
+                contentInput.value = '';
+                submitBtn.innerHTML = '<span class="material-icons">check</span> Envoyé !';
+                submitBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #34d399 100%)';
+                
+                // Afficher message de confirmation
+                const listEl = document.getElementById(`comments-list-${eventId}`);
+                const successMsg = document.createElement('div');
+                successMsg.className = 'comment-item';
+                successMsg.style.background = 'rgba(16, 185, 129, 0.1)';
+                successMsg.style.borderColor = '#10b981';
+                successMsg.innerHTML = `
+                    <div class="comment-content" style="color:#10b981;text-align:center;">
+                        ✅ Merci ! Votre commentaire sera visible après modération.
+                    </div>
+                `;
+                listEl.insertBefore(successMsg, listEl.firstChild);
+                
+                // Réinitialiser le bouton après 3s
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span class="material-icons">send</span> Envoyer';
+                    submitBtn.style.background = '';
+                }, 3000);
+                
+            } catch (err) {
+                console.error('Erreur envoi commentaire:', err);
+                alert('Erreur lors de l\'envoi. Veuillez réessayer.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="material-icons">send</span> Envoyer';
+            }
+        }
+        
+        // Exposer les fonctions globalement
+        window.toggleEventComments = toggleEventComments;
+        window.submitEventComment = submitEventComment;
+		
+        // Initialisation
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             initFilters();
@@ -803,6 +1100,30 @@
                                 ${views} vue${views > 1 ? 's' : ''}
                             </span>
                             ${event.link ? `<a href="${event.link}" target="_blank" class="event-card-link"><span class="material-icons">open_in_new</span>Plus d'infos</a>` : ''}
+                        </div>
+                        
+                        <!-- Section commentaires -->
+                        <div class="event-comments-section">
+                            <button class="comments-toggle" onclick="toggleEventComments(${event.id}, this)">
+                                <span><span class="material-icons" style="font-size:1rem;vertical-align:middle;">chat_bubble_outline</span> Questions / Commentaires</span>
+                                <span class="material-icons">expand_more</span>
+                            </button>
+                            <div class="comments-container" id="comments-${event.id}">
+                                <div class="comments-list" id="comments-list-${event.id}">
+                                    <div class="no-comments">Chargement...</div>
+                                </div>
+                                <form class="comment-form" onsubmit="submitEventComment(event, ${event.id})">
+                                    <input type="text" id="comment-author-${event.id}" placeholder="Votre prénom ou pseudo" maxlength="50" required>
+                                    <textarea id="comment-content-${event.id}" placeholder="Votre question ou commentaire..." maxlength="500" required></textarea>
+                                    <div class="comment-form-actions">
+                                        <span class="comment-form-hint">⏳ Modéré avant publication</span>
+                                        <button type="submit" class="comment-submit-btn">
+                                            <span class="material-icons">send</span>
+                                            Envoyer
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
