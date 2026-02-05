@@ -1898,10 +1898,53 @@
         <div class="tab-content" id="tabStats">
             <h3 style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
                 <span class="material-icons">analytics</span>
-                Gestion des statistiques
+                Statistiques du site
             </h3>
             
             <div style="display:grid;gap:1rem;max-width:100%;overflow:hidden;">
+                
+                <!-- Section Visites du site -->
+                <div style="background:var(--bg-card);border:1px solid var(--glass-border);border-radius:12px;padding:1rem;overflow:hidden;">
+                    <h4 style="margin-bottom:1rem;color:#60a5fa;">👥 Visites du site</h4>
+                    
+                    <!-- Stats rapides -->
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1rem;">
+                        <div style="background:rgba(96,165,250,0.1);border-radius:10px;padding:0.75rem;text-align:center;">
+                            <div style="font-size:1.5rem;font-weight:700;color:#60a5fa;" id="statVisitorsToday">-</div>
+                            <div style="font-size:0.7rem;color:var(--text-muted);">Aujourd'hui</div>
+                        </div>
+                        <div style="background:rgba(52,211,153,0.1);border-radius:10px;padding:0.75rem;text-align:center;">
+                            <div style="font-size:1.5rem;font-weight:700;color:#34d399;" id="statVisitorsWeek">-</div>
+                            <div style="font-size:0.7rem;color:var(--text-muted);">Cette semaine</div>
+                        </div>
+                        <div style="background:rgba(251,191,36,0.1);border-radius:10px;padding:0.75rem;text-align:center;">
+                            <div style="font-size:1.5rem;font-weight:700;color:#fbbf24;" id="statPageViewsToday">-</div>
+                            <div style="font-size:0.7rem;color:var(--text-muted);">Pages vues</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Graphique des 7 derniers jours -->
+                    <div style="margin-bottom:1rem;">
+                        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem;">📈 7 derniers jours</div>
+                        <div id="visitsChart" style="display:flex;align-items:flex-end;gap:4px;height:100px;padding:0.5rem;background:rgba(0,0,0,0.2);border-radius:8px;"></div>
+                    </div>
+                    
+                    <!-- Boutons -->
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                        <button onclick="loadVisitsStats()" class="action-btn approve" style="font-size:0.75rem;padding:0.5rem 0.75rem;">
+                            <span class="material-icons" style="font-size:1rem;">refresh</span>
+                            Actualiser
+                        </button>
+                        <button onclick="showVisitsDetails()" class="action-btn" style="font-size:0.75rem;padding:0.5rem 0.75rem;">
+                            <span class="material-icons" style="font-size:1rem;">table_chart</span>
+                            Voir détails
+                        </button>
+                    </div>
+                    
+                    <!-- Tableau détaillé (caché par défaut) -->
+                    <div id="visitsDetails" style="margin-top:1rem;display:none;"></div>
+                </div>
+                
                 <!-- Section Événements -->
                 <div style="background:var(--bg-card);border:1px solid var(--glass-border);border-radius:12px;padding:1rem;overflow:hidden;">
                     <h4 style="margin-bottom:1rem;color:var(--primary-light);">📅 Événements (Agenda)</h4>
@@ -3645,6 +3688,145 @@
             }
         }
         
+		
+		// ============================================
+        // STATISTIQUES VISITES DU SITE
+        // ============================================
+        
+        async function loadVisitsStats() {
+            try {
+                const today = new Date();
+                const weekAgo = new Date(today);
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                
+                const todayStr = today.toISOString().split('T')[0];
+                const weekAgoStr = weekAgo.toISOString().split('T')[0];
+                
+                const { data, error } = await supabaseClient
+                    .from('daily_visits')
+                    .select('*')
+                    .gte('visit_date', weekAgoStr)
+                    .order('visit_date', { ascending: true });
+                
+                if (error) throw error;
+                
+                // Stats aujourd'hui
+                const todayData = data?.find(d => d.visit_date === todayStr);
+                document.getElementById('statVisitorsToday').textContent = todayData?.unique_visitors || 0;
+                document.getElementById('statPageViewsToday').textContent = todayData?.page_views || 0;
+                
+                // Stats semaine
+                const weekVisitors = data?.reduce((sum, d) => sum + (d.unique_visitors || 0), 0) || 0;
+                document.getElementById('statVisitorsWeek').textContent = weekVisitors;
+                
+                // Graphique
+                renderVisitsChart(data || []);
+                
+                console.log('📊 Stats visites chargées');
+                
+            } catch (err) {
+                console.error('Erreur chargement stats visites:', err);
+            }
+        }
+        
+        function renderVisitsChart(data) {
+            const container = document.getElementById('visitsChart');
+            if (!container) return;
+            
+            // Créer les 7 derniers jours
+            const days = [];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                const dayName = date.toLocaleDateString('fr-FR', { weekday: 'short' }).replace('.', '');
+                const dayData = data.find(d => d.visit_date === dateStr);
+                days.push({
+                    date: dateStr,
+                    dayName: dayName,
+                    visitors: dayData?.unique_visitors || 0,
+                    pageViews: dayData?.page_views || 0
+                });
+            }
+            
+            const maxVisitors = Math.max(...days.map(d => d.visitors), 1);
+            
+            container.innerHTML = days.map(day => {
+                const height = Math.max((day.visitors / maxVisitors) * 80, 4);
+                const isToday = day.date === new Date().toISOString().split('T')[0];
+                return `
+                    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                        <div style="font-size:0.7rem;font-weight:600;color:${isToday ? '#60a5fa' : 'var(--text-muted)'};">${day.visitors}</div>
+                        <div style="width:100%;height:${height}px;background:${isToday ? 'linear-gradient(to top, #3b82f6, #60a5fa)' : 'linear-gradient(to top, #4b5563, #6b7280)'};border-radius:4px;transition:height 0.3s;"></div>
+                        <div style="font-size:0.6rem;color:var(--text-muted);text-transform:capitalize;">${day.dayName}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function showVisitsDetails() {
+            const container = document.getElementById('visitsDetails');
+            if (container.style.display === 'none') {
+                container.style.display = 'block';
+                loadVisitsDetails();
+            } else {
+                container.style.display = 'none';
+            }
+        }
+        
+        async function loadVisitsDetails() {
+            const container = document.getElementById('visitsDetails');
+            container.innerHTML = '<p style="color:var(--text-muted);font-size:0.8rem;">Chargement...</p>';
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('daily_visits')
+                    .select('*')
+                    .order('visit_date', { ascending: false })
+                    .limit(30);
+                
+                if (error) throw error;
+                
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<p style="color:var(--text-muted);font-size:0.8rem;">Aucune donnée</p>';
+                    return;
+                }
+                
+                container.innerHTML = `
+                    <table style="width:100%;font-size:0.75rem;border-collapse:collapse;">
+                        <thead>
+                            <tr style="border-bottom:1px solid var(--glass-border);">
+                                <th style="text-align:left;padding:0.5rem;color:var(--text-muted);">Date</th>
+                                <th style="text-align:right;padding:0.5rem;color:var(--text-muted);">Visiteurs</th>
+                                <th style="text-align:right;padding:0.5rem;color:var(--text-muted);">Pages</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.map(row => {
+                                const date = new Date(row.visit_date + 'T12:00:00');
+                                const dateStr = date.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+                                return `
+                                    <tr style="border-bottom:1px solid var(--glass-border);">
+                                        <td style="padding:0.5rem;">${dateStr}</td>
+                                        <td style="padding:0.5rem;text-align:right;font-weight:600;color:#60a5fa;">${row.unique_visitors || 0}</td>
+                                        <td style="padding:0.5rem;text-align:right;color:var(--text-secondary);">${row.page_views || 0}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+                
+            } catch (err) {
+                container.innerHTML = `<p style="color:var(--danger);font-size:0.8rem;">Erreur: ${err.message}</p>`;
+            }
+        }
+        
+        // Charger les stats de visites quand on affiche l'onglet Stats
+        document.querySelector('[data-tab="stats"]')?.addEventListener('click', () => {
+            loadVisitsStats();
+        });
+		
         // Afficher les stats des événements
         async function showEventViewsStats() {
             const container = document.getElementById('eventViewsStats');

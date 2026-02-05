@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initPushNotifications();
     initAgenda();
     initFontSizeSelector();
+    recordVisit();
 });
 
 // ============================================
@@ -1612,7 +1613,6 @@ function getAgendaCategoryLabel(category) {
     return labels[category] || 'Événement';
 }
 
-// Exposer globalement
 window.togglePushSubscription = togglePushSubscription;
 window.showNotifPrompt = showNotifPrompt;
 window.closeNotifPrompt = closeNotifPrompt;
@@ -1623,3 +1623,35 @@ window.submitComment = submitComment;
 window.toggleLike = toggleLike;
 window.openImageModal = openImageModal;
 window.closeImageModal = closeImageModal;
+
+// ============================================
+// COMPTEUR DE VISITES
+// ============================================
+async function recordVisit() {
+    try {
+        const supabase = getSupabaseClient();
+        if (!supabase) return;
+        
+        // Clé unique par jour pour ce visiteur
+        const today = new Date().toISOString().split('T')[0];
+        const visitorKey = `visitor_${today}`;
+        
+        // Vérifier si c'est un nouveau visiteur aujourd'hui
+        const isNewVisitor = !localStorage.getItem(visitorKey);
+        
+        // Enregistrer la visite
+        const { error } = await supabase.rpc('record_visit', { is_new_visitor: isNewVisitor });
+        
+        if (!error) {
+            // Marquer comme déjà visité aujourd'hui
+            if (isNewVisitor) {
+                localStorage.setItem(visitorKey, 'true');
+                console.log('👤 Nouveau visiteur enregistré');
+            } else {
+                console.log('📄 Page vue enregistrée');
+            }
+        }
+    } catch (err) {
+        console.error('Erreur compteur visites:', err);
+    }
+}
