@@ -1691,16 +1691,46 @@
         
 		<!-- COMMENTAIRES -->
         <div class="tab-content" id="tabComments">
-            <button class="refresh-btn" onclick="loadPendingComments()"><span class="material-icons">refresh</span> Actualiser</button>
+            <button class="refresh-btn" onclick="loadAllComments()"><span class="material-icons">refresh</span> Actualiser</button>
             
-            <!-- Sous-onglets -->
-            <div class="comment-tabs" style="display:flex;gap:0.5rem;margin-bottom:1rem;">
-                <button class="comment-tab active" id="tabPendingComments" onclick="showCommentTab('pending')">⏳ En attente <span id="countPending">0</span></button>
-                <button class="comment-tab" id="tabApprovedComments" onclick="showCommentTab('approved')">✅ Approuvés <span id="countApproved">0</span></button>
+            <!-- Sections de commentaires -->
+            <div style="display:grid;gap:1.5rem;">
+                
+                <!-- Section Commentaires d'événements -->
+                <div style="background:var(--bg-card);border:1px solid var(--glass-border);border-radius:12px;padding:1rem;">
+                    <h4 style="margin-bottom:1rem;color:#60a5fa;display:flex;align-items:center;gap:0.5rem;">
+                        <span class="material-icons">event</span>
+                        Commentaires d'événements
+                        <span class="tab-badge" id="badgeEventComments" style="display:none;">0</span>
+                    </h4>
+                    
+                    <div class="comment-tabs" style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+                        <button class="comment-tab active" id="tabPendingEventComments" onclick="showEventCommentTab('pending')">⏳ En attente <span id="countPendingEventComments">0</span></button>
+                        <button class="comment-tab" id="tabApprovedEventComments" onclick="showEventCommentTab('approved')">✅ Approuvés <span id="countApprovedEventComments">0</span></button>
+                    </div>
+                    
+                    <div class="messages-list" id="pendingEventCommentsList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
+                    <div class="messages-list" id="approvedEventCommentsList" style="display:none;"></div>
+                </div>
+                
+                <!-- Section Commentaires d'infos communauté -->
+                <div style="background:var(--bg-card);border:1px solid var(--glass-border);border-radius:12px;padding:1rem;">
+                    <h4 style="margin-bottom:1rem;color:#10b981;display:flex;align-items:center;gap:0.5rem;">
+                        <span class="material-icons">article</span>
+                        Commentaires d'infos communauté
+                        <span class="tab-badge" id="badgeCommunityComments" style="display:none;">0</span>
+                    </h4>
+                    
+                    <div class="comment-tabs" style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+                        <button class="comment-tab active" id="tabPendingComments" onclick="showCommentTab('pending')">⏳ En attente <span id="countPending">0</span></button>
+                        <button class="comment-tab" id="tabApprovedComments" onclick="showCommentTab('approved')">✅ Approuvés <span id="countApproved">0</span></button>
+                    </div>
+                    
+                    <div class="messages-list" id="pendingCommentsList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
+                    <div class="messages-list" id="approvedCommentsList" style="display:none;"></div>
+                </div>
+                
             </div>
-            
-            <div class="messages-list" id="pendingCommentsList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
-            <div class="messages-list" id="approvedCommentsList" style="display:none;"></div>
         </div>
 		
 		<!-- ÉVÉNEMENTS -->
@@ -2193,6 +2223,7 @@
             loadPublishedArticles();
             loadSubscriberCount();
             loadPendingComments();
+            loadEventComments();
             loadPendingEvents();
         }
         
@@ -3021,8 +3052,8 @@
                 
                 // Mettre à jour les compteurs
                 document.getElementById('statPendingComments').textContent = pending.length;
-                document.getElementById('badgeComments').textContent = pending.length;
-                document.getElementById('badgeComments').style.display = pending.length > 0 ? 'inline-flex' : 'none';
+                document.getElementById('badgeCommunityComments').textContent = pending.length;
+                document.getElementById('badgeCommunityComments').style.display = pending.length > 0 ? 'inline-flex' : 'none';
                 document.getElementById('countPending').textContent = pending.length;
                 document.getElementById('countApproved').textContent = approved.length;
                 
@@ -3074,6 +3105,155 @@
             document.getElementById('approvedCommentsList').style.display = tab === 'approved' ? 'block' : 'none';
         }
         
+		// ============================================
+        // COMMENTAIRES D'ÉVÉNEMENTS
+        // ============================================
+        
+        async function loadEventComments() {
+            const pendingContainer = document.getElementById('pendingEventCommentsList');
+            const approvedContainer = document.getElementById('approvedEventCommentsList');
+            
+            pendingContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
+            approvedContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
+            
+            try {
+                // Charger les commentaires en attente
+                const { data: pending, error: errPending } = await supabaseClient
+                    .from('event_comments')
+                    .select('*')
+                    .eq('status', 'pending')
+                    .order('created_at', { ascending: false });
+                
+                if (errPending) throw errPending;
+                
+                // Charger les commentaires approuvés
+                const { data: approved, error: errApproved } = await supabaseClient
+                    .from('event_comments')
+                    .select('*')
+                    .eq('status', 'approved')
+                    .order('created_at', { ascending: false });
+                
+                if (errApproved) throw errApproved;
+                
+                // Charger les titres des événements
+                const eventIds = [...new Set([...pending, ...approved].map(c => c.event_id))];
+                let eventTitles = {};
+                
+                if (eventIds.length > 0) {
+                    const { data: eventsData } = await supabaseClient
+                        .from('events')
+                        .select('id, title')
+                        .in('id', eventIds);
+                    
+                    if (eventsData) {
+                        eventsData.forEach(e => eventTitles[e.id] = e.title);
+                    }
+                }
+                
+                // Mettre à jour les compteurs
+                document.getElementById('badgeEventComments').textContent = pending.length;
+                document.getElementById('badgeEventComments').style.display = pending.length > 0 ? 'inline-flex' : 'none';
+                document.getElementById('countPendingEventComments').textContent = pending.length;
+                document.getElementById('countApprovedEventComments').textContent = approved.length;
+                
+                // Mettre à jour badge principal
+                const totalPending = pending.length + (parseInt(document.getElementById('countPending')?.textContent) || 0);
+                document.getElementById('badgeComments').textContent = totalPending;
+                document.getElementById('badgeComments').style.display = totalPending > 0 ? 'inline-flex' : 'none';
+                
+                // Afficher les commentaires en attente
+                if (pending.length === 0) {
+                    pendingContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💬</div><p>Aucun commentaire en attente</p></div>';
+                } else {
+                    pendingContainer.innerHTML = pending.map(c => renderEventCommentCard(c, eventTitles, 'pending')).join('');
+                }
+                
+                // Afficher les commentaires approuvés
+                if (approved.length === 0) {
+                    approvedContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">✅</div><p>Aucun commentaire approuvé</p></div>';
+                } else {
+                    approvedContainer.innerHTML = approved.map(c => renderEventCommentCard(c, eventTitles, 'approved')).join('');
+                }
+                
+                console.log('📅 Commentaires événements chargés:', pending.length, 'en attente,', approved.length, 'approuvés');
+                
+            } catch (error) {
+                console.error('Erreur chargement commentaires événements:', error);
+                pendingContainer.innerHTML = '<div class="empty-state"><p>❌ Erreur de chargement</p></div>';
+            }
+        }
+        
+        function renderEventCommentCard(comment, eventTitles, status) {
+            const eventTitle = eventTitles[comment.event_id] || 'Événement #' + comment.event_id;
+            const date = new Date(comment.created_at);
+            const dateStr = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+            
+            return `
+                <div class="comment-card ${status}" style="border-left:3px solid #60a5fa;">
+                    <div class="comment-news-ref" style="color:#60a5fa;">
+                        <span class="material-icons" style="font-size:1rem;">event</span>
+                        ${escapeHtml(eventTitle.substring(0, 50))}${eventTitle.length > 50 ? '...' : ''}
+                    </div>
+                    <div class="comment-author">👤 ${escapeHtml(comment.author_name)}</div>
+                    <div class="comment-content">${escapeHtml(comment.content)}</div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+                        <span class="comment-date">${dateStr}</span>
+                        <div class="message-actions">
+                            ${status === 'pending' ? `<button class="action-btn mark-read" onclick="approveEventComment(${comment.id})"><span class="material-icons">check</span>Approuver</button>` : ''}
+                            <button class="action-btn delete" onclick="deleteEventComment(${comment.id})"><span class="material-icons">delete</span>Suppr</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function showEventCommentTab(tab) {
+            document.getElementById('tabPendingEventComments').classList.toggle('active', tab === 'pending');
+            document.getElementById('tabApprovedEventComments').classList.toggle('active', tab === 'approved');
+            document.getElementById('pendingEventCommentsList').style.display = tab === 'pending' ? 'block' : 'none';
+            document.getElementById('approvedEventCommentsList').style.display = tab === 'approved' ? 'block' : 'none';
+        }
+        
+        async function approveEventComment(id) {
+            try {
+                const { error } = await supabaseClient
+                    .from('event_comments')
+                    .update({ status: 'approved' })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                showToast('Commentaire approuvé ✅');
+                loadEventComments();
+            } catch (error) {
+                console.error('Erreur approbation:', error);
+                showToast('Erreur: ' + error.message, true);
+            }
+        }
+        
+        async function deleteEventComment(id) {
+            if (!confirm('Supprimer ce commentaire ?')) return;
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('event_comments')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) throw error;
+                showToast('Commentaire supprimé 🗑️');
+                loadEventComments();
+            } catch (error) {
+                console.error('Erreur suppression:', error);
+                showToast('Erreur: ' + error.message, true);
+            }
+        }
+        
+        // Fonction pour charger tous les commentaires
+        async function loadAllComments() {
+            await loadPendingComments();
+            await loadEventComments();
+        }
+		
         async function approveComment(id) {
             try {
                 const { error } = await supabaseClient
