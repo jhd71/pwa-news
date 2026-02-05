@@ -655,7 +655,7 @@ async function initCommunity() {
             .select('*')
             .eq('status', 'approved')
             .order('created_at', { ascending: false })
-            .limit(5);
+            .limit(3);
         
         if (error) throw error;
         
@@ -805,8 +805,16 @@ async function initCommunity() {
             </div>
         `}).join('');
         
+        // Ajouter le bouton "Voir toutes les infos"
+        contentEl.innerHTML += `
+            <a href="infos.html" class="community-voir-tout">
+                <span class="material-icons">article</span>
+                <span>Voir toutes les infos</span>
+            </a>
+        `;
+        
         emptyEl.style.display = 'none';
-        console.log(`📢 ${data.length} infos communauté chargées`);
+        console.log(`📢 ${data.length} infos communauté chargées (accueil)`);
         
         // Détecter les textes tronqués et afficher le bouton "Voir plus"
         setTimeout(() => {

@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infos de la communauté - Actu & Média Montceau</title>
+    <meta name="description" content="Toutes les actualités et infos de la communauté de Montceau-les-Mines et environs">
+    <link rel="icon" type="image/png" href="/icons/icon-192.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --bg-elevated: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        
+        [data-theme="light"] {
+            --bg-primary: #f1f5f9;
+            --bg-secondary: #e2e8f0;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-elevated: rgba(255, 255, 255, 0.95);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .page-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        [data-theme="light"] .page-header {
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .back-btn, .home-btn, .theme-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-elevated);
+            border: none;
+            border-radius: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover, .home-btn:hover, .theme-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .page-title {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .page-title h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .page-title p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        /* Stats rapides */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+        
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        /* Liste des infos */
+        .infos-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        /* Carte info */
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .info-card:hover {
+            border-color: var(--primary-light);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+        }
+        
+        [data-theme="light"] .info-card {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .info-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 1rem 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .info-card-icon {
+            font-size: 1.25rem;
+        }
+        
+        .info-card-author {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        
+        .info-card-date {
+            margin-left: auto;
+        }
+        
+        .info-card-content {
+            padding: 0 1rem;
+        }
+        
+        .info-card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .info-card-image-wrapper {
+            position: relative;
+            margin: 0.75rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .info-card-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .info-card-image-wrapper:hover .info-card-image {
+            transform: scale(1.02);
+        }
+        
+        .info-card-zoom {
+            position: absolute;
+            bottom: 0.5rem;
+            right: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.4rem 0.75rem;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            color: white;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .info-card-image-wrapper:hover .info-card-zoom {
+            opacity: 1;
+        }
+        
+        .info-card-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-height: 4.8em;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .info-card-desc.expanded {
+            max-height: none;
+        }
+        
+        .see-more-btn {
+            display: none;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--primary-light);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .see-more-btn.visible {
+            display: inline-flex;
+        }
+        
+        .see-more-btn:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .see-more-btn .material-icons {
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .see-more-btn.expanded .material-icons {
+            transform: rotate(180deg);
+        }
+        
+        .info-card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+            color: var(--primary-light);
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+        
+        .info-card-link:hover {
+            text-decoration: underline;
+        }
+        
+        .info-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-top: 0.75rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .info-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .info-card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .info-card-meta .material-icons {
+            font-size: 1rem;
+        }
+        
+        /* Actions (like, comment) */
+        .info-card-actions {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0 1rem 0.75rem;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary-light);
+        }
+        
+        .action-btn.liked {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        .action-btn .material-icons {
+            font-size: 1.1rem;
+        }
+        
+        /* Section commentaires */
+        .comments-section {
+            padding: 0 1rem 1rem;
+            display: none;
+        }
+        
+        .comments-section.show {
+            display: block;
+        }
+        
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .comment-item {
+            padding: 0.6rem;
+            background: var(--bg-elevated);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--primary-light);
+        }
+        
+        .comment-date {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        .comment-content {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .no-comments {
+            text-align: center;
+            padding: 1rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        /* Formulaire commentaire */
+        .comment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+        
+        .comment-form input,
+        .comment-form textarea {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-family: inherit;
+        }
+        
+        .comment-form input:focus,
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+        }
+        
+        .comment-form textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+        
+        .comment-form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .comment-form-hint {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        .comment-submit-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .comment-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+        
+        .comment-submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* Bouton charger plus */
+        .load-more-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1rem;
+            background: var(--bg-card);
+            border: 1px dashed var(--border-color);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .load-more-btn:hover {
+            background: var(--bg-elevated);
+            border-color: var(--primary-light);
+            color: var(--primary-light);
+        }
+        
+        .load-more-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Barre de boutons fixe en bas */
+        .bottom-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+            background: linear-gradient(to top, var(--bg-primary) 0%, var(--bg-primary) 70%, transparent 100%);
+            z-index: 90;
+        }
+        
+        .fab-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.7rem 1rem;
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .fab-btn.home {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+        
+        .fab-btn.propose {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+        
+        .fab-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .fab-btn .material-icons {
+            font-size: 1.1rem;
+        }
+        
+        /* Espace en bas */
+        .infos-list {
+            padding-bottom: 5rem;
+        }
+        
+        /* Loading */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .lightbox.show {
+            display: flex;
+        }
+        
+        .lightbox-image {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+        }
+        
+        /* Responsive */
+        @media (max-width: 480px) {
+            .page-title h1 {
+                font-size: 1rem;
+            }
+            
+            .info-card-title {
+                font-size: 1rem;
+            }
+            
+            .info-card-actions {
+                flex-wrap: wrap;
+            }
+            
+            .action-btn {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <a href="index.html" class="back-btn" title="Retour">
+            <span class="material-icons">arrow_back</span>
+        </a>
+        <div class="page-title">
+            <h1>📢 Infos de la communauté</h1>
+            <p>Actualités de Montceau et environs</p>
+        </div>
+        <div class="header-actions">
+            <button class="theme-btn" onclick="toggleTheme()" title="Changer de thème">
+                <span class="material-icons" id="themeIcon">light_mode</span>
+            </button>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" id="statTotal">-</div>
+                <div class="stat-label">Publications</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="statThisWeek">-</div>
+                <div class="stat-label">Cette semaine</div>
+            </div>
+        </div>
+        
+        <!-- Liste des infos -->
+        <div class="infos-list" id="infosList">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Chargement des infos...</p>
+            </div>
+        </div>
+        
+        <!-- Bouton charger plus -->
+        <button class="load-more-btn" id="loadMoreBtn" style="display:none;" onclick="loadMoreInfos()">
+            <span class="material-icons">expand_more</span>
+            Charger plus d'infos
+        </button>
+    </div>
+    
+    <!-- Boutons fixes en bas -->
+    <div class="bottom-actions">
+        <a href="index.html" class="fab-btn home">
+            <span class="material-icons">home</span>
+            <span>Accueil</span>
+        </a>
+        <a href="proposer.html" class="fab-btn propose">
+            <span class="material-icons">edit</span>
+            <span>Proposer</span>
+        </a>
+    </div>
+    
+    <!-- Lightbox pour images -->
+    <div id="imageLightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightboxImage" class="lightbox-image" src="" alt="">
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
+        
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        let allInfos = [];
+        let displayedCount = 0;
+        const ITEMS_PER_PAGE = 10;
+        let commentCounts = {};
+        let likeCounts = {};
+        let userLikes = [];
+        
+        // ============================================
+        // INITIALISATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            loadInfos();
+        });
+        
+        // ============================================
+        // THÈME
+        // ============================================
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+        
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+        
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+        }
+        
+        // ============================================
+        // CHARGEMENT DES INFOS
+        // ============================================
+        async function loadInfos() {
+            const listEl = document.getElementById('infosList');
+            
+            try {
+                // Charger toutes les infos approuvées
+                const { data, error } = await supabaseClient
+                    .from('news_submissions')
+                    .select('*')
+                    .eq('status', 'approved')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                if (!data || data.length === 0) {
+                    listEl.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <p>Aucune info pour le moment</p>
+                            <p style="font-size:0.85rem;margin-top:0.5rem;">Soyez le premier à partager une actualité !</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                allInfos = data;
+                
+                // Stats
+                document.getElementById('statTotal').textContent = data.length;
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                const thisWeek = data.filter(d => new Date(d.created_at) > weekAgo).length;
+                document.getElementById('statThisWeek').textContent = thisWeek;
+                
+                // Charger les compteurs
+                await loadCounts(data.map(d => d.id));
+                
+                // Afficher les premiers
+                displayedCount = 0;
+                listEl.innerHTML = '';
+                displayMoreInfos();
+                
+                console.log(`📢 ${data.length} infos chargées`);
+                
+            } catch (err) {
+                console.error('Erreur chargement infos:', err);
+                listEl.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">❌</div>
+                        <p>Erreur de chargement</p>
+                    </div>
+                `;
+            }
+        }
+        
+        async function loadCounts(newsIds) {
+            const userFingerprint = getUserFingerprint();
+            
+            try {
+                // Commentaires
+                const { data: comments } = await supabaseClient
+                    .from('news_comments')
+                    .select('news_id')
+                    .eq('status', 'approved')
+                    .in('news_id', newsIds);
+                
+                if (comments) {
+                    comments.forEach(c => {
+                        commentCounts[c.news_id] = (commentCounts[c.news_id] || 0) + 1;
+                    });
+                }
+                
+                // Likes
+                const { data: likes } = await supabaseClient
+                    .from('news_likes')
+                    .select('news_id, user_fingerprint')
+                    .in('news_id', newsIds);
+                
+                if (likes) {
+                    likes.forEach(l => {
+                        likeCounts[l.news_id] = (likeCounts[l.news_id] || 0) + 1;
+                        if (l.user_fingerprint === userFingerprint) {
+                            userLikes.push(l.news_id);
+                        }
+                    });
+                }
+            } catch (e) {
+                console.log('Erreur chargement compteurs:', e);
+            }
+        }
+        
+        function displayMoreInfos() {
+            const listEl = document.getElementById('infosList');
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            
+            const start = displayedCount;
+            const end = Math.min(displayedCount + ITEMS_PER_PAGE, allInfos.length);
+            
+            for (let i = start; i < end; i++) {
+                listEl.innerHTML += renderInfoCard(allInfos[i]);
+            }
+            
+            displayedCount = end;
+            
+            // Afficher/masquer bouton charger plus
+            if (displayedCount < allInfos.length) {
+                loadMoreBtn.style.display = 'flex';
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
+            
+            // Détecter les textes tronqués
+            setTimeout(() => {
+                for (let i = start; i < end; i++) {
+                    const item = allInfos[i];
+                    const descEl = document.getElementById(`desc-${item.id}`);
+                    const btnEl = document.getElementById(`see-more-${item.id}`);
+                    if (descEl && btnEl && descEl.scrollHeight > descEl.clientHeight + 10) {
+                        btnEl.classList.add('visible');
+                    }
+                }
+            }, 100);
+        }
+        
+        function loadMoreInfos() {
+            displayMoreInfos();
+        }
+        
+        // ============================================
+        // RENDU CARTE INFO
+        // ============================================
+        function renderInfoCard(item) {
+            const icon = getInfoIcon(item.type);
+            const date = formatDate(item.created_at);
+            const commentCount = commentCounts[item.id] || 0;
+            const likeCount = likeCounts[item.id] || 0;
+            const isLiked = userLikes.includes(item.id);
+            
+            return `
+                <div class="info-card" data-id="${item.id}">
+                    <div class="info-card-header">
+                        <span class="info-card-icon">${icon}</span>
+                        <span class="info-card-author">${escapeHtml(item.author || 'Anonyme')}</span>
+                        <span class="info-card-date">${date}</span>
+                    </div>
+                    
+                    <div class="info-card-content">
+                        <h3 class="info-card-title">${escapeHtml(item.title)}</h3>
+                        
+                        ${item.image_url ? `
+                            <div class="info-card-image-wrapper" onclick="openLightbox('${item.image_url}')">
+                                <img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="info-card-image">
+                                <div class="info-card-zoom">
+                                    <span class="material-icons">zoom_in</span>
+                                    Agrandir
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <p class="info-card-desc" id="desc-${item.id}">${escapeHtml(item.content)}</p>
+                        <button class="see-more-btn" id="see-more-${item.id}" onclick="toggleSeeMore(${item.id})">
+                            <span>Voir plus</span>
+                            <span class="material-icons">expand_more</span>
+                        </button>
+                        
+                        ${item.link ? `
+                            <a href="${item.link}" target="_blank" class="info-card-link">
+                                <span class="material-icons">link</span>
+                                Voir le lien
+                            </a>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="info-card-footer">
+                        <div class="info-card-meta">
+                            ${item.location ? `<span><span class="material-icons">place</span>${escapeHtml(item.location)}</span>` : ''}
+                            <span><span class="material-icons">visibility</span>${item.views || 0}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card-actions">
+                        <button class="action-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${item.id}, this)">
+                            <span class="material-icons">${isLiked ? 'favorite' : 'favorite_border'}</span>
+                            <span id="like-count-${item.id}">${likeCount}</span>
+                        </button>
+                        <button class="action-btn" onclick="toggleComments(${item.id})">
+                            <span class="material-icons">chat_bubble_outline</span>
+                            <span>${commentCount > 0 ? commentCount + ' commentaire' + (commentCount > 1 ? 's' : '') : 'Commenter'}</span>
+                        </button>
+                    </div>
+                    
+                    <div class="comments-section" id="comments-section-${item.id}">
+                        <div class="comments-list" id="comments-list-${item.id}">
+                            <div class="no-comments">Chargement...</div>
+                        </div>
+                        <form class="comment-form" onsubmit="submitComment(event, ${item.id})">
+                            <input type="text" id="comment-author-${item.id}" placeholder="Votre prénom ou pseudo" maxlength="50" required>
+                            <textarea id="comment-content-${item.id}" placeholder="Votre commentaire..." maxlength="500" required></textarea>
+                            <div class="comment-form-actions">
+                                <span class="comment-form-hint">⏳ Modéré avant publication</span>
+                                <button type="submit" class="comment-submit-btn">
+                                    <span class="material-icons">send</span>
+                                    Envoyer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // ============================================
+        // FONCTIONS UTILITAIRES
+        // ============================================
+        function getInfoIcon(type) {
+            const icons = {
+                'actualite': '📰',
+                'evenement': '🎪',
+                'sport': '⚽',
+                'culture': '🎭',
+                'alerte': '🚨',
+                'annonce': '📢',
+                'perdu': '🔍',
+                'bon-plan': '💰'
+            };
+            return icons[type] || '📰';
+        }
+        
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 60) return `Il y a ${diffMins} min`;
+            if (diffHours < 24) return `Il y a ${diffHours}h`;
+            if (diffDays < 7) return `Il y a ${diffDays}j`;
+            return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function getUserFingerprint() {
+            let fp = localStorage.getItem('user_fingerprint');
+            if (!fp) {
+                fp = 'user_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+                localStorage.setItem('user_fingerprint', fp);
+            }
+            return fp;
+        }
+        
+        // ============================================
+        // VOIR PLUS / VOIR MOINS
+        // ============================================
+        function toggleSeeMore(id) {
+            const descEl = document.getElementById(`desc-${id}`);
+            const btnEl = document.getElementById(`see-more-${id}`);
+            
+            if (descEl.classList.contains('expanded')) {
+                descEl.classList.remove('expanded');
+                btnEl.classList.remove('expanded');
+                btnEl.innerHTML = '<span>Voir plus</span><span class="material-icons">expand_more</span>';
+            } else {
+                descEl.classList.add('expanded');
+                btnEl.classList.add('expanded');
+                btnEl.innerHTML = '<span>Voir moins</span><span class="material-icons">expand_more</span>';
+            }
+        }
+        
+        // ============================================
+        // LIKES
+        // ============================================
+        async function toggleLike(newsId, btn) {
+            const userFingerprint = getUserFingerprint();
+            const countEl = document.getElementById(`like-count-${newsId}`);
+            const isLiked = btn.classList.contains('liked');
+            
+            try {
+                if (isLiked) {
+                    // Retirer le like
+                    await supabaseClient
+                        .from('news_likes')
+                        .delete()
+                        .eq('news_id', newsId)
+                        .eq('user_fingerprint', userFingerprint);
+                    
+                    btn.classList.remove('liked');
+                    btn.querySelector('.material-icons').textContent = 'favorite_border';
+                    countEl.textContent = Math.max(0, parseInt(countEl.textContent) - 1);
+                    userLikes = userLikes.filter(id => id !== newsId);
+                } else {
+                    // Ajouter le like
+                    await supabaseClient
+                        .from('news_likes')
+                        .insert({ news_id: newsId, user_fingerprint: userFingerprint });
+                    
+                    btn.classList.add('liked');
+                    btn.querySelector('.material-icons').textContent = 'favorite';
+                    countEl.textContent = parseInt(countEl.textContent) + 1;
+                    userLikes.push(newsId);
+                }
+            } catch (err) {
+                console.error('Erreur like:', err);
+            }
+        }
+        
+        // ============================================
+        // COMMENTAIRES
+        // ============================================
+        function toggleComments(newsId) {
+            const section = document.getElementById(`comments-section-${newsId}`);
+            const isShown = section.classList.contains('show');
+            
+            if (isShown) {
+                section.classList.remove('show');
+            } else {
+                section.classList.add('show');
+                loadComments(newsId);
+            }
+        }
+        
+        async function loadComments(newsId) {
+            const listEl = document.getElementById(`comments-list-${newsId}`);
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('news_comments')
+                    .select('*')
+                    .eq('news_id', newsId)
+                    .eq('status', 'approved')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                if (!data || data.length === 0) {
+                    listEl.innerHTML = '<div class="no-comments">💬 Aucun commentaire. Soyez le premier !</div>';
+                    return;
+                }
+                
+                listEl.innerHTML = data.map(c => {
+                    const date = new Date(c.created_at);
+                    const dateStr = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+                    return `
+                        <div class="comment-item">
+                            <div class="comment-header">
+                                <span class="comment-author">${escapeHtml(c.author)}</span>
+                                <span class="comment-date">${dateStr}</span>
+                            </div>
+                            <div class="comment-content">${escapeHtml(c.content)}</div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (err) {
+                console.error('Erreur chargement commentaires:', err);
+                listEl.innerHTML = '<div class="no-comments">❌ Erreur de chargement</div>';
+            }
+        }
+        
+        async function submitComment(e, newsId) {
+            e.preventDefault();
+            
+            const authorInput = document.getElementById(`comment-author-${newsId}`);
+            const contentInput = document.getElementById(`comment-content-${newsId}`);
+            const submitBtn = e.target.querySelector('.comment-submit-btn');
+            
+            const author = authorInput.value.trim();
+            const content = contentInput.value.trim();
+            
+            if (!author || !content) return;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="material-icons">hourglass_empty</span> Envoi...';
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('news_comments')
+                    .insert({
+                        news_id: newsId,
+                        author: author,
+                        content: content,
+                        status: 'pending'
+                    });
+                
+                if (error) throw error;
+                
+                authorInput.value = '';
+                contentInput.value = '';
+                submitBtn.innerHTML = '<span class="material-icons">check</span> Envoyé !';
+                submitBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                
+                const listEl = document.getElementById(`comments-list-${newsId}`);
+                const successMsg = document.createElement('div');
+                successMsg.className = 'comment-item';
+                successMsg.style.background = 'rgba(16, 185, 129, 0.1)';
+                successMsg.style.borderColor = '#10b981';
+                successMsg.innerHTML = '<div class="comment-content" style="color:#10b981;text-align:center;">✅ Merci ! Votre commentaire sera visible après modération.</div>';
+                listEl.insertBefore(successMsg, listEl.firstChild);
+                
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span class="material-icons">send</span> Envoyer';
+                    submitBtn.style.background = '';
+                }, 3000);
+                
+            } catch (err) {
+                console.error('Erreur envoi commentaire:', err);
+                alert('Erreur lors de l\'envoi');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="material-icons">send</span> Envoyer';
+            }
+        }
+        
+        // ============================================
+        // LIGHTBOX
+        // ============================================
+        function openLightbox(imageUrl) {
+            document.getElementById('lightboxImage').src = imageUrl;
+            document.getElementById('imageLightbox').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeLightbox() {
+            document.getElementById('imageLightbox').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+    </script>
+</body>
+</html>

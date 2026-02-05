@@ -1772,6 +1772,37 @@ h2, h3 {
     opacity: 0.7;
 }
 
+/* Bouton Voir toutes les infos */
+.community-voir-tout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.65rem 1.25rem;
+    margin-top: 1rem;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 12px rgba(16, 185, 129, 0.35);
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.community-voir-tout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 18px rgba(16, 185, 129, 0.45);
+}
+
+.community-voir-tout .material-icons {
+    font-size: 1.1rem;
+}
+
 /* === COMMENTAIRES === */
 .community-comments-section {
     margin-top: 0.75rem;
