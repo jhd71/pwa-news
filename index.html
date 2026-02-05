@@ -931,13 +931,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     .select('id', { count: 'exact' })
                     .eq('status', 'pending');
                 
-                // AJOUT : Vérifier les événements en attente
+                // Vérifier les événements en attente
                 const { data: eventsData } = await supabaseClient
                     .from('events')
                     .select('id', { count: 'exact' })
                     .eq('status', 'pending');
                 
-                // AJOUT : Vérifier les commentaires d'événements en attente
+                // Vérifier les commentaires d'événements en attente
                 const { data: eventCommentsData } = await supabaseClient
                     .from('event_comments')
                     .select('id', { count: 'exact' })
@@ -951,18 +951,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 const totalUnread = unreadContacts + pendingNews + pendingComments + pendingEvents + pendingEventComments;
                 
                 const adminBadge = document.getElementById('adminBadge');
-                if (adminBadge && totalUnread > 0) {
-                    adminBadge.textContent = totalUnread;
-                    adminBadge.style.display = 'flex';
+                if (adminBadge) {
+                    if (totalUnread > 0) {
+                        adminBadge.textContent = totalUnread;
+                        adminBadge.style.display = 'flex';
+                    } else {
+                        adminBadge.style.display = 'none';
+                    }
                 }
                 
-                const lastNotified = localStorage.getItem('admin_last_notified') || '0';
-                const now = Date.now();
+                // Vérifier si le nombre a augmenté depuis la dernière vérification
+                const lastTotal = parseInt(localStorage.getItem('admin_last_total') || '0');
                 
-                if (totalUnread > 0 && (now - parseInt(lastNotified)) > 30 * 60 * 1000) {
+                // Afficher notification si nouveau contenu détecté
+                if (totalUnread > 0 && totalUnread > lastTotal) {
                     showAdminNotification(unreadContacts, pendingNews, pendingComments, pendingEvents, pendingEventComments);
-                    localStorage.setItem('admin_last_notified', now.toString());
                 }
+                
+                // Sauvegarder le total actuel
+                localStorage.setItem('admin_last_total', totalUnread.toString());
                 
                 console.log(`📬 Admin: ${unreadContacts} messages, ${pendingNews} propositions, ${pendingComments} commentaires communauté, ${pendingEvents} événements, ${pendingEventComments} commentaires événements`);
                 
@@ -1012,6 +1019,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             };
         }
         
+		// Vérification automatique toutes les 2 minutes
+        setInterval(() => {
+            if (localStorage.getItem('admin_session')) {
+                checkAdminNotifications();
+                console.log('🔄 Vérification automatique admin...');
+            }
+        }, 2 * 60 * 1000);
+		
         function closeAdminNotification() {
             document.getElementById('adminNotification').classList.remove('show');
         }
