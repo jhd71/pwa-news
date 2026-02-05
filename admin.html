@@ -3071,6 +3071,11 @@
                     approvedContainer.innerHTML = approved.map(c => renderCommentCard(c, newsTitles, 'approved')).join('');
                 }
                 
+                // Notification toast si commentaires en attente
+                if (pending.length > 0) {
+                    showToast(`📰 ${pending.length} commentaire${pending.length > 1 ? 's' : ''} communauté à modérer`);
+                }
+                
             } catch (error) {
                 console.error('Erreur chargement commentaires:', error);
                 pendingContainer.innerHTML = '<div class="empty-state"><p>❌ Erreur de chargement</p></div>';
@@ -3176,6 +3181,11 @@
                 }
                 
                 console.log('📅 Commentaires événements chargés:', pending.length, 'en attente,', approved.length, 'approuvés');
+                
+                // Notification toast si commentaires en attente
+                if (pending.length > 0) {
+                    showToast(`💬 ${pending.length} commentaire${pending.length > 1 ? 's' : ''} d'événement${pending.length > 1 ? 's' : ''} à modérer`);
+                }
                 
             } catch (error) {
                 console.error('Erreur chargement commentaires événements:', error);
