@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Politique de confidentialité - Actu & Média</title>
+    <meta name="description" content="Politique de confidentialité et protection des données du site Actu & Média Montceau-les-Mines">
+    <link rel="icon" type="image/png" href="/icons/icon-192.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --bg-body: #000000;
+            --bg-card: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="light"] {
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+        
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: rgba(20, 20, 20, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+        
+        [data-theme="light"] .header {
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .back-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-card);
+            border: none;
+            border-radius: 50%;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .content-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        h2 .material-icons {
+            font-size: 1.2rem;
+        }
+        
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        a {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        ul {
+            color: var(--text-secondary);
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.85rem;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .data-table th {
+            color: var(--primary-light);
+            font-weight: 600;
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .data-table td {
+            color: var(--text-secondary);
+        }
+        
+        .info-box {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .info-box p {
+            margin-bottom: 0;
+            font-size: 0.85rem;
+        }
+        
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .success-box p {
+            margin-bottom: 0;
+            color: #10b981;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .footer-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary-light);
+        }
+        
+        @media (max-width: 600px) {
+            .content-card {
+                padding: 1.25rem;
+            }
+            
+            .page-title {
+                font-size: 1.25rem;
+            }
+            
+            .data-table {
+                font-size: 0.75rem;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 0.5rem;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="back-btn" title="Retour à l'accueil">
+                <span class="material-icons">arrow_back</span>
+            </a>
+            <h1>🔒 Confidentialité</h1>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Changer de thème">
+            <span class="material-icons" id="themeIcon">light_mode</span>
+        </button>
+    </header>
+    
+    <div class="container">
+        <div class="content-card">
+            <h1 class="page-title">
+                <span class="material-icons" style="color:var(--primary-light);">security</span>
+                Politique de confidentialité
+            </h1>
+            <p class="page-subtitle">Protection de vos données personnelles sur Actu & Média</p>
+            
+            <div class="success-box">
+                <p>
+                    <strong>✅ Bonne nouvelle :</strong> Ce site ne collecte pas de données à des fins publicitaires 
+                    et n'utilise pas de cookies de traçage. Vos données restent privées.
+                </p>
+            </div>
+            
+            <h2><span class="material-icons">inventory_2</span> Données collectées</h2>
+            <p>Voici les données que nous pouvons collecter et leur utilisation :</p>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Donnée</th>
+                        <th>Finalité</th>
+                        <th>Conservation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Email (formulaire contact)</td>
+                        <td>Répondre à vos messages</td>
+                        <td>Supprimé après traitement</td>
+                    </tr>
+                    <tr>
+                        <td>Pseudo (commentaires)</td>
+                        <td>Affichage avec vos commentaires</td>
+                        <td>Tant que le commentaire existe</td>
+                    </tr>
+                    <tr>
+                        <td>Abonnement notifications</td>
+                        <td>Envoi d'alertes info</td>
+                        <td>Jusqu'à désinscription</td>
+                    </tr>
+                    <tr>
+                        <td>Statistiques de visites</td>
+                        <td>Améliorer le site</td>
+                        <td>Données anonymes, 1 an</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2><span class="material-icons">cookie</span> Cookies</h2>
+            <p>
+                Ce site utilise uniquement des <strong>cookies techniques essentiels</strong> au fonctionnement :
+            </p>
+            <ul>
+                <li><strong>Préférence de thème</strong> (sombre/clair) - stocké localement</li>
+                <li><strong>Préférence de taille de texte</strong> - stocké localement</li>
+                <li><strong>Identifiant visiteur quotidien</strong> - pour comptabiliser les visites uniques</li>
+            </ul>
+            <p>
+                <strong>Aucun cookie publicitaire</strong> ou de traçage tiers n'est utilisé sur ce site.
+            </p>
+            
+            <h2><span class="material-icons">notifications</span> Notifications push</h2>
+            <p>
+                Si vous acceptez les notifications push, un identifiant technique est enregistré pour vous envoyer 
+                des alertes info. Vous pouvez vous désabonner à tout moment depuis les paramètres du site ou de votre navigateur.
+            </p>
+            
+            <h2><span class="material-icons">storage</span> Hébergement des données</h2>
+            <p>
+                Vos données sont hébergées de manière sécurisée par :
+            </p>
+            <ul>
+                <li><strong>Vercel</strong> (hébergement du site) - États-Unis</li>
+                <li><strong>Supabase</strong> (base de données) - Union Européenne</li>
+            </ul>
+            
+            <h2><span class="material-icons">verified_user</span> Vos droits</h2>
+            <p>
+                Conformément au RGPD, vous disposez des droits suivants sur vos données :
+            </p>
+            <ul>
+                <li><strong>Droit d'accès</strong> : savoir quelles données nous avons sur vous</li>
+                <li><strong>Droit de rectification</strong> : corriger vos données</li>
+                <li><strong>Droit de suppression</strong> : demander l'effacement de vos données</li>
+                <li><strong>Droit d'opposition</strong> : refuser certains traitements</li>
+            </ul>
+            <p>
+                Pour exercer ces droits, contactez-nous à : 
+                <a href="mailto:contact@actuetmedia.fr">contact@actuetmedia.fr</a>
+            </p>
+            
+            <h2><span class="material-icons">child_care</span> Protection des mineurs</h2>
+            <p>
+                Ce site ne collecte pas sciemment de données personnelles de mineurs de moins de 16 ans 
+                sans le consentement de leurs parents ou tuteurs légaux.
+            </p>
+            
+            <h2><span class="material-icons">update</span> Mise à jour</h2>
+            <p>
+                Cette politique de confidentialité peut être mise à jour. 
+                La date de dernière modification est indiquée ci-dessous.
+            </p>
+            <p>
+                <strong>Dernière mise à jour :</strong> Février 2025
+            </p>
+            
+            <div class="info-box">
+                <p>
+                    <strong>💬 Une question ?</strong> N'hésitez pas à nous contacter à 
+                    <a href="mailto:contact@actuetmedia.fr">contact@actuetmedia.fr</a> 
+                    pour toute question relative à vos données personnelles.
+                </p>
+            </div>
+            
+            <div class="footer-links">
+                <a href="index.html">
+                    <span class="material-icons" style="font-size:1rem;">home</span>
+                    Accueil
+                </a>
+                <a href="mentions-legales.html">
+                    <span class="material-icons" style="font-size:1rem;">gavel</span>
+                    Mentions légales
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Gestion du thème
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+        
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+        
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+        }
+        
+        initTheme();
+    </script>
+</body>
+</html>

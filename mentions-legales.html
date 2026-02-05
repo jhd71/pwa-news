@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentions légales - Actu & Média</title>
+    <meta name="description" content="Mentions légales du site Actu & Média Montceau-les-Mines">
+    <link rel="icon" type="image/png" href="/icons/icon-192.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --bg-body: #000000;
+            --bg-card: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="light"] {
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+        
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: rgba(20, 20, 20, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+        
+        [data-theme="light"] .header {
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .back-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-card);
+            border: none;
+            border-radius: 50%;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .content-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        h2 .material-icons {
+            font-size: 1.2rem;
+        }
+        
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        a {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        ul {
+            color: var(--text-secondary);
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .info-box {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .info-box p {
+            margin-bottom: 0;
+            font-size: 0.85rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .footer-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary-light);
+        }
+        
+        @media (max-width: 600px) {
+            .content-card {
+                padding: 1.25rem;
+            }
+            
+            .page-title {
+                font-size: 1.25rem;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="back-btn" title="Retour à l'accueil">
+                <span class="material-icons">arrow_back</span>
+            </a>
+            <h1>📋 Mentions légales</h1>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Changer de thème">
+            <span class="material-icons" id="themeIcon">light_mode</span>
+        </button>
+    </header>
+    
+    <div class="container">
+        <div class="content-card">
+            <h1 class="page-title">
+                <span class="material-icons" style="color:var(--primary-light);">gavel</span>
+                Mentions légales
+            </h1>
+            <p class="page-subtitle">Informations légales concernant le site Actu & Média</p>
+            
+            <h2><span class="material-icons">person</span> Éditeur du site</h2>
+            <p>
+                Le site <strong>Actu & Média</strong> (actuetmedia.fr) est un site d'information locale 
+                édité à titre personnel et bénévole, dédié à l'actualité de Montceau-les-Mines et ses environs.
+            </p>
+            <p>
+                <strong>Contact :</strong> <a href="mailto:contact@actuetmedia.fr">contact@actuetmedia.fr</a>
+            </p>
+            
+            <h2><span class="material-icons">dns</span> Hébergement</h2>
+            <p>
+                Ce site est hébergé par :<br>
+                <strong>Vercel Inc.</strong><br>
+                340 S Lemon Ave #4133<br>
+                Walnut, CA 91789<br>
+                États-Unis<br>
+                Site web : <a href="https://vercel.com" target="_blank" rel="noopener">vercel.com</a>
+            </p>
+            
+            <h2><span class="material-icons">copyright</span> Propriété intellectuelle</h2>
+            <p>
+                L'ensemble des contenus (textes, images, vidéos) présents sur ce site sont protégés par le droit d'auteur. 
+                Toute reproduction, même partielle, est soumise à autorisation préalable.
+            </p>
+            <p>
+                Les photos et contenus soumis par les utilisateurs restent la propriété de leurs auteurs respectifs.
+            </p>
+            
+            <h2><span class="material-icons">account_balance</span> Responsabilité</h2>
+            <p>
+                L'éditeur s'efforce de fournir des informations exactes et à jour. Toutefois, il ne peut garantir 
+                l'exactitude, la complétude ou l'actualité des informations diffusées sur ce site.
+            </p>
+            <p>
+                L'éditeur décline toute responsabilité pour les contenus soumis par les utilisateurs 
+                (commentaires, propositions d'articles, événements).
+            </p>
+            
+            <h2><span class="material-icons">link</span> Liens externes</h2>
+            <p>
+                Ce site peut contenir des liens vers des sites externes. L'éditeur n'exerce aucun contrôle 
+                sur ces sites et décline toute responsabilité quant à leur contenu.
+            </p>
+            
+            <div class="info-box">
+                <p>
+                    <strong>💡 Information :</strong> Ce site est un projet bénévole sans but lucratif, 
+                    créé pour informer les habitants de Montceau-les-Mines et de la communauté urbaine.
+                </p>
+            </div>
+            
+            <div class="footer-links">
+                <a href="index.html">
+                    <span class="material-icons" style="font-size:1rem;">home</span>
+                    Accueil
+                </a>
+                <a href="confidentialite.html">
+                    <span class="material-icons" style="font-size:1rem;">security</span>
+                    Politique de confidentialité
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Gestion du thème
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+        
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+        
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+        }
+        
+        initTheme();
+    </script>
+</body>
+</html>
