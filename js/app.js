@@ -509,16 +509,25 @@ function renderCinema(films, cinemaKey = 'capitole') {
                    target="_blank" 
                    class="cinema-film fade-in" 
                    style="animation-delay: ${index * 0.05}s">
-                    <div class="cinema-film-title">${film.titre}</div>
-                    <div class="cinema-film-meta">
-                        <span>🎭 ${film.genre || 'Film'}</span>
-                        <span>⏱️ ${film.duree || 'N/A'}</span>
+                    <div class="cinema-film-info">
+                        <div class="cinema-film-title">${film.titre}</div>
+                        <div class="cinema-film-meta">
+                            <span>🎭 ${film.genre || 'Film'}</span>
+                        </div>
+                        <div class="cinema-film-meta">
+                            <span>⏱️ ${film.duree || 'N/A'}</span>
+                        </div>
+                        <div class="cinema-film-times">
+                            ${(film.horaires || []).slice(0, 5).map(time => 
+                                `<span class="cinema-time">${time}</span>`
+                            ).join('')}
+                        </div>
                     </div>
-                    <div class="cinema-film-times">
-                        ${(film.horaires || []).slice(0, 5).map(time => 
-                            `<span class="cinema-time">${time}</span>`
-                        ).join('')}
-                    </div>
+                    ${film.affiche ? `
+                        <div class="cinema-film-poster">
+                            <img src="${film.affiche}" alt="${film.titre}" loading="lazy">
+                        </div>
+                    ` : ''}
                 </a>
             `).join('')}
         </div>
