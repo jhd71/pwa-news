@@ -1065,6 +1065,11 @@ h2, h3 {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.cinema-film:hover .cinema-film-poster img {
+    transform: scale(1.05);
 }
 
 .cinema-film:last-child {
@@ -1082,11 +1087,22 @@ h2, h3 {
 }
 
 .cinema-film-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    line-height: 1.3;
-    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 4px;
     color: var(--text-primary);
+}
+
+@media (min-width: 768px) {
+    .cinema-film-title {
+        font-size: 1.1rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .cinema-film-title {
+        font-size: 1.2rem;
+    }
 }
 
 .cinema-film-meta {
