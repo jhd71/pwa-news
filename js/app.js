@@ -2,6 +2,36 @@
 // ACTU & MÉDIA - Application JavaScript v2
 // ============================================
 
+// === CACHE LOCAL CINÉMA ===
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+
+function getCachedData(key) {
+    try {
+        const cached = localStorage.getItem(key);
+        if (!cached) return null;
+        
+        const { data, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp > CACHE_DURATION) {
+            localStorage.removeItem(key);
+            return null;
+        }
+        return data;
+    } catch (e) {
+        return null;
+    }
+}
+
+function setCachedData(key, data) {
+    try {
+        localStorage.setItem(key, JSON.stringify({
+            data: data,
+            timestamp: Date.now()
+        }));
+    } catch (e) {
+        console.log('Cache storage failed');
+    }
+}
+
 // Configuration
 const CONFIG = {
     news: {
@@ -450,13 +480,22 @@ async function loadCinema(cinemaKey) {
         return;
     }
     
-    // Afficher le loading
-    container.innerHTML = `
-        <div class="cinema-loading">
-            <span class="material-icons spinning">theaters</span>
-            <span>Chargement du programme...</span>
-        </div>
-    `;
+    // Clé de cache
+    const cacheKey = `cinema_${cinemaKey}`;
+    
+    // Afficher le cache immédiatement si disponible (pas de flash)
+    const cachedFilms = getCachedData(cacheKey);
+    if (cachedFilms && cachedFilms.length > 0) {
+        renderCinema(cachedFilms, cinemaKey);
+    } else {
+        // Afficher le loading seulement si pas de cache
+        container.innerHTML = `
+            <div class="cinema-loading">
+                <span class="material-icons spinning">theaters</span>
+                <span>Chargement du programme...</span>
+            </div>
+        `;
+    }
     
     try {
         const response = await fetch(config.dataUrl + '?t=' + Date.now(), {
@@ -468,14 +507,24 @@ async function loadCinema(cinemaKey) {
         const data = await response.json();
         
         if (data.films && data.films.length > 0) {
-            renderCinema(data.films, cinemaKey);
+            // Sauvegarder en cache
+            setCachedData(cacheKey, data.films);
+            
+            // Mettre à jour l'affichage si différent du cache
+            if (!cachedFilms || JSON.stringify(data.films) !== JSON.stringify(cachedFilms)) {
+                renderCinema(data.films, cinemaKey);
+            }
             console.log(`🎬 ${data.films.length} films chargés pour ${config.nom}`);
         } else {
-            showCinemaFallback(cinemaKey);
+            if (!cachedFilms) {
+                showCinemaFallback(cinemaKey);
+            }
         }
     } catch (error) {
         console.error(`❌ Erreur cinéma ${config.nom}:`, error);
-        showCinemaFallback(cinemaKey);
+        if (!cachedFilms) {
+            showCinemaFallback(cinemaKey);
+        }
     }
 }
 
