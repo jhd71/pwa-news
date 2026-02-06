@@ -3297,6 +3297,164 @@
                 showToast('Erreur: ' + error.message, true);
             }
         }
+        
+        // ============================================
+        // COMMENTAIRES D'ÉVÉNEMENTS
+        // ============================================
+        async function loadEventComments() {
+            const pendingContainer = document.getElementById('pendingEventCommentsList');
+            const approvedContainer = document.getElementById('approvedEventCommentsList');
+            
+            if (!pendingContainer || !approvedContainer) return;
+            
+            pendingContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
+            approvedContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
+            
+            try {
+                // Charger les commentaires en attente
+                const { data: pending, error: errPending } = await supabaseClient
+                    .from('event_comments')
+                    .select('*')
+                    .eq('status', 'pending')
+                    .order('created_at', { ascending: false });
+                
+                if (errPending) throw errPending;
+                
+                // Charger les commentaires approuvés
+                const { data: approved, error: errApproved } = await supabaseClient
+                    .from('event_comments')
+                    .select('*')
+                    .eq('status', 'approved')
+                    .order('created_at', { ascending: false });
+                
+                if (errApproved) throw errApproved;
+                
+                // Charger les titres des événements
+                const eventIds = [...new Set([...(pending || []), ...(approved || [])].map(c => c.event_id))];
+                let eventTitles = {};
+                
+                if (eventIds.length > 0) {
+                    const { data: eventsData } = await supabaseClient
+                        .from('events')
+                        .select('id, title')
+                        .in('id', eventIds);
+                    
+                    if (eventsData) {
+                        eventsData.forEach(e => eventTitles[e.id] = e.title);
+                    }
+                }
+                
+                // Mettre à jour les compteurs
+                const pendingCount = pending ? pending.length : 0;
+                const approvedCount = approved ? approved.length : 0;
+                
+                document.getElementById('badgeEventComments').textContent = pendingCount;
+                document.getElementById('badgeEventComments').style.display = pendingCount > 0 ? 'inline-flex' : 'none';
+                document.getElementById('countPendingEventComments').textContent = pendingCount;
+                document.getElementById('countApprovedEventComments').textContent = approvedCount;
+                
+                // Mettre à jour le badge principal
+                updateTotalCommentsBadge();
+                
+                // Afficher les commentaires en attente
+                if (pendingCount === 0) {
+                    pendingContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><p>Aucun commentaire d\'événement en attente</p></div>';
+                } else {
+                    pendingContainer.innerHTML = pending.map(c => renderEventCommentCard(c, eventTitles, 'pending')).join('');
+                }
+                
+                // Afficher les commentaires approuvés
+                if (approvedCount === 0) {
+                    approvedContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">✅</div><p>Aucun commentaire d\'événement approuvé</p></div>';
+                } else {
+                    approvedContainer.innerHTML = approved.map(c => renderEventCommentCard(c, eventTitles, 'approved')).join('');
+                }
+                
+                console.log(`📅 Commentaires événements: ${pendingCount} en attente, ${approvedCount} approuvés`);
+                
+            } catch (error) {
+                console.error('Erreur chargement commentaires événements:', error);
+                pendingContainer.innerHTML = '<div class="empty-state"><p>❌ Erreur de chargement</p></div>';
+            }
+        }
+        
+        function renderEventCommentCard(comment, eventTitles, status) {
+            const eventTitle = eventTitles[comment.event_id] || 'Événement #' + comment.event_id;
+            return `
+                <div class="comment-card ${status}">
+                    <div class="comment-news-ref" style="color:#60a5fa;">
+                        <span class="material-icons" style="font-size:1rem;">event</span>
+                        ${escapeHtml(eventTitle.substring(0, 50))}${eventTitle.length > 50 ? '...' : ''}
+                    </div>
+                    <div class="comment-author">👤 ${escapeHtml(comment.author_name)}</div>
+                    <div class="comment-content">${escapeHtml(comment.content)}</div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+                        <span class="comment-date">${formatDate(comment.created_at)}</span>
+                        <div class="message-actions">
+                            ${status === 'pending' ? `<button class="action-btn mark-read" onclick="approveEventComment(${comment.id})"><span class="material-icons">check</span>Approuver</button>` : ''}
+                            <button class="action-btn delete" onclick="deleteEventComment(${comment.id})"><span class="material-icons">delete</span>Suppr</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function showEventCommentTab(tab) {
+            document.getElementById('tabPendingEventComments').classList.toggle('active', tab === 'pending');
+            document.getElementById('tabApprovedEventComments').classList.toggle('active', tab === 'approved');
+            document.getElementById('pendingEventCommentsList').style.display = tab === 'pending' ? 'block' : 'none';
+            document.getElementById('approvedEventCommentsList').style.display = tab === 'approved' ? 'block' : 'none';
+        }
+        
+        async function approveEventComment(id) {
+            try {
+                const { error } = await supabaseClient
+                    .from('event_comments')
+                    .update({ status: 'approved' })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                showToast('Commentaire d\'événement approuvé ✅');
+                loadEventComments();
+            } catch (error) {
+                console.error('Erreur approbation:', error);
+                showToast('Erreur: ' + error.message, true);
+            }
+        }
+        
+        async function deleteEventComment(id) {
+            if (!confirm('Supprimer ce commentaire ?')) return;
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('event_comments')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) throw error;
+                showToast('Commentaire supprimé 🗑️');
+                loadEventComments();
+            } catch (error) {
+                console.error('Erreur suppression:', error);
+                showToast('Erreur: ' + error.message, true);
+            }
+        }
+        
+        // Mettre à jour le badge principal (total des deux types)
+        function updateTotalCommentsBadge() {
+            const eventPending = parseInt(document.getElementById('countPendingEventComments')?.textContent || '0');
+            const communityPending = parseInt(document.getElementById('countPending')?.textContent || '0');
+            const total = eventPending + communityPending;
+            
+            document.getElementById('badgeComments').textContent = total;
+            document.getElementById('badgeComments').style.display = total > 0 ? 'inline-flex' : 'none';
+        }
+        
+        // Charger tous les commentaires
+        function loadAllComments() {
+            loadPendingComments();
+            loadEventComments();
+        }
 		
 		// === ÉVÉNEMENTS - AVEC COMPRESSION/ROTATION/RECADRAGE ===
         
