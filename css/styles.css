@@ -1045,6 +1045,22 @@ h2, h3 {
     background: var(--bg-tertiary);
 }
 
+/* Affiche plus grande sur PC */
+@media (min-width: 768px) {
+    .cinema-film-poster {
+        width: 75px;
+        height: 110px;
+        border-radius: 8px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .cinema-film-poster {
+        width: 90px;
+        height: 130px;
+    }
+}
+
 .cinema-film-poster img {
     width: 100%;
     height: 100%;
