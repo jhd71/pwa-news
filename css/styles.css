@@ -1803,6 +1803,30 @@ h2, h3 {
     font-size: 1.1rem;
 }
 
+/* Info épinglée sur accueil */
+.community-item.pinned {
+    border: 2px solid #f59e0b;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, var(--bg-card) 100%);
+}
+
+.community-pinned-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.3rem 0.75rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border-radius: 20px;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    width: fit-content;
+}
+
+.community-pinned-badge .material-icons {
+    font-size: 0.9rem;
+}
+
 /* === COMMENTAIRES === */
 .community-comments-section {
     margin-top: 0.75rem;

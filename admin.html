@@ -2867,7 +2867,7 @@
             const container = document.getElementById('publishedList');
             container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
             try {
-                const { data, error } = await supabaseClient.from('news_submissions').select('*').eq('status', 'approved').order('created_at', { ascending: false });
+                const { data, error } = await supabaseClient.from('news_submissions').select('*').eq('status', 'approved').order('pinned', { ascending: false }).order('created_at', { ascending: false });
                 if (error) throw error;
                 
                 document.getElementById('statPublished').textContent = data.length;
@@ -2875,7 +2875,8 @@
                 if (data.length === 0) { container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📰</div><p>Aucune actualité publiée</p></div>'; return; }
                 
                 container.innerHTML = data.map(a => `
-                    <div class="article-card published">
+                    <div class="article-card published ${a.pinned ? 'pinned-article' : ''}">
+                        ${a.pinned ? '<div style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;padding:0.3rem 0.75rem;border-radius:20px;font-size:0.75rem;font-weight:600;display:inline-flex;align-items:center;gap:0.25rem;margin-bottom:0.5rem;"><span class="material-icons" style="font-size:0.9rem;">push_pin</span> Épinglé</div>' : ''}
                         ${a.image_url ? `<img src="${a.image_url}" class="article-image" onclick="openImageModal('${a.image_url}')" title="Cliquez pour agrandir">` : ''}
                         <div class="article-content">
                             <div style="margin-bottom:0.5rem;"><span class="proposition-type ${a.type}">${getTypeLabel(a.type)}</span></div>
@@ -2885,6 +2886,7 @@
                             ${a.link ? `<a href="${a.link}" target="_blank" class="proposition-file" style="margin-bottom:0.75rem;"><span class="material-icons" style="font-size:1rem;">link</span> Voir le lien</a>` : ''}
                             <div class="article-meta"><span>${formatDate(a.created_at)}</span><span>👁️ ${a.views || 0} vues</span><span>${escapeHtml(a.author || 'Actu & Média')}</span></div>
                             <div class="message-actions" style="margin-top:1rem;">
+                                <button class="action-btn ${a.pinned ? 'pinned' : ''}" style="background:${a.pinned ? 'rgba(245,158,11,0.3)' : 'rgba(99,102,241,0.2)'};color:${a.pinned ? '#f59e0b' : '#818cf8'};" onclick="togglePin(${a.id}, ${a.pinned ? 'true' : 'false'})"><span class="material-icons">${a.pinned ? 'push_pin' : 'push_pin'}</span>${a.pinned ? 'Désépingler' : 'Épingler'}</button>
                                 <button class="action-btn" style="background:rgba(245,158,11,0.2);color:#f59e0b;" onclick="updateStatus(${a.id},'pending')"><span class="material-icons">undo</span>Dépublier</button>
                                 <button class="action-btn delete" onclick="deleteProp(${a.id})"><span class="material-icons">delete</span>Suppr</button>
                             </div>
@@ -2892,6 +2894,24 @@
                     </div>
                 `).join('');
             } catch (error) { container.innerHTML = '<div class="empty-state"><p>❌ Erreur</p></div>'; }
+        }
+        
+		// Épingler / Désépingler une info
+        async function togglePin(id, currentlyPinned) {
+            try {
+                const { error } = await supabaseClient
+                    .from('news_submissions')
+                    .update({ pinned: !currentlyPinned })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                showToast(currentlyPinned ? '📌 Info désépinglée' : '📌 Info épinglée !');
+                loadPublishedArticles();
+            } catch (error) {
+                console.error('Erreur épinglage:', error);
+                showToast('Erreur: ' + error.message, true);
+            }
         }
         
         // === HELPERS ===

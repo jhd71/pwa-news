@@ -176,6 +176,30 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
         
+        /* Info épinglée */
+        .info-card.pinned {
+            border-color: #f59e0b;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, var(--bg-card) 100%);
+        }
+        
+        .pinned-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.3rem 0.75rem;
+            margin: 0.75rem 1rem 0;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 20px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            width: fit-content;
+        }
+        
+        .pinned-badge .material-icons {
+            font-size: 0.9rem;
+        }
+        
         .info-card-header {
             display: flex;
             align-items: center;
@@ -792,6 +816,7 @@
                     .from('news_submissions')
                     .select('*')
                     .eq('status', 'approved')
+                    .order('pinned', { ascending: false })
                     .order('created_at', { ascending: false });
                 
                 if (error) throw error;
@@ -921,7 +946,8 @@
             const isLiked = userLikes.includes(item.id);
             
             return `
-                <div class="info-card" data-id="${item.id}">
+                <div class="info-card ${item.pinned ? 'pinned' : ''}" data-id="${item.id}">
+                    ${item.pinned ? '<div class="pinned-badge"><span class="material-icons">push_pin</span> Épinglé</div>' : ''}
                     <div class="info-card-header">
                         <span class="info-card-icon">${icon}</span>
                         <span class="info-card-author">${escapeHtml(item.author || 'Anonyme')}</span>

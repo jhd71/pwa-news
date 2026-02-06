@@ -654,6 +654,7 @@ async function initCommunity() {
             .from('news_submissions')
             .select('*')
             .eq('status', 'approved')
+            .order('pinned', { ascending: false })
             .order('created_at', { ascending: false })
             .limit(3);
         
@@ -736,7 +737,8 @@ async function initCommunity() {
         contentEl.innerHTML = data.map(item => {
             const commentCount = commentCounts[item.id] || 0;
             return `
-            <div class="community-item" data-id="${item.id}">
+            <div class="community-item ${item.pinned ? 'pinned' : ''}" data-id="${item.id}">
+                ${item.pinned ? '<div class="community-pinned-badge"><span class="material-icons">push_pin</span> Épinglé</div>' : ''}
                 <!-- HEADER : Emoji + Auteur + Date -->
                 <div class="community-item-header">
                     <span class="community-item-icon">${getCommunityIcon(item.type)}</span>
