@@ -954,6 +954,19 @@ h2, h3 {
 
 .cinema-content {
     position: relative;
+    min-height: 280px;
+}
+
+@media (min-width: 768px) {
+    .cinema-content {
+        min-height: 350px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .cinema-content {
+        min-height: 420px;
+    }
 }
 
 .cinema-loading {
