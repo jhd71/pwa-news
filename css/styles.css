@@ -1167,7 +1167,6 @@ h2, h3 {
 
 .cinema-subtitle {
     font-size: 0.75rem;
-    color: var(--text-muted);
     margin: 0.25rem 0 0.75rem 0;
     padding-left: 0.5rem;
 }
