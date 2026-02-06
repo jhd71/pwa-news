@@ -490,8 +490,8 @@ function switchCinema(cinemaKey) {
     // Mettre à jour le lien "Voir tout"
     document.getElementById('cinemaLink').href = config.siteUrl;
     
-    // Mettre à jour le sous-titre (ville)
-    document.getElementById('cinemaSubtitle').textContent = config.ville;
+    // Mettre à jour le sous-titre (ville + aujourd'hui)
+    document.getElementById('cinemaSubtitle').innerHTML = config.ville + ' • <span class="cinema-today">Aujourd\'hui</span>';
     
     // Charger les films
     loadCinema(cinemaKey);

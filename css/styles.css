@@ -1113,6 +1113,11 @@ h2, h3 {
     padding-left: 0.5rem;
 }
 
+.cinema-today {
+    color: #10b981;
+    font-weight: 600;
+}
+
 /* ============================================
    POPUP INSTALLATION PWA
    ============================================ */
