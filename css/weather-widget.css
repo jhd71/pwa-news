@@ -85,6 +85,18 @@
     background: rgba(79, 70, 229, 0.1);
 }
 
+[data-theme="light"] .weather-day-label {
+    color: #64748b;
+}
+
+[data-theme="light"] .weather-day.today .weather-day-label {
+    color: #6366f1;
+}
+
+[data-theme="light"] .weather-day-temp {
+    color: #1e293b;
+}
+
 /* ============================================
    RESPONSIVE
    ============================================ */
