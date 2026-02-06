@@ -13,12 +13,12 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/meteo.css">
-	<link rel="stylesheet" href="css/weather-icons.css">
+    <link rel="stylesheet" href="css/meteo-v2.css">
+    <link rel="stylesheet" href="css/weather-icons-v2.css">
 </head>
 <body>
     
@@ -43,18 +43,20 @@
     </header>
 
     <!-- Localisation -->
-    <section class="meteo-location glass">
-        <span class="material-icons">location_on</span>
+    <section class="meteo-location">
+        <div class="meteo-location-icon">
+            <span class="material-icons">location_on</span>
+        </div>
         <div class="meteo-location-text">
             <span class="meteo-city">Montceau-les-Mines</span>
             <span class="meteo-region">Saône-et-Loire, Bourgogne</span>
         </div>
     </section>
 
-    <!-- Météo actuelle -->
-    <section class="meteo-current glass">
+    <!-- Météo actuelle - Hero Card -->
+    <section class="meteo-current">
         <div class="meteo-current-main">
-            <div class="meteo-current-icon" id="currentIcon">🌤️</div>
+            <div class="meteo-current-icon" id="currentIcon"></div>
             <div class="meteo-current-temp">
                 <span class="meteo-temp-value" id="currentTemp">--</span>
                 <span class="meteo-temp-unit">°C</span>
@@ -78,9 +80,11 @@
     </section>
 
     <!-- Lever/Coucher du soleil -->
-    <section class="meteo-sun glass">
+    <section class="meteo-sun">
         <div class="meteo-sun-item">
-            <span class="material-icons sun-rise">wb_sunny</span>
+            <div class="meteo-sun-icon sunrise">
+                <span class="material-icons">wb_sunny</span>
+            </div>
             <div class="meteo-sun-info">
                 <span class="meteo-sun-label">Lever</span>
                 <span class="meteo-sun-time" id="sunrise">--:--</span>
@@ -88,11 +92,14 @@
         </div>
         <div class="meteo-sun-progress">
             <div class="meteo-sun-bar">
+                <div class="meteo-sun-fill" id="sunFill"></div>
                 <div class="meteo-sun-position" id="sunPosition"></div>
             </div>
         </div>
         <div class="meteo-sun-item">
-            <span class="material-icons sun-set">nights_stay</span>
+            <div class="meteo-sun-icon sunset">
+                <span class="material-icons">nights_stay</span>
+            </div>
             <div class="meteo-sun-info">
                 <span class="meteo-sun-label">Coucher</span>
                 <span class="meteo-sun-time" id="sunset">--:--</span>
@@ -101,43 +108,55 @@
     </section>
 
     <!-- Prévisions 7 jours -->
-    <section class="meteo-forecast glass">
-        <h2 class="meteo-forecast-title">
-            <span class="material-icons">date_range</span>
+    <section class="meteo-forecast">
+        <h2 class="meteo-section-title">
+            <div class="icon-box">
+                <span class="material-icons">date_range</span>
+            </div>
             Prévisions 7 jours
         </h2>
         <div class="meteo-forecast-list" id="forecastList">
             <div class="meteo-loading">
-                <span class="material-icons spinning">sync</span>
+                <span class="material-icons">sync</span>
                 Chargement des prévisions...
             </div>
         </div>
     </section>
 
     <!-- Détails supplémentaires -->
-    <section class="meteo-extra glass">
-        <h2 class="meteo-extra-title">
-            <span class="material-icons">info</span>
+    <section class="meteo-extra">
+        <h2 class="meteo-section-title">
+            <div class="icon-box">
+                <span class="material-icons">info</span>
+            </div>
             Détails
         </h2>
         <div class="meteo-extra-grid">
             <div class="meteo-extra-item">
-                <span class="material-icons">compress</span>
+                <div class="meteo-extra-icon">
+                    <span class="material-icons">compress</span>
+                </div>
                 <span class="meteo-extra-label">Pression</span>
                 <span class="meteo-extra-value" id="pressure">-- hPa</span>
             </div>
             <div class="meteo-extra-item">
-                <span class="material-icons">visibility</span>
+                <div class="meteo-extra-icon">
+                    <span class="material-icons">visibility</span>
+                </div>
                 <span class="meteo-extra-label">Visibilité</span>
                 <span class="meteo-extra-value" id="visibility">-- km</span>
             </div>
             <div class="meteo-extra-item">
-                <span class="material-icons">wb_twilight</span>
+                <div class="meteo-extra-icon">
+                    <span class="material-icons">wb_twilight</span>
+                </div>
                 <span class="meteo-extra-label">Indice UV</span>
                 <span class="meteo-extra-value" id="uvIndex">--</span>
             </div>
             <div class="meteo-extra-item">
-                <span class="material-icons">cloud</span>
+                <div class="meteo-extra-icon">
+                    <span class="material-icons">cloud</span>
+                </div>
                 <span class="meteo-extra-label">Couverture</span>
                 <span class="meteo-extra-value" id="cloudCover">--%</span>
             </div>
@@ -145,14 +164,14 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer glass">
+    <footer class="meteo-footer">
         <p>Données <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p>
         <p class="footer-sub">Mise à jour automatique</p>
     </footer>
 
     <script>
         // ============================================
-        // MÉTÉO DÉTAILLÉE - Montceau-les-Mines
+        // MÉTÉO DÉTAILLÉE v2 - Montceau-les-Mines
         // ============================================
         
         const METEO_CONFIG = {
@@ -163,10 +182,7 @@
 
         // Thème
         const THEMES = ['dark', 'light'];
-        const THEME_ICONS = {
-            'dark': 'dark_mode',
-            'light': 'light_mode'
-        };
+        const THEME_ICONS = { 'dark': 'dark_mode', 'light': 'light_mode' };
 
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
@@ -174,25 +190,19 @@
         });
 
         function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            applyTheme(savedTheme);
+            const saved = localStorage.getItem('theme') || 'dark';
+            applyTheme(saved);
             
             document.getElementById('themeToggle').addEventListener('click', () => {
                 const current = document.documentElement.getAttribute('data-theme') || 'dark';
-                const currentIndex = THEMES.indexOf(current);
-                const nextIndex = (currentIndex + 1) % THEMES.length;
-                const newTheme = THEMES[nextIndex];
-                applyTheme(newTheme);
-                localStorage.setItem('theme', newTheme);
+                const next = current === 'dark' ? 'light' : 'dark';
+                applyTheme(next);
+                localStorage.setItem('theme', next);
             });
         }
 
         function applyTheme(theme) {
-            if (theme === 'dark') {
-                document.documentElement.removeAttribute('data-theme');
-            } else {
-                document.documentElement.setAttribute('data-theme', theme);
-            }
+            document.documentElement.setAttribute('data-theme', theme);
             document.getElementById('themeIcon').textContent = THEME_ICONS[theme] || 'dark_mode';
         }
 
@@ -219,7 +229,7 @@
 
         function updateCurrentWeather(current, daily) {
             document.getElementById('currentTemp').textContent = Math.round(current.temperature_2m);
-            document.getElementById('currentIcon').innerHTML = getWeatherIcon(current.weather_code, 'large');
+            document.getElementById('currentIcon').innerHTML = getWeatherIconV2(current.weather_code, 'xlarge');
             document.getElementById('currentDesc').textContent = getWeatherDescription(current.weather_code);
             document.getElementById('currentFeels').textContent = Math.round(current.apparent_temperature) + '°';
             document.getElementById('currentHumidity').textContent = current.relative_humidity_2m + '%';
@@ -250,6 +260,7 @@
                 percentage = ((nowTime - sunriseTime) / (sunsetTime - sunriseTime)) * 100;
             }
             
+            document.getElementById('sunFill').style.width = `${percentage}%`;
             document.getElementById('sunPosition').style.left = `${percentage}%`;
         }
 
@@ -270,7 +281,7 @@
                             <span class="forecast-day-date">${dateStr}</span>
                             <span class="forecast-day-desc">${getWeatherDescription(daily.weather_code[i])}</span>
                         </div>
-                        <div class="forecast-icon">${getWeatherIcon(daily.weather_code[i], 'medium')}</div>
+                        <div class="forecast-icon">${getWeatherIconV2(daily.weather_code[i], 'medium')}</div>
                         <div class="forecast-precip">
                             <span class="material-icons">water_drop</span>
                             ${daily.precipitation_probability_max[i] || 0}%
@@ -290,45 +301,53 @@
             document.getElementById('pressure').textContent = Math.round(current.surface_pressure) + ' hPa';
             document.getElementById('cloudCover').textContent = current.cloud_cover + '%';
             document.getElementById('uvIndex').textContent = daily.uv_index_max[0] || '--';
-            document.getElementById('visibility').textContent = '10+ km'; // Open-Meteo ne fournit pas cette donnée
+            document.getElementById('visibility').textContent = '10+ km';
         }
 
-        function getWeatherEmoji(code) {
-            if (code === 0) return '☀️';
-            if ([1, 2, 3].includes(code)) return '⛅';
-            if ([45, 48].includes(code)) return '🌫️';
-            if ([51, 53, 55].includes(code)) return '🌦️';
-            if ([61, 63, 65].includes(code)) return '🌧️';
-            if ([66, 67].includes(code)) return '🌧️';
-            if ([71, 73, 75, 77].includes(code)) return '❄️';
-            if ([80, 81, 82].includes(code)) return '🌦️';
-            if ([85, 86].includes(code)) return '🌨️';
-            if ([95, 96, 99].includes(code)) return '⛈️';
-            return '🌤️';
-        }
-
-		function getWeatherIcon(code, size = 'medium') {
+        // ============================================
+        // ICÔNES MÉTÉO v2 (modernes avec nuages sombres)
+        // ============================================
+        function getWeatherIconV2(code, size = 'medium') {
+            // Soleil
             if (code === 0) {
-                return `<span class="weather-icon sun ${size}"></span>`;
+                return `<span class="weather-icon-v2 wi-sun ${size}"></span>`;
             }
-            if ([1, 2, 3].includes(code)) {
-                return `<span class="weather-icon partly-cloudy ${size}"><span class="sun-part"></span><span class="cloud-part"></span></span>`;
+            // Partiellement nuageux
+            if ([1, 2].includes(code)) {
+                return `<span class="weather-icon-v2 wi-partly-cloudy ${size}"><span class="sun"></span><span class="cloud"></span></span>`;
             }
+            // Couvert
+            if (code === 3) {
+                return `<span class="weather-icon-v2 wi-cloudy ${size}"><span class="cloud-back"></span><span class="cloud-front"></span></span>`;
+            }
+            // Brouillard
             if ([45, 48].includes(code)) {
-                return `<span class="weather-icon fog ${size}"><span class="line"></span><span class="line"></span><span class="line"></span></span>`;
+                return `<span class="weather-icon-v2 wi-fog ${size}"><span class="line"></span><span class="line"></span><span class="line"></span></span>`;
             }
-            if ([51, 53, 55, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) {
-                return `<span class="weather-icon rain ${size}"><span class="cloud"></span><span class="drops"><span class="drop"></span><span class="drop"></span><span class="drop"></span></span></span>`;
+            // Bruine
+            if ([51, 53, 55].includes(code)) {
+                return `<span class="weather-icon-v2 wi-drizzle ${size}"><span class="cloud"></span><span class="drops"><span class="drop"></span><span class="drop"></span><span class="drop"></span></span></span>`;
             }
+            // Pluie légère à modérée
+            if ([61, 63, 80, 81].includes(code)) {
+                return `<span class="weather-icon-v2 wi-rain ${size}"><span class="cloud"></span><span class="drops"><span class="drop"></span><span class="drop"></span><span class="drop"></span></span></span>`;
+            }
+            // Forte pluie
+            if ([65, 66, 67, 82].includes(code)) {
+                return `<span class="weather-icon-v2 wi-heavy-rain ${size}"><span class="cloud"></span><span class="drops"><span class="drop"></span><span class="drop"></span><span class="drop"></span><span class="drop"></span><span class="drop"></span></span></span>`;
+            }
+            // Neige
             if ([71, 73, 75, 77, 85, 86].includes(code)) {
-                return `<span class="weather-icon snow ${size}"><span class="cloud"></span><span class="flakes"><span class="flake"></span><span class="flake"></span><span class="flake"></span></span></span>`;
+                return `<span class="weather-icon-v2 wi-snow ${size}"><span class="cloud"></span><span class="flakes"><span class="flake"></span><span class="flake"></span><span class="flake"></span></span></span>`;
             }
+            // Orage
             if ([95, 96, 99].includes(code)) {
-                return `<span class="weather-icon thunder ${size}"><span class="cloud"></span><span class="bolt"></span></span>`;
+                return `<span class="weather-icon-v2 wi-thunder ${size}"><span class="cloud"></span><span class="bolt">⚡</span></span>`;
             }
-            return `<span class="weather-icon partly-cloudy ${size}"><span class="sun-part"></span><span class="cloud-part"></span></span>`;
+            // Par défaut : partiellement nuageux
+            return `<span class="weather-icon-v2 wi-partly-cloudy ${size}"><span class="sun"></span><span class="cloud"></span></span>`;
         }
-		
+
         function getWeatherDescription(code) {
             const descriptions = {
                 0: 'Ciel dégagé',

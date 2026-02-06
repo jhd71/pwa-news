@@ -200,7 +200,8 @@
          CSS
          ============================================ -->
     <link rel="stylesheet" href="css/styles.css">
-	<link rel="stylesheet" href="css/weather-icons.css">
+    <link rel="stylesheet" href="css/weather-icons-v2.css">
+    <link rel="stylesheet" href="css/weather-widget.css">
     <link rel="stylesheet" href="css/quick-links.css">
     <link rel="stylesheet" href="css/support.css">
     <link rel="stylesheet" href="css/radio.css">
@@ -248,22 +249,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </button>
             </div>
         </div>
-        <a href="meteo.html" class="weather-bar" id="weatherBar">
-            <div class="weather-day">
+        <a href="meteo.html" class="weather-widget" id="weatherBar" title="Voir la météo détaillée">
+            <div class="weather-day today">
                 <span class="weather-day-label">Auj.</span>
-                <span class="weather-day-icon" id="weatherIcon0">🌤️</span>
+                <span class="weather-day-icon" id="weatherIcon0"></span>
                 <span class="weather-day-temp" id="weatherTemp0">--°</span>
             </div>
             <div class="weather-separator"></div>
             <div class="weather-day">
-                <span class="weather-day-label" id="weatherLabel1">Demain</span>
-                <span class="weather-day-icon" id="weatherIcon1">🌤️</span>
+                <span class="weather-day-label" id="weatherLabel1">Dem.</span>
+                <span class="weather-day-icon" id="weatherIcon1"></span>
                 <span class="weather-day-temp" id="weatherTemp1">--°</span>
             </div>
             <div class="weather-separator"></div>
             <div class="weather-day">
                 <span class="weather-day-label" id="weatherLabel2">--</span>
-                <span class="weather-day-icon" id="weatherIcon2">🌤️</span>
+                <span class="weather-day-icon" id="weatherIcon2"></span>
                 <span class="weather-day-temp" id="weatherTemp2">--°</span>
             </div>
         </a>

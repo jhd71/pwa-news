@@ -1,0 +1,118 @@
+/* ============================================
+   WIDGET MÉTÉO MODERNE - Page d'accueil
+   ============================================ */
+
+/* Conteneur principal du widget */
+.weather-widget {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: var(--bg-card);
+    border-radius: 50px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.weather-widget:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-light);
+}
+
+/* Jour météo individuel */
+.weather-day {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 20px;
+    transition: background 0.2s ease;
+}
+
+.weather-day.today {
+    background: rgba(99, 102, 241, 0.15);
+}
+
+/* Label du jour */
+.weather-day-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.weather-day.today .weather-day-label {
+    color: var(--primary-light);
+}
+
+/* Conteneur icône */
+.weather-day-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+/* Température */
+.weather-day-temp {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Séparateur */
+.weather-separator {
+    width: 1px;
+    height: 20px;
+    background: var(--border-color);
+    margin: 0 2px;
+}
+
+/* ============================================
+   MODE CLAIR
+   ============================================ */
+[data-theme="light"] .weather-widget {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .weather-day.today {
+    background: rgba(79, 70, 229, 0.1);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 400px) {
+    .weather-widget {
+        gap: 2px;
+        padding: 6px 10px;
+    }
+    
+    .weather-day {
+        gap: 2px;
+        padding: 2px 4px;
+    }
+    
+    .weather-day-label {
+        font-size: 0.6rem;
+    }
+    
+    .weather-day-temp {
+        font-size: 0.85rem;
+    }
+    
+    .weather-day-icon {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .weather-separator {
+        height: 16px;
+    }
+}

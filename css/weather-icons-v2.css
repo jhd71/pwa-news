@@ -1,0 +1,419 @@
+/* ============================================
+   ICÔNES MÉTÉO MODERNES v2
+   Avec nuages sombres pour la pluie/orage
+   ============================================ */
+
+/* Conteneur de base */
+.weather-icon-v2 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Tailles */
+.weather-icon-v2.small { width: 24px; height: 24px; }
+.weather-icon-v2.medium { width: 42px; height: 42px; }
+.weather-icon-v2.large { width: 70px; height: 70px; }
+.weather-icon-v2.xlarge { width: 100px; height: 100px; }
+
+/* ============================================
+   SOLEIL ☀️
+   ============================================ */
+.wi-sun {
+    position: relative;
+}
+
+.wi-sun::before {
+    content: '';
+    position: absolute;
+    background: radial-gradient(circle, #fcd34d 0%, #f59e0b 60%, #d97706 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.6),
+                0 0 40px rgba(251, 191, 36, 0.3);
+    animation: sunPulse 3s ease-in-out infinite;
+}
+
+.wi-sun.small::before { width: 18px; height: 18px; }
+.wi-sun.medium::before { width: 32px; height: 32px; }
+.wi-sun.large::before { width: 50px; height: 50px; }
+.wi-sun.xlarge::before { width: 70px; height: 70px; }
+
+@keyframes sunPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+/* ============================================
+   PARTIELLEMENT NUAGEUX ⛅
+   ============================================ */
+.wi-partly-cloudy {
+    position: relative;
+}
+
+.wi-partly-cloudy .sun {
+    position: absolute;
+    background: radial-gradient(circle, #fcd34d 0%, #f59e0b 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
+}
+
+.wi-partly-cloudy .cloud {
+    position: absolute;
+    background: linear-gradient(180deg, #f3f4f6 0%, #d1d5db 100%);
+    border-radius: 50px;
+    box-shadow: -8px 5px 0 0 #e5e7eb;
+}
+
+/* Small */
+.wi-partly-cloudy.small .sun { width: 12px; height: 12px; top: 0; right: 2px; }
+.wi-partly-cloudy.small .cloud { width: 16px; height: 9px; bottom: 2px; left: 0; box-shadow: -4px 3px 0 0 #e5e7eb; }
+
+/* Medium */
+.wi-partly-cloudy.medium .sun { width: 20px; height: 20px; top: 0; right: 4px; }
+.wi-partly-cloudy.medium .cloud { width: 28px; height: 16px; bottom: 4px; left: 2px; box-shadow: -7px 4px 0 0 #e5e7eb; }
+
+/* Large */
+.wi-partly-cloudy.large .sun { width: 32px; height: 32px; top: 2px; right: 6px; }
+.wi-partly-cloudy.large .cloud { width: 46px; height: 26px; bottom: 6px; left: 4px; box-shadow: -12px 7px 0 0 #e5e7eb; }
+
+/* XLarge */
+.wi-partly-cloudy.xlarge .sun { width: 45px; height: 45px; top: 2px; right: 8px; }
+.wi-partly-cloudy.xlarge .cloud { width: 65px; height: 36px; bottom: 8px; left: 6px; box-shadow: -16px 10px 0 0 #e5e7eb; }
+
+/* ============================================
+   COUVERT (nuages gris) ☁️
+   ============================================ */
+.wi-cloudy {
+    position: relative;
+}
+
+.wi-cloudy .cloud-back {
+    position: absolute;
+    background: linear-gradient(180deg, #d1d5db 0%, #9ca3af 100%);
+    border-radius: 50px;
+}
+
+.wi-cloudy .cloud-front {
+    position: absolute;
+    background: linear-gradient(180deg, #9ca3af 0%, #6b7280 100%);
+    border-radius: 50px;
+}
+
+/* Small */
+.wi-cloudy.small .cloud-back { width: 14px; height: 8px; top: 4px; left: 1px; }
+.wi-cloudy.small .cloud-front { width: 18px; height: 10px; bottom: 3px; right: 1px; box-shadow: -5px 3px 0 0 #9ca3af; }
+
+/* Medium */
+.wi-cloudy.medium .cloud-back { width: 24px; height: 14px; top: 8px; left: 2px; }
+.wi-cloudy.medium .cloud-front { width: 30px; height: 16px; bottom: 6px; right: 2px; box-shadow: -8px 4px 0 0 #9ca3af; }
+
+/* Large */
+.wi-cloudy.large .cloud-back { width: 38px; height: 22px; top: 12px; left: 4px; }
+.wi-cloudy.large .cloud-front { width: 48px; height: 26px; bottom: 10px; right: 4px; box-shadow: -12px 7px 0 0 #9ca3af; }
+
+/* ============================================
+   PLUIE LÉGÈRE 🌧️ (nuage gris foncé)
+   ============================================ */
+.wi-rain {
+    position: relative;
+}
+
+.wi-rain .cloud {
+    position: absolute;
+    background: linear-gradient(180deg, #6b7280 0%, #374151 100%);
+    border-radius: 50px;
+    top: 0;
+}
+
+.wi-rain .drops {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+    width: 100%;
+}
+
+.wi-rain .drop {
+    background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+    border-radius: 0 0 10px 10px;
+    animation: rainFall 0.7s ease-in infinite;
+}
+
+.wi-rain .drop:nth-child(2) { animation-delay: 0.15s; }
+.wi-rain .drop:nth-child(3) { animation-delay: 0.3s; }
+
+/* Small */
+.wi-rain.small .cloud { width: 18px; height: 10px; left: 3px; box-shadow: -5px 3px 0 0 #4b5563; }
+.wi-rain.small .drop { width: 2px; height: 5px; }
+.wi-rain.small .drops { bottom: 1px; gap: 2px; }
+
+/* Medium */
+.wi-rain.medium .cloud { width: 30px; height: 16px; left: 6px; box-shadow: -8px 5px 0 0 #4b5563; }
+.wi-rain.medium .drop { width: 3px; height: 8px; }
+.wi-rain.medium .drops { bottom: 3px; gap: 4px; }
+
+/* Large */
+.wi-rain.large .cloud { width: 48px; height: 26px; left: 10px; box-shadow: -12px 7px 0 0 #4b5563; }
+.wi-rain.large .drop { width: 4px; height: 12px; }
+.wi-rain.large .drops { bottom: 5px; gap: 6px; }
+
+/* XLarge */
+.wi-rain.xlarge .cloud { width: 68px; height: 36px; left: 16px; box-shadow: -16px 10px 0 0 #4b5563; }
+.wi-rain.xlarge .drop { width: 5px; height: 16px; }
+.wi-rain.xlarge .drops { bottom: 6px; gap: 8px; }
+
+@keyframes rainFall {
+    0% { opacity: 0; transform: translateY(-6px); }
+    50% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(8px); }
+}
+
+/* ============================================
+   FORTE PLUIE 🌧️🌧️ (nuage NOIR)
+   ============================================ */
+.wi-heavy-rain {
+    position: relative;
+}
+
+.wi-heavy-rain .cloud {
+    position: absolute;
+    background: linear-gradient(180deg, #374151 0%, #111827 100%);
+    border-radius: 50px;
+    top: 0;
+}
+
+.wi-heavy-rain .drops {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    gap: 2px;
+    justify-content: center;
+    width: 100%;
+}
+
+.wi-heavy-rain .drop {
+    background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+    border-radius: 0 0 10px 10px;
+    animation: heavyRainFall 0.4s ease-in infinite;
+}
+
+.wi-heavy-rain .drop:nth-child(2) { animation-delay: 0.08s; }
+.wi-heavy-rain .drop:nth-child(3) { animation-delay: 0.16s; }
+.wi-heavy-rain .drop:nth-child(4) { animation-delay: 0.24s; }
+.wi-heavy-rain .drop:nth-child(5) { animation-delay: 0.12s; }
+
+/* Small */
+.wi-heavy-rain.small .cloud { width: 18px; height: 10px; left: 3px; box-shadow: -5px 3px 0 0 #1f2937; }
+.wi-heavy-rain.small .drop { width: 2px; height: 6px; }
+.wi-heavy-rain.small .drops { bottom: 0; gap: 2px; }
+
+/* Medium */
+.wi-heavy-rain.medium .cloud { width: 30px; height: 16px; left: 6px; box-shadow: -8px 5px 0 0 #1f2937; }
+.wi-heavy-rain.medium .drop { width: 3px; height: 10px; }
+.wi-heavy-rain.medium .drops { bottom: 2px; gap: 3px; }
+
+/* Large */
+.wi-heavy-rain.large .cloud { width: 48px; height: 26px; left: 10px; box-shadow: -12px 7px 0 0 #1f2937; }
+.wi-heavy-rain.large .drop { width: 4px; height: 14px; }
+.wi-heavy-rain.large .drops { bottom: 4px; gap: 5px; }
+
+/* XLarge */
+.wi-heavy-rain.xlarge .cloud { width: 68px; height: 36px; left: 16px; box-shadow: -16px 10px 0 0 #1f2937; }
+.wi-heavy-rain.xlarge .drop { width: 5px; height: 18px; }
+.wi-heavy-rain.xlarge .drops { bottom: 5px; gap: 6px; }
+
+@keyframes heavyRainFall {
+    0% { opacity: 0; transform: translateY(-8px); }
+    50% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(12px); }
+}
+
+/* ============================================
+   ORAGE ⛈️ (nuage TRÈS NOIR + éclair)
+   ============================================ */
+.wi-thunder {
+    position: relative;
+}
+
+.wi-thunder .cloud {
+    position: absolute;
+    background: linear-gradient(180deg, #1f2937 0%, #030712 100%);
+    border-radius: 50px;
+    top: 0;
+}
+
+.wi-thunder .bolt {
+    position: absolute;
+    font-style: normal;
+    animation: boltFlash 1.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.8));
+}
+
+/* Small */
+.wi-thunder.small .cloud { width: 18px; height: 10px; left: 3px; box-shadow: -5px 3px 0 0 #111827; }
+.wi-thunder.small .bolt { font-size: 12px; bottom: 0; left: 50%; transform: translateX(-50%); }
+
+/* Medium */
+.wi-thunder.medium .cloud { width: 30px; height: 16px; left: 6px; box-shadow: -8px 5px 0 0 #111827; }
+.wi-thunder.medium .bolt { font-size: 18px; bottom: 2px; left: 50%; transform: translateX(-50%); }
+
+/* Large */
+.wi-thunder.large .cloud { width: 48px; height: 26px; left: 10px; box-shadow: -12px 7px 0 0 #111827; }
+.wi-thunder.large .bolt { font-size: 28px; bottom: 4px; left: 50%; transform: translateX(-50%); }
+
+/* XLarge */
+.wi-thunder.xlarge .cloud { width: 68px; height: 36px; left: 16px; box-shadow: -16px 10px 0 0 #111827; }
+.wi-thunder.xlarge .bolt { font-size: 38px; bottom: 6px; left: 50%; transform: translateX(-50%); }
+
+@keyframes boltFlash {
+    0%, 100% { opacity: 1; }
+    45% { opacity: 1; }
+    50% { opacity: 0.2; }
+    55% { opacity: 1; }
+    60% { opacity: 0.2; }
+    65% { opacity: 1; }
+}
+
+/* ============================================
+   NEIGE ❄️
+   ============================================ */
+.wi-snow {
+    position: relative;
+}
+
+.wi-snow .cloud {
+    position: absolute;
+    background: linear-gradient(180deg, #9ca3af 0%, #6b7280 100%);
+    border-radius: 50px;
+    top: 0;
+}
+
+.wi-snow .flakes {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    width: 100%;
+}
+
+.wi-snow .flake {
+    background: white;
+    border-radius: 50%;
+    animation: snowFall 1.2s ease-in-out infinite;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+}
+
+.wi-snow .flake:nth-child(2) { animation-delay: 0.25s; }
+.wi-snow .flake:nth-child(3) { animation-delay: 0.5s; }
+
+/* Small */
+.wi-snow.small .cloud { width: 18px; height: 10px; left: 3px; box-shadow: -5px 3px 0 0 #6b7280; }
+.wi-snow.small .flake { width: 3px; height: 3px; }
+.wi-snow.small .flakes { bottom: 2px; gap: 3px; }
+
+/* Medium */
+.wi-snow.medium .cloud { width: 30px; height: 16px; left: 6px; box-shadow: -8px 5px 0 0 #6b7280; }
+.wi-snow.medium .flake { width: 5px; height: 5px; }
+.wi-snow.medium .flakes { bottom: 4px; gap: 5px; }
+
+/* Large */
+.wi-snow.large .cloud { width: 48px; height: 26px; left: 10px; box-shadow: -12px 7px 0 0 #6b7280; }
+.wi-snow.large .flake { width: 7px; height: 7px; }
+.wi-snow.large .flakes { bottom: 6px; gap: 7px; }
+
+@keyframes snowFall {
+    0% { opacity: 0; transform: translateY(-4px); }
+    50% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(8px); }
+}
+
+/* ============================================
+   BROUILLARD 🌫️
+   ============================================ */
+.wi-fog {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+.wi-fog .line {
+    background: linear-gradient(90deg, transparent 0%, #9ca3af 30%, #9ca3af 70%, transparent 100%);
+    border-radius: 2px;
+    animation: fogMove 3s ease-in-out infinite;
+}
+
+.wi-fog .line:nth-child(2) { animation-delay: 0.5s; width: 80% !important; }
+.wi-fog .line:nth-child(3) { animation-delay: 1s; width: 60% !important; }
+
+/* Small */
+.wi-fog.small .line { height: 2px; width: 18px; }
+
+/* Medium */
+.wi-fog.medium .line { height: 3px; width: 32px; }
+
+/* Large */
+.wi-fog.large .line { height: 4px; width: 50px; }
+
+@keyframes fogMove {
+    0%, 100% { opacity: 0.5; transform: translateX(-3px); }
+    50% { opacity: 1; transform: translateX(3px); }
+}
+
+/* ============================================
+   BRUINE (pluie légère)
+   ============================================ */
+.wi-drizzle {
+    position: relative;
+}
+
+.wi-drizzle .cloud {
+    position: absolute;
+    background: linear-gradient(180deg, #9ca3af 0%, #6b7280 100%);
+    border-radius: 50px;
+    top: 0;
+}
+
+.wi-drizzle .drops {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    width: 100%;
+}
+
+.wi-drizzle .drop {
+    background: #93c5fd;
+    border-radius: 0 0 5px 5px;
+    animation: drizzleFall 1s ease-in infinite;
+}
+
+.wi-drizzle .drop:nth-child(2) { animation-delay: 0.3s; }
+.wi-drizzle .drop:nth-child(3) { animation-delay: 0.6s; }
+
+/* Small */
+.wi-drizzle.small .cloud { width: 18px; height: 10px; left: 3px; box-shadow: -5px 3px 0 0 #6b7280; }
+.wi-drizzle.small .drop { width: 1px; height: 4px; }
+.wi-drizzle.small .drops { bottom: 2px; gap: 3px; }
+
+/* Medium */
+.wi-drizzle.medium .cloud { width: 30px; height: 16px; left: 6px; box-shadow: -8px 5px 0 0 #6b7280; }
+.wi-drizzle.medium .drop { width: 2px; height: 5px; }
+.wi-drizzle.medium .drops { bottom: 5px; }
+
+/* Large */
+.wi-drizzle.large .cloud { width: 48px; height: 26px; left: 10px; box-shadow: -12px 7px 0 0 #6b7280; }
+.wi-drizzle.large .drop { width: 2px; height: 8px; }
+.wi-drizzle.large .drops { bottom: 7px; gap: 8px; }
+
+@keyframes drizzleFall {
+    0% { opacity: 0; transform: translateY(-3px); }
+    50% { opacity: 0.7; }
+    100% { opacity: 0; transform: translateY(5px); }
+}
