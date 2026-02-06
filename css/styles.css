@@ -1070,6 +1070,49 @@ h2, h3 {
     font-weight: 600;
 }
 
+/* Onglets Cinéma */
+.cinema-tabs {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.cinema-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.9rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cinema-tab .material-icons {
+    font-size: 1rem;
+}
+
+.cinema-tab:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.cinema-tab.active {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-color: transparent;
+    color: white;
+}
+
+.cinema-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 0.25rem 0 0.75rem 0;
+    padding-left: 0.5rem;
+}
+
 /* ============================================
    POPUP INSTALLATION PWA
    ============================================ */

@@ -9,7 +9,18 @@ const CONFIG = {
         refreshInterval: 10 * 60 * 1000
     },
     cinema: {
-        dataUrl: 'https://raw.githubusercontent.com/jhd71/scraper-cinema/main/data/cinema.json'
+        capitole: {
+            dataUrl: 'https://raw.githubusercontent.com/jhd71/scraper-cinema/main/data/cinema.json',
+            nom: 'Le Capitole',
+            ville: 'Montceau-les-Mines',
+            siteUrl: 'https://www.cinemacapitole-montceau.fr/horaires/'
+        },
+        magic: {
+            dataUrl: 'https://raw.githubusercontent.com/jhd71/scraper-cinema-magic/main/data/cinema-magic.json',
+            nom: 'Magic',
+            ville: 'Le Creusot',
+            siteUrl: 'https://www.cinemamagic-creusot.fr/horaires/'
+        }
     },
     supabase: {
         url: 'https://ekjgfiyhkythqcnmhzea.supabase.co',
@@ -423,11 +434,32 @@ function formatDate(dateString) {
 // ============================================
 // CINÉMA
 // ============================================
+// Variable pour stocker le cinéma actif
+let currentCinema = 'capitole';
+
 async function initCinema() {
+    await loadCinema(currentCinema);
+}
+
+async function loadCinema(cinemaKey) {
     const container = document.getElementById('cinemaContent');
+    const config = CONFIG.cinema[cinemaKey];
+    
+    if (!config) {
+        console.error('Cinéma inconnu:', cinemaKey);
+        return;
+    }
+    
+    // Afficher le loading
+    container.innerHTML = `
+        <div class="cinema-loading">
+            <span class="material-icons spinning">theaters</span>
+            <span>Chargement du programme...</span>
+        </div>
+    `;
     
     try {
-        const response = await fetch(CONFIG.cinema.dataUrl + '?t=' + Date.now(), {
+        const response = await fetch(config.dataUrl + '?t=' + Date.now(), {
             cache: 'no-store'
         });
         
@@ -436,25 +468,44 @@ async function initCinema() {
         const data = await response.json();
         
         if (data.films && data.films.length > 0) {
-            renderCinema(data.films);
-            console.log(`🎬 ${data.films.length} films chargés`);
+            renderCinema(data.films, cinemaKey);
+            console.log(`🎬 ${data.films.length} films chargés pour ${config.nom}`);
         } else {
-            showCinemaFallback();
+            showCinemaFallback(cinemaKey);
         }
     } catch (error) {
-        console.error('❌ Erreur cinéma:', error);
-        showCinemaFallback();
+        console.error(`❌ Erreur cinéma ${config.nom}:`, error);
+        showCinemaFallback(cinemaKey);
     }
 }
 
-function renderCinema(films) {
+function switchCinema(cinemaKey) {
+    currentCinema = cinemaKey;
+    const config = CONFIG.cinema[cinemaKey];
+    
+    // Mettre à jour les onglets
+    document.getElementById('tabCapitole').classList.toggle('active', cinemaKey === 'capitole');
+    document.getElementById('tabMagic').classList.toggle('active', cinemaKey === 'magic');
+    
+    // Mettre à jour le lien "Voir tout"
+    document.getElementById('cinemaLink').href = config.siteUrl;
+    
+    // Mettre à jour le sous-titre (ville)
+    document.getElementById('cinemaSubtitle').textContent = config.ville;
+    
+    // Charger les films
+    loadCinema(cinemaKey);
+}
+
+function renderCinema(films, cinemaKey = 'capitole') {
     const container = document.getElementById('cinemaContent');
+    const config = CONFIG.cinema[cinemaKey];
     const hasMore = films.length > 4;
     
     container.innerHTML = `
         <div class="cinema-films">
             ${films.map((film, index) => `
-                <a href="${film.lien || 'https://www.cinemacapitole-montceau.fr/horaires/'}" 
+                <a href="${film.lien || config.siteUrl}" 
                    target="_blank" 
                    class="cinema-film fade-in" 
                    style="animation-delay: ${index * 0.05}s">
@@ -480,17 +531,18 @@ function renderCinema(films) {
     `;
 }
 
-function showCinemaFallback() {
+function showCinemaFallback(cinemaKey = 'capitole') {
     const container = document.getElementById('cinemaContent');
+    const config = CONFIG.cinema[cinemaKey];
     
     container.innerHTML = `
         <div style="text-align: center; padding: 1.5rem;">
             <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🎬</div>
-            <div style="font-weight: 600; margin-bottom: 0.5rem;">Le Capitole</div>
+            <div style="font-weight: 600; margin-bottom: 0.5rem;">${config.nom}</div>
             <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
-                4 salles • 589 places • Dolby Atmos
+                ${config.ville}
             </div>
-            <a href="https://www.cinemacapitole-montceau.fr/horaires/" 
+            <a href="${config.siteUrl}" 
                target="_blank"
                style="display: inline-flex; align-items: center; gap: 0.5rem; 
                       padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
