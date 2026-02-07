@@ -6,8 +6,8 @@
 // =====================================================
 // A. CONFIGURATION SUPABASE
 // =====================================================
-const SUPABASE_URL = 'https://ylkypleeljhvearzkllk.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlsa3lwbGVlbGpodmVhcnprbGxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwOTc4NjQsImV4cCI6MjA3OTY3Mzg2NH0.3FnT2mmjljyIaeFvJrA_BJIjB7hxDCOW4AWtKaAlF7A';
+const SUPABASE_URL = 'https://fwfbcpbajpcxnlfmhvvs.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3ZmJjcGJhanBjeG5sZm1odnZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjkzNDgxNjMsImV4cCI6MjA0NDkyNDE2M30.FM55e_1lOG1hsSb9H_PGIzrPfPMIl-GHFbYzGNmQnxw';
 
 // Initialiser Supabase
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -714,11 +714,35 @@ class RadioPlayerApp {
             });
         }
 
-        document.addEventListener('click', (e) => {
-            if (!this.contextMenu.contains(e.target)) {
-                this.hideContextMenu();
-            }
-        });
+        // Variable pour bloquer la fermeture immédiate après ouverture
+		let contextMenuJustOpened = false;
+
+		document.addEventListener('click', (e) => {
+			if (contextMenuJustOpened) {
+				contextMenuJustOpened = false;
+				return;
+			}
+			if (!this.contextMenu.contains(e.target)) {
+				this.hideContextMenu();
+			}
+		});
+
+		// Aussi sur touchend pour mobile
+		document.addEventListener('touchend', (e) => {
+			if (contextMenuJustOpened) {
+				contextMenuJustOpened = false;
+				return;
+			}
+			// Petit délai pour éviter les faux positifs
+			setTimeout(() => {
+				if (this.contextMenu.style.display === 'block' && !this.contextMenu.contains(e.target)) {
+					// Ne pas fermer si on touche le menu lui-même
+				}
+			}, 100);
+		});
+
+		// Stocker la référence pour l'utiliser dans showContextMenu
+		this.setContextMenuJustOpened = () => { contextMenuJustOpened = true; };
 
         // === RÉSEAU ===
         window.addEventListener('online', () => {
@@ -3443,6 +3467,11 @@ class RadioPlayerApp {
         this.contextMenu.style.left = `${finalX}px`;
         this.contextMenu.style.top = `${finalY}px`;
         this.contextMenu.style.display = 'block';
+
+		// Empêcher la fermeture immédiate
+		if (this.setContextMenuJustOpened) {
+			this.setContextMenuJustOpened();
+		}
 
         const addBtn = document.getElementById('addToFavorites');
         const removeBtn = document.getElementById('removeFromFavorites');
