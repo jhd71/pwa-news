@@ -309,3 +309,94 @@ body.mini-player-visible.mini-player-expanded {
     background: rgba(239, 68, 68, 0.2);
     color: #ef4444;
 }
+
+/* ============================================
+   THÈME CLAIR
+   ============================================ */
+[data-theme="light"] .mini-radio-player {
+    background: rgba(255, 255, 255, 0.95);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .mini-radio-name {
+    color: #1e293b;
+}
+
+[data-theme="light"] .mini-radio-status {
+    color: #475569;
+}
+
+[data-theme="light"] .mini-radio-status.playing {
+    color: #10b981;
+}
+
+[data-theme="light"] .mini-radio-btn {
+    color: #1e293b;
+    background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .mini-radio-btn:hover {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .mini-radio-btn.play-btn {
+    color: #fff;
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+}
+
+[data-theme="light"] .mini-radio-btn.play-btn:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+}
+
+[data-theme="light"] .mini-radio-btn.stop-btn {
+    background: rgba(239, 68, 68, 0.15);
+    color: #dc2626;
+}
+
+[data-theme="light"] .mini-radio-btn.stop-btn:hover {
+    background: rgba(239, 68, 68, 0.25);
+}
+
+[data-theme="light"] .mini-radio-btn.expand-btn {
+    background: rgba(79, 70, 229, 0.15);
+    color: #4f46e5;
+}
+
+[data-theme="light"] .mini-radio-btn.expand-btn:hover {
+    background: rgba(79, 70, 229, 0.25);
+}
+
+[data-theme="light"] .mini-radio-btn.close-btn {
+    background: rgba(0, 0, 0, 0.05);
+    color: #64748b;
+}
+
+[data-theme="light"] .mini-radio-btn.close-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #dc2626;
+}
+
+[data-theme="light"] .mini-radio-volume {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .mini-radio-volume .material-icons {
+    color: #475569;
+}
+
+[data-theme="light"] .mini-radio-volume-slider {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .mini-radio-volume-value {
+    color: #475569;
+}
+
+[data-theme="light"] .mini-radio-visualizer .bar {
+    background: #4f46e5;
+}
+
+[data-theme="light"] .mini-radio-player.inactive .mini-radio-name {
+    color: #94a3b8;
+}
