@@ -1623,6 +1623,12 @@ class RadioPlayerApp {
 		this.updatePlayerInfo();
 
         localStorage.setItem('lastStation', station.id);
+		localStorage.setItem('lastStationData', JSON.stringify({
+			id: station.id,
+			name: station.name,
+			url: station.url,
+			logo: station.logo
+		}));
 
         // Démarrer la récupération du titre en cours
         this.startNowPlayingPolling();

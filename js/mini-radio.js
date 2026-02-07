@@ -1,35 +1,11 @@
 /* ============================================
    MINI RADIO PLAYER - ACCUEIL
    Se synchronise avec radio.html via localStorage
+   VERSION CORRIGÉE - Utilise les données stockées
    ============================================ */
 
 class MiniRadioPlayer {
     constructor() {
-        // Stations disponibles (copie simplifiée)
-        this.stations = [
-            { id: 'Ici-Bourgogne', name: 'Ici-Bourgogne', url: 'https://icecast.radiofrance.fr/fbbourgogne-midfi.mp3', logo: 'images/radios-logos/Ici-Bourgogne.png' },
-            { id: 'Radio-Prevert', name: 'Radio Prevert', url: 'https://vps.cbad.fr:8443/prevert', logo: 'images/radios-logos/Radio-Prevert.png' },
-            { id: 'La-Radio-Sans-pub', name: 'La Radio Sans pub', url: 'https://live1.jupinfo.fr:8443/play', logo: 'images/radios-logos/La-Radio-Sans-pub.png' },
-            { id: 'M-Radio', name: 'M Radio', url: 'https://mradio.ice.infomaniak.ch/mradio-high', logo: 'images/radios-logos/M-Radio.png' },
-            { id: 'Frequence-Plus', name: 'Fréquence Plus', url: 'https://edge.audioxi.com/FREQUENCEPLUS', logo: 'images/radios-logos/Frequence-Plus.png' },
-            { id: 'RFM', name: 'RFM', url: 'https://rfm.ice.infomaniak.ch/rfm-high', logo: 'images/radios-logos/RFM.png' },
-            { id: 'NRJ', name: 'NRJ', url: 'https://scdn.nrjaudio.fm/fr/30001/mp3_128.mp3', logo: 'images/radios-logos/NRJ.png' },
-            { id: 'Skyrock', name: 'Skyrock', url: 'https://icecast.skyrock.net/s/natio_mp3_128k', logo: 'images/radios-logos/Skyrock.png' },
-            { id: 'Fun-Radio', name: 'Fun Radio', url: 'https://funradio.ice.infomaniak.ch/funradio-high', logo: 'images/radios-logos/Fun-Radio.png' },
-            { id: 'RTL2', name: 'RTL2', url: 'https://streamer-02.rtl.fr/rtl2-1-44-128', logo: 'images/radios-logos/RTL2.png' },
-            { id: 'Nostalgie', name: 'Nostalgie', url: 'https://scdn.nrjaudio.fm/fr/30601/mp3_128.mp3', logo: 'images/radios-logos/Nostalgie.png' },
-            { id: 'Cherie-FM', name: 'Chérie FM', url: 'https://scdn.nrjaudio.fm/fr/30201/mp3_128.mp3', logo: 'images/radios-logos/Cherie-FM.png' },
-            { id: 'Rire-Chansons', name: 'Rire & Chansons', url: 'https://scdn.nrjaudio.fm/fr/30401/mp3_128.mp3', logo: 'images/radios-logos/Rire-Chansons.png' },
-            { id: 'Virage-Radio', name: 'Virage Radio', url: 'https://start-virage.ice.infomaniak.ch/start-virage-high', logo: 'images/radios-logos/Virage-Radio.png' },
-            { id: 'OUI-FM', name: 'OUI FM', url: 'https://stream.ouifm.fr/ouifm-high.mp3', logo: 'images/radios-logos/OUI-FM.png' },
-            { id: 'France-Inter', name: 'France Inter', url: 'https://icecast.radiofrance.fr/franceinter-midfi.mp3', logo: 'images/radios-logos/France-Inter.png' },
-            { id: 'RTL', name: 'RTL', url: 'https://streamer-03.rtl.fr/rtl-1-44-128', logo: 'images/radios-logos/rtl.png' },
-            { id: 'Europe-1', name: 'Europe 1', url: 'https://europe1.lmn.fm/europe1.mp3', logo: 'images/radios-logos/europe1.png' },
-            { id: 'France-Info', name: 'France Info', url: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3', logo: 'images/radios-logos/france-info.png' },
-            { id: 'FIP', name: 'FIP', url: 'https://icecast.radiofrance.fr/fip-midfi.mp3', logo: 'images/radios-logos/Radio-Fip.png' },
-            { id: 'Radio-Nova', name: 'Radio Nova', url: 'https://novazz.ice.infomaniak.ch/novazz-128.mp3', logo: 'images/radios-logos/Radio-nova.png' }
-        ];
-
         this.currentStation = null;
         this.isPlaying = false;
         this.volume = parseFloat(localStorage.getItem('miniRadioVolume')) || 0.3;
@@ -113,7 +89,6 @@ class MiniRadioPlayer {
         this.audio.addEventListener('play', () => {
             this.isPlaying = true;
             this.updateUI();
-            this.syncToRadioPage();
         });
 
         this.audio.addEventListener('pause', () => {
@@ -177,44 +152,24 @@ class MiniRadioPlayer {
                 const data = event.data;
                 
                 if (data.type === 'PLAY') {
-                    // radio.html a lancé une radio
-                    this.stop(); // Arrêter ici pour éviter le doublon
-                    this.currentStation = this.stations.find(s => s.id === data.stationId);
+                    // radio.html a lancé une radio - arrêter ici
+                    this.stop();
+                    // Recharger les données de la station
+                    this.loadStationFromStorage();
                     this.updateUI();
                     this.show();
                 } else if (data.type === 'STOP') {
                     // radio.html a arrêté
                     this.isPlaying = false;
                     this.updateUI();
-                } else if (data.type === 'REQUEST_STATE') {
-                    // radio.html demande l'état actuel
-                    if (this.isPlaying && this.currentStation) {
-                        this.channel.postMessage({
-                            type: 'STATE',
-                            stationId: this.currentStation.id,
-                            isPlaying: this.isPlaying
-                        });
-                    }
                 }
             };
         }
     }
 
     handleStorageChange(e) {
-        if (e.key === 'lastStation') {
-            const stationId = e.newValue;
-            if (stationId) {
-                this.currentStation = this.stations.find(s => s.id === stationId);
-                this.updateUI();
-                this.show();
-            }
-        }
-    }
-
-    checkLastStation() {
-        const lastStationId = localStorage.getItem('lastStation');
-        if (lastStationId) {
-            this.currentStation = this.stations.find(s => s.id === lastStationId);
+        if (e.key === 'lastStationData' || e.key === 'lastStation') {
+            this.loadStationFromStorage();
             if (this.currentStation) {
                 this.updateUI();
                 this.show();
@@ -222,8 +177,30 @@ class MiniRadioPlayer {
         }
     }
 
+    loadStationFromStorage() {
+        // Essayer de charger les données complètes
+        const stationData = localStorage.getItem('lastStationData');
+        if (stationData) {
+            try {
+                this.currentStation = JSON.parse(stationData);
+                return true;
+            } catch (e) {
+                console.error('Erreur parsing station data:', e);
+            }
+        }
+        return false;
+    }
+
+    checkLastStation() {
+        // Charger la dernière station depuis localStorage
+        if (this.loadStationFromStorage()) {
+            this.updateUI();
+            this.show();
+        }
+    }
+
     play() {
-        if (!this.currentStation) {
+        if (!this.currentStation || !this.currentStation.url) {
             // Pas de station sélectionnée, ouvrir radio.html
             window.location.href = 'radio.html';
             return;
@@ -232,6 +209,8 @@ class MiniRadioPlayer {
         this.audio.src = this.currentStation.url;
         this.audio.play().catch(err => {
             console.error('Erreur lecture:', err);
+            this.isPlaying = false;
+            this.updateUI();
         });
     }
 
@@ -244,11 +223,6 @@ class MiniRadioPlayer {
         this.audio.src = '';
         this.isPlaying = false;
         this.updateUI();
-        
-        // Notifier radio.html
-        if (this.channel) {
-            this.channel.postMessage({ type: 'STOP_FROM_MINI' });
-        }
     }
 
     setVolume(value) {
@@ -311,21 +285,6 @@ class MiniRadioPlayer {
             status.querySelector('.status-text').textContent = this.currentStation ? 'En pause' : 'Sélectionnez une radio';
             playBtn.innerHTML = '<span class="material-icons">play_arrow</span>';
             visualizer.classList.remove('active');
-        }
-    }
-
-    syncToRadioPage() {
-        // Stocker l'état pour radio.html
-        if (this.currentStation) {
-            localStorage.setItem('lastStation', this.currentStation.id);
-        }
-        
-        // Notifier via BroadcastChannel
-        if (this.channel && this.currentStation) {
-            this.channel.postMessage({
-                type: 'PLAY_FROM_MINI',
-                stationId: this.currentStation.id
-            });
         }
     }
 }
