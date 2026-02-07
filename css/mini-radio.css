@@ -298,3 +298,14 @@ body.mini-player-visible {
 body.mini-player-visible.mini-player-expanded {
     padding-bottom: 130px;
 }
+
+/* Bouton fermer */
+.mini-radio-btn.close-btn {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.mini-radio-btn.close-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}

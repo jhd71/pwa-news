@@ -67,8 +67,11 @@ class MiniRadioPlayer {
                             <span class="material-icons">stop</span>
                         </button>
                         <button class="mini-radio-btn expand-btn" id="miniExpandBtn" title="Ouvrir le player complet">
-                            <span class="material-icons">open_in_new</span>
-                        </button>
+							<span class="material-icons">open_in_new</span>
+						</button>
+						<button class="mini-radio-btn close-btn" id="miniCloseBtn" title="Fermer">
+							<span class="material-icons">close</span>
+						</button>
                     </div>
                 </div>
                 
@@ -134,6 +137,12 @@ class MiniRadioPlayer {
         document.getElementById('miniRadioInfo').addEventListener('click', () => {
             window.location.href = 'radio.html';
         });
+
+		// Bouton Fermer
+		document.getElementById('miniCloseBtn').addEventListener('click', () => {
+			this.hide();
+			this.stop();
+		});
 
         // Volume slider
         const volumeSlider = document.getElementById('miniVolumeSlider');

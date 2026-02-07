@@ -3288,27 +3288,51 @@ class RadioPlayerApp {
     }
 
 	// =====================================================
-	// AUTO RESUME - Reprendre depuis le mini player
-	// =====================================================
-	checkAutoResume() {
-		// Vérifier si l'option de reprise auto est activée
-		const autoResumeEnabled = localStorage.getItem('autoResumeLastStation') === 'true';
-		const lastStationData = localStorage.getItem('lastStationData');
-		
-		if (lastStationData && autoResumeEnabled) {
-			try {
-				const stationData = JSON.parse(lastStationData);
-				const station = this.stations.find(s => s.id === stationData.id);
-				
-				if (station && !this.isPlaying) {
-					// Afficher l'overlay de reprise
-					this.showAutoResumePrompt(station);
-				}
-			} catch (e) {
-				console.error('Erreur auto resume:', e);
-			}
-		}
-	}
+// AUTO RESUME - Reprendre depuis le mini player
+// =====================================================
+checkAutoResume() {
+    // Vérifier si l'option de reprise auto est activée
+    const autoResumeEnabled = localStorage.getItem('autoResumeLastStation') === 'true';
+    const lastStationData = localStorage.getItem('lastStationData');
+    
+    if (lastStationData && autoResumeEnabled) {
+        try {
+            const stationData = JSON.parse(lastStationData);
+            const station = this.stations.find(s => s.id === stationData.id);
+            
+            if (station && !this.isPlaying) {
+                // Utiliser l'overlay existant
+                const overlay = document.getElementById('autoResumeOverlay');
+                const title = document.getElementById('autoResumeTitle');
+                const text = document.getElementById('autoResumeText');
+                const resumeBtn = document.getElementById('autoResumeBtn');
+                const cancelBtn = document.getElementById('autoResumeCancelBtn');
+                
+                if (overlay && resumeBtn) {
+                    if (title) title.textContent = station.name;
+                    if (text) text.textContent = 'Reprendre la lecture ?';
+                    
+                    overlay.style.display = 'flex';
+                    
+                    // Bouton reprendre
+                    resumeBtn.onclick = () => {
+                        overlay.style.display = 'none';
+                        this.playRadio(station);
+                    };
+                    
+                    // Bouton annuler
+                    if (cancelBtn) {
+                        cancelBtn.onclick = () => {
+                            overlay.style.display = 'none';
+                        };
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('Erreur auto resume:', e);
+        }
+    }
+}
 
     // =====================================================
     // PRÉSENCE GLOBALE - updateGlobalPresence() [NOUVEAU]
