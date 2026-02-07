@@ -573,9 +573,8 @@ input[type="time"].glass-select::-webkit-calendar-picker-indicator {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing-md);
-    padding: 0 var(--spacing-md);
-    padding-bottom: 320px;
-	justify-content: center;
+    padding: 12px var(--spacing-md) 320px var(--spacing-md);
+    justify-content: center;
 }
 
 /* === MODE LISTE === */
@@ -2851,7 +2850,7 @@ body.dark-theme .chat-input:focus {
     padding: 10px 16px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 20px;
-    margin: 0 16px 12px 16px;
+    margin: 0 16px 20px 16px;
     text-align: center;
 }
 
