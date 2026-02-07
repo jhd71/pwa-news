@@ -1,0 +1,2874 @@
+/* ====================================
+   RADIO PLAYER PRO - LIQUID GLASS CSS
+   VERSION CORRIGÉE ET CONSOLIDÉE
+   ==================================== */
+
+/* === VARIABLES === */
+:root {
+    /* Couleurs principales */
+    --primary-color: #6366f1;
+    --secondary-color: #8b5cf6;
+    --accent-color: #f43f5e;
+    --success-color: #4caf50;
+    --warning-color: #ffc107;
+    --danger-color: #f44336;
+    
+    /* Couleurs de fond - THÈME CLAIR PAR DÉFAUT */
+    --bg-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    --bg-secondary: rgba(255, 255, 255, 0.1);
+    --bg-card: rgba(255, 255, 255, 0.1);
+    
+    /* Glass effect */
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    --glass-blur: blur(10px);
+    
+    /* Texte */
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.8);
+    --text-muted: rgba(255, 255, 255, 0.6);
+    
+    /* Ombres */
+    --shadow-color: rgba(0, 0, 0, 0.2);
+    
+    /* Espacements */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    
+    /* Bordures */
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* Variables pour le thème sombre */
+body.dark-theme {
+    --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    --bg-card: rgba(0, 0, 0, 0.3);
+    --glass-bg: rgba(0, 0, 0, 0.3);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --shadow-color: rgba(0, 0, 0, 0.5);
+}
+
+/* === THÈMES COULEURS === */
+
+/* Thème Bleu Océan */
+body.theme-ocean {
+    --bg-primary: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
+    --primary-color: #00b4d8;
+    --secondary-color: #0096c7;
+    --glass-bg: rgba(0, 119, 182, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+/* Thème Bleu Océan Sombre */
+body.theme-ocean.dark-theme {
+    --bg-primary: linear-gradient(135deg, #023e8a 0%, #03045e 100%);
+    --glass-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* Thème Vert Nature */
+body.theme-nature {
+    --bg-primary: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+    --primary-color: #52b788;
+    --secondary-color: #40916c;
+    --glass-bg: rgba(45, 106, 79, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+/* Thème Vert Nature Sombre */
+body.theme-nature.dark-theme {
+    --bg-primary: linear-gradient(135deg, #1b4332 0%, #081c15 100%);
+    --glass-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* Thème Coucher de Soleil */
+body.theme-sunset {
+    --bg-primary: linear-gradient(135deg, #f77f00 0%, #d62828 100%);
+    --primary-color: #fcbf49;
+    --secondary-color: #f77f00;
+    --glass-bg: rgba(247, 127, 0, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+/* Thème Coucher de Soleil Sombre */
+body.theme-sunset.dark-theme {
+    --bg-primary: linear-gradient(135deg, #9d0208 0%, #370617 100%);
+    --glass-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* Thème Rose */
+body.theme-rose {
+    --bg-primary: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+    --primary-color: #ff8fab;
+    --secondary-color: #ff6b9d;
+    --glass-bg: rgba(255, 107, 157, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+/* Thème Rose Sombre */
+body.theme-rose.dark-theme {
+    --bg-primary: linear-gradient(135deg, #831843 0%, #500724 100%);
+    --glass-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* Thème Turquoise */
+body.theme-turquoise {
+    --bg-primary: linear-gradient(135deg, #00cec9 0%, #0984e3 100%);
+    --primary-color: #81ecec;
+    --secondary-color: #74b9ff;
+    --glass-bg: rgba(0, 206, 201, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+/* Thème Turquoise Sombre */
+body.theme-turquoise.dark-theme {
+    --bg-primary: linear-gradient(135deg, #006266 0%, #0c2461 100%);
+    --glass-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* Thème Minuit */
+body.theme-midnight {
+    --bg-primary: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+    --primary-color: #a29bfe;
+    --secondary-color: #6c5ce7;
+    --glass-bg: rgba(44, 62, 80, 0.3);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Thème Minuit Sombre */
+body.theme-midnight.dark-theme {
+    --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #0a0a14 100%);
+    --glass-bg: rgba(0, 0, 0, 0.4);
+}
+
+/* === RESET & BASE === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background 0.3s ease;
+}
+
+/* === GLASS EFFECT === */
+.glass-effect {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+}
+
+.glass-button {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+    transition: all var(--transition-normal);
+    cursor: pointer;
+}
+
+.glass-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.glass-button:active {
+    transform: translateY(0);
+}
+
+/* Boutons dans le panneau de paramètres */
+#settingsPanel .glass-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    min-width: 62px;
+    text-align: center;
+}
+
+#settingsPanel .glass-button .material-icons {
+    font-size: 20px;
+}
+
+/* Inputs admin */
+#adminUsername:focus,
+#adminPassword:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--primary-color);
+}
+
+/* Bouton danger */
+.glass-button.danger {
+    background: rgba(244, 67, 54, 0.2);
+    border-color: rgba(244, 67, 54, 0.4);
+}
+
+.glass-button.danger:hover {
+    background: rgba(244, 67, 54, 0.3);
+}
+
+/* Boutons mode minuteur sommeil */
+.sleep-mode-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.sleep-mode-btn.active {
+    opacity: 1;
+    background: rgba(74, 144, 226, 0.3);
+    border-color: var(--primary-color);
+}
+
+.sleep-mode-btn:hover {
+    opacity: 1;
+}
+
+/* Input time style glass */
+input[type="time"].glass-select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+input[type="time"].glass-select::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+/* Conteneur des boutons du minuteur */
+#settingsPanel section > div[style*="display:flex"] {
+    display: flex !important;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+/* Boutons du minuteur spécifiques */
+#sleepTimerStartBtn,
+#sleepTimerCancelBtn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 16px;
+    white-space: nowrap;
+}
+
+/* Animation pulsation pour le bouton actif */
+@keyframes pulse-timer {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(244, 67, 54, 0);
+    }
+}
+
+.active-timer {
+    background: rgba(244, 67, 54, 0.2) !important;
+    border-color: rgba(244, 67, 54, 0.5) !important;
+    color: #ff5252 !important;
+    animation: pulse-timer 2s ease-in-out infinite;
+}
+
+.active-timer:hover {
+    background: rgba(244, 67, 54, 0.3) !important;
+    border-color: rgba(244, 67, 54, 0.7) !important;
+}
+
+.active-timer .material-icons {
+    color: #ff5252;
+}
+
+/* === APP CONTAINER === */
+.app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* === HEADER === */
+.app-header {
+    padding: var(--spacing-lg) var(--spacing-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.app-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* === NOUVEAU HEADER STYLÉ === */
+.header-logo {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.header-icon:hover {
+    transform: scale(1.08) rotate(-3deg);
+}
+
+.logo-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    filter: blur(12px);
+    opacity: 0.5;
+    animation: logoGlow 3s ease-in-out infinite;
+    z-index: 1;
+}
+
+@keyframes logoGlow {
+    0%, 100% { 
+        opacity: 0.4; 
+        transform: scale(0.95); 
+    }
+    50% { 
+        opacity: 0.7; 
+        transform: scale(1.05); 
+    }
+}
+
+.header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.app-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+}
+
+.app-tagline {
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Responsive pour petit écran */
+@media (max-width: 360px) {
+    .header-icon {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .header-logo {
+        width: 42px;
+        height: 42px;
+    }
+    
+    .app-name {
+        font-size: 1.1rem;
+    }
+    
+    .app-tagline {
+        font-size: 0.65rem;
+    }
+}
+
+.settings-btn {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Indicateur de minuteur actif à côté du bouton paramètres */
+.sleep-timer-indicator {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--accent-color);
+    opacity: 0;
+    transform: scale(0.4);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.sleep-timer-indicator.active {
+    opacity: 1;
+    transform: scale(1);
+    animation: sleepTimerPulse 1.6s infinite ease-out;
+}
+
+@keyframes sleepTimerPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}
+
+/* === TAB NAVIGATION === */
+.tab-navigation {
+    display: flex;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    margin: 0 var(--spacing-md) var(--spacing-md);
+    border-radius: var(--radius-lg);
+}
+
+.tab-button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md);
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-normal);
+    cursor: pointer;
+}
+
+.tab-button .material-icons {
+    font-size: 1.25rem;
+}
+
+.tab-button.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--text-primary);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.tab-button:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* === TAB CONTENT === */
+.tabs-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.tabs-wrapper {
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+    touch-action: pan-y;
+}
+
+.tabs-slider {
+    display: flex;
+    width: 200%;
+    height: 100%;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.tabs-slider.no-transition {
+    transition: none;
+}
+
+.tab-content {
+    width: 50%;
+    flex-shrink: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 20px;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === RADIOS GRID === */
+.radios-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+    padding: 0 var(--spacing-md);
+    padding-bottom: 320px;
+	justify-content: center;
+}
+
+/* === MODE LISTE === */
+.radios-grid.list-view {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.radios-grid.list-view .radio-card {
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 14px;
+    transition: all 0.2s ease;
+    border-radius: var(--radius-md);
+}
+
+.radios-grid.list-view .radio-card:hover {
+    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.radios-grid.list-view .radio-logo {
+    width: 55px;
+    height: 55px;
+    min-width: 55px;
+    margin-bottom: 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.radios-grid.list-view .radio-info {
+    flex: 1;
+    text-align: left;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.radios-grid.list-view .radio-name {
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.radios-grid.list-view .radio-description {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 3px;
+    max-width: 100%;
+}
+
+.radios-grid.list-view .radio-badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    position: static;
+    flex-direction: row;
+}
+
+/* Icône play au survol en mode liste */
+.radios-grid.list-view .radio-card::after {
+    content: 'play_circle';
+    font-family: 'Material Icons';
+    font-size: 28px;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    margin-left: 8px;
+}
+
+.radios-grid.list-view .radio-card:hover::after {
+    opacity: 1;
+    color: var(--primary-color);
+}
+
+/* Cacher l'astuce en mode liste */
+.radios-grid.list-view::before {
+    display: none;
+}
+
+/* Mode liste sur grand écran : 2 colonnes */
+@media (min-width: 900px) {
+    .radios-grid.list-view {
+        max-width: 100%;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+}
+
+/* Mode liste sur très grand écran : 3 colonnes */
+@media (min-width: 1400px) {
+    .radios-grid.list-view {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* === BOUTONS VUE GRILLE/LISTE === */
+.category-filter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.filter-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px;
+    border-radius: 10px;
+}
+
+.view-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.view-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.view-btn.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+}
+
+.view-btn .material-icons {
+    font-size: 20px;
+}
+
+/* === RADIO CARD STRUCTURE === */
+.radio-card .radio-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    width: 100%;
+}
+
+.radio-card .radio-description {
+    display: none;
+}
+
+.radio-card .radio-badges {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+@media (min-width: 400px) {
+    .radios-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Message d'aide pour le long press */
+.radios-grid::before {
+    content: '💡 Astuce : Appui long sur une radio pour les options';
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 12px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    margin-bottom: 8px;
+}
+
+/* === RADIO CARD === */
+.radio-card {
+    position: relative;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    visibility: visible !important;
+    opacity: 1 !important;
+    min-height: 100px;
+    contain: none !important;
+    content-visibility: visible !important;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    animation: cardFadeIn 0.01s ease-out;
+    cursor: pointer;
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+@keyframes cardFadeIn {
+    from {
+        opacity: 0.99;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.radio-card .radio-logo {
+    content-visibility: visible !important;
+}
+
+.radio-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.radio-card.playing {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.4), rgba(56, 142, 60, 0.4));
+    border: 2px solid var(--success-color);
+    animation: pulse 2s infinite;
+}
+
+body.dark-theme .radio-card:hover {
+    background: rgba(124, 92, 255, 0.2);
+}
+
+body.dark-theme .radio-card.playing {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(56, 142, 60, 0.3));
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+    }
+}
+
+.radio-logo {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+}
+
+.radio-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: center;
+    color: var(--text-primary);
+}
+
+.favorite-indicator {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 1.2rem;
+    color: var(--accent-color);
+    opacity: 0;
+    transform: scale(0);
+    transition: all var(--transition-fast);
+}
+
+.radio-card.is-favorite .favorite-indicator {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* === FAVORIS === */
+.favoris-container {
+    padding: 0 var(--spacing-md);
+}
+
+.favoris-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl);
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.favoris-empty .material-icons {
+    font-size: 4rem;
+    margin-bottom: var(--spacing-md);
+    opacity: 0.5;
+}
+
+.favoris-empty p {
+    margin-bottom: var(--spacing-sm);
+}
+
+.favoris-hint {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* === PLAYER CONTAINER === */
+.player-container {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    z-index: 100;
+    transition: all var(--transition-normal);
+}
+
+body.dark-theme .player-container {
+    background: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* PLAYER MINIMISÉ - ULTRA COMPACT */
+.player-container.minimized {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Cacher les éléments non essentiels en mode minimisé */
+.player-container.minimized .visualizer,
+.player-container.minimized .volume-slider-container,
+.player-container.minimized #muteBtn,
+.player-container.minimized #castBtn {
+    display: none !important;
+}
+
+/* Réorganiser player-info en mode minimisé */
+.player-container.minimized .player-info {
+    flex: 1;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.player-container.minimized .player-logo {
+    width: 45px;
+    height: 45px;
+}
+
+/* Afficher le titre en ligne à côté du logo */
+.player-container.minimized .player-details {
+    display: block;
+}
+
+.player-container.minimized .player-title {
+    font-size: 0.95rem;
+    margin-bottom: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+}
+
+.player-container.minimized .player-status {
+    display: none;
+}
+
+/* Contrôles compacts */
+.player-container.minimized .player-controls {
+    margin-bottom: 0;
+    gap: 8px;
+}
+
+.player-container.minimized .control-btn {
+    width: 40px;
+    height: 40px;
+}
+
+/* Bouton agrandir repositionné */
+.player-container.minimized .toggle-player-btn {
+    right: 8px;
+    order: 10;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+}
+
+.toggle-player-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.toggle-player-btn .material-icons {
+    transition: transform var(--transition-normal);
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.player-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+}
+
+.player-details {
+    flex: 1;
+}
+
+.player-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.player-status {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Titre en cours (Now Playing) */
+.player-now-playing {
+    font-size: 0.8rem;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    animation: fadeInSlide 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 3px 8px;
+    border-radius: 12px;
+}
+
+.player-now-playing .material-icons {
+    animation: pulse 1.5s ease-in-out infinite;
+    color: #ffeb3b;
+}
+
+@keyframes fadeInSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Cacher le titre en cours quand minimisé */
+.player-container.minimized .player-now-playing {
+    display: none;
+}
+
+/* === BOUTON MINUTEUR DANS LE PLAYER === */
+#sleepTimerBtn {
+    position: relative;
+}
+
+#sleepTimerBtn.active {
+    background: rgba(255, 193, 7, 0.3);
+    border-color: #ffc107;
+}
+
+#sleepTimerBtn.active .material-icons {
+    color: #ffc107;
+}
+
+.sleep-timer-badge {
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #ffc107;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 1px 4px;
+    border-radius: 8px;
+    min-width: 28px;
+    text-align: center;
+}
+
+/* === POPUP MINUTEUR === */
+.sleep-timer-popup {
+    position: absolute;
+    bottom: 100%;
+    right: 10px;
+    margin-bottom: 10px;
+    background: rgba(30, 30, 50, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 12px;
+    min-width: 180px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    animation: popupSlideIn 0.2s ease;
+}
+
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sleep-popup-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #fff;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sleep-popup-header .material-icons {
+    font-size: 20px;
+    color: #ffc107;
+}
+
+.sleep-popup-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.sleep-option {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: #fff;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.sleep-option:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.02);
+}
+
+.sleep-option:active {
+    transform: scale(0.98);
+}
+
+.sleep-option.active {
+    background: rgba(255, 193, 7, 0.3);
+    border-color: #ffc107;
+    color: #ffc107;
+}
+
+.sleep-popup-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 8px 0;
+}
+
+.sleep-option-time {
+    width: 100%;
+    justify-content: flex-start;
+    background: rgba(74, 144, 226, 0.15);
+    border-color: rgba(74, 144, 226, 0.3);
+}
+
+.sleep-option-time .material-icons {
+    font-size: 18px;
+    color: var(--primary-color);
+}
+
+.sleep-time-input {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.sleep-time-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.sleep-option-cancel {
+    width: 100%;
+    justify-content: flex-start;
+    background: rgba(244, 67, 54, 0.15);
+    border-color: rgba(244, 67, 54, 0.3);
+    color: #f44336;
+    margin-top: 6px;
+}
+
+.sleep-option-cancel .material-icons {
+    color: #f44336;
+}
+
+.sleep-popup-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    margin-top: 8px;
+    background: rgba(76, 175, 80, 0.15);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    border-radius: 10px;
+    color: #4caf50;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.sleep-popup-status .material-icons {
+    font-size: 18px;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Cacher le popup et badge en mode minimisé */
+.player-container.minimized .sleep-timer-popup {
+    display: none !important;
+}
+
+/* === SÉLECTEUR DE THÈME COULEUR === */
+.theme-color-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.theme-color-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.theme-color-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+}
+
+.theme-color-btn.active {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.theme-color-preview {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.theme-color-name {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.theme-color-btn.active .theme-color-name {
+    color: #fff;
+    font-weight: 600;
+}
+
+.theme-default-badge {
+    font-size: 0.6rem;
+    position: relative;
+    top: 4px;
+    right: 4px;
+}
+
+/* Responsive pour petits écrans */
+@media (max-width: 360px) {
+    .theme-color-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .theme-color-preview {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .theme-color-name {
+        font-size: 0.65rem;
+    }
+}
+
+/* === VISUALIZER === */
+.visualizer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 4px;
+    height: 40px;
+    margin-bottom: var(--spacing-md);
+}
+
+.visualizer .bar {
+    width: 8px;
+    height: 20%;
+    background: linear-gradient(to top, var(--primary-color), var(--secondary-color));
+    border-radius: 4px;
+    transition: height 0.1s ease;
+}
+
+.visualizer.active .bar {
+    animation: visualize 1s ease-in-out infinite;
+}
+
+.visualizer .bar:nth-child(1) {
+    animation-delay: 0s;
+}
+.visualizer .bar:nth-child(2) {
+    animation-delay: 0.1s;
+}
+.visualizer .bar:nth-child(3) {
+    animation-delay: 0.2s;
+}
+.visualizer .bar:nth-child(4) {
+    animation-delay: 0.3s;
+}
+.visualizer .bar:nth-child(5) {
+    animation-delay: 0.4s;
+}
+
+@keyframes visualize {
+    0%, 100% {
+        height: 20%;
+    }
+    50% {
+        height: 80%;
+    }
+}
+
+/* === PLAYER CONTROLS === */
+.player-controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.control-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.control-btn.danger {
+    background: rgba(244, 67, 54, 0.2);
+    border-color: rgba(244, 67, 54, 0.4);
+}
+
+.control-btn.danger:hover {
+    background: rgba(244, 67, 54, 0.3);
+}
+
+/* === VOLUME SLIDER === */
+.volume-slider-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.volume-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    outline: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+.volume-value {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    min-width: 40px;
+    text-align: right;
+}
+
+/* === CONTEXT MENU === */
+.context-menu {
+    position: fixed;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-sm);
+    z-index: 1000;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    min-width: 200px;
+}
+
+.context-menu-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    width: 100%;
+    transition: all var(--transition-fast);
+}
+
+.context-menu-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.context-menu-item .material-icons {
+    font-size: 1.2rem;
+}
+
+/* === TOAST === */
+.toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 0.9rem;
+    z-index: 10000;
+    opacity: 0;
+    transition: all var(--transition-normal);
+    pointer-events: none;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* === LOADING OVERLAY === */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========================================
+   PANNEAU DES PARAMÈTRES
+   ======================================== */
+#settingsOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+#settingsOverlay.show {
+    display: flex;
+}
+
+#settingsPanel {
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+    border-radius: 20px;
+    animation: slideUp 0.3s ease;
+    /* Assure que le panneau suit le thème */
+    color: var(--text-primary);
+}
+
+#settingsPanel h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+}
+
+#settingsPanel h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+#settingsPanel p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+#settingsPanel section {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#settingsPanel section:last-child {
+    border-bottom: none;
+}
+
+/* Amélioration du select dans le panneau */
+#settingsPanel select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#settingsPanel select:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+#settingsPanel select:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.2);
+}
+
+/* OPTIONS DU SELECT - CORRECTION THÈME */
+#settingsPanel select option {
+    background: #2a2a4a;
+    color: white;
+    padding: 10px;
+}
+
+body.dark-theme #settingsPanel select option {
+    background: #1a1a2e;
+    color: white;
+}
+
+/* Style des checkboxes */
+#settingsPanel input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+}
+
+#settingsPanel label {
+    cursor: pointer;
+    user-select: none;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ========================================
+   BANNIÈRE PWA
+   ======================================== */
+#pwaInstallBanner {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 450px;
+    width: calc(100% - 32px);
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    animation: slideUp 0.4s ease;
+    color: var(--text-primary);
+}
+
+.pwa-install-banner {
+    display: none;
+}
+
+.pwa-install-banner.show {
+    display: block;
+}
+
+/* Boutons de la bannière PWA */
+#pwaInstallBanner .glass-button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+}
+
+/* ========================================
+   OVERLAY DE REPRISE AUTOMATIQUE
+   ======================================== */
+.auto-resume-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.auto-resume-card {
+    max-width: 400px;
+    width: 100%;
+    padding: 32px;
+    text-align: center;
+    border-radius: 20px;
+    animation: slideUp 0.4s ease;
+}
+
+.auto-resume-card h3 {
+    margin: 16px 0 8px 0;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.auto-resume-card p {
+    margin: 0 0 24px 0;
+    opacity: 0.8;
+    font-size: 1rem;
+}
+
+.auto-resume-card .glass-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 160px;
+    justify-content: center;
+}
+
+/* ========================================
+   FILTRE PAR CATÉGORIE
+   ======================================== */
+.category-filter {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    margin: 0 20px 10px 20px;
+    border-radius: 16px;
+}
+
+.category-filter label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: white;
+    white-space: nowrap;
+}
+
+.category-filter label .material-icons {
+    font-size: 20px;
+    opacity: 0.8;
+}
+
+.glass-select {
+    flex: 1;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: white;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.glass-select:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.glass-select:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.2);
+}
+
+.glass-select option {
+    background: #2a2a4a;
+    color: white;
+    padding: 10px;
+}
+
+body.dark-theme .glass-select option {
+    background: #1a1a2e;
+    color: white;
+}
+
+.category-filter.hidden {
+    display: none;
+}
+
+/* ========================================
+   BOUTON THÈME
+   ======================================== */
+.theme-toggle-btn {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    min-width: auto;
+}
+
+.theme-toggle-btn .material-icons {
+    font-size: 24px;
+    transition: transform 0.3s ease;
+}
+
+body.dark-theme .theme-toggle-btn {
+    background: rgba(124, 92, 255, 0.3);
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.05);
+}
+
+.theme-toggle-btn.rotating .material-icons {
+    animation: rotate-icon 0.5s ease;
+}
+
+@keyframes rotate-icon {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ========================================
+   TABLETTE 8 POUCES (600px - 767px)
+   Résolution : 600x841
+   ======================================== */
+@media (min-width: 600px) and (max-width: 767px) {
+    /* Container pleine largeur */
+    .app-container {
+        max-width: 100%;
+        padding: 0;
+    }
+    
+    /* Header plus compact */
+    .app-header {
+        padding: 16px 12px;
+    }
+    
+    .app-title {
+        font-size: 1.3rem;
+    }
+    
+    /* 4 COLONNES pour les radios */
+    .radios-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        padding: 0 12px;
+        padding-bottom: 320px;
+    }
+    
+    /* Cartes radio optimisées */
+    .radio-card {
+        padding: 10px;
+    }
+    
+    .radio-logo {
+        width: 100%;
+        aspect-ratio: 1;
+    }
+    
+    .radio-name {
+        font-size: 0.8rem;
+        line-height: 1.2;
+    }
+    
+    /* Indicateurs */
+    .favorite-indicator {
+        font-size: 1rem;
+        top: 6px;
+        right: 6px;
+    }
+    
+    .radio-card-chat-badge {
+        font-size: 0.65rem;
+        padding: 2px 4px;
+        top: 6px;
+        left: 6px;
+    }
+    
+    /* Onglets */
+    .tab-navigation {
+        padding: 6px;
+        margin: 0 12px 12px;
+    }
+    
+    .tab-button {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+    
+    .tab-button .material-icons {
+        font-size: 1.1rem;
+    }
+    
+    /* Filtre catégorie */
+    .category-filter {
+        padding: 10px 16px;
+        margin: 0 12px 10px 12px;
+    }
+    
+    .glass-select {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+    
+    /* Player optimisé */
+    .player-container {
+        padding: 16px;
+    }
+    
+    .player-logo {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .player-title {
+        font-size: 1.1rem;
+    }
+    
+    .player-status {
+        font-size: 0.85rem;
+    }
+    
+    /* Contrôles player */
+    .control-btn {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .control-btn .material-icons {
+        font-size: 24px;
+    }
+    
+    /* Visualiseur */
+    .visualizer {
+        height: 35px;
+        margin-bottom: 12px;
+    }
+    
+    .visualizer .bar {
+        width: 6px;
+    }
+    
+    /* Volume slider */
+    .volume-slider-container {
+        margin-bottom: 0;
+    }
+    
+    .volume-value {
+        font-size: 0.85rem;
+    }
+    
+    /* Chat */
+    #chatPanel {
+        max-width: 100%;
+        height: 100vh;
+        border-radius: 0;
+    }
+    
+    .chat-header {
+        padding: 16px;
+    }
+    
+    .chat-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    .chat-messages {
+        padding: 12px;
+    }
+    
+    .chat-message {
+        padding: 10px;
+    }
+    
+    .chat-message-username {
+        font-size: 0.85rem;
+    }
+    
+    .chat-message-text {
+        font-size: 0.9rem;
+    }
+    
+    /* Input chat */
+    .chat-input-container {
+        padding: 12px;
+    }
+    
+    .chat-input {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+    
+    /* Emojis picker - 6 colonnes */
+    .chat-emoji-picker {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 6px;
+        padding: 10px;
+        left: 12px;
+        right: 12px;
+        max-width: calc(100% - 24px);
+    }
+    
+    .emoji-btn {
+        font-size: 1.2rem;
+        padding: 6px;
+    }
+    
+    /* Menu contextuel */
+    .context-menu {
+        min-width: 180px;
+    }
+    
+    .context-menu-item {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+    
+    /* Toast */
+    .toast {
+        font-size: 0.85rem;
+        padding: 10px 20px;
+        bottom: 90px;
+    }
+    
+    /* Panneau paramètres */
+    #settingsPanel {
+        max-width: 100%;
+        padding: 20px;
+    }
+    
+    #settingsPanel h2 {
+        font-size: 1.1rem;
+    }
+    
+    #settingsPanel h3 {
+        font-size: 1rem;
+    }
+    
+    #settingsPanel p {
+        font-size: 0.85rem;
+    }
+    
+    #settingsPanel .glass-button {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+    
+    /* Bannière PWA */
+    #pwaInstallBanner {
+        max-width: calc(100% - 24px);
+        padding: 12px;
+    }
+    
+    /* Overlay auto-resume */
+    .auto-resume-card {
+        padding: 24px;
+    }
+    
+    .auto-resume-card h3 {
+        font-size: 1.2rem;
+    }
+}
+
+/* Mobile strict (moins de 600px) */
+@media (max-width: 599px) {
+    .radios-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ========================================
+   RESPONSIVE MOBILE
+   ======================================== */
+@media (max-width: 768px) {
+    .radios-grid {
+        padding-bottom: 320px;
+    }
+    
+    #settingsPanel .glass-button {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+        min-width: 55px;
+    }
+    
+    #settingsPanel .glass-button .material-icons {
+        font-size: 18px;
+    }
+    
+    #sleepTimerStartBtn,
+    #sleepTimerCancelBtn {
+        padding: 10px 12px;
+        gap: 4px;
+    }
+    
+    .category-filter {
+        margin: 0 12px 10px 12px;
+        padding: 10px 16px;
+    }
+    
+    .category-filter label span:last-child {
+        display: none;
+    }
+    
+    .glass-select {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+}
+
+/* === SUPPORT TACTILE === */
+@media (hover: none) and (pointer: coarse) {
+    .control-btn {
+        min-width: 44px !important;
+        min-height: 44px !important;
+    }
+
+    .tab-button {
+        min-height: 44px !important;
+    }
+
+    .context-menu-item {
+        min-height: 44px !important;
+    }
+
+    .radio-card:hover {
+        transform: none !important;
+    }
+
+    .glass-button:hover {
+        transform: none !important;
+    }
+}
+
+/* === ANIMATIONS RÉDUITES POUR MOBILE === */
+@media (max-width: 768px) and (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Desktop : plus large */
+@media (min-width: 768px) {
+    .app-container {
+        max-width: 95%; /* ou 100% pour pleine largeur */
+    }
+    
+    .radios-grid {
+        grid-template-columns: repeat(6, 1fr); /* Au lieu de 8 */
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+	
+	.tab-navigation {
+        max-width: 400px;
+        margin: 0 auto var(--spacing-md);
+    }
+	
+	.category-filter {
+        max-width: 500px;
+        margin: 0 auto 10px auto;
+    }
+	
+	.radio-card {
+        padding: 20px; /* Au lieu de 16px */
+    }
+    
+    .radio-name {
+        font-size: 0.95rem; /* Un peu plus grand */
+    }
+}
+
+/* ========================================
+   CHAT EN DIRECT - CSS CORRIGÉ ET COMPLET
+   REMPLACEZ TOUTE LA SECTION CHAT (lignes 1498-1784)
+   PAR CE CODE
+   ======================================== */
+
+/* === OVERLAY DU CHAT === */
+#chatOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+/* === PANNEAU DU CHAT === */
+#chatPanel {
+    max-width: 500px;
+    width: 100%;
+    height: 600px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* === HEADER DU CHAT === */
+.chat-header {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+    min-height: 60px;
+}
+
+.chat-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    margin: 0;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.chat-header h3 .material-icons {
+    font-size: 20px;
+}
+
+.chat-header h3 #chatRadioName {
+    font-weight: 600;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Partie droite du header (personnes + bouton fermer) */
+.chat-header > div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+/* Compteur de personnes en ligne */
+.chat-online-count {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.chat-online-count::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #4caf50;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* Bouton fermer */
+#chatCloseBtn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+#chatCloseBtn .material-icons {
+    font-size: 20px;
+}
+
+/* === ZONE DES MESSAGES === */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0; /* Important pour le scroll */
+}
+
+/* === UN MESSAGE === */
+.chat-message {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    animation: slideIn 0.3s ease;
+}
+
+.chat-message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.chat-message-username {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.chat-message-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.chat-message-text {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    word-wrap: break-word;
+    word-break: break-word;
+    line-height: 1.4;
+}
+
+/* === BOUTON SUPPRIMER (ADMIN) === */
+.chat-message-delete {
+    background: rgba(244, 67, 54, 0.2);
+    border: 1px solid rgba(244, 67, 54, 0.4);
+    color: #ff5252;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: none;
+    flex-shrink: 0;
+}
+
+.chat-message-delete:hover {
+    background: rgba(244, 67, 54, 0.4);
+}
+
+.chat-message.is-admin .chat-message-delete {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* === BADGE ADMIN/VOUS === */
+.admin-badge {
+    background: var(--primary-color);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+/* === ZONE DE SAISIE === */
+.chat-input-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+    position: relative;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    min-width: 0; /* Important pour flex */
+}
+
+.chat-input::placeholder {
+    color: var(--text-muted);
+}
+
+.chat-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Boutons emoji et envoyer */
+#chatEmojiBtn,
+#chatSendBtn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+#chatEmojiBtn {
+    font-size: 1.3rem;
+}
+
+#chatSendBtn .material-icons {
+    font-size: 20px;
+}
+
+/* === PICKER EMOJIS === */
+.chat-emoji-picker {
+    position: initial;
+    bottom: 100%;
+    left: 16px;
+    right: 16px;
+    margin-bottom: 8px;
+    background: rgba(30, 30, 40, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 12px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 4px;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
+    z-index: 1002;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.emoji-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emoji-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.15);
+}
+
+.emoji-btn:active {
+    transform: scale(0.95);
+}
+
+/* === INFO EN BAS === */
+.chat-info {
+    padding: 10px 16px;
+    background: rgba(255, 200, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.chat-info .material-icons {
+    font-size: 14px;
+}
+
+/* === BADGE NOTIFICATION CHAT === */
+.control-btn {
+    position: relative;
+}
+
+.chat-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--accent-color);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 10px;
+    min-width: 16px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* === BADGE MESSAGES SUR CARTE RADIO === */
+.radio-card-chat-badge {
+    position: fixed;
+    top: 6px;
+    left: 6px;
+    background: var(--accent-color);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 20px;
+    text-align: center;
+    animation: pulse 2s infinite;
+    z-index: 2;
+}
+
+/* === BADGE AUDITEURS SUR CARTE RADIO === */
+.radio-card-listeners-badge {
+    position: absolute;
+    bottom: 3px;
+    right: 5px;
+    background: rgba(76, 175, 80, 0.9);
+    color: white;
+    font-size: 0.7rem !important;
+    font-weight: 600;
+    padding: 3px 6px !important;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 2;
+}
+
+.radio-card-listeners-badge .material-icons {
+    font-size: 12px;
+}
+
+/* === ANIMATIONS === */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* ========================================
+   RESPONSIVE - TABLETTE (600px - 768px)
+   ======================================== */
+@media (min-width: 600px) and (max-width: 768px) {
+    #chatPanel {
+        max-width: 450px;
+        height: 70vh;
+        max-height: 70vh;
+        border-radius: 20px;
+    }
+    
+    .chat-header h3 #chatRadioName {
+        max-width: 150px;
+    }
+    
+    .chat-emoji-picker {
+        grid-template-columns: repeat(8, 1fr);
+    }
+}
+
+/* ========================================
+   RESPONSIVE - MOBILE (< 600px)
+   ======================================== */
+@media (max-width: 599px) {
+    #chatOverlay {
+        padding: 0;
+        align-items: flex-end;
+    }
+    
+    #chatPanel {
+        width: 100%;
+        max-width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+    }
+    
+    .chat-header {
+        padding: 12px 16px;
+        min-height: 56px;
+        padding-top: max(12px, env(safe-area-inset-top));
+    }
+    
+    .chat-header h3 {
+        font-size: 0.95rem;
+    }
+    
+    .chat-header h3 .material-icons {
+        font-size: 18px;
+    }
+    
+    .chat-header h3 #chatRadioName {
+        max-width: 100px;
+        font-size: 0.9rem;
+    }
+    
+    .chat-online-count {
+        font-size: 0.75rem;
+    }
+    
+    #chatCloseBtn {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+    }
+    
+    #chatCloseBtn .material-icons {
+        font-size: 18px;
+    }
+    
+    .chat-messages {
+        padding: 12px;
+        gap: 10px;
+    }
+    
+    .chat-message {
+        padding: 10px;
+    }
+    
+    .chat-message-username {
+        font-size: 0.85rem;
+    }
+    
+    .chat-message-text {
+        font-size: 0.9rem;
+    }
+    
+    .chat-input-container {
+        padding: 10px 12px;
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+    }
+    
+    .chat-input {
+        padding: 10px 14px;
+        font-size: 16px; /* Évite le zoom sur iOS */
+    }
+    
+    #chatEmojiBtn,
+    #chatSendBtn {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+    
+    .chat-emoji-picker {
+        left: 12px;
+        right: 12px;
+        padding: 10px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        border-radius: 12px;
+    }
+    
+    .emoji-btn {
+        font-size: 1.4rem;
+        padding: 10px;
+    }
+    
+    .chat-info {
+        padding: 8px 12px;
+        font-size: 0.75rem;
+    }
+    
+    /* Badge auditeurs plus petit sur mobile */
+    .radio-card-listeners-badge {
+        font-size: 0.65rem;
+        padding: 2px 5px;
+    }
+    
+    .radio-card-listeners-badge .material-icons {
+        font-size: 10px;
+    }
+}
+
+/* ========================================
+   RESPONSIVE - PETIT MOBILE (< 380px)
+   ======================================== */
+@media (max-width: 379px) {
+    .chat-header h3 {
+        font-size: 0.85rem;
+        gap: 4px;
+    }
+    
+    .chat-header h3 #chatRadioName {
+        max-width: 80px;
+        font-size: 0.85rem;
+    }
+    
+    .chat-online-count {
+        font-size: 0.7rem;
+    }
+    
+    .chat-emoji-picker {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .emoji-btn {
+        font-size: 1.2rem;
+        padding: 8px;
+    }
+}
+
+/* ========================================
+   FIX POUR IPHONE X ET PLUS (Safe Areas)
+   ======================================== */
+@supports (padding-top: env(safe-area-inset-top)) {
+    @media (max-width: 768px) {
+        #chatPanel {
+            padding-top: 0;
+        }
+        
+        .chat-header {
+            padding-top: calc(env(safe-area-inset-top) + 12px);
+        }
+        
+        .chat-input-container {
+            padding-bottom: calc(env(safe-area-inset-bottom) + 10px);
+        }
+        
+        .chat-info {
+            padding-bottom: calc(env(safe-area-inset-bottom) + 8px);
+        }
+    }
+}
+
+/* ========================================
+   THÈME SOMBRE - AJUSTEMENTS CHAT
+   ======================================== */
+body.dark-theme .chat-emoji-picker {
+    background: rgba(20, 20, 30, 0.98);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme .chat-message {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+body.dark-theme .chat-input {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-theme .chat-input:focus {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* === FIX POUR IPHONE X ET PLUS === */
+@supports (padding-top: env(safe-area-inset-top)) {
+    @media (max-width: 768px) {
+        .app-header {
+            padding-top: calc(env(safe-area-inset-top) + 16px) !important;
+        }
+
+        .player-container {
+            padding-bottom: calc(env(safe-area-inset-bottom) + 12px) !important;
+        }
+
+        #pwaInstallBanner {
+            bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
+			z-index: 10000;
+        }
+
+        #settingsPanel {
+            margin-bottom: env(safe-area-inset-bottom) !important;
+        }
+    }
+}
+/* === BOUTON RETOUR ACCUEIL === */
+.home-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: white;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.home-link:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+}
+
+.home-link .material-icons {
+    font-size: 24px;
+}
+
+/* === ASTUCE RADIOS === */
+.radios-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 0 var(--spacing-md) var(--spacing-sm);
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    text-align: center;
+}
+
+.radios-hint .material-icons {
+    font-size: 14px;
+    color: #fbbf24;
+}

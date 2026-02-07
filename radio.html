@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>   
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Radio - Actu & Média</title>
+    <meta name="description" content="Écoutez gratuitement vos radios françaises préférées : locales, nationales, thématiques. Player moderne avec favoris, chat et minuteur sommeil.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Radio - Actu & Média">
+    <meta property="og:description" content="Écoutez gratuitement vos radios françaises préférées sur Actu & Média">
+    <meta property="og:image" content="https://actuetmedia.fr/icons/icon-512.png">
+    <meta property="og:url" content="https://actuetmedia.fr/radio.html">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="icon" type="image/png" href="icons/icon-192.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/radio-player.css">
+    
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header glass-effect">
+            <h1 class="app-title">
+                <a href="index.html" class="home-link" title="Retour à l'accueil">
+                    <span class="material-icons">arrow_back</span>
+                </a>
+                <div class="header-text">
+                    <span class="app-name">Radio</span>
+                    <span class="app-tagline">Actu & Média</span>
+                </div>
+            </h1>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="theme-toggle-btn glass-button" id="themeToggleBtn" 
+                        title="Changer de thème" 
+                        aria-label="Changer de thème">
+                    <span class="material-icons">dark_mode</span>
+                </button>
+                <button class="settings-btn glass-button" id="settingsBtn" 
+                        aria-label="Ouvrir les paramètres">
+                    <span class="material-icons">settings</span>
+                    <span id="sleepTimerIndicator" class="sleep-timer-indicator" aria-hidden="true"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Onglets de navigation -->
+        <nav class="tab-navigation glass-effect" aria-label="Navigation principale">
+            <button class="tab-button active" data-tab="radios" aria-label="Afficher toutes les radios">
+                <span class="material-icons" aria-hidden="true">radio</span>
+                <span>Radios</span>
+            </button>
+            <button class="tab-button" data-tab="favoris" aria-label="Afficher les radios favorites">
+                <span class="material-icons" aria-hidden="true">favorite</span>
+                <span>Favoris</span>
+            </button>
+        </nav>
+
+        <!-- Filtre par catégorie et mode d'affichage -->
+        <div class="category-filter glass-effect" id="categoryFilter">
+            <div class="filter-left">
+                <label for="categorySelect">
+                    <span class="material-icons" aria-hidden="true">filter_list</span>
+                    <span>Catégorie :</span>
+                </label>
+                <select id="categorySelect" class="glass-select" aria-label="Filtrer par catégorie">
+                    <option value="toutes">Toutes les radios</option>
+                    <option value="locale">Locales</option>
+                    <option value="generaliste">Généralistes</option>
+                    <option value="rock">Rock</option>
+                    <option value="info">Info / Talk</option>
+                    <option value="thematique">Thématiques</option>
+                </select>
+            </div>
+            <div class="view-toggle" id="viewToggle">
+                <button class="view-btn active" data-view="grid" title="Vue grille" aria-label="Affichage en grille">
+                    <span class="material-icons">grid_view</span>
+                </button>
+                <button class="view-btn" data-view="list" title="Vue liste" aria-label="Affichage en liste">
+                    <span class="material-icons">view_list</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Astuce -->
+        <p class="radios-hint">
+            <span class="material-icons">lightbulb</span>
+            Astuce : Appui long sur une radio pour les options
+        </p>
+		
+        <!-- Conteneur des onglets -->
+        <main class="tabs-container" role="main">
+            <div class="tabs-wrapper">
+                <div class="tabs-slider" id="tabsSlider">
+                    <!-- Onglet Radios -->
+                    <div class="tab-content active" id="radios-tab" role="tabpanel" aria-label="Liste des radios">
+                        <div class="radios-grid" id="radiosGrid">
+                            <!-- Les radios seront ajoutées dynamiquement ici -->
+                        </div>
+                    </div>
+
+                    <!-- Onglet Favoris -->
+                    <div class="tab-content" id="favoris-tab" role="tabpanel" aria-label="Radios favorites">
+                        <div class="favoris-container">
+                            <div class="favoris-empty" id="favorisEmpty">
+                                <span class="material-icons" aria-hidden="true">favorite_border</span>
+                                <p>Aucun favori</p>
+                                <p class="favoris-hint">Appuyez longuement sur une radio pour l'ajouter aux favoris</p>
+                            </div>
+                            <div class="radios-grid" id="favorisGrid" style="display: none;">
+                                <!-- Les favoris seront ajoutés dynamiquement ici -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Player flottant -->
+        <div class="player-container glass-effect" id="playerContainer" style="display: none;" role="region" aria-label="Lecteur audio">
+            <button class="toggle-player-btn glass-button" id="togglePlayerBtn" aria-label="Agrandir ou réduire le lecteur">
+                <span class="material-icons">expand_more</span>
+            </button>
+            
+            <div class="player-info">
+                <img class="player-logo" id="playerLogo" src="" alt="">
+                <div class="player-details">
+                    <h3 class="player-title" id="playerTitle">--</h3>
+                    <p class="player-status" id="playerStatus">En pause</p>
+                    <p class="player-now-playing" id="playerNowPlaying" style="display: none;">
+                        <span class="material-icons" style="font-size: 14px; vertical-align: middle;">music_note</span>
+                        <span id="nowPlayingText">--</span>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Visualiseur -->
+            <div class="visualizer" id="visualizer" aria-hidden="true">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            
+            <!-- Contrôles -->
+            <div class="player-controls">
+                <button class="control-btn glass-button" id="playPauseBtn" aria-label="Lecture ou pause">
+                    <span class="material-icons">play_arrow</span>
+                </button>
+                
+                <button class="control-btn glass-button" id="muteBtn" aria-label="Couper ou réactiver le son">
+                    <span class="material-icons">volume_up</span>
+                </button>
+                
+                <button class="control-btn glass-button danger" id="stopBtn" aria-label="Arrêter la lecture">
+                    <span class="material-icons">stop</span>
+                </button>
+                
+                <!-- Bouton Chat -->
+                <button class="control-btn glass-button" id="chatBtn" aria-label="Ouvrir le chat" title="Chat en direct">
+                    <span class="material-icons">chat</span>
+                    <span class="chat-badge" id="chatBadge" style="display: none;">0</span>
+                </button>
+                
+                <button class="control-btn glass-button" id="castBtn" title="Caster sur un appareil" aria-label="Caster sur Chromecast">
+                    <span class="material-icons">cast</span>
+                </button>
+                
+                <!-- Bouton Minuteur Sommeil -->
+                <button class="control-btn glass-button" id="sleepTimerBtn" title="Minuteur sommeil" aria-label="Programmer l'arrêt">
+                    <span class="material-icons">bedtime</span>
+                    <span class="sleep-timer-badge" id="sleepTimerBadge" style="display: none;">0</span>
+                </button>
+            </div>
+            
+            <!-- Popup Minuteur Sommeil -->
+            <div class="sleep-timer-popup" id="sleepTimerPopup" style="display: none;">
+                <div class="sleep-popup-header">
+                    <span class="material-icons">bedtime</span>
+                    <span>Minuteur sommeil</span>
+                </div>
+                <div class="sleep-popup-options">
+                    <button class="sleep-option" data-minutes="15">15 min</button>
+                    <button class="sleep-option" data-minutes="30">30 min</button>
+                    <button class="sleep-option" data-minutes="45">45 min</button>
+                    <button class="sleep-option" data-minutes="60">1 heure</button>
+                    <button class="sleep-option" data-minutes="90">1h30</button>
+                    <button class="sleep-option" data-minutes="120">2 heures</button>
+                </div>
+                <div class="sleep-popup-divider"></div>
+                <button class="sleep-option sleep-option-time" id="sleepOptionTime">
+                    <span class="material-icons">schedule</span>
+                    <span>Heure précise...</span>
+                </button>
+                <input type="time" id="sleepPopupTime" class="sleep-time-input" style="display: none;">
+                <button class="sleep-option sleep-option-cancel" id="sleepOptionCancel" style="display: none;">
+                    <span class="material-icons">close</span>
+                    <span>Annuler le minuteur</span>
+                </button>
+                <div class="sleep-popup-status" id="sleepPopupStatus" style="display: none;">
+                    <span class="material-icons">timer</span>
+                    <span id="sleepPopupStatusText">Arrêt dans 45 min</span>
+                </div>
+            </div>
+            
+            <!-- Slider de volume -->
+            <div class="volume-slider-container" id="volumeSliderContainer" style="display: flex;">
+                <input type="range" class="volume-slider" id="volumeSlider" 
+                       min="0" max="100" value="30" 
+                       aria-label="Contrôle du volume">
+                <span class="volume-value" aria-live="polite">30%</span>
+            </div>
+        </div>
+
+        <!-- Menu contextuel -->
+        <div class="context-menu glass-effect" id="contextMenu" style="display: none;" role="menu">
+            <button class="context-menu-item" id="addToFavorites" role="menuitem">
+                <span class="material-icons" aria-hidden="true">favorite</span>
+                <span>Ajouter aux favoris</span>
+            </button>
+            <button class="context-menu-item" id="removeFromFavorites" style="display: none;" role="menuitem">
+                <span class="material-icons" aria-hidden="true">favorite_border</span>
+                <span>Retirer des favoris</span>
+            </button>
+            <button class="context-menu-item" id="shareRadio" role="menuitem">
+                <span class="material-icons" aria-hidden="true">share</span>
+                <span>Partager</span>
+            </button>
+        </div>
+
+        <!-- Toast notifications -->
+        <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+	
+        <!-- Bouton de reprise automatique -->
+        <div class="auto-resume-overlay" id="autoResumeOverlay" style="display: none;">
+            <div class="auto-resume-card glass-effect">
+                <span class="material-icons" style="font-size: 48px; color: #6366f1;" aria-hidden="true">radio</span>
+                <h3 id="autoResumeTitle">Reprendre la lecture</h3>
+                <p id="autoResumeText">Votre dernière radio est prête</p>
+                <button id="autoResumeBtn" class="glass-button" 
+                        style="padding: 12px 32px; font-size: 1.1rem;"
+                        aria-label="Démarrer la lecture de la dernière radio">
+                    <span class="material-icons">play_arrow</span>
+                    Démarrer
+                </button>
+                <button id="autoResumeCancelBtn" class="glass-button" 
+                        style="margin-top: 8px; opacity: 0.7;"
+                        aria-label="Ne pas reprendre la lecture">
+                    Annuler
+                </button>
+            </div>
+        </div>
+			
+        <!-- Loading overlay -->
+        <div class="loading-overlay" id="loadingOverlay" style="display: none;" aria-hidden="true">
+            <div class="loading-spinner"></div>
+        </div>
+		
+        <!-- Panneau de chat en direct -->
+        <div id="chatOverlay" style="display: none;">
+            <div id="chatPanel" class="glass-effect">
+                <div class="chat-header">
+                    <h3>
+                        <span class="material-icons">chat</span>
+                        Chat <span id="chatRadioName">Radio</span>
+                    </h3>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <span class="chat-online-count" id="chatOnlineCount">0 personnes</span>
+                        <button id="chatCloseBtn" class="glass-button" aria-label="Fermer le chat">
+                            <span class="material-icons">close</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Les messages apparaîtront ici -->
+                </div>
+                
+                <div class="chat-input-container">
+                    <button id="chatEmojiBtn" class="glass-button" aria-label="Ajouter un emoji" style="padding: 12px;">
+                        <span>😊</span>
+                    </button>
+                    <input type="text" 
+                           id="chatInput" 
+                           class="chat-input glass-effect" 
+                           placeholder="Votre message..." 
+                           maxlength="500"
+                           aria-label="Écrire un message">
+                    <button id="chatSendBtn" class="glass-button" aria-label="Envoyer le message">
+                        <span class="material-icons">send</span>
+                    </button>
+                </div>
+
+                <!-- Picker emojis -->
+                <div id="chatEmojiPicker" class="chat-emoji-picker" style="display: none;">
+                    <button class="emoji-btn">😀</button>
+                    <button class="emoji-btn">😂</button>
+                    <button class="emoji-btn">😍</button>
+                    <button class="emoji-btn">😊</button>
+                    <button class="emoji-btn">😎</button>
+                    <button class="emoji-btn">🤔</button>
+                    <button class="emoji-btn">👍</button>
+                    <button class="emoji-btn">👎</button>
+                    <button class="emoji-btn">❤️</button>
+                    <button class="emoji-btn">🔥</button>
+                    <button class="emoji-btn">🎵</button>
+                    <button class="emoji-btn">🎶</button>
+                    <button class="emoji-btn">📻</button>
+                    <button class="emoji-btn">🎧</button>
+                    <button class="emoji-btn">⭐</button>
+                    <button class="emoji-btn">✨</button>
+                </div>
+                
+                <div class="chat-info">
+                    <span class="material-icons" style="font-size: 16px;">info</span>
+                    Soyez respectueux 🙏 Messages modérés
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panneau des paramètres -->
+    <div id="settingsOverlay">
+        <div id="settingsPanel" class="glass-effect" role="dialog" aria-labelledby="settingsTitle">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                <h2 id="settingsTitle">
+                    <span class="material-icons" aria-hidden="true">settings</span>
+                    Paramètres
+                </h2>
+                <button id="settingsCloseBtn" class="glass-button" aria-label="Fermer les paramètres">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+
+            <div style="font-size:0.85rem; display:flex; flex-direction:column; gap:12px;">
+                <!-- Minuteur de sommeil -->
+                <section>
+                    <h3>Minuteur de sommeil</h3>
+                    <p>La radio s'arrêtera automatiquement après la durée choisie ou à une heure précise.</p>
+                    
+                    <!-- Choix du mode -->
+                    <div class="sleep-timer-modes" style="display: flex; gap: 8px; margin-bottom: 12px;">
+                        <button id="sleepModeDelay" class="glass-button sleep-mode-btn active" style="flex: 1; padding: 10px;">
+                            <span class="material-icons" style="font-size: 18px;">hourglass_empty</span>
+                            <span>Durée</span>
+                        </button>
+                        <button id="sleepModeTime" class="glass-button sleep-mode-btn" style="flex: 1; padding: 10px;">
+                            <span class="material-icons" style="font-size: 18px;">schedule</span>
+                            <span>Heure précise</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Mode Durée -->
+                    <div id="sleepDelayMode" style="margin-bottom: 12px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <label for="sleepTimerSelect" style="white-space: nowrap;">Arrêt dans :</label>
+                            <select id="sleepTimerSelect" class="glass-select" aria-label="Durée du minuteur de sommeil">
+                                <option value="0">Choisir...</option>
+                                <option value="15">15 min</option>
+                                <option value="30">30 min</option>
+                                <option value="45">45 min</option>
+                                <option value="60">1 h</option>
+                                <option value="90">1 h 30</option>
+                                <option value="120">2 h</option>
+                                <option value="180">3 h</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Mode Heure précise -->
+                    <div id="sleepTimeMode" style="display: none; margin-bottom: 12px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <label for="sleepTimerTime" style="white-space: nowrap;">Arrêt à :</label>
+                            <input type="time" id="sleepTimerTime" class="glass-select" style="padding: 8px 12px; flex: 1;" aria-label="Heure d'arrêt">
+                        </div>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px;">
+                            💡 Si l'heure est passée, l'arrêt sera programmé pour demain
+                        </p>
+                    </div>
+                    
+                    <div style="display: flex; gap: 8px; margin-bottom: 6px; width: 100%;">
+                        <button id="sleepTimerStartBtn" class="glass-button" style="flex: 1;" aria-label="Démarrer le minuteur de sommeil">
+                            <span class="material-icons" style="font-size: 20px;">timer</span>
+                            <span>Démarrer le minuteur</span>
+                        </button>
+                        <button id="sleepTimerCancelBtn" class="glass-button" style="flex: 1; display: none;" aria-label="Annuler le minuteur de sommeil">
+                            <span class="material-icons" style="font-size: 20px;">close</span>
+                            <span>Annuler</span>
+                        </button>
+                    </div>
+                    <p id="sleepTimerInfo" aria-live="polite">Aucun minuteur actif</p>
+                </section>
+
+                <!-- Section Admin -->
+                <section>
+                    <h3>👑 Administration</h3>
+                    
+                    <!-- Si pas connecté -->
+                    <div id="adminLoginForm">
+                        <p style="margin-bottom: 12px;">Connexion administrateur pour modérer le chat</p>
+                        <input type="text" 
+                               id="adminUsername" 
+                               class="glass-effect" 
+                               placeholder="Identifiant"
+                               style="width: 100%; padding: 12px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; background: rgba(255,255,255,0.1); color: white;">
+                        <input type="password" 
+                               id="adminPassword" 
+                               class="glass-effect" 
+                               placeholder="Mot de passe"
+                               style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; background: rgba(255,255,255,0.1); color: white;">
+                        <button id="adminLoginBtn" class="glass-button" style="width: 100%; padding: 12px;">
+                            <span class="material-icons">login</span>
+                            Se connecter
+                        </button>
+                    </div>
+                    
+                    <!-- Si connecté -->
+                    <div id="adminPanel" style="display: none;">
+                        <div style="background: rgba(76, 175, 80, 0.2); padding: 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid rgba(76, 175, 80, 0.4);">
+                            <p style="display: flex; align-items: center; gap: 8px; color: #4caf50; font-weight: 600;">
+                                <span class="material-icons">check_circle</span>
+                                Connecté en tant qu'administrateur
+                            </p>
+                            <p style="font-size: 0.85rem; margin-top: 4px; color: var(--text-secondary);">
+                                Pseudo : <span id="adminUsernameDisplay"></span>
+                            </p>
+                        </div>
+                        <button id="adminLogoutBtn" class="glass-button danger" style="width: 100%; padding: 12px;">
+                            <span class="material-icons">logout</span>
+                            Se déconnecter
+                        </button>
+                    </div>
+                </section>
+		
+                <!-- Reprendre la dernière radio -->
+                <section>
+                    <h3>Reprendre la dernière radio</h3>
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                        <input type="checkbox" id="autoResumeCheckbox" aria-label="Reprendre automatiquement la dernière radio au démarrage">
+                        <span>Reprendre automatiquement la dernière radio au démarrage</span>
+                    </label>
+                    <p>La dernière radio écoutée sera relancée quand vous ouvrez l'application.</p>
+                </section>
+
+                <!-- Thème couleur -->
+                <section>
+                    <h3>🎨 Thème couleur</h3>
+                    <p>Choisissez votre couleur préférée</p>
+                    <div class="theme-color-grid" id="themeColorGrid">
+                        <button class="theme-color-btn active" data-theme="default" title="Violet (défaut)">
+                            <span class="theme-color-preview" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);"></span>
+                            <span class="theme-color-name">Défaut</span>
+                            <span class="theme-default-badge">⭐</span>
+                        </button>
+                        <button class="theme-color-btn" data-theme="ocean" title="Bleu Océan">
+                            <span class="theme-color-preview" style="background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);"></span>
+                            <span class="theme-color-name">Océan</span>
+                        </button>
+                        <button class="theme-color-btn" data-theme="nature" title="Vert Nature">
+                            <span class="theme-color-preview" style="background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);"></span>
+                            <span class="theme-color-name">Nature</span>
+                        </button>
+                        <button class="theme-color-btn" data-theme="sunset" title="Coucher de Soleil">
+                            <span class="theme-color-preview" style="background: linear-gradient(135deg, #f77f00 0%, #d62828 100%);"></span>
+                            <span class="theme-color-name">Sunset</span>
+                        </button>
+                        <button class="theme-color-btn" data-theme="rose" title="Rose">
+                            <span class="theme-color-preview" style="background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);"></span>
+                            <span class="theme-color-name">Rose</span>
+                        </button>
+                        <button class="theme-color-btn" data-theme="turquoise" title="Turquoise">
+                            <span class="theme-color-preview" style="background: linear-gradient(135deg, #00cec9 0%, #0984e3 100%);"></span>
+                            <span class="theme-color-name">Turquoise</span>
+                        </button>
+                        <button class="theme-color-btn" data-theme="midnight" title="Minuit">
+                            <span class="theme-color-preview" style="background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);"></span>
+                            <span class="theme-color-name">Minuit</span>
+                        </button>
+                    </div>
+                </section>
+				
+                <!-- Onglet de démarrage -->
+                <section>
+                    <h3>Onglet de démarrage</h3>
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                        <input type="checkbox" id="startOnFavoritesCheckbox" aria-label="Démarrer sur l'onglet Favoris">
+                        <span>Démarrer sur l'onglet Favoris</span>
+                    </label>
+                    <p>L'application s'ouvrira directement sur vos radios favorites.</p>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio element -->
+    <audio id="audioPlayer" preload="none"></audio>
+
+    <!-- Google Cast SDK (chargé conditionnellement) -->
+    <script>
+        // Détecter iOS
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        
+        // Ne charger Cast QUE sur non-iOS
+        if (!isIOS) {
+            const castScript = document.createElement('script');
+            castScript.src = 'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1';
+            document.head.appendChild(castScript);
+            console.log('✅ SDK Cast chargé (Desktop/Android)');
+            
+            window['__onGCastApiAvailable'] = function(isAvailable) {
+                if (isAvailable) {
+                    const castContext = cast.framework.CastContext.getInstance();
+                    castContext.setOptions({
+                        receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+                        autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+                    });
+                    
+                    castContext.addEventListener(
+                        cast.framework.CastContextEventType.SESSION_STATE_CHANGED,
+                        function(event) {
+                            if (event.sessionState === cast.framework.SessionState.SESSION_ENDED) {
+                                if (window.radioApp) {
+                                    window.radioApp.updateCastUI(false);
+                                    console.log('📺 Session Cast terminée');
+                                }
+                            }
+                        }
+                    );
+                    
+                    console.log('✅ Cast Framework initialisé');
+                }
+            };
+        } else {
+            console.log('📱 SDK Cast non chargé (iOS/Safari)');
+        }
+    </script>
+    
+    <!-- Scripts -->
+    <script src="js/radio-player.js"></script>
+</body>
+</html>

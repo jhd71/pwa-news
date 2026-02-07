@@ -233,9 +233,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <button class="header-btn" id="quickLinksBtn" aria-label="Menu liens rapides">
                     <span class="material-icons">menu</span>
                 </button>
-                <button class="header-btn" id="radioBtn" onclick="openRadio()" aria-label="Écouter la radio">
-                    <span class="material-icons">radio</span>
-                </button>
+                <a href="radio.html" class="header-btn" aria-label="Écouter la radio">
+				<span class="material-icons">radio</span>
+			</a>
             </div>
             <div class="header-title">
                 <h1>Actu & Média</h1>
@@ -839,48 +839,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- ============================================
          SCRIPTS
          ============================================ -->
-    
-    <!-- Charger Cast UNIQUEMENT sur Desktop/Android (pas iOS) -->
-    <script>
-        // Détecter iOS
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        
-        // Ne charger Cast QUE sur non-iOS
-        if (!isIOS) {
-            const castScript = document.createElement('script');
-            castScript.src = 'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1';
-            document.head.appendChild(castScript);
-            console.log('✅ SDK Cast chargé (Desktop/Android)');
-            
-            // Initialiser Cast quand le framework est prêt
-            window['__onGCastApiAvailable'] = function(isAvailable) {
-                if (isAvailable) {
-                    const castContext = cast.framework.CastContext.getInstance();
-                    castContext.setOptions({
-                        receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
-                        autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
-                    });
-                    
-                    // Écouter les changements de session
-                    castContext.addEventListener(
-                        cast.framework.CastContextEventType.SESSION_STATE_CHANGED,
-                        function(event) {
-                            if (event.sessionState === cast.framework.SessionState.SESSION_ENDED) {
-                                if (window.radioPlayer) {
-                                    window.radioPlayer.updateCastUI(false);
-                                    console.log('📺 Session Cast terminée');
-                                }
-                            }
-                        }
-                    );
-                    
-                    console.log('✅ Cast Framework initialisé');
-                }
-            };
-        } else {
-            console.log('📱 SDK Cast non chargé (iOS/Safari)');
-        }
-    </script>
     
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
