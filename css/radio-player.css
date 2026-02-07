@@ -764,19 +764,6 @@ input[type="time"].glass-select::-webkit-calendar-picker-indicator {
     }
 }
 
-/* Message d'aide pour le long press */
-.radios-grid::before {
-    content: '💡 Astuce : Appui long sur une radio pour les options';
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 12px;
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-md);
-    margin-bottom: 8px;
-}
-
 /* === RADIO CARD === */
 .radio-card {
     position: relative;
@@ -2871,4 +2858,38 @@ body.dark-theme .chat-input:focus {
 .radios-hint .material-icons {
     font-size: 14px;
     color: #fbbf24;
+}
+
+/* === BOUTON ACCUEIL EN BAS === */
+.bottom-home-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.bottom-home-btn a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+/* Afficher le bouton quand le player n'est pas visible */
+body:not(.player-visible) .bottom-home-btn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Cacher quand le player est affiché */
+body.player-visible .bottom-home-btn {
+    bottom: 280px;
 }

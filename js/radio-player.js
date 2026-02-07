@@ -1595,7 +1595,8 @@ class RadioPlayerApp {
         }
 
         this.playerContainer.style.display = 'block';
-        this.updatePlayerInfo();
+		document.body.classList.add('player-visible');
+		this.updatePlayerInfo();
 
         localStorage.setItem('lastStation', station.id);
 
@@ -1668,7 +1669,8 @@ class RadioPlayerApp {
         }
 
         this.playerContainer.style.display = 'none';
-        this.updateRadioCards();
+		document.body.classList.remove('player-visible');
+		this.updateRadioCards();
         this.stopVisualizer();
         this.updateCastButtonUI();
 
