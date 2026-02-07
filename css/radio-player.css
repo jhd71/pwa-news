@@ -764,6 +764,19 @@ input[type="time"].glass-select::-webkit-calendar-picker-indicator {
     }
 }
 
+/* Message d'aide pour le long press */
+.radios-grid::before {
+    content: '💡 Astuce : Appui long sur une radio pour les options';
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 12px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    margin-bottom: 8px;
+}
+
 /* === RADIO CARD === */
 .radio-card {
     position: relative;
