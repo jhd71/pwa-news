@@ -107,14 +107,17 @@ class MiniRadioPlayer {
     });
 
     this.audio.addEventListener('error', (e) => {
-        // Ignorer les erreurs si pas de source (normal au démarrage ou après stop)
-        if (this.audio.src && this.audio.src !== '') {
-            console.error('Erreur audio mini player:', e);
-        }
-        this.isPlaying = false;
-        this.updateUI();
-    });
-}
+    // Ignorer les erreurs si on ferme volontairement ou pas de source
+    if (this.isClosing) {
+        return;
+    }
+    if (this.audio.src && this.audio.src !== '' && this.audio.src !== window.location.href) {
+        console.error('Erreur audio mini player:', e);
+    }
+    this.isPlaying = false;
+    this.updateUI();
+	});
+	}
 
     setupEventListeners() {
         // Bouton Play/Pause
@@ -246,11 +249,23 @@ class MiniRadioPlayer {
     }
 
     stop() {
-        this.audio.pause();
-        this.audio.src = '';
-        this.isPlaying = false;
-        this.updateUI();
+    this.isClosing = true;
+    this.audio.pause();
+    
+    try {
+        this.audio.removeAttribute('src');
+        this.audio.load();
+    } catch (e) {
+        // Ignorer
     }
+    
+    this.isPlaying = false;
+    this.updateUI();
+    
+    setTimeout(() => {
+        this.isClosing = false;
+    }, 100);
+}
 
     setVolume(value) {
         this.volume = value;
@@ -288,18 +303,35 @@ class MiniRadioPlayer {
 	}
 
 	close() {
-		// Arrêter proprement seulement si en lecture
-		if (this.isPlaying) {
-			this.audio.pause();
-		}
-		this.audio.src = '';
-		this.isPlaying = false;
-		this.currentStation = null;
-		this.hide();
-		// Effacer la dernière station pour ne pas réapparaître
-		localStorage.removeItem('lastStationData');
-		localStorage.removeItem('radioIsPlaying');
-	}
+    // Marquer qu'on ferme volontairement (pour ignorer l'erreur audio)
+    this.isClosing = true;
+    
+    // Arrêter proprement
+    if (this.isPlaying) {
+        this.audio.pause();
+    }
+    
+    // Vider la source sans déclencher d'erreur visible
+    try {
+        this.audio.removeAttribute('src');
+        this.audio.load();
+    } catch (e) {
+        // Ignorer
+    }
+    
+    this.isPlaying = false;
+    this.currentStation = null;
+    this.hide();
+    
+    // Effacer la dernière station pour ne pas réapparaître
+    localStorage.removeItem('lastStationData');
+    localStorage.removeItem('radioIsPlaying');
+    
+    // Réinitialiser le flag après un court délai
+    setTimeout(() => {
+        this.isClosing = false;
+    }, 100);
+}
 
     updateUI() {
         const logo = document.getElementById('miniRadioLogo');
