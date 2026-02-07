@@ -1645,6 +1645,7 @@ class RadioPlayerApp {
 			url: station.url,
 			logo: station.logo
 		}));
+		localStorage.setItem('radioIsPlaying', 'true');
 
         // Démarrer la récupération du titre en cours
         this.startNowPlayingPolling();
@@ -1706,7 +1707,9 @@ class RadioPlayerApp {
 
         this.currentStation = null;
         this.errorCount = 0;
-
+		
+		localStorage.setItem('radioIsPlaying', 'false');
+		
         // Fermer le panneau chat si ouvert
         const chatOverlay = document.getElementById('chatOverlay');
         if (chatOverlay) {

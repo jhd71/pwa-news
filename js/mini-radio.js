@@ -92,26 +92,29 @@ class MiniRadioPlayer {
     }
 
     setupAudio() {
-        this.audio = new Audio();
-        this.audio.volume = this.volume;
-        this.audio.preload = 'none';
+    this.audio = new Audio();
+    this.audio.volume = this.volume;
+    this.audio.preload = 'none';
 
-        this.audio.addEventListener('play', () => {
-            this.isPlaying = true;
-            this.updateUI();
-        });
+    this.audio.addEventListener('play', () => {
+        this.isPlaying = true;
+        this.updateUI();
+    });
 
-        this.audio.addEventListener('pause', () => {
-            this.isPlaying = false;
-            this.updateUI();
-        });
+    this.audio.addEventListener('pause', () => {
+        this.isPlaying = false;
+        this.updateUI();
+    });
 
-        this.audio.addEventListener('error', (e) => {
+    this.audio.addEventListener('error', (e) => {
+        // Ignorer les erreurs si pas de source (normal au démarrage ou après stop)
+        if (this.audio.src && this.audio.src !== '') {
             console.error('Erreur audio mini player:', e);
-            this.isPlaying = false;
-            this.updateUI();
-        });
-    }
+        }
+        this.isPlaying = false;
+        this.updateUI();
+    });
+}
 
     setupEventListeners() {
         // Bouton Play/Pause
@@ -140,8 +143,7 @@ class MiniRadioPlayer {
 
 		// Bouton Fermer
 		document.getElementById('miniCloseBtn').addEventListener('click', () => {
-			this.hide();
-			this.stop();
+			this.close();
 		});
 
         // Volume slider
@@ -208,12 +210,21 @@ class MiniRadioPlayer {
     }
 
     checkLastStation() {
-        // Charger la dernière station depuis localStorage
-        if (this.loadStationFromStorage()) {
-            this.updateUI();
-            this.show();
+    // Charger la dernière station depuis localStorage
+    if (this.loadStationFromStorage()) {
+        this.updateUI();
+        this.show();
+        
+        // Si la radio était en lecture sur radio.html, reprendre automatiquement
+        const wasPlaying = localStorage.getItem('radioIsPlaying') === 'true';
+        if (wasPlaying && this.currentStation && this.currentStation.url) {
+            // Petite pause pour laisser l'UI se charger
+            setTimeout(() => {
+                this.play();
+            }, 500);
         }
     }
+}
 
     play() {
         if (!this.currentStation || !this.currentStation.url) {
@@ -272,9 +283,23 @@ class MiniRadioPlayer {
     }
 
     hide() {
-        this.container.classList.remove('visible');
-        document.body.classList.remove('mini-player-visible');
-    }
+    this.container.classList.remove('visible');
+    document.body.classList.remove('mini-player-visible');
+	}
+
+	close() {
+		// Arrêter proprement seulement si en lecture
+		if (this.isPlaying) {
+			this.audio.pause();
+		}
+		this.audio.src = '';
+		this.isPlaying = false;
+		this.currentStation = null;
+		this.hide();
+		// Effacer la dernière station pour ne pas réapparaître
+		localStorage.removeItem('lastStationData');
+		localStorage.removeItem('radioIsPlaying');
+	}
 
     updateUI() {
         const logo = document.getElementById('miniRadioLogo');
