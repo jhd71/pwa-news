@@ -1,8 +1,8 @@
 // ============================================
-// ACTU & MÉDIA - Service Worker v34
+// ACTU & MÉDIA - Service Worker v35
 // ============================================
 
-const CACHE_NAME = 'actu-media-v34';
+const CACHE_NAME = 'actu-media-v35';
 
 const STATIC_ASSETS = [
     '/',
@@ -13,11 +13,13 @@ const STATIC_ASSETS = [
     '/css/weather-icons-v2.css',
     '/css/weather-widget.css',
     '/css/meteo-v2.css',
-	'/css/radio-player.css',
+    '/css/radio-player.css',
+    '/css/mini-radio.css',
     '/js/app.js',
     '/js/quick-links.js',
     '/js/support.js',
-	'/radio.html',
+    '/js/mini-radio.js',
+    '/radio.html',
     '/js/radio-player.js'
 ];
 

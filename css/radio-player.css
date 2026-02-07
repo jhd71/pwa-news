@@ -2892,3 +2892,26 @@ body:not(.player-visible) .bottom-home-btn {
 body.player-visible .bottom-home-btn {
     bottom: 280px;
 }
+
+/* === BOUTON FERMETURE PARAMÈTRES AMÉLIORÉ === */
+#settingsPanel #settingsCloseBtn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+#settingsPanel #settingsCloseBtn:hover {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.5);
+    transform: rotate(90deg);
+}
+
+#settingsPanel #settingsCloseBtn .material-icons {
+    font-size: 20px;
+}

@@ -204,6 +204,7 @@
     <link rel="stylesheet" href="css/weather-widget.css">
     <link rel="stylesheet" href="css/quick-links.css">
     <link rel="stylesheet" href="css/support.css">
+	<link rel="stylesheet" href="css/mini-radio.css">
     
     <!-- ============================================
          Google Verification & Analytics
@@ -450,14 +451,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </div>
                     <span class="material-icons arrow">chevron_right</span>
                 </a>
-                <button class="support-action" onclick="openRadio(); closeSupportWidget();">
-                    <div class="support-action-icon radio">📻</div>
-                    <div class="support-action-text">
-                        <div class="support-action-name">Écouter la radio</div>
+                <a href="radio.html" class="support-action" onclick="closeSupportWidget();" style="text-decoration: none; color: inherit;">
+					<div class="support-action-icon radio">📻</div>
+					<div class="support-action-text">
+						<div class="support-action-name">Écouter la radio</div>
                         <div class="support-action-desc">Radios locales et nationales</div>
                     </div>
                     <span class="material-icons arrow">chevron_right</span>
-                </button>
+                </a>
                 <a href="https://www.swisstransfer.com/fr-fr" target="_blank" rel="noopener" class="support-action">
                     <div class="support-action-icon upload">📤</div>
                     <div class="support-action-text">
@@ -844,6 +845,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     
     <!-- Application Scripts -->
     <script src="js/app.js"></script>
+	<script src="js/mini-radio.js"></script>
     <script src="js/quick-links.js"></script>
     <script src="js/support.js"></script>
     <script src="js/ios-fixes.js"></script>
