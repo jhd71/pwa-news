@@ -420,6 +420,9 @@ class RadioPlayerApp {
         
         // S'abonner à la présence globale (pour voir les auditeurs sur chaque radio)
         this.joinGlobalPresence();
+		
+		// Reprendre la lecture si on vient du mini player
+		this.checkAutoResume();
     }
 
     // =====================================================
@@ -1005,16 +1008,29 @@ class RadioPlayerApp {
         }
 
         const startOnFavoritesCheckbox = document.getElementById('startOnFavoritesCheckbox');
-        if (startOnFavoritesCheckbox) {
-            startOnFavoritesCheckbox.checked = this.startOnFavorites;
-            startOnFavoritesCheckbox.addEventListener('change', (e) => {
-                this.startOnFavorites = e.target.checked;
-                localStorage.setItem('startOnFavorites', this.startOnFavorites ? 'true' : 'false');
-                this.showToast(this.startOnFavorites ? 'Démarrage sur Favoris activé' : 'Démarrage sur Radios');
-            });
-        }
+		if (startOnFavoritesCheckbox) {
+			startOnFavoritesCheckbox.checked = this.startOnFavorites;
+			startOnFavoritesCheckbox.addEventListener('change', (e) => {
+				this.startOnFavorites = e.target.checked;
+				localStorage.setItem('startOnFavorites', this.startOnFavorites ? 'true' : 'false');
+				this.showToast(this.startOnFavorites ? 'Démarrage sur Favoris activé' : 'Démarrage sur Radios');
+			});
+		}
 
-        this.restoreSleepTimerFromStorage();
+		// === MINI PLAYER ACCUEIL ===
+		const miniPlayerCheckbox = document.getElementById('miniPlayerEnabledCheckbox');
+		if (miniPlayerCheckbox) {
+			// Charger l'état sauvegardé (activé par défaut)
+			const miniPlayerEnabled = localStorage.getItem('miniPlayerEnabled') !== 'false';
+			miniPlayerCheckbox.checked = miniPlayerEnabled;
+			
+			miniPlayerCheckbox.addEventListener('change', () => {
+				localStorage.setItem('miniPlayerEnabled', miniPlayerCheckbox.checked);
+				this.showToast(miniPlayerCheckbox.checked ? 'Mini player activé' : 'Mini player désactivé');
+			});
+		}
+
+		this.restoreSleepTimerFromStorage();
     }
 
     // =====================================================
@@ -3270,6 +3286,29 @@ class RadioPlayerApp {
                 }
             });
     }
+
+	// =====================================================
+	// AUTO RESUME - Reprendre depuis le mini player
+	// =====================================================
+	checkAutoResume() {
+		// Vérifier si l'option de reprise auto est activée
+		const autoResumeEnabled = localStorage.getItem('autoResumeLastStation') === 'true';
+		const lastStationData = localStorage.getItem('lastStationData');
+		
+		if (lastStationData && autoResumeEnabled) {
+			try {
+				const stationData = JSON.parse(lastStationData);
+				const station = this.stations.find(s => s.id === stationData.id);
+				
+				if (station && !this.isPlaying) {
+					// Afficher l'overlay de reprise
+					this.showAutoResumePrompt(station);
+				}
+			} catch (e) {
+				console.error('Erreur auto resume:', e);
+			}
+		}
+	}
 
     // =====================================================
     // PRÉSENCE GLOBALE - updateGlobalPresence() [NOUVEAU]

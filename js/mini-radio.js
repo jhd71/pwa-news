@@ -20,7 +20,14 @@ class MiniRadioPlayer {
     }
 
     init() {
-        this.createPlayer();
+		// Vérifier si le mini player est activé dans les préférences
+		const miniPlayerEnabled = localStorage.getItem('miniPlayerEnabled') !== 'false';
+		if (!miniPlayerEnabled) {
+			console.log('Mini player désactivé dans les préférences');
+			return; // Ne pas initialiser
+		}
+		
+		this.createPlayer();
         this.setupAudio();
         this.setupEventListeners();
         this.checkLastStation();
