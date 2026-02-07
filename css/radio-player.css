@@ -573,7 +573,7 @@ input[type="time"].glass-select::-webkit-calendar-picker-indicator {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing-md);
-    padding: 12px var(--spacing-md) 320px var(--spacing-md);
+    padding: 25px var(--spacing-md) 320px var(--spacing-md);
     justify-content: center;
 }
 
