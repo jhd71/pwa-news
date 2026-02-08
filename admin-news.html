@@ -734,9 +734,12 @@
                 newsImage.value = data.image || '';
                 newsSourceUrl.value = url;
 
-                // Afficher la source
+                // Afficher la source (nettoyée)
 				if (data.siteName) {
-					sourceName.textContent = cleanText(data.siteName);
+					let cleanSiteName = cleanText(data.siteName);
+					// Supprimer tout après | ou -
+					cleanSiteName = cleanSiteName.split('|')[0].split(' - ')[0].trim();
+					sourceName.textContent = cleanSiteName;
 					sourceInfo.classList.remove('hidden');
 				}
 
@@ -823,8 +826,12 @@
 			finalContent += '\n\n📖 Lire la suite sur : ' + newsSourceUrl.value;
 		}
 
-		// Récupérer le nom de la source
-		const sourceNameValue = sourceName.textContent !== '-' ? sourceName.textContent : null;
+		// Récupérer le nom de la source et le nettoyer
+		let sourceNameValue = sourceName.textContent !== '-' ? sourceName.textContent : null;
+		if (sourceNameValue) {
+			// Supprimer tout après | ou - si c'est un sous-titre
+			sourceNameValue = sourceNameValue.split('|')[0].split(' - ')[0].trim();
+		}
 
 		const insertData = {
 			type: newsType.value,
