@@ -524,17 +524,35 @@
                     throw new Error(data.error || 'Erreur extraction');
                 }
 
-                // Nettoyer les caractères spéciaux
+                // Décoder les entités HTML et nettoyer les caractères
 				const cleanText = (text) => {
 					if (!text) return '';
-					return text
+					
+					// Créer un élément temporaire pour décoder les entités HTML
+					const textarea = document.createElement('textarea');
+					textarea.innerHTML = text;
+					let decoded = textarea.value;
+					
+					// Nettoyer les caractères spéciaux restants
+					decoded = decoded
 						.replace(/[\u2018\u2019]/g, "'")  // Apostrophes courbes
 						.replace(/[\u201C\u201D]/g, '"')  // Guillemets courbes
 						.replace(/\u2026/g, '...')        // Points de suspension
 						.replace(/\u00A0/g, ' ')          // Espace insécable
 						.replace(/\u2013/g, '-')          // Tiret demi-cadratin
 						.replace(/\u2014/g, '-')          // Tiret cadratin
+						.replace(/&rsquo;/g, "'")         // Apostrophe HTML
+						.replace(/&lsquo;/g, "'")
+						.replace(/&rdquo;/g, '"')
+						.replace(/&ldquo;/g, '"')
+						.replace(/&nbsp;/g, ' ')
+						.replace(/&amp;/g, '&')
+						.replace(/&#0?39;/g, "'")         // Apostrophe numérique
+						.replace(/&#x27;/g, "'")
+						.replace(/&quot;/g, '"')
 						.trim();
+					
+					return decoded;
 				};
 
 				// Remplir le formulaire
@@ -633,14 +651,15 @@
 			}
 
 			const insertData = {
-				type: newsType.value,
-				title: title,
-				content: finalContent,
-				location: newsLocation.value || null,
-				image_url: newsImage.value || null,
-				author: 'admin@actuetmedia.fr',
-				status: 'approved'
-			};
+			type: newsType.value,
+			title: title,
+			content: finalContent,
+			location: newsLocation.value || null,
+			image_url: newsImage.value || null,
+			author: 'admin@actuetmedia.fr',
+			contact_email: 'admin@actuetmedia.fr',
+			status: 'approved'
+		};
 
 			console.log('Données à insérer:', insertData);
 
