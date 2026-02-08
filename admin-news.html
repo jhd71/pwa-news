@@ -524,9 +524,22 @@
                     throw new Error(data.error || 'Erreur extraction');
                 }
 
-                // Remplir le formulaire
-                newsTitle.value = data.title || '';
-                newsContent.value = data.description || '';
+                // Nettoyer les caractères spéciaux
+				const cleanText = (text) => {
+					if (!text) return '';
+					return text
+						.replace(/[\u2018\u2019]/g, "'")  // Apostrophes courbes
+						.replace(/[\u201C\u201D]/g, '"')  // Guillemets courbes
+						.replace(/\u2026/g, '...')        // Points de suspension
+						.replace(/\u00A0/g, ' ')          // Espace insécable
+						.replace(/\u2013/g, '-')          // Tiret demi-cadratin
+						.replace(/\u2014/g, '-')          // Tiret cadratin
+						.trim();
+				};
+
+				// Remplir le formulaire
+				newsTitle.value = cleanText(data.title) || '';
+				newsContent.value = cleanText(data.description) || '';
                 newsImage.value = data.image || '';
                 newsSourceUrl.value = url;
 
@@ -613,20 +626,32 @@
             publishBtn.disabled = true;
 
             try {
-                const { data, error } = await supabaseClient
-					.from('news_submissions')
-                    .insert({
-                        type: newsType.value,
-                        title: title,
-                        content: content + (newsSourceUrl.value ? `\n\n🔗 Source : ${newsSourceUrl.value}` : ''),
-                        location: newsLocation.value || null,
-                        image_url: newsImage.value || null,
-                        author: 'admin@actuetmedia.fr',
-                        status: 'approved'
-                    })
-                    .select();
+                // Préparer le contenu (sans caractères spéciaux problématiques)
+			let finalContent = content;
+			if (newsSourceUrl.value) {
+				finalContent += '\n\nSource : ' + newsSourceUrl.value;
+			}
 
-                if (error) throw error;
+			const insertData = {
+				type: newsType.value,
+				title: title,
+				content: finalContent,
+				location: newsLocation.value || null,
+				image_url: newsImage.value || null,
+				author: 'admin@actuetmedia.fr',
+				status: 'approved'
+			};
+
+			console.log('Données à insérer:', insertData);
+
+			const { data, error } = await supabaseClient
+				.from('news_submissions')
+				.insert(insertData);
+
+			if (error) {
+				console.error('Erreur Supabase:', error);
+				throw new Error(error.message || 'Erreur insertion');
+			}
 
                 showStatus(publishStatus, '🎉 Info publiée avec succès !', 'success');
 
