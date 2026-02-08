@@ -61,12 +61,11 @@ export default async function handler(req, res) {
         
         // Flux RSS
         const feeds = [
-			{ name: 'Montceau News', url: 'https://montceau-news.com/rss', max: 3 },
-			{ name: "L'Informateur", url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
-			{ name: 'Le JSL', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 3 },
-			{ name: 'Creusot Infos', url: 'https://raw.githubusercontent.com/jhd71/scraper-creusot/main/data/articles.json', max: 2, type: 'json' },
-			{ name: 'France 3 Bourgogne', url: 'https://france3-regions.francetvinfo.fr/bourgogne-franche-comte/rss', max: 2 },
-		];
+            { name: 'Montceau News', url: 'https://montceau-news.com/rss', max: 3 },
+            { name: "L'Informateur", url: 'http://www.linformateurdebourgogne.com/feed/', max: 3 },
+            { name: 'Le JSL', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 3 },
+            { name: 'Creusot Infos', url: 'https://raw.githubusercontent.com/jhd71/scraper-creusot/main/data/articles.json', max: 3, type: 'json' },
+        ];
 
         // Récupérer les articles
         const fetchPromises = feeds.map(feed => {
