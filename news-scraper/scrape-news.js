@@ -34,7 +34,7 @@ const NEWS_SOURCES = [
 	{
         name: 'lejsl.com',
         type: 'rss',
-        url: 'https://www.lejsl.com/faits-divers-justice/crime-delit-et-contravention/rss',
+        url: 'https://www.lejsl.com/sport/football/rss',
         icon: '📺',
         filter: ['Montceau', 'Creusot', 'Chalon', 'Saône-et-Loire', 'Autun', 'Blanzy', 'Gueugnon']
     },
