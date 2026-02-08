@@ -37,13 +37,6 @@ const NEWS_SOURCES = [
         url: 'https://www.lejsl.com/rss',
         icon: '📰',
         filter: ['Montceau', 'Creusot', 'Chalon', 'Blanzy', 'Sanvignes', 'Saint-Vallier', 'Gueugnon', 'Perrecy', 'Génelard', 'Torcy', 'Le Breuil']
-    },
-    {
-        name: 'Creusot Infos',
-        type: 'rss',
-        url: 'https://www.creusot-infos.com/feed/',
-        icon: '📰',
-        filter: null
     }
 ];
 
