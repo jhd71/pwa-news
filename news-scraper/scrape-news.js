@@ -31,13 +31,6 @@ const NEWS_SOURCES = [
         icon: '📺',
         filter: ['Montceau', 'Creusot', 'Chalon', 'Saône-et-Loire', 'Autun', 'Blanzy', 'Gueugnon']
     },
-	{
-        name: 'lejsl.com',
-        type: 'rss',
-        url: 'https://www.lejsl.com/sport/football/rss',
-        icon: '📺',
-        filter: ['Montceau', 'Creusot', 'Chalon', 'Saône-et-Loire', 'Autun', 'Blanzy', 'Gueugnon']
-    },
     {
         name: 'France Bleu Bourgogne',
         type: 'rss',
