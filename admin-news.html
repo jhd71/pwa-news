@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Ajouter une info | Actu & Média</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="icons/icon-192.png">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --bg-body: #0f0f1a;
+            --bg-card: rgba(255, 255, 255, 0.08);
+            --bg-elevated: rgba(255, 255, 255, 0.12);
+            --border-color: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-icon .material-icons {
+            font-size: 28px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            margin-left: auto;
+            color: var(--text-muted);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .card-title .material-icons {
+            color: var(--primary);
+        }
+
+        /* URL Extractor */
+        .url-input-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .url-input-group input {
+            flex: 1;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-select {
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            border-color: var(--primary);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Image Preview */
+        .image-preview {
+            margin-top: 12px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+        }
+
+        .image-preview img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-preview.empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 120px;
+            color: var(--text-muted);
+        }
+
+        /* Status */
+        .status-message {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .status-message.loading {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary-light);
+        }
+
+        .status-message.success {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+
+        .status-message.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .status-message .material-icons {
+            font-size: 1.2rem;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid currentColor;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Source Info */
+        .source-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg-elevated);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .source-badge .material-icons {
+            font-size: 1rem;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            .url-input-group {
+                flex-direction: column;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-icon">
+                <span class="material-icons">post_add</span>
+            </div>
+            <div>
+                <h1>Ajouter une info</h1>
+                <p>Infos de la communauté</p>
+            </div>
+            <a href="index.html" class="back-link">
+                <span class="material-icons">arrow_back</span>
+                Retour
+            </a>
+        </header>
+
+        <!-- Étape 1: Extraction URL -->
+        <div class="card">
+            <h2 class="card-title">
+                <span class="material-icons">link</span>
+                1. Coller l'URL de l'article
+            </h2>
+            
+            <div class="url-input-group">
+                <input type="url" id="articleUrl" class="form-input" 
+                       placeholder="https://www.lejsl.com/..." 
+                       autocomplete="off">
+                <button type="button" id="extractBtn" class="btn btn-primary">
+                    <span class="material-icons">search</span>
+                    Extraire
+                </button>
+            </div>
+
+            <div id="extractStatus" class="status-message hidden"></div>
+        </div>
+
+        <!-- Étape 2: Formulaire -->
+        <div class="card" id="formCard">
+            <h2 class="card-title">
+                <span class="material-icons">edit</span>
+                2. Vérifier et publier
+            </h2>
+
+            <form id="newsForm">
+                <!-- Type -->
+                <div class="form-group">
+                    <label class="form-label">Catégorie *</label>
+                    <select id="newsType" class="form-select" required>
+                        <option value="actualite">📰 Actualité</option>
+                        <option value="sport">⚽ Sport</option>
+                        <option value="culture">🎭 Culture</option>
+                        <option value="economie">💼 Économie</option>
+                        <option value="pratique">📋 Pratique</option>
+                        <option value="insolite">🎯 Insolite</option>
+                        <option value="meteo">🌤️ Météo</option>
+                    </select>
+                </div>
+
+                <!-- Titre -->
+                <div class="form-group">
+                    <label class="form-label">Titre *</label>
+                    <input type="text" id="newsTitle" class="form-input" required
+                           placeholder="Titre de l'article">
+                </div>
+
+                <!-- Contenu -->
+                <div class="form-group">
+                    <label class="form-label">Résumé / Description *</label>
+                    <textarea id="newsContent" class="form-textarea" required
+                              placeholder="Court résumé de l'article..."></textarea>
+                </div>
+
+                <!-- Lieu -->
+                <div class="form-group">
+                    <label class="form-label">Lieu</label>
+                    <input type="text" id="newsLocation" class="form-input"
+                           placeholder="Montceau-les-Mines">
+                </div>
+
+                <!-- Image -->
+                <div class="form-group">
+                    <label class="form-label">Image (URL)</label>
+                    <input type="url" id="newsImage" class="form-input"
+                           placeholder="https://...">
+                    <div id="imagePreview" class="image-preview empty">
+                        <span class="material-icons">image</span>
+                        Aperçu de l'image
+                    </div>
+                </div>
+
+                <!-- URL Source (caché) -->
+                <input type="hidden" id="newsSourceUrl">
+
+                <!-- Source -->
+                <div id="sourceInfo" class="hidden">
+                    <div class="source-badge">
+                        <span class="material-icons">open_in_new</span>
+                        Source : <span id="sourceName">-</span>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="form-actions">
+                    <button type="button" id="clearBtn" class="btn btn-secondary">
+                        <span class="material-icons">delete</span>
+                        Effacer
+                    </button>
+                    <button type="submit" id="publishBtn" class="btn btn-success">
+                        <span class="material-icons">publish</span>
+                        Publier
+                    </button>
+                </div>
+            </form>
+
+            <div id="publishStatus" class="status-message hidden"></div>
+        </div>
+    </div>
+
+    <script>
+	// Protection par mot de passe
+const PASSWORD = 'fc35>$wL72iZA^';
+const savedPassword = localStorage.getItem('adminNewsPassword');
+
+if (savedPassword !== PASSWORD) {
+    const input = prompt('Mot de passe admin :');
+    if (input !== PASSWORD) {
+        alert('Accès refusé');
+        window.location.href = 'index.html';
+    } else {
+        localStorage.setItem('adminNewsPassword', input);
+    }
+}
+	
+        // Configuration Supabase
+        const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Éléments DOM
+        const articleUrl = document.getElementById('articleUrl');
+        const extractBtn = document.getElementById('extractBtn');
+        const extractStatus = document.getElementById('extractStatus');
+        const newsForm = document.getElementById('newsForm');
+        const newsType = document.getElementById('newsType');
+        const newsTitle = document.getElementById('newsTitle');
+        const newsContent = document.getElementById('newsContent');
+        const newsLocation = document.getElementById('newsLocation');
+        const newsImage = document.getElementById('newsImage');
+        const newsSourceUrl = document.getElementById('newsSourceUrl');
+        const imagePreview = document.getElementById('imagePreview');
+        const sourceInfo = document.getElementById('sourceInfo');
+        const sourceName = document.getElementById('sourceName');
+        const clearBtn = document.getElementById('clearBtn');
+        const publishBtn = document.getElementById('publishBtn');
+        const publishStatus = document.getElementById('publishStatus');
+
+        // Extraire les données de l'URL
+        extractBtn.addEventListener('click', async () => {
+            const url = articleUrl.value.trim();
+            
+            if (!url) {
+                showStatus(extractStatus, 'Veuillez entrer une URL', 'error');
+                return;
+            }
+
+            if (!isValidUrl(url)) {
+                showStatus(extractStatus, 'URL invalide', 'error');
+                return;
+            }
+
+            showStatus(extractStatus, 'Extraction en cours...', 'loading');
+            extractBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/extract-article', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Erreur extraction');
+                }
+
+                // Remplir le formulaire
+                newsTitle.value = data.title || '';
+                newsContent.value = data.description || '';
+                newsImage.value = data.image || '';
+                newsSourceUrl.value = url;
+
+                // Afficher la source
+                if (data.siteName) {
+                    sourceName.textContent = data.siteName;
+                    sourceInfo.classList.remove('hidden');
+                }
+
+                // Deviner le lieu depuis le titre ou la description
+                const text = `${data.title} ${data.description}`.toLowerCase();
+                if (text.includes('montceau')) {
+                    newsLocation.value = 'Montceau-les-Mines';
+                } else if (text.includes('creusot')) {
+                    newsLocation.value = 'Le Creusot';
+                } else if (text.includes('chalon')) {
+                    newsLocation.value = 'Chalon-sur-Saône';
+                } else if (text.includes('blanzy')) {
+                    newsLocation.value = 'Blanzy';
+                }
+
+                // Deviner la catégorie
+                if (text.includes('sport') || text.includes('match') || text.includes('foot') || text.includes('rugby')) {
+                    newsType.value = 'sport';
+                } else if (text.includes('météo') || text.includes('neige') || text.includes('tempête')) {
+                    newsType.value = 'meteo';
+                } else if (text.includes('insolite') || text.includes('buzz')) {
+                    newsType.value = 'insolite';
+                }
+
+                // Mettre à jour l'aperçu image
+                updateImagePreview();
+
+                showStatus(extractStatus, '✅ Données extraites avec succès !', 'success');
+
+            } catch (error) {
+                console.error('Erreur:', error);
+                showStatus(extractStatus, `❌ ${error.message}`, 'error');
+            } finally {
+                extractBtn.disabled = false;
+            }
+        });
+
+        // Mise à jour aperçu image
+        newsImage.addEventListener('input', updateImagePreview);
+
+        function updateImagePreview() {
+            const url = newsImage.value.trim();
+            
+            if (url && isValidUrl(url)) {
+                imagePreview.innerHTML = `<img src="${url}" alt="Aperçu" onerror="this.parentElement.innerHTML='<span class=\\'material-icons\\'>broken_image</span> Image non disponible'; this.parentElement.classList.add('empty');">`;
+                imagePreview.classList.remove('empty');
+            } else {
+                imagePreview.innerHTML = '<span class="material-icons">image</span> Aperçu de l\'image';
+                imagePreview.classList.add('empty');
+            }
+        }
+
+        // Effacer le formulaire
+        clearBtn.addEventListener('click', () => {
+            newsForm.reset();
+            articleUrl.value = '';
+            newsSourceUrl.value = '';
+            sourceInfo.classList.add('hidden');
+            imagePreview.innerHTML = '<span class="material-icons">image</span> Aperçu de l\'image';
+            imagePreview.classList.add('empty');
+            extractStatus.classList.add('hidden');
+            publishStatus.classList.add('hidden');
+        });
+
+        // Publier
+        newsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const title = newsTitle.value.trim();
+            const content = newsContent.value.trim();
+
+            if (!title || !content) {
+                showStatus(publishStatus, 'Titre et résumé requis', 'error');
+                return;
+            }
+
+            showStatus(publishStatus, 'Publication en cours...', 'loading');
+            publishBtn.disabled = true;
+
+            try {
+                const { data, error } = await supabase
+                    .from('news_submissions')
+                    .insert({
+                        type: newsType.value,
+                        title: title,
+                        content: content + (newsSourceUrl.value ? `\n\n🔗 Source : ${newsSourceUrl.value}` : ''),
+                        location: newsLocation.value || null,
+                        image_url: newsImage.value || null,
+                        author: 'admin@actuetmedia.fr',
+                        status: 'approved'
+                    })
+                    .select();
+
+                if (error) throw error;
+
+                showStatus(publishStatus, '🎉 Info publiée avec succès !', 'success');
+
+                // Réinitialiser après 2 secondes
+                setTimeout(() => {
+                    clearBtn.click();
+                    articleUrl.focus();
+                }, 2000);
+
+            } catch (error) {
+                console.error('Erreur publication:', error);
+                showStatus(publishStatus, `❌ Erreur : ${error.message}`, 'error');
+            } finally {
+                publishBtn.disabled = false;
+            }
+        });
+
+        // Raccourci clavier : Entrée sur l'URL lance l'extraction
+        articleUrl.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                extractBtn.click();
+            }
+        });
+
+        // Fonctions utilitaires
+        function showStatus(element, message, type) {
+            element.classList.remove('hidden', 'loading', 'success', 'error');
+            element.classList.add(type);
+
+            if (type === 'loading') {
+                element.innerHTML = `<div class="spinner"></div> ${message}`;
+            } else {
+                element.innerHTML = `<span class="material-icons">${type === 'success' ? 'check_circle' : 'error'}</span> ${message}`;
+            }
+        }
+
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+    </script>
+</body>
+</html>
