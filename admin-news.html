@@ -823,6 +823,9 @@
 			finalContent += '\n\n📖 Lire la suite sur : ' + newsSourceUrl.value;
 		}
 
+		// Récupérer le nom de la source
+		const sourceNameValue = sourceName.textContent !== '-' ? sourceName.textContent : null;
+
 		const insertData = {
 			type: newsType.value,
 			title: title,
@@ -831,6 +834,7 @@
 			image_url: newsImage.value || null,
 			author: 'Actu & Média',
 			contact_email: 'admin@actuetmedia.fr',
+			source_name: sourceNameValue,
 			status: 'approved'
 		};
 
