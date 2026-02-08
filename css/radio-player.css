@@ -2866,9 +2866,14 @@ body.dark-theme .chat-input:focus {
     left: 50%;
     transform: translateX(-50%);
     z-index: 100;
+    transition: all 0.3s ease;
+}
+
+/* Cacher quand le player est visible */
+body.player-visible .bottom-home-btn {
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transform: translateX(-50%) translateY(20px);
 }
 
 .bottom-home-btn a {
