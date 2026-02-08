@@ -469,19 +469,6 @@
     </div>
 
     <script>
-	// Protection par mot de passe
-const PASSWORD = 'fc35>$wL72iZA^';
-const savedPassword = localStorage.getItem('adminNewsPassword');
-
-if (savedPassword !== PASSWORD) {
-    const input = prompt('Mot de passe admin :');
-    if (input !== PASSWORD) {
-        alert('Accès refusé');
-        window.location.href = 'index.html';
-    } else {
-        localStorage.setItem('adminNewsPassword', input);
-    }
-}
 	
         // Configuration Supabase
         const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
