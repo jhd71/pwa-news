@@ -1,0 +1,36 @@
+name: Scraper Actualités Locales
+
+on:
+  schedule:
+    # Toutes les 3 heures de 6h à 22h
+    - cron: '0 6,9,12,15,18,21 * * *'
+  workflow_dispatch: # Permet le déclenchement manuel
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: news-scraper/package.json
+      
+      - name: Install dependencies
+        working-directory: ./news-scraper
+        run: npm install
+      
+      - name: Run news scraper
+        working-directory: ./news-scraper
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node scrape-news.js
+      
+      - name: Log completion
+        run: echo "✅ Scraping actualités terminé - $(date)"

@@ -1,0 +1,14 @@
+{
+  "name": "actuetmedia-news-scraper",
+  "version": "1.0.0",
+  "description": "Scraper d'actualités locales pour Actu & Média",
+  "main": "scrape-news.js",
+  "scripts": {
+    "scrape": "node scrape-news.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "rss-parser": "^3.13.0",
+    "cheerio": "^1.0.0-rc.12"
+  }
+}
