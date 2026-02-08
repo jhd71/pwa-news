@@ -470,6 +470,49 @@
 
     <script>
 	
+			// =====================================================
+		// PROTECTION PAR MOT DE PASSE (hash SHA-256)
+		// =====================================================
+		const ADMIN_PASSWORD_HASH = 'cbf9b2262208b861889d115988760153fab34a144a926b0ab394ef8ecbaf4d70';
+
+		async function hashPassword(password) {
+			const encoder = new TextEncoder();
+			const data = encoder.encode(password);
+			const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+			const hashArray = Array.from(new Uint8Array(hashBuffer));
+			return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+		}
+
+		async function checkAuth() {
+			const savedHash = localStorage.getItem('adminNewsAuth');
+			
+			if (savedHash === ADMIN_PASSWORD_HASH) {
+				return true;
+			}
+			
+			const password = prompt('🔐 Mot de passe admin :');
+			
+			if (!password) {
+				alert('Accès refusé');
+				window.location.href = 'index.html';
+				return false;
+			}
+			
+			const hash = await hashPassword(password);
+			
+			if (hash === ADMIN_PASSWORD_HASH) {
+				localStorage.setItem('adminNewsAuth', hash);
+				return true;
+			} else {
+				alert('❌ Mot de passe incorrect');
+				window.location.href = 'index.html';
+				return false;
+			}
+		}
+
+		// Vérifier l'authentification au chargement
+		checkAuth();
+		
         // Configuration Supabase
         const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
@@ -555,17 +598,17 @@
 					return decoded;
 				};
 
-				// Remplir le formulaire
-				newsTitle.value = cleanText(data.title) || '';
-				newsContent.value = cleanText(data.description) || '';
+				// Remplir le formulaire (déjà nettoyé par cleanText)
+				newsTitle.value = cleanText(data.title || '');
+				newsContent.value = cleanText(data.description || '');
                 newsImage.value = data.image || '';
                 newsSourceUrl.value = url;
 
                 // Afficher la source
-                if (data.siteName) {
-                    sourceName.textContent = data.siteName;
-                    sourceInfo.classList.remove('hidden');
-                }
+				if (data.siteName) {
+					sourceName.textContent = cleanText(data.siteName);
+					sourceInfo.classList.remove('hidden');
+				}
 
                 // Deviner le lieu depuis le titre ou la description
                 const text = `${data.title} ${data.description}`.toLowerCase();
