@@ -471,47 +471,177 @@
     <script>
 	
 			// =====================================================
-		// PROTECTION PAR MOT DE PASSE (hash SHA-256)
-		// =====================================================
-		const ADMIN_PASSWORD_HASH = 'cbf9b2262208b861889d115988760153fab34a144a926b0ab394ef8ecbaf4d70';
+			// PROTECTION PAR MOT DE PASSE (hash SHA-256)
+			// =====================================================
+			const ADMIN_PASSWORD_HASH = 'cbf9b2262208b861889d115988760153fab34a144a926b0ab394ef8ecbaf4d70';
 
-		async function hashPassword(password) {
-			const encoder = new TextEncoder();
-			const data = encoder.encode(password);
-			const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-			const hashArray = Array.from(new Uint8Array(hashBuffer));
-			return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-		}
-
-		async function checkAuth() {
-			const savedHash = localStorage.getItem('adminNewsAuth');
-			
-			if (savedHash === ADMIN_PASSWORD_HASH) {
-				return true;
+			async function hashPassword(password) {
+				const encoder = new TextEncoder();
+				const data = encoder.encode(password);
+				const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+				const hashArray = Array.from(new Uint8Array(hashBuffer));
+				return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 			}
-			
-			const password = prompt('🔐 Mot de passe admin :');
-			
-			if (!password) {
-				alert('Accès refusé');
-				window.location.href = 'index.html';
+
+			function showLoginModal() {
+				// Créer le modal de connexion
+				const modalHTML = `
+					<div id="loginModal" style="
+						position: fixed;
+						top: 0;
+						left: 0;
+						right: 0;
+						bottom: 0;
+						background: rgba(0, 0, 0, 0.8);
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						z-index: 99999;
+						backdrop-filter: blur(10px);
+					">
+						<div style="
+							background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+							border: 1px solid rgba(99, 102, 241, 0.3);
+							border-radius: 20px;
+							padding: 40px;
+							max-width: 400px;
+							width: 90%;
+							box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+							text-align: center;
+						">
+							<div style="
+								width: 70px;
+								height: 70px;
+								background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+								border-radius: 50%;
+								display: flex;
+								align-items: center;
+								justify-content: center;
+								margin: 0 auto 20px;
+							">
+								<span class="material-icons" style="font-size: 35px; color: white;">lock</span>
+							</div>
+							<h2 style="color: #fff; margin-bottom: 8px; font-size: 1.5rem;">Administration</h2>
+							<p style="color: rgba(255,255,255,0.6); margin-bottom: 25px; font-size: 0.9rem;">Actu & Média - Ajouter une info</p>
+							
+							<form id="loginForm">
+								<div style="position: relative; margin-bottom: 20px;">
+									<span class="material-icons" style="
+										position: absolute;
+										left: 15px;
+										top: 50%;
+										transform: translateY(-50%);
+										color: rgba(255,255,255,0.4);
+										font-size: 20px;
+									">key</span>
+									<input type="password" id="loginPassword" placeholder="Mot de passe" style="
+										width: 100%;
+										padding: 15px 15px 15px 50px;
+										background: rgba(255, 255, 255, 0.1);
+										border: 1px solid rgba(255, 255, 255, 0.2);
+										border-radius: 12px;
+										color: #fff;
+										font-size: 1rem;
+										outline: none;
+										transition: all 0.3s;
+										box-sizing: border-box;
+									" onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 3px rgba(99,102,241,0.2)';"
+									   onblur="this.style.borderColor='rgba(255,255,255,0.2)'; this.style.boxShadow='none';">
+								</div>
+								
+								<div id="loginError" style="
+									display: none;
+									background: rgba(239, 68, 68, 0.15);
+									color: #ef4444;
+									padding: 10px;
+									border-radius: 8px;
+									margin-bottom: 15px;
+									font-size: 0.85rem;
+								">
+									<span class="material-icons" style="font-size: 16px; vertical-align: middle; margin-right: 5px;">error</span>
+									Mot de passe incorrect
+								</div>
+								
+								<button type="submit" style="
+									width: 100%;
+									padding: 15px;
+									background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+									border: none;
+									border-radius: 12px;
+									color: #fff;
+									font-size: 1rem;
+									font-weight: 600;
+									cursor: pointer;
+									transition: all 0.3s;
+									display: flex;
+									align-items: center;
+									justify-content: center;
+									gap: 8px;
+								" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 20px rgba(99,102,241,0.4)';"
+								   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+									<span class="material-icons">login</span>
+									Se connecter
+								</button>
+							</form>
+							
+							<a href="index.html" style="
+								display: inline-block;
+								margin-top: 20px;
+								color: rgba(255,255,255,0.5);
+								text-decoration: none;
+								font-size: 0.85rem;
+								transition: color 0.2s;
+							" onmouseover="this.style.color='#6366f1';" onmouseout="this.style.color='rgba(255,255,255,0.5)';">
+								← Retour à l'accueil
+							</a>
+						</div>
+					</div>
+				`;
+				
+				document.body.insertAdjacentHTML('afterbegin', modalHTML);
+				document.getElementById('loginPassword').focus();
+				
+				// Gérer le formulaire
+				document.getElementById('loginForm').addEventListener('submit', async (e) => {
+					e.preventDefault();
+					const password = document.getElementById('loginPassword').value;
+					const errorEl = document.getElementById('loginError');
+					
+					if (!password) {
+						errorEl.style.display = 'block';
+						return;
+					}
+					
+					const hash = await hashPassword(password);
+					
+					if (hash === ADMIN_PASSWORD_HASH) {
+						localStorage.setItem('adminNewsAuth', hash);
+						document.getElementById('loginModal').remove();
+						document.querySelector('.container').style.display = 'block';
+					} else {
+						errorEl.style.display = 'block';
+						document.getElementById('loginPassword').value = '';
+						document.getElementById('loginPassword').focus();
+					}
+				});
+			}
+
+			async function checkAuth() {
+				const savedHash = localStorage.getItem('adminNewsAuth');
+				
+				if (savedHash === ADMIN_PASSWORD_HASH) {
+					document.querySelector('.container').style.display = 'block';
+					return true;
+				}
+				
+				// Cacher le contenu et afficher le modal
+				document.querySelector('.container').style.display = 'none';
+				showLoginModal();
 				return false;
 			}
-			
-			const hash = await hashPassword(password);
-			
-			if (hash === ADMIN_PASSWORD_HASH) {
-				localStorage.setItem('adminNewsAuth', hash);
-				return true;
-			} else {
-				alert('❌ Mot de passe incorrect');
-				window.location.href = 'index.html';
-				return false;
-			}
-		}
 
-		// Vérifier l'authentification au chargement
-		checkAuth();
+			// Vérifier l'authentification au chargement
+			document.addEventListener('DOMContentLoaded', checkAuth);
 		
         // Configuration Supabase
         const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
