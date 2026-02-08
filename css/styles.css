@@ -3542,3 +3542,14 @@ a.agenda-item:hover {
         font-size: 0.7rem;
     }
 }
+
+/* Liens cliquables dans les infos communauté */
+.community-link {
+    color: var(--primary);
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.community-link:hover {
+    text-decoration: underline;
+}

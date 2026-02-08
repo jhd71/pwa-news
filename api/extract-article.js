@@ -125,10 +125,21 @@ export default async function handler(req, res) {
         data.description = decodeHtml(data.description);
         data.siteName = decodeHtml(data.siteName);
 
-        // Limiter la description
-        if (data.description && data.description.length > 300) {
-            data.description = data.description.substring(0, 297) + '...';
-        }
+        // Limiter la description (sans couper au milieu d'une entité HTML)
+		if (data.description && data.description.length > 300) {
+			let truncated = data.description.substring(0, 297);
+			
+			// Ne pas couper au milieu d'une entité HTML (&xxx;)
+			const lastAmpersand = truncated.lastIndexOf('&');
+			const lastSemicolon = truncated.lastIndexOf(';');
+			
+			if (lastAmpersand > lastSemicolon && lastAmpersand > 290) {
+				// On est au milieu d'une entité, couper avant
+				truncated = truncated.substring(0, lastAmpersand);
+			}
+			
+			data.description = truncated.trim() + '...';
+		}
 
         return res.status(200).json(data);
 

@@ -687,19 +687,19 @@
             publishBtn.disabled = true;
 
             try {
-                // Préparer le contenu (sans caractères spéciaux problématiques)
-			let finalContent = content;
-			if (newsSourceUrl.value) {
-				finalContent += '\n\nSource : ' + newsSourceUrl.value;
-			}
+		// Préparer le contenu avec lien cliquable
+		let finalContent = content;
+		if (newsSourceUrl.value) {
+			finalContent += '\n\n📖 Lire la suite sur : ' + newsSourceUrl.value;
+		}
 
-			const insertData = {
+		const insertData = {
 			type: newsType.value,
 			title: title,
 			content: finalContent,
 			location: newsLocation.value || null,
 			image_url: newsImage.value || null,
-			author: 'admin@actuetmedia.fr',
+			author: 'Actu & Média',
 			contact_email: 'admin@actuetmedia.fr',
 			status: 'approved'
 		};

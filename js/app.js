@@ -872,7 +872,7 @@ async function initCommunity() {
                 <div class="community-item-content">
                     <div class="community-item-title">${escapeHtml(item.title)}</div>
                     ${item.image_url ? `<div class="community-image-wrapper" onclick="event.stopPropagation(); openImageModal('${item.image_url}')"><img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image"><div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div></div>` : ''}
-                    <div class="community-item-desc" id="desc-${item.id}">${escapeHtml(item.content)}</div>
+                    <div class="community-item-desc" id="desc-${item.id}">${linkifyContent(item.content)}</div>
                     <button class="see-more-btn" id="see-more-${item.id}" onclick="event.stopPropagation(); toggleSeeMore(${item.id})">
                         <span>Voir plus</span>
                         <span class="material-icons">expand_more</span>
@@ -1008,6 +1008,16 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// Convertir les URLs en liens cliquables (après escapeHtml)
+function linkifyContent(text) {
+    if (!text) return '';
+    // D'abord échapper le HTML
+    let safe = escapeHtml(text);
+    // Puis convertir les URLs en liens cliquables
+    const urlRegex = /(https?:\/\/[^\s<]+)/g;
+    return safe.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" class="community-link">$1</a>');
 }
 
 // ============================================
