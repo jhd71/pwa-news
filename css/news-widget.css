@@ -227,3 +227,11 @@
         font-size: 1.25rem;
     }
 }
+
+@media (min-width: 1025px) {
+	.news-section {
+	    max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+	}
