@@ -871,7 +871,7 @@ async function initCommunity() {
                 
                 <div class="community-item-content">
                     <div class="community-item-title">${escapeHtml(item.title)}</div>
-                    ${item.image_url ? `<div class="community-image-wrapper"><div class="community-image-inner" onclick="event.stopPropagation(); openImageModal('${item.image_url}')"><img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image"><div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>${item.source_name ? `<div class="community-image-credit">📷 ${escapeHtml(item.source_name)}</div>` : ''}</div></div>` : ''}
+                    ${item.image_url ? `<div class="community-image-wrapper"><div class="community-image-inner" onclick="event.stopPropagation(); openImageModal('${item.image_url}', '${item.source_name || ''}')"><img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image"><div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>${item.source_name ? `<div class="community-image-credit">📷 ${escapeHtml(item.source_name)}</div>` : ''}</div></div>` : ''}
                     <div class="community-item-desc" id="desc-${item.id}">${linkifyContent(item.content)}</div>
                     <button class="see-more-btn" id="see-more-${item.id}" onclick="event.stopPropagation(); toggleSeeMore(${item.id})">
                         <span>Voir plus</span>
@@ -1248,7 +1248,7 @@ function toggleSeeMore(newsId) {
 }
 
 // Fonction pour ouvrir une image en grand
-function openImageModal(imageUrl) {
+function openImageModal(imageUrl, sourceName = '') {
     // Créer le modal s'il n'existe pas
     let modal = document.getElementById('imageModal');
     if (!modal) {
@@ -1262,12 +1262,23 @@ function openImageModal(imageUrl) {
                     <span class="material-icons">close</span>
                 </button>
                 <img id="modalImage" src="" alt="Image">
+                <div id="modalImageCredit" class="image-modal-credit"></div>
             </div>
         `;
         document.body.appendChild(modal);
     }
     
     document.getElementById('modalImage').src = imageUrl;
+    
+    // Afficher le crédit si disponible
+    const creditEl = document.getElementById('modalImageCredit');
+    if (sourceName && sourceName.trim() !== '') {
+        creditEl.textContent = '📷 ' + sourceName;
+        creditEl.style.display = 'block';
+    } else {
+        creditEl.style.display = 'none';
+    }
+    
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
 }
