@@ -31,12 +31,19 @@ const NEWS_SOURCES = [
         icon: '📺',
         filter: ['Montceau', 'Creusot', 'Chalon', 'Saône-et-Loire', 'Autun', 'Blanzy', 'Gueugnon']
     },
-    {
-        name: 'Le JSL',
+	{
+        name: 'lejsl.com',
         type: 'rss',
-        url: 'https://www.lejsl.com/rss',
-        icon: '📰',
-        filter: ['Montceau', 'Creusot', 'Chalon', 'Blanzy', 'Sanvignes', 'Saint-Vallier', 'Gueugnon', 'Perrecy', 'Génelard', 'Torcy', 'Le Breuil']
+        url: 'https://www.lejsl.com/faits-divers-justice/crime-delit-et-contravention/rss',
+        icon: '📺',
+        filter: ['Montceau', 'Creusot', 'Chalon', 'Saône-et-Loire', 'Autun', 'Blanzy', 'Gueugnon']
+    },
+    {
+        name: 'France Bleu Bourgogne',
+        type: 'rss',
+        url: 'https://www.francebleu.fr/rss/bourgogne/infos.xml',
+        icon: '📻',
+        filter: ['Montceau', 'Creusot', 'Chalon', 'Saône-et-Loire', 'Autun', 'Blanzy']
     }
 ];
 

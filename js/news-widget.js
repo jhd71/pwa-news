@@ -91,12 +91,17 @@ class NewsWidget {
     }
 
     renderCard(item) {
-        const timeAgo = this.formatTimeAgo(item.published_at);
-        const isNew = this.isRecent(item.published_at, 6); // Moins de 6h = nouveau
-        
-        return `
-            <a href="${item.url}" class="news-card" target="_blank" rel="noopener noreferrer">
-                <div class="news-source-icon">${item.source_icon || '📰'}</div>
+    const timeAgo = this.formatTimeAgo(item.published_at);
+    const isNew = this.isRecent(item.published_at, 6); // Moins de 6h = nouveau
+    
+    // Icône selon la source
+    let icon = 'article';
+    if (item.source.includes('France 3')) icon = 'tv';
+    else if (item.source.includes('JSL')) icon = 'newspaper';
+    
+    return `
+        <a href="${item.url}" class="news-card" target="_blank" rel="noopener noreferrer">
+            <div class="news-source-icon"><span class="material-icons">${icon}</span></div>
                 <div class="news-content">
                     <div class="news-title">
                         ${this.escapeHtml(item.title)}
