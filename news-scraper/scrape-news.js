@@ -32,32 +32,18 @@ const NEWS_SOURCES = [
         filter: ['Montceau', 'Creusot', 'Chalon', 'Saône-et-Loire', 'Autun', 'Blanzy', 'Gueugnon']
     },
     {
-        name: 'Le JSL - Montceau',
-        type: 'rss',
-        url: 'https://www.lejsl.com/rss/montceau-les-mines',
-        icon: '📰',
-        filter: null // Tout garder
-    },
-    {
-        name: 'Le JSL - Le Creusot',
-        type: 'rss',
-        url: 'https://www.lejsl.com/rss/le-creusot',
-        icon: '📰',
-        filter: null
-    },
-    {
-        name: 'Le JSL - Saône-et-Loire',
+        name: 'Le JSL',
         type: 'rss',
         url: 'https://www.lejsl.com/rss',
         icon: '📰',
-        filter: ['Montceau', 'Creusot', 'Chalon', 'Blanzy', 'Sanvignes', 'Saint-Vallier', 'Gueugnon', 'Perrecy', 'Génelard']
+        filter: ['Montceau', 'Creusot', 'Chalon', 'Blanzy', 'Sanvignes', 'Saint-Vallier', 'Gueugnon', 'Perrecy', 'Génelard', 'Torcy', 'Le Breuil']
     },
     {
-        name: 'Info Chalon',
+        name: 'Creusot Infos',
         type: 'rss',
-        url: 'https://www.info-chalon.com/rss',
+        url: 'https://www.creusot-infos.com/feed/',
         icon: '📰',
-        filter: ['Montceau', 'Creusot', 'Chalon', 'Saône-et-Loire']
+        filter: null
     }
 ];
 
