@@ -2180,8 +2180,8 @@
         function checkSession() {
             const session = JSON.parse(localStorage.getItem(ADMIN_SESSION_KEY));
             if (session && session.logged && session.expires > Date.now()) {
-                // Session valide mais adminKey pas encore défini
-                // L'utilisateur devra se reconnecter pour envoyer des notifications
+                // 🔑 Récupérer la clé admin sauvegardée
+                adminKey = session.adminKey || null;
                 showDashboard();
             } else {
                 localStorage.removeItem(ADMIN_SESSION_KEY);
@@ -2200,7 +2200,11 @@
                 
                 if (result.success) {
                     adminKey = password;
-                    localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({ logged: true, expires: Date.now() + SESSION_DURATION }));
+                    localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({ 
+                        logged: true, 
+                        expires: Date.now() + SESSION_DURATION,
+                        adminKey: password // 🔑 Sauvegarder la clé
+                    }));
                     showDashboard();
                     return true;
                 } else {
