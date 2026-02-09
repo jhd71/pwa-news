@@ -2598,7 +2598,7 @@
                         const content = document.getElementById('pubContent').value;
                         const linkUrl = document.getElementById('pubLink').value;
                         
-                        await fetch('/api/sendNotification', {
+                        const notifResponse = await fetch('/api/sendNotification', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
@@ -2608,7 +2608,16 @@
                                 adminKey: adminKey
                             })
                         });
-                        showToast('Actualité publiée + notification envoyée ! 🔔🎉');
+                        
+                        const notifResult = await notifResponse.json();
+                        
+                        if (notifResponse.ok && notifResult.sent > 0) {
+                            showToast(`Actualité publiée + notification envoyée à ${notifResult.sent} abonné(s) ! 🔔🎉`);
+                        } else if (notifResponse.ok && notifResult.sent === 0) {
+                            showToast('Actualité publiée (aucun abonné à notifier)');
+                        } else {
+                            showToast('Actualité publiée (notification échouée)');
+                        }
                     } catch (notifError) {
                         console.error('Erreur notification:', notifError);
                         showToast('Actualité publiée (notification échouée)');
