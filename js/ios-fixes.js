@@ -12,6 +12,12 @@
     function isIPadOS() {
         return navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
     }
+    
+    // Détection iOS 18+ (nouveaux comportements)
+    function isiOS18Plus() {
+        const match = navigator.userAgent.match(/OS (\d+)_/);
+        return match && parseInt(match[1]) >= 18;
+    }
 
     // Application des fixes iOS au chargement du DOM
     document.addEventListener('DOMContentLoaded', function() {
@@ -35,6 +41,13 @@
                     --ios-safe-area-bottom: env(safe-area-inset-bottom, 34px);
                     --ios-safe-area-left: env(safe-area-inset-left, 0px);
                     --ios-safe-area-right: env(safe-area-inset-right, 0px);
+                }
+				
+				/* Support Dynamic Island (iPhone 14 Pro+) */
+                @supports (padding-top: env(safe-area-inset-top)) {
+                    .ios-device .header {
+                        padding-top: max(1rem, env(safe-area-inset-top)) !important;
+                    }
                 }
                 
                 /* ========== HEADER ========== */
@@ -450,16 +463,20 @@
             
             // ========== DÉTECTION DU CLAVIER VIRTUEL ==========
             let initialHeight = window.innerHeight;
+            let resizeTimer;
             
             window.addEventListener('resize', function() {
-                const currentHeight = window.innerHeight;
-                
-                if (currentHeight < initialHeight * 0.75) {
-                    document.body.classList.add('keyboard-visible');
-                    console.log('⌨️ Clavier virtuel détecté');
-                } else {
-                    document.body.classList.remove('keyboard-visible');
-                }
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function() {
+                    const currentHeight = window.innerHeight;
+                    
+                    if (currentHeight < initialHeight * 0.75) {
+                        document.body.classList.add('keyboard-visible');
+                        console.log('⌨️ Clavier virtuel détecté');
+                    } else {
+                        document.body.classList.remove('keyboard-visible');
+                    }
+                }, 150); // Attendre 150ms après la fin du resize
             });
             
             // ========== FIX SCROLL BOUNCE ==========
@@ -506,25 +523,56 @@
             }, { passive: false });
             
             // ========== OBSERVER POUR LES ÉLÉMENTS DYNAMIQUES ==========
+            let observerTimeout;
             const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    mutation.addedNodes.forEach(function(node) {
-                        if (node.nodeType === 1) {
-                            // Appliquer les fixes aux nouveaux boutons/liens
-                            const interactiveElements = node.querySelectorAll ? 
-                                node.querySelectorAll('a, button') : [];
-                            interactiveElements.forEach(el => {
-                                el.addEventListener('touchstart', function() {}, { passive: true });
-                            });
-                        }
+                // Throttle pour éviter trop d'appels
+                clearTimeout(observerTimeout);
+                observerTimeout = setTimeout(function() {
+                    mutations.forEach(function(mutation) {
+                        mutation.addedNodes.forEach(function(node) {
+                            if (node.nodeType === 1) {
+                                // Appliquer les fixes aux nouveaux boutons/liens
+                                const interactiveElements = node.querySelectorAll ? 
+                                    node.querySelectorAll('a, button') : [];
+                                interactiveElements.forEach(el => {
+                                    // Vérifier si l'événement n'est pas déjà attaché
+                                    if (!el.dataset.iosTouchFixed) {
+                                        el.addEventListener('touchstart', function() {}, { passive: true });
+                                        el.dataset.iosTouchFixed = 'true';
+                                    }
+                                });
+                            }
+                        });
                     });
-                });
+                }, 100);
             });
             
             observer.observe(document.body, {
                 childList: true,
                 subtree: true
             });
+            
+            // ========== FIX VIEWPORT iOS 15+ ==========
+            // Empêcher le zoom non désiré sur focus d'input
+            const viewportMeta = document.querySelector('meta[name="viewport"]');
+            if (viewportMeta) {
+                const originalContent = viewportMeta.getAttribute('content');
+                
+                // Sur focus d'input, désactiver temporairement le zoom
+                document.addEventListener('focusin', function(e) {
+                    if (e.target.matches('input, textarea, select')) {
+                        viewportMeta.setAttribute('content', 
+                            originalContent + ', maximum-scale=1.0');
+                    }
+                });
+                
+                // Sur blur, restaurer
+                document.addEventListener('focusout', function(e) {
+                    if (e.target.matches('input, textarea, select')) {
+                        viewportMeta.setAttribute('content', originalContent);
+                    }
+                });
+            }
             
             console.log('📱 iOS fixes complets appliqués pour Actu & Média v2.1');
         }
