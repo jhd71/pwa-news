@@ -728,6 +728,21 @@
 				z-index: 10;
 			}
 
+			/* Wrapper image lightbox */
+			.lightbox-image-wrapper {
+				position: relative;
+				display: inline-block;
+				max-width: 95vw;
+				max-height: 90vh;
+			}
+
+			.lightbox-image-wrapper .lightbox-image {
+				max-width: 95vw;
+				max-height: 90vh;
+				object-fit: contain;
+				border-radius: 8px;
+			}
+
 			/* Crédit sur lightbox */
 			.lightbox-credit {
 				position: absolute;
@@ -813,10 +828,13 @@
     </div>
     
     <!-- Lightbox pour images -->
-    <div id="imageLightbox" class="lightbox" onclick="closeLightbox()">
-        <span class="lightbox-close">&times;</span>
-        <img id="lightboxImage" class="lightbox-image" src="" alt="">
-    </div>
+	<div id="imageLightbox" class="lightbox" onclick="closeLightbox()">
+		<span class="lightbox-close">&times;</span>
+		<div class="lightbox-image-wrapper" onclick="event.stopPropagation()">
+			<img id="lightboxImage" class="lightbox-image" src="" alt="">
+			<div id="lightboxCredit" class="lightbox-credit" style="display: none;"></div>
+		</div>
+	</div>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -1303,28 +1321,21 @@
         // LIGHTBOX
         // ============================================
         function openLightbox(imageUrl, sourceName = '') {
-			const lightbox = document.getElementById('imageLightbox');
-			document.getElementById('lightboxImage').src = imageUrl;
-			
-			// Gérer le crédit photo
-			let creditEl = document.getElementById('lightboxCredit');
-			if (!creditEl) {
-				creditEl = document.createElement('div');
-				creditEl.id = 'lightboxCredit';
-				creditEl.className = 'lightbox-credit';
-				lightbox.appendChild(creditEl);
-			}
-			
-			if (sourceName && sourceName.trim() !== '') {
-				creditEl.textContent = '📷 ' + sourceName;
-				creditEl.style.display = 'block';
-			} else {
-				creditEl.style.display = 'none';
-			}
-			
-			lightbox.classList.add('show');
-			document.body.style.overflow = 'hidden';
+		const lightbox = document.getElementById('imageLightbox');
+		document.getElementById('lightboxImage').src = imageUrl;
+		
+		// Gérer le crédit photo
+		const creditEl = document.getElementById('lightboxCredit');
+		if (sourceName && sourceName.trim() !== '') {
+			creditEl.textContent = '📷 ' + sourceName;
+			creditEl.style.display = 'block';
+		} else {
+			creditEl.style.display = 'none';
 		}
+		
+		lightbox.classList.add('show');
+		document.body.style.overflow = 'hidden';
+	}
         
         function closeLightbox() {
             document.getElementById('imageLightbox').classList.remove('show');
