@@ -3008,6 +3008,9 @@
                     resultEl.className = 'success';
                     resultEl.style.display = 'block';
                     
+                    // 🔄 Rafraîchir le compteur d'abonnés
+                    loadSubscriberCount();
+                    
                     document.getElementById('notifTitle').value = '';
                     document.getElementById('notifBody').value = '';
                     document.getElementById('notifUrl').value = '';
