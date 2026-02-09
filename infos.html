@@ -1303,27 +1303,28 @@
         // LIGHTBOX
         // ============================================
         function openLightbox(imageUrl, sourceName = '') {
-		document.getElementById('lightboxImage').src = imageUrl;
-		
-		// Afficher le crédit si disponible
-		let creditEl = document.getElementById('lightboxCredit');
-		if (!creditEl) {
-			creditEl = document.createElement('div');
-			creditEl.id = 'lightboxCredit';
-			creditEl.className = 'lightbox-credit';
-			document.querySelector('.lightbox-content').appendChild(creditEl);
+			const lightbox = document.getElementById('imageLightbox');
+			document.getElementById('lightboxImage').src = imageUrl;
+			
+			// Gérer le crédit photo
+			let creditEl = document.getElementById('lightboxCredit');
+			if (!creditEl) {
+				creditEl = document.createElement('div');
+				creditEl.id = 'lightboxCredit';
+				creditEl.className = 'lightbox-credit';
+				lightbox.appendChild(creditEl);
+			}
+			
+			if (sourceName && sourceName.trim() !== '') {
+				creditEl.textContent = '📷 ' + sourceName;
+				creditEl.style.display = 'block';
+			} else {
+				creditEl.style.display = 'none';
+			}
+			
+			lightbox.classList.add('show');
+			document.body.style.overflow = 'hidden';
 		}
-		
-		if (sourceName && sourceName.trim() !== '') {
-			creditEl.textContent = '📷 ' + sourceName;
-			creditEl.style.display = 'block';
-		} else {
-			creditEl.style.display = 'none';
-		}
-		
-		document.getElementById('imageLightbox').classList.add('show');
-		document.body.style.overflow = 'hidden';
-	}
         
         function closeLightbox() {
             document.getElementById('imageLightbox').classList.remove('show');
