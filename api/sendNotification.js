@@ -1,4 +1,4 @@
-// api/sendNotification.js - Envoyer des notifications push
+// api/sendNotification.js - Envoyer des notifications push (OPTIMISÉ)
 import { createClient } from '@supabase/supabase-js';
 import webpush from 'web-push';
 
@@ -13,6 +13,10 @@ webpush.setVapidDetails(
     process.env.VAPID_PUBLIC_KEY,
     process.env.VAPID_PRIVATE_KEY
 );
+
+export const config = {
+    maxDuration: 60, // 🚀 Augmenter le timeout à 60 secondes
+};
 
 export default async function handler(req, res) {
     // CORS
@@ -58,7 +62,7 @@ export default async function handler(req, res) {
             return res.status(200).json({ sent: 0, message: 'Aucun abonné' });
         }
 
-        // Payload de la notification - IMPORTANT : structure correcte
+        // Payload de la notification
         const payload = JSON.stringify({
             title: title,
             body: body,
@@ -68,13 +72,10 @@ export default async function handler(req, res) {
             timestamp: Date.now()
         });
 
-        console.log('📤 Envoi notification:', payload);
+        console.log('📤 Envoi notification à', subscriptions.length, 'abonnés');
 
-        let sent = 0;
-        let failed = 0;
-
-        // Envoyer à chaque abonné
-        for (const sub of subscriptions) {
+        // 🚀 OPTIMISATION : Envoyer en PARALLÈLE avec Promise.allSettled
+        const sendPromises = subscriptions.map(async (sub) => {
             const pushSubscription = {
                 endpoint: sub.endpoint,
                 keys: {
@@ -85,11 +86,9 @@ export default async function handler(req, res) {
 
             try {
                 await webpush.sendNotification(pushSubscription, payload);
-                sent++;
-                console.log('✅ Envoyé à:', sub.endpoint.substring(0, 50) + '...');
+                return { success: true, endpoint: sub.endpoint };
             } catch (err) {
                 console.error('❌ Erreur envoi:', err.statusCode, err.body);
-                failed++;
                 
                 // Supprimer les abonnements invalides
                 if (err.statusCode === 410 || err.statusCode === 404) {
@@ -99,10 +98,26 @@ export default async function handler(req, res) {
                         .eq('endpoint', sub.endpoint);
                     console.log('🗑️ Abonnement supprimé:', sub.endpoint.substring(0, 50) + '...');
                 }
+                
+                return { success: false, endpoint: sub.endpoint };
             }
-        }
+        });
 
-        console.log(`📊 Résultat: ${sent} envoyés, ${failed} échoués`);
+        // Attendre tous les envois (succès + échecs)
+        const results = await Promise.allSettled(sendPromises);
+        
+        let sent = 0;
+        let failed = 0;
+        
+        results.forEach((result) => {
+            if (result.status === 'fulfilled' && result.value.success) {
+                sent++;
+            } else {
+                failed++;
+            }
+        });
+
+        console.log(`📊 Résultat: ${sent} envoyés, ${failed} échoués sur ${subscriptions.length} total`);
 
         return res.status(200).json({ 
             sent, 
