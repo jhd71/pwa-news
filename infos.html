@@ -696,6 +696,64 @@
                 justify-content: center;
             }
         }
+		
+		/* Wrapper image avec crédit */
+			.info-card-image-wrapper {
+				display: flex;
+				justify-content: center;
+				margin: 0.75rem 0;
+			}
+
+			.info-card-image-inner {
+				position: relative;
+				display: inline-block;
+				cursor: pointer;
+				border-radius: 12px;
+				overflow: hidden;
+			}
+
+			.info-card-image-credit {
+				position: absolute;
+				bottom: 12px;
+				right: 12px;
+				background: rgba(0, 0, 0, 0.75);
+				color: #fff;
+				padding: 5px 10px;
+				border-radius: 6px;
+				font-size: 0.75rem;
+				font-weight: 500;
+				backdrop-filter: blur(4px);
+				-webkit-backdrop-filter: blur(4px);
+				pointer-events: none;
+				z-index: 10;
+			}
+
+			/* Crédit sur lightbox */
+			.lightbox-credit {
+				position: absolute;
+				bottom: 15px;
+				right: 15px;
+				background: rgba(0, 0, 0, 0.75);
+				color: #fff;
+				padding: 8px 14px;
+				border-radius: 8px;
+				font-size: 0.85rem;
+				font-weight: 500;
+				backdrop-filter: blur(4px);
+				-webkit-backdrop-filter: blur(4px);
+			}
+
+			/* Liens cliquables */
+			.community-link {
+				color: var(--primary);
+				text-decoration: none;
+				word-break: break-all;
+			}
+
+			.community-link:hover {
+				text-decoration: underline;
+			}
+
     </style>
 </head>
 <body>
@@ -958,16 +1016,19 @@
                         <h3 class="info-card-title">${escapeHtml(item.title)}</h3>
                         
                         ${item.image_url ? `
-                            <div class="info-card-image-wrapper" onclick="openLightbox('${item.image_url}')">
-                                <img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="info-card-image">
-                                <div class="info-card-zoom">
-                                    <span class="material-icons">zoom_in</span>
-                                    Agrandir
-                                </div>
-                            </div>
-                        ` : ''}
+					<div class="info-card-image-wrapper">
+						<div class="info-card-image-inner" onclick="openLightbox('${item.image_url}', '${(item.source_name || '').replace(/'/g, "\\'")}')">
+							<img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="info-card-image">
+							<div class="info-card-zoom">
+								<span class="material-icons">zoom_in</span>
+								Agrandir
+							</div>
+							${item.source_name ? `<div class="info-card-image-credit">📷 ${escapeHtml(item.source_name)}</div>` : ''}
+						</div>
+					</div>
+				` : ''}
                         
-                        <p class="info-card-desc" id="desc-${item.id}">${escapeHtml(item.content)}</p>
+                        <p class="info-card-desc" id="desc-${item.id}">${linkifyContent(item.content)}</p>
                         <button class="see-more-btn" id="see-more-${item.id}" onclick="toggleSeeMore(${item.id})">
                             <span>Voir plus</span>
                             <span class="material-icons">expand_more</span>
@@ -1057,6 +1118,16 @@
             return div.innerHTML;
         }
         
+		// Convertir les URLs en liens cliquables
+		function linkifyContent(text) {
+			if (!text) return '';
+			// D'abord échapper le HTML
+			let safe = escapeHtml(text);
+			// Puis convertir les URLs en liens cliquables
+			const urlRegex = /(https?:\/\/[^\s<]+)/g;
+			return safe.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" class="community-link">$1</a>');
+		}
+
         function getUserFingerprint() {
             let fp = localStorage.getItem('user_fingerprint');
             if (!fp) {
@@ -1231,11 +1302,28 @@
         // ============================================
         // LIGHTBOX
         // ============================================
-        function openLightbox(imageUrl) {
-            document.getElementById('lightboxImage').src = imageUrl;
-            document.getElementById('imageLightbox').classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
+        function openLightbox(imageUrl, sourceName = '') {
+		document.getElementById('lightboxImage').src = imageUrl;
+		
+		// Afficher le crédit si disponible
+		let creditEl = document.getElementById('lightboxCredit');
+		if (!creditEl) {
+			creditEl = document.createElement('div');
+			creditEl.id = 'lightboxCredit';
+			creditEl.className = 'lightbox-credit';
+			document.querySelector('.lightbox-content').appendChild(creditEl);
+		}
+		
+		if (sourceName && sourceName.trim() !== '') {
+			creditEl.textContent = '📷 ' + sourceName;
+			creditEl.style.display = 'block';
+		} else {
+			creditEl.style.display = 'none';
+		}
+		
+		document.getElementById('imageLightbox').classList.add('show');
+		document.body.style.overflow = 'hidden';
+	}
         
         function closeLightbox() {
             document.getElementById('imageLightbox').classList.remove('show');
