@@ -38,13 +38,39 @@ export default async function handler(req, res) {
                 return res.status(400).json({ error: 'Abonnement invalide' });
             }
 
+            const userAgent = req.headers['user-agent'] || null;
+
+            // 🧹 ÉTAPE 1 : Supprimer les anciens abonnements de ce navigateur
+            if (userAgent) {
+                const { data: oldSubs, error: selectError } = await supabase
+                    .from('push_subscriptions')
+                    .select('endpoint')
+                    .eq('user_agent', userAgent)
+                    .neq('endpoint', subscription.endpoint);
+
+                if (!selectError && oldSubs && oldSubs.length > 0) {
+                    console.log(`🗑️ Suppression de ${oldSubs.length} ancien(s) abonnement(s) pour ce navigateur`);
+                    
+                    const { error: deleteError } = await supabase
+                        .from('push_subscriptions')
+                        .delete()
+                        .eq('user_agent', userAgent)
+                        .neq('endpoint', subscription.endpoint);
+
+                    if (deleteError) {
+                        console.error('⚠️ Erreur suppression doublons:', deleteError);
+                    }
+                }
+            }
+
+            // ✅ ÉTAPE 2 : Enregistrer le nouvel abonnement
             const { error } = await supabase
                 .from('push_subscriptions')
                 .upsert({
                     endpoint: subscription.endpoint,
                     keys_p256dh: subscription.keys.p256dh,
                     keys_auth: subscription.keys.auth,
-                    user_agent: req.headers['user-agent'] || null,
+                    user_agent: userAgent,
                     is_active: true
                 }, {
                     onConflict: 'endpoint'
