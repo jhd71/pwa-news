@@ -1935,7 +1935,10 @@
                 
                 <!-- Section Visites du site -->
                 <div style="background:var(--bg-card);border:1px solid var(--glass-border);border-radius:12px;padding:1rem;overflow:hidden;">
-                    <h4 style="margin-bottom:1rem;color:#60a5fa;">👥 Visites du site</h4>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+					<h4 style="margin:0;color:#60a5fa;">👥 Visites du site</h4>
+					<span style="font-size:0.7rem;color:var(--text-muted);background:rgba(96,165,250,0.1);padding:0.25rem 0.5rem;border-radius:6px;">Table: daily_visits</span>
+				</div>
                     
                     <!-- Stats rapides -->
                     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1rem;">
@@ -1961,6 +1964,10 @@
                     
                     <!-- Boutons -->
                     <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                        <button onclick="resetAllVisitsStats()" class="action-btn" style="background:var(--warning);border-color:var(--warning);font-size:0.75rem;padding:0.5rem 0.75rem;">
+                            <span class="material-icons" style="font-size:1rem;">restart_alt</span>
+                            Reset tout
+                        </button>
                         <button onclick="loadVisitsStats()" class="action-btn approve" style="font-size:0.75rem;padding:0.5rem 0.75rem;">
                             <span class="material-icons" style="font-size:1rem;">refresh</span>
                             Actualiser
@@ -4072,6 +4079,42 @@
             }
         }
         
+		
+		}
+        
+        // Remettre toutes les statistiques de visites à 0
+        async function resetAllVisitsStats() {
+            if (!confirm('⚠️ ATTENTION : Supprimer TOUTES les statistiques de visites du site ?\n\nCette action est IRRÉVERSIBLE !')) return;
+            
+            // Double confirmation pour être sûr
+            if (!confirm('Êtes-vous VRAIMENT sûr ? Toutes les données historiques seront perdues !')) return;
+            
+            try {
+                // Supprimer toutes les entrées de daily_visits
+                const { error } = await supabaseClient
+                    .from('daily_visits')
+                    .delete()
+                    .neq('visit_date', '1900-01-01'); // Supprime tout (condition toujours vraie)
+                
+                if (error) throw error;
+                
+                showToast('✅ Toutes les statistiques de visites ont été supprimées');
+                
+                // Réinitialiser l'affichage
+                document.getElementById('statVisitorsToday').textContent = '0';
+                document.getElementById('statPageViewsToday').textContent = '0';
+                document.getElementById('statVisitorsWeek').textContent = '0';
+                document.getElementById('visitsChart').innerHTML = '';
+                document.getElementById('visitsDetails').innerHTML = '';
+                document.getElementById('visitsDetails').style.display = 'none';
+                
+                console.log('🗑️ Stats visites supprimées');
+                
+            } catch (err) {
+                console.error('Erreur reset stats visites:', err);
+                showToast('❌ Erreur: ' + err.message, true);
+            }
+        }
 		
 		// ============================================
         // STATISTIQUES VISITES DU SITE
