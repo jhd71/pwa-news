@@ -324,6 +324,65 @@
             border-top: 1px solid var(--border-color);
         }
 
+        /* Notification checkbox */
+        .notif-checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .notif-checkbox-label:hover {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        .notif-checkbox-label input { display: none; }
+
+        .notif-checkbox-box {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(245, 158, 11, 0.2);
+            border: 2px solid rgba(245, 158, 11, 0.4);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .notif-checkbox-box .material-icons {
+            font-size: 20px;
+            color: var(--warning);
+        }
+
+        .notif-checkbox-label input:checked ~ .notif-checkbox-box {
+            background: var(--warning);
+            border-color: var(--warning);
+        }
+
+        .notif-checkbox-label input:checked ~ .notif-checkbox-box .material-icons {
+            color: white;
+        }
+
+        .notif-checkbox-text strong {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .notif-checkbox-text small {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
         /* Hidden */
         .hidden {
             display: none !important;
@@ -449,6 +508,20 @@
                         <span class="material-icons">open_in_new</span>
                         Source : <span id="sourceName">-</span>
                     </div>
+                </div>
+
+                <!-- Notification Push -->
+                <div class="form-group">
+                    <label class="notif-checkbox-label">
+                        <input type="checkbox" id="sendNotifCheckbox">
+                        <span class="notif-checkbox-box">
+                            <span class="material-icons">notifications</span>
+                        </span>
+                        <span class="notif-checkbox-text">
+                            <strong>Envoyer une notification push</strong>
+                            <small>Alerter les abonnés de cette actualité</small>
+                        </span>
+                    </label>
                 </div>
 
                 <!-- Actions -->
@@ -616,6 +689,7 @@
 					
 					if (hash === ADMIN_PASSWORD_HASH) {
 						localStorage.setItem('adminNewsAuth', hash);
+						localStorage.setItem('adminNewsKey', password); // 🔑 Pour l'API notification
 						document.getElementById('loginModal').remove();
 						document.querySelector('.container').style.display = 'block';
 					} else {
@@ -648,6 +722,9 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
         
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // 🔑 Clé admin pour l'API notification
+        const adminKey = localStorage.getItem('adminNewsKey') || null;
 
         // Éléments DOM
         const articleUrl = document.getElementById('articleUrl');
@@ -802,6 +879,7 @@
             imagePreview.classList.add('empty');
             extractStatus.classList.add('hidden');
             publishStatus.classList.add('hidden');
+            document.getElementById('sendNotifCheckbox').checked = false;
         });
 
         // Publier
@@ -857,6 +935,40 @@
 			}
 
                 showStatus(publishStatus, '🎉 Info publiée avec succès !', 'success');
+
+                // 🔔 Envoyer notification push si checkbox cochée
+                const sendNotif = document.getElementById('sendNotifCheckbox').checked;
+                if (sendNotif) {
+                    try {
+                        console.log('🔔 Envoi notification push...', { adminKey: adminKey ? '✅ présente' : '❌ ABSENTE' });
+                        
+                        const notifResponse = await fetch('/api/sendNotification', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                title: '📢 ' + title.substring(0, 45),
+                                body: content.substring(0, 100) + (content.length > 100 ? '...' : ''),
+                                url: 'https://actuetmedia.fr/infos.html',
+                                adminKey: adminKey
+                            })
+                        });
+                        
+                        const notifResult = await notifResponse.json();
+                        console.log('🔔 Réponse notification:', notifResponse.status, notifResult);
+                        
+                        if (notifResponse.ok && notifResult.sent > 0) {
+                            showStatus(publishStatus, `🎉 Publiée + notification envoyée à ${notifResult.sent} abonné(s) ! 🔔`, 'success');
+                        } else if (notifResponse.ok && notifResult.sent === 0) {
+                            showStatus(publishStatus, '🎉 Publiée (aucun abonné à notifier)', 'success');
+                        } else {
+                            console.error('❌ Notification échouée:', notifResult.error || notifResult);
+                            showStatus(publishStatus, '🎉 Publiée (notification échouée)', 'success');
+                        }
+                    } catch (notifError) {
+                        console.error('❌ Erreur notification:', notifError.message);
+                        showStatus(publishStatus, '🎉 Publiée (notification échouée)', 'success');
+                    }
+                }
 
                 // Réinitialiser après 2 secondes
                 setTimeout(() => {
