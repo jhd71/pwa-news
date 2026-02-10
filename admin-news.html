@@ -722,9 +722,6 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
         
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        // 🔑 Clé admin pour l'API notification
-        const adminKey = localStorage.getItem('adminNewsKey') || null;
 
         // Éléments DOM
         const articleUrl = document.getElementById('articleUrl');
@@ -940,6 +937,9 @@
                 const sendNotif = document.getElementById('sendNotifCheckbox').checked;
                 if (sendNotif) {
                     try {
+                        // 🔑 Lire la clé admin MAINTENANT (pas au chargement de la page)
+                        const adminKey = localStorage.getItem('adminNewsKey') || localStorage.getItem('admin_session') && JSON.parse(localStorage.getItem('admin_session'))?.adminKey || null;
+                        
                         console.log('🔔 Envoi notification push...', { adminKey: adminKey ? '✅ présente' : '❌ ABSENTE' });
                         
                         const notifResponse = await fetch('/api/sendNotification', {
