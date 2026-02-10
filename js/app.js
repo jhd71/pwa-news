@@ -173,46 +173,33 @@ function getWeatherEmoji(code) {
 }
 
 // Icône météo moderne v2 (avec nuages sombres pour pluie/orage)
+// URL de base des icônes Meteocons (animées, gratuites, licence MIT)
+const METEOCONS_BASE = 'https://cdn.jsdelivr.net/gh/basmilius/weather-icons@2.0.0/production/fill/svg/';
+const ICON_SIZES = { small: 32, medium: 48, large: 72, xlarge: 120 };
+
 function getWeatherIcon(code, size = 'medium') {
-    // Soleil
-    if (code === 0) {
-        return `<span class="weather-icon-v2 wi-sun ${size}"></span>`;
-    }
-    // Partiellement nuageux
-    if ([1, 2].includes(code)) {
-        return `<span class="weather-icon-v2 wi-partly-cloudy ${size}"><span class="sun"></span><span class="cloud"></span></span>`;
-    }
-    // Couvert
-    if (code === 3) {
-        return `<span class="weather-icon-v2 wi-cloudy ${size}"><span class="cloud-back"></span><span class="cloud-front"></span></span>`;
-    }
-    // Brouillard
-    if ([45, 48].includes(code)) {
-        return `<span class="weather-icon-v2 wi-fog ${size}"><span class="line"></span><span class="line"></span><span class="line"></span></span>`;
-    }
-    // Bruine
-    if ([51, 53, 55].includes(code)) {
-        return `<span class="weather-icon-v2 wi-drizzle ${size}"><span class="cloud"></span><span class="drops"><span class="drop"></span><span class="drop"></span><span class="drop"></span></span></span>`;
-    }
-    // Pluie légère à modérée (nuage gris foncé)
-    if ([61, 63, 80, 81].includes(code)) {
-        return `<span class="weather-icon-v2 wi-rain ${size}"><span class="cloud"></span><span class="drops"><span class="drop"></span><span class="drop"></span><span class="drop"></span></span></span>`;
-    }
-    // Forte pluie (nuage NOIR)
-    if ([65, 66, 67, 82].includes(code)) {
-        return `<span class="weather-icon-v2 wi-heavy-rain ${size}"><span class="cloud"></span><span class="drops"><span class="drop"></span><span class="drop"></span><span class="drop"></span><span class="drop"></span><span class="drop"></span></span></span>`;
-    }
-    // Neige
-    if ([71, 73, 75, 77, 85, 86].includes(code)) {
-        return `<span class="weather-icon-v2 wi-snow ${size}"><span class="cloud"></span><span class="flakes"><span class="flake"></span><span class="flake"></span><span class="flake"></span></span></span>`;
-    }
-    // Orage (nuage TRÈS NOIR + éclair)
-    if ([95, 96, 99].includes(code)) {
-        return `<span class="weather-icon-v2 wi-thunder ${size}"><span class="cloud"></span><span class="bolt">⚡</span></span>`;
-    }
-    // Par défaut : partiellement nuageux
-    return `<span class="weather-icon-v2 wi-partly-cloudy ${size}"><span class="sun"></span><span class="cloud"></span></span>`;
+    const px = ICON_SIZES[size] || 48;
+    const name = getMeteoconName(code);
+    return `<img src="${METEOCONS_BASE}${name}.svg" width="${px}" height="${px}" alt="météo" style="display:block;">`;
 }
+
+function getMeteoconName(code) {
+    const hour = new Date().getHours();
+    const isDay = hour >= 7 && hour < 20;
+    const daySuffix = isDay ? 'day' : 'night';
+    
+    if (code === 0) return isDay ? 'clear-day' : 'clear-night';
+    if ([1, 2].includes(code)) return `partly-cloudy-${daySuffix}`;
+    if (code === 3) return 'overcast';
+    if ([45, 48].includes(code)) return 'fog';
+    if ([51, 53, 55].includes(code)) return 'drizzle';
+    if ([61, 63, 80, 81].includes(code)) return 'rain';
+    if ([65, 66, 67, 82].includes(code)) return 'extreme-rain';
+    if ([71, 73, 75, 77, 85, 86].includes(code)) return 'snow';
+    if ([95, 96, 99].includes(code)) return 'thunderstorms';
+    return `partly-cloudy-${daySuffix}`;
+}
+
 
 // ============================================
 // THÈME (Multi-thèmes)
