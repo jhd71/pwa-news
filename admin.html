@@ -1940,8 +1940,8 @@
 					<span style="font-size:0.7rem;color:var(--text-muted);background:rgba(96,165,250,0.1);padding:0.25rem 0.5rem;border-radius:6px;">Table : daily_visits</span>
 				</div>
                     
-                    <!-- Stats rapides -->
-                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1rem;">
+                    <!-- Stats rapides - ligne 1 -->
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:0.75rem;">
                         <div style="background:rgba(96,165,250,0.1);border-radius:10px;padding:0.75rem;text-align:center;">
                             <div style="font-size:1.5rem;font-weight:700;color:#60a5fa;" id="statVisitorsToday">-</div>
                             <div style="font-size:0.7rem;color:var(--text-muted);">Aujourd'hui</div>
@@ -1952,7 +1952,23 @@
                         </div>
                         <div style="background:rgba(251,191,36,0.1);border-radius:10px;padding:0.75rem;text-align:center;">
                             <div style="font-size:1.5rem;font-weight:700;color:#fbbf24;" id="statPageViewsToday">-</div>
-                            <div style="font-size:0.7rem;color:var(--text-muted);">Pages vues</div>
+                            <div style="font-size:0.7rem;color:var(--text-muted);">Pages vues auj.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats rapides - ligne 2 (nouvelles) -->
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1rem;">
+                        <div style="background:rgba(168,85,247,0.1);border-radius:10px;padding:0.75rem;text-align:center;">
+                            <div style="font-size:1.5rem;font-weight:700;color:#a855f7;" id="statVisitorsMonth">-</div>
+                            <div style="font-size:0.7rem;color:var(--text-muted);">Ce mois-ci</div>
+                        </div>
+                        <div style="background:rgba(236,72,153,0.1);border-radius:10px;padding:0.75rem;text-align:center;">
+                            <div style="font-size:1.5rem;font-weight:700;color:#ec4899;" id="statAvgPerDay">-</div>
+                            <div style="font-size:0.7rem;color:var(--text-muted);">Moy./jour (7j)</div>
+                        </div>
+                        <div style="background:rgba(244,63,94,0.1);border-radius:10px;padding:0.75rem;text-align:center;">
+                            <div style="font-size:1.5rem;font-weight:700;color:#f43f5e;" id="statBestDay">-</div>
+                            <div style="font-size:0.7rem;color:var(--text-muted);" id="statBestDayLabel">Meilleur jour</div>
                         </div>
                     </div>
                     
@@ -2603,7 +2619,11 @@
                     try {
                         const title = document.getElementById('pubTitle').value;
                         const content = document.getElementById('pubContent').value;
-                        const linkUrl = document.getElementById('pubLink').value;
+                        
+                        // 🔧 URL = page infos du site (pas le lien externe)
+                        const notifUrl = 'https://actuetmedia.fr/infos.html';
+                        
+                        console.log('🔔 Envoi notification push...', { title, adminKey: adminKey ? '✅ présente' : '❌ ABSENTE' });
                         
                         const notifResponse = await fetch('/api/sendNotification', {
                             method: 'POST',
@@ -2611,23 +2631,25 @@
                             body: JSON.stringify({
                                 title: '📢 ' + title.substring(0, 45),
                                 body: content.substring(0, 100) + (content.length > 100 ? '...' : ''),
-                                url: linkUrl || '/',
+                                url: notifUrl,
                                 adminKey: adminKey
                             })
                         });
                         
                         const notifResult = await notifResponse.json();
+                        console.log('🔔 Réponse notification:', notifResponse.status, notifResult);
                         
                         if (notifResponse.ok && notifResult.sent > 0) {
                             showToast(`Actualité publiée + notification envoyée à ${notifResult.sent} abonné(s) ! 🔔🎉`);
                         } else if (notifResponse.ok && notifResult.sent === 0) {
                             showToast('Actualité publiée (aucun abonné à notifier)');
                         } else {
-                            showToast('Actualité publiée (notification échouée)');
+                            console.error('❌ Notification échouée:', notifResult.error || notifResult);
+                            showToast('Actualité publiée (notification échouée: ' + (notifResult.error || 'erreur inconnue') + ')');
                         }
                     } catch (notifError) {
-                        console.error('Erreur notification:', notifError);
-                        showToast('Actualité publiée (notification échouée)');
+                        console.error('❌ Erreur notification:', notifError.message, notifError);
+                        showToast('Actualité publiée (notification échouée: ' + notifError.message + ')');
                     }
                 } else {
                     showToast('Actualité publiée ! 🎉');
@@ -4079,19 +4101,14 @@
             }
         }
         
-        // Remettre toutes les statistiques de visites à 0
+        // Remettre toutes les statistiques de visites à 0 (via RPC Supabase)
         async function resetAllVisitsStats() {
             if (!confirm('⚠️ ATTENTION : Supprimer TOUTES les statistiques de visites du site ?\n\nCette action est IRRÉVERSIBLE !')) return;
             
-            // Double confirmation pour être sûr
             if (!confirm('Êtes-vous VRAIMENT sûr ? Toutes les données historiques seront perdues !')) return;
             
             try {
-                // Supprimer toutes les entrées de daily_visits
-                const { error } = await supabaseClient
-                    .from('daily_visits')
-                    .delete()
-                    .neq('visit_date', '1900-01-01'); // Supprime tout (condition toujours vraie)
+                const { error } = await supabaseClient.rpc('reset_all_visits');
                 
                 if (error) throw error;
                 
@@ -4105,37 +4122,7 @@
                 document.getElementById('visitsDetails').innerHTML = '';
                 document.getElementById('visitsDetails').style.display = 'none';
                 
-                console.log('🗑️ Stats visites supprimées');
-                
-            } catch (err) {
-                console.error('Erreur reset stats visites:', err);
-                showToast('❌ Erreur: ' + err.message, true);
-            }
-        }
-		
-        
-        // Remettre toutes les statistiques de visites à 0
-        async function resetAllVisitsStats() {
-            if (!confirm('⚠️ ATTENTION : Supprimer TOUTES les statistiques de visites du site ?\n\nCette action est IRRÉVERSIBLE !')) return;
-            
-            if (!confirm('Êtes-vous VRAIMENT sûr ? Toutes les données historiques seront perdues !')) return;
-            
-            try {
-                const { error } = await supabaseClient
-                    .from('daily_visits')
-                    .delete()
-                    .neq('visit_date', '1900-01-01');
-                
-                if (error) throw error;
-                
-                showToast('✅ Toutes les statistiques de visites ont été supprimées');
-                
-                document.getElementById('statVisitorsToday').textContent = '0';
-                document.getElementById('statPageViewsToday').textContent = '0';
-                document.getElementById('statVisitorsWeek').textContent = '0';
-                document.getElementById('visitsChart').innerHTML = '';
-                document.getElementById('visitsDetails').innerHTML = '';
-                document.getElementById('visitsDetails').style.display = 'none';
+                console.log('🗑️ Stats visites supprimées via RPC');
                 
             } catch (err) {
                 console.error('Erreur reset stats visites:', err);
@@ -4150,31 +4137,62 @@
         async function loadVisitsStats() {
             try {
                 const today = new Date();
+                const todayStr = today.toISOString().split('T')[0];
+                
+                // Données des 7 derniers jours (pour graphique + semaine)
                 const weekAgo = new Date(today);
                 weekAgo.setDate(weekAgo.getDate() - 7);
-                
-                const todayStr = today.toISOString().split('T')[0];
                 const weekAgoStr = weekAgo.toISOString().split('T')[0];
                 
-                const { data, error } = await supabaseClient
+                const { data: weekData, error: weekError } = await supabaseClient
                     .from('daily_visits')
                     .select('*')
                     .gte('visit_date', weekAgoStr)
                     .order('visit_date', { ascending: true });
                 
-                if (error) throw error;
+                if (weekError) throw weekError;
                 
                 // Stats aujourd'hui
-                const todayData = data?.find(d => d.visit_date === todayStr);
+                const todayData = weekData?.find(d => d.visit_date === todayStr);
                 document.getElementById('statVisitorsToday').textContent = todayData?.unique_visitors || 0;
                 document.getElementById('statPageViewsToday').textContent = todayData?.page_views || 0;
                 
                 // Stats semaine
-                const weekVisitors = data?.reduce((sum, d) => sum + (d.unique_visitors || 0), 0) || 0;
+                const weekVisitors = weekData?.reduce((sum, d) => sum + (d.unique_visitors || 0), 0) || 0;
                 document.getElementById('statVisitorsWeek').textContent = weekVisitors;
                 
+                // Moyenne par jour (7 derniers jours)
+                const daysWithData = weekData?.filter(d => d.unique_visitors > 0).length || 1;
+                const avgPerDay = Math.round(weekVisitors / Math.max(daysWithData, 1));
+                document.getElementById('statAvgPerDay').textContent = avgPerDay;
+                
                 // Graphique
-                renderVisitsChart(data || []);
+                renderVisitsChart(weekData || []);
+                
+                // Données du mois en cours (requête séparée)
+                const monthStart = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+                
+                const { data: monthData, error: monthError } = await supabaseClient
+                    .from('daily_visits')
+                    .select('*')
+                    .gte('visit_date', monthStart)
+                    .order('visit_date', { ascending: false });
+                
+                if (!monthError && monthData) {
+                    const monthVisitors = monthData.reduce((sum, d) => sum + (d.unique_visitors || 0), 0);
+                    document.getElementById('statVisitorsMonth').textContent = monthVisitors;
+                    
+                    // Meilleur jour du mois
+                    if (monthData.length > 0) {
+                        const bestDay = monthData.reduce((best, d) => 
+                            (d.unique_visitors || 0) > (best.unique_visitors || 0) ? d : best
+                        , monthData[0]);
+                        document.getElementById('statBestDay').textContent = bestDay.unique_visitors || 0;
+                        const bestDate = new Date(bestDay.visit_date + 'T12:00:00');
+                        document.getElementById('statBestDayLabel').textContent = 
+                            bestDate.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+                    }
+                }
                 
                 console.log('📊 Stats visites chargées');
                 
