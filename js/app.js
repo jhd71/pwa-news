@@ -174,7 +174,7 @@ function getWeatherEmoji(code) {
 
 // Icône météo moderne v2 (avec nuages sombres pour pluie/orage)
 // URL de base des icônes Meteocons (animées, gratuites, licence MIT)
-const METEOCONS_BASE = 'https://cdn.jsdelivr.net/gh/basmilius/weather-icons@2.0.0/production/fill/svg/';
+const METEOCONS_BASE = 'https://basmilius.github.io/weather-icons/production/fill/all/';
 const ICON_SIZES = { small: 32, medium: 48, large: 72, xlarge: 120 };
 
 function getWeatherIcon(code, size = 'medium') {
@@ -189,14 +189,17 @@ function getMeteoconName(code) {
     const daySuffix = isDay ? 'day' : 'night';
     
     if (code === 0) return isDay ? 'clear-day' : 'clear-night';
-    if ([1, 2].includes(code)) return `partly-cloudy-${daySuffix}`;
+    if (code === 1) return `partly-cloudy-${daySuffix}`;
+    if (code === 2) return `overcast-${daySuffix}`;
     if (code === 3) return 'overcast';
     if ([45, 48].includes(code)) return 'fog';
     if ([51, 53, 55].includes(code)) return 'drizzle';
-    if ([61, 63, 80, 81].includes(code)) return 'rain';
-    if ([65, 66, 67, 82].includes(code)) return 'extreme-rain';
+    if ([61, 80].includes(code)) return `partly-cloudy-${daySuffix}-rain`;
+    if ([63, 81].includes(code)) return 'rain';
+    if ([65, 66, 67, 82].includes(code)) return 'rain';
     if ([71, 73, 75, 77, 85, 86].includes(code)) return 'snow';
-    if ([95, 96, 99].includes(code)) return 'thunderstorms';
+    if (code === 95) return 'thunderstorms-rain';
+    if ([96, 99].includes(code)) return 'thunderstorms';
     return `partly-cloudy-${daySuffix}`;
 }
 
