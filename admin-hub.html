@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Hub Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- ⚠️ PAS de manifest PWA pour éviter les conflits de notifications -->
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --bg-body: #0a0a14;
+            --bg-card: rgba(255, 255, 255, 0.06);
+            --bg-elevated: rgba(255, 255, 255, 0.10);
+            --border: rgba(255, 255, 255, 0.12);
+            --text: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.45);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-body);
+            color: var(--text);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+        }
+
+        /* ====== LOGIN ====== */
+        .login-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-body);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .login-overlay.hidden { display: none; }
+
+        .login-box {
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+        }
+
+        .login-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+        }
+
+        .login-avatar .material-icons { font-size: 40px; color: white; }
+
+        .login-box h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .login-box p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 32px;
+        }
+
+        .login-field {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .login-field .material-icons {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 20px;
+        }
+
+        .login-field input {
+            width: 100%;
+            padding: 16px 16px 16px 52px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            color: var(--text);
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .login-field input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+        }
+
+        .login-error {
+            display: none;
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+        }
+
+        /* ====== HUB ====== */
+        .hub {
+            display: none;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 20px;
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+
+        .hub.show { display: block; }
+
+        .hub-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .hub-header {
+            text-align: center;
+            padding: 24px 0 32px;
+        }
+
+        .hub-logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.25);
+        }
+
+        .hub-logo .material-icons { font-size: 32px; color: white; }
+
+        .hub-header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .hub-header p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Status bar */
+        .status-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 28px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Section */
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            padding-left: 4px;
+        }
+
+        /* Cards */
+        .link-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            text-decoration: none;
+            color: var(--text);
+            margin-bottom: 12px;
+            transition: all 0.25s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .link-card:hover {
+            background: var(--bg-elevated);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .link-card:active {
+            transform: translateY(0);
+        }
+
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .card-icon .material-icons { font-size: 26px; color: white; }
+
+        .card-icon.blue { background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%); }
+        .card-icon.purple { background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%); }
+        .card-icon.amber { background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); }
+
+        .card-text { flex: 1; min-width: 0; }
+
+        .card-text h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .card-text p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-arrow {
+            color: var(--text-muted);
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+
+        .link-card:hover .card-arrow {
+            transform: translateX(4px);
+            color: var(--primary-light);
+        }
+
+        /* Quick actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 28px;
+            margin-bottom: 28px;
+        }
+
+        .quick-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 18px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.25s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .quick-btn:hover {
+            background: var(--bg-elevated);
+            border-color: var(--primary);
+            color: var(--text);
+        }
+
+        .quick-btn .material-icons {
+            font-size: 24px;
+            color: var(--primary-light);
+        }
+
+        /* Footer */
+        .hub-footer {
+            text-align: center;
+            padding: 24px 0;
+            border-top: 1px solid var(--border);
+            margin-top: 20px;
+        }
+
+        .hub-footer p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .logout-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--danger);
+            font-size: 0.8rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+            margin-top: 12px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .logout-link:hover { opacity: 1; }
+        .logout-link .material-icons { font-size: 16px; }
+
+        /* Time display */
+        .clock {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Responsive */
+        @media (max-width: 400px) {
+            .hub { padding: 12px; }
+            .link-card { padding: 14px; gap: 12px; }
+            .card-icon { width: 46px; height: 46px; }
+            .card-icon .material-icons { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ====== ÉCRAN DE CONNEXION ====== -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <div class="login-avatar">
+                <span class="material-icons">admin_panel_settings</span>
+            </div>
+            <h1>Espace Admin</h1>
+            <p>Actu & Média — Montceau-les-Mines</p>
+
+            <form id="loginForm">
+                <div class="login-field">
+                    <span class="material-icons">key</span>
+                    <input type="password" id="loginPassword" placeholder="Mot de passe" autocomplete="current-password">
+                </div>
+                <div class="login-error" id="loginError">
+                    <span class="material-icons" style="font-size:16px;vertical-align:middle;margin-right:4px;">error</span>
+                    Mot de passe incorrect
+                </div>
+                <button type="submit" class="login-btn">
+                    <span class="material-icons">login</span>
+                    Se connecter
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ====== HUB ADMIN ====== -->
+    <div class="hub" id="hub">
+        <div class="hub-container">
+
+            <!-- Header -->
+            <div class="hub-header">
+                <div class="hub-logo">
+                    <span class="material-icons">dashboard</span>
+                </div>
+                <h1>Hub Admin</h1>
+                <p>Actu & Média — <span class="clock" id="clock"></span></p>
+            </div>
+
+            <!-- Status -->
+            <div class="status-bar">
+                <div class="status-pill">
+                    <span class="status-dot"></span>
+                    Site en ligne
+                </div>
+                <div class="status-pill">
+                    📍 Montceau-les-Mines
+                </div>
+            </div>
+
+            <!-- Pages principales -->
+            <div class="section-label">Pages principales</div>
+
+            <a href="https://actuetmedia.fr/" class="link-card" target="_blank">
+                <div class="card-icon blue">
+                    <span class="material-icons">public</span>
+                </div>
+                <div class="card-text">
+                    <h3>Site public</h3>
+                    <p>actuetmedia.fr — Accueil du site</p>
+                </div>
+                <span class="material-icons card-arrow">chevron_right</span>
+            </a>
+
+            <a href="https://actuetmedia.fr/admin.html" class="link-card" target="_blank">
+                <div class="card-icon purple">
+                    <span class="material-icons">admin_panel_settings</span>
+                </div>
+                <div class="card-text">
+                    <h3>Administration</h3>
+                    <p>Gérer le site, stats, notifications</p>
+                </div>
+                <span class="material-icons card-arrow">chevron_right</span>
+            </a>
+
+            <a href="https://actuetmedia.fr/admin-news.html" class="link-card" target="_blank">
+                <div class="card-icon amber">
+                    <span class="material-icons">post_add</span>
+                </div>
+                <div class="card-text">
+                    <h3>Ajouter une info</h3>
+                    <p>Publication rapide via URL</p>
+                </div>
+                <span class="material-icons card-arrow">chevron_right</span>
+            </a>
+
+            <!-- Raccourcis -->
+            <div class="section-label">Raccourcis</div>
+
+            <div class="quick-actions">
+                <a href="https://actuetmedia.fr/infos.html" class="quick-btn" target="_blank">
+                    <span class="material-icons">newspaper</span>
+                    Infos
+                </a>
+                <a href="https://actuetmedia.fr/radio.html" class="quick-btn" target="_blank">
+                    <span class="material-icons">radio</span>
+                    Radio
+                </a>
+                <a href="https://ekjgfiyhkythqcnmhzea.supabase.co" class="quick-btn" target="_blank">
+                    <span class="material-icons">storage</span>
+                    Supabase
+                </a>
+                <a href="https://vercel.com/dashboard" class="quick-btn" target="_blank">
+                    <span class="material-icons">cloud</span>
+                    Vercel
+                </a>
+            </div>
+
+            <!-- Footer -->
+            <div class="hub-footer">
+                <p>Actu & Média © 2025 — Hub Admin v1.0</p>
+                <button class="logout-link" onclick="logout()">
+                    <span class="material-icons">logout</span>
+                    Déconnexion
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ====== AUTHENTIFICATION ======
+        const ADMIN_PASSWORD_HASH = 'cbf9b2262208b861889d115988760153fab34a144a926b0ab394ef8ecbaf4d70';
+        const SESSION_KEY = 'adminHubAuth';
+
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Vérifier la session au chargement
+        function checkSession() {
+            const saved = localStorage.getItem(SESSION_KEY);
+            if (saved === ADMIN_PASSWORD_HASH) {
+                showHub();
+            }
+        }
+
+        function showHub() {
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('hub').classList.add('show');
+            updateClock();
+            setInterval(updateClock, 30000);
+        }
+
+        function logout() {
+            localStorage.removeItem(SESSION_KEY);
+            location.reload();
+        }
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('loginPassword').value;
+            const errorEl = document.getElementById('loginError');
+
+            if (!password) {
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            const hash = await hashPassword(password);
+
+            if (hash === ADMIN_PASSWORD_HASH) {
+                localStorage.setItem(SESSION_KEY, hash);
+                // 🔑 Sauvegarder aussi pour admin-news.html
+                localStorage.setItem('adminNewsKey', password);
+                localStorage.setItem('adminNewsAuth', hash);
+                showHub();
+            } else {
+                errorEl.style.display = 'block';
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginPassword').focus();
+            }
+        });
+
+        // ====== HORLOGE ======
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' };
+            const formatted = now.toLocaleDateString('fr-FR', options);
+            const el = document.getElementById('clock');
+            if (el) el.textContent = formatted;
+        }
+
+        // ====== INIT ======
+        checkSession();
+        document.getElementById('loginPassword').focus();
+    </script>
+</body>
+</html>
