@@ -4116,6 +4116,37 @@
             }
         }
 		
+		}
+        
+        // Remettre toutes les statistiques de visites à 0
+        async function resetAllVisitsStats() {
+            if (!confirm('⚠️ ATTENTION : Supprimer TOUTES les statistiques de visites du site ?\n\nCette action est IRRÉVERSIBLE !')) return;
+            
+            if (!confirm('Êtes-vous VRAIMENT sûr ? Toutes les données historiques seront perdues !')) return;
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('daily_visits')
+                    .delete()
+                    .neq('visit_date', '1900-01-01');
+                
+                if (error) throw error;
+                
+                showToast('✅ Toutes les statistiques de visites ont été supprimées');
+                
+                document.getElementById('statVisitorsToday').textContent = '0';
+                document.getElementById('statPageViewsToday').textContent = '0';
+                document.getElementById('statVisitorsWeek').textContent = '0';
+                document.getElementById('visitsChart').innerHTML = '';
+                document.getElementById('visitsDetails').innerHTML = '';
+                document.getElementById('visitsDetails').style.display = 'none';
+                
+            } catch (err) {
+                console.error('Erreur reset stats visites:', err);
+                showToast('❌ Erreur: ' + err.message, true);
+            }
+        }
+		
 		// ============================================
         // STATISTIQUES VISITES DU SITE
         // ============================================
