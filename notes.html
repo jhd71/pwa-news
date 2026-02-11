@@ -990,41 +990,63 @@
             finalTranscript = '';
             interimTranscript = '';
             
-            recognition = new SpeechRecognition();
-            recognition.lang = 'fr-FR';
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            recognition.maxAlternatives = 1;
-            
-            recognition.onresult = (e) => {
-                interimTranscript = '';
-                for (let i = e.resultIndex; i < e.results.length; i++) {
-                    const transcript = e.results[i][0].transcript;
-                    if (e.results[i].isFinal) {
-                        finalTranscript += transcript + ' ';
-                    } else {
-                        interimTranscript = transcript;
-                    }
-                }
+            try {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'fr-FR';
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.maxAlternatives = 1;
                 
+                recognition.onstart = () => {
+                    console.log('🎤 Reconnaissance vocale démarrée');
+                    liveTranscription.classList.add('active');
+                    liveText.innerHTML = '<span class="interim">Parlez maintenant...</span>';
+                };
+                
+                recognition.onresult = (e) => {
+                    interimTranscript = '';
+                    for (let i = e.resultIndex; i < e.results.length; i++) {
+                        const transcript = e.results[i][0].transcript;
+                        if (e.results[i].isFinal) {
+                            finalTranscript += transcript + ' ';
+                        } else {
+                            interimTranscript = transcript;
+                        }
+                    }
+                    
+                    liveTranscription.classList.add('active');
+                    liveText.innerHTML = finalTranscript + '<span class="interim">' + interimTranscript + '</span>';
+                    console.log('📝 Transcription:', finalTranscript || interimTranscript);
+                };
+                
+                recognition.onerror = (e) => {
+                    console.warn('⚠️ Erreur reconnaissance:', e.error);
+                    if (e.error === 'not-allowed') {
+                        liveText.innerHTML = '<span class="interim">⚠️ Accès au micro refusé pour la transcription</span>';
+                    } else if (e.error === 'no-speech') {
+                        // Pas grave, on continue
+                    } else if (e.error === 'network') {
+                        liveText.innerHTML = '<span class="interim">⚠️ Connexion requise pour la transcription</span>';
+                    }
+                };
+                
+                recognition.onend = () => {
+                    console.log('🎤 Reconnaissance terminée, recording:', isRecording);
+                    // Restart if still recording (Chrome coupe après ~60s)
+                    if (isRecording) {
+                        setTimeout(() => {
+                            try { recognition.start(); } catch(e) { console.warn('Relance échouée:', e); }
+                        }, 200);
+                    }
+                };
+                
+                recognition.start();
+                
+            } catch (e) {
+                console.error('❌ Impossible de démarrer la reconnaissance:', e);
                 liveTranscription.classList.add('active');
-                liveText.innerHTML = finalTranscript + '<span class="interim">' + interimTranscript + '</span>';
-            };
-            
-            recognition.onerror = (e) => {
-                if (e.error !== 'aborted' && e.error !== 'no-speech') {
-                    console.error('Erreur reconnaissance:', e.error);
-                }
-            };
-            
-            recognition.onend = () => {
-                // Restart if still recording (Chrome cuts after ~60s)
-                if (isRecording) {
-                    try { recognition.start(); } catch(e) {}
-                }
-            };
-            
-            recognition.start();
+                liveText.innerHTML = '<span class="interim">⚠️ Transcription non disponible sur ce navigateur</span>';
+            }
         }
 
         // ====== TIMER ======
@@ -1163,7 +1185,24 @@
 
         // ====== AUDIO PLAYBACK ======
         function playNoteAudio(noteId, btn) {
-            // Stop previous
+            const audioSrc = btn.dataset.audio;
+            const progressBar = document.getElementById('progress_' + noteId);
+            
+            // Si on clique sur le même bouton en cours de lecture → pause
+            if (currentPlayBtn === btn && currentAudio) {
+                if (!currentAudio.paused) {
+                    currentAudio.pause();
+                    btn.innerHTML = '<span class="material-icons">play_arrow</span>';
+                    return;
+                } else {
+                    // Reprendre la lecture
+                    currentAudio.play();
+                    btn.innerHTML = '<span class="material-icons">pause</span>';
+                    return;
+                }
+            }
+            
+            // Sinon, arrêter l'audio précédent
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
@@ -1172,23 +1211,12 @@
                 }
             }
             
-            const audioSrc = btn.dataset.audio;
-            
-            if (currentPlayBtn === btn && currentAudio && !currentAudio.paused) {
-                currentAudio.pause();
-                btn.innerHTML = '<span class="material-icons">play_arrow</span>';
-                currentAudio = null;
-                currentPlayBtn = null;
-                return;
-            }
-            
+            // Nouvelle lecture
             const audio = new Audio(audioSrc);
             currentAudio = audio;
             currentPlayBtn = btn;
             
             btn.innerHTML = '<span class="material-icons">pause</span>';
-            
-            const progressBar = document.getElementById('progress_' + noteId);
             
             audio.addEventListener('timeupdate', () => {
                 if (audio.duration && progressBar) {
