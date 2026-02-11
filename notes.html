@@ -372,7 +372,7 @@
     <header class="app-header">
         <div class="header-left">
             <a href="index.html" class="back-btn"><span class="material-icons">home</span></a>
-            <div class="app-title">🎙️ Notes <span>Vocales</span> <small style="font-size:0.55rem;color:var(--text-muted);vertical-align:super;">v5</small></div>
+            <div class="app-title">🎙️ Notes <span>Vocales</span> <small style="font-size:0.55rem;color:var(--text-muted);vertical-align:super;">v6</small></div>
         </div>
         <div class="header-right">
             <button class="header-btn" id="themeToggle" title="Changer le thème"><span class="material-icons">light_mode</span></button>
@@ -681,27 +681,15 @@
             };
 
             recognition.onresult = (e) => {
-                // V5 : approche ultra-simple
-                // On ignore TOUT sauf le dernier résultat
-                const lastIndex = e.results.length - 1;
-                const result = e.results[lastIndex];
-                const transcript = result[0].transcript;
+                // V6 : TOUJOURS remplacer, JAMAIS accumuler
+                // Le dernier résultat contient la phrase la plus complète
+                const lastResult = e.results[e.results.length - 1];
+                interimTranscript = lastResult[0].transcript;
 
-                if (result.isFinal) {
-                    savedTranscript += transcript + ' ';
-                    interimTranscript = '';
-                } else {
-                    // Écraser (pas ajouter) l'interim
-                    interimTranscript = transcript;
-                }
-
-                // Affichage : texte confirmé + interim en cours
-                const display = savedTranscript + interimTranscript;
-                liveText.textContent = display;
+                // Afficher : texte des sessions précédentes + phrase en cours
+                liveText.textContent = savedTranscript + interimTranscript;
                 liveText.scrollTop = liveText.scrollHeight;
-                
-                // Debug visible sous le bouton
-                speechStatus.textContent = '🎤 v5 | finals:' + savedTranscript.split(' ').length + ' | last:"' + transcript.substring(0, 30) + '"';
+                speechStatus.textContent = '🎤 v6 | "' + interimTranscript.substring(0, 40) + '"';
             };
 
             recognition.onerror = (e) => {
@@ -711,7 +699,7 @@
 
             recognition.onend = () => {
                 if (isRecording && currentMode === 'dictation') {
-                    // Ajouter l'interim en cours avant la relance
+                    // Sauvegarder la phrase en cours avant la relance
                     if (interimTranscript) {
                         savedTranscript += interimTranscript + ' ';
                         interimTranscript = '';
