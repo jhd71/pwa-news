@@ -720,9 +720,16 @@
             <button class="header-btn" id="searchToggle" title="Rechercher">
                 <span class="material-icons">search</span>
             </button>
+            <button class="header-btn" id="exportBtn" title="Exporter les notes">
+                <span class="material-icons">file_download</span>
+            </button>
+            <button class="header-btn" id="importBtn" title="Importer des notes">
+                <span class="material-icons">file_upload</span>
+            </button>
             <button class="header-btn" id="deleteAllBtn" title="Tout supprimer">
                 <span class="material-icons">delete_sweep</span>
             </button>
+            <input type="file" id="importFile" accept=".json" style="display:none">
         </div>
     </header>
 
@@ -754,6 +761,7 @@
                 </button>
             </div>
             <div class="record-label" id="recordLabel">Appuyez pour enregistrer</div>
+            <div class="speech-status" id="speechStatus" style="display:none; font-size:0.75rem; color:var(--text-muted); margin-top:8px;"></div>
 
             <!-- Live transcription -->
             <div class="live-transcription" id="liveTranscription">
@@ -933,7 +941,20 @@
 
         async function startRecording() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                // 1. Démarrer la reconnaissance vocale EN PREMIER
+                if (speechSupported) {
+                    startSpeechRecognition();
+                    // Attendre un peu que la reconnaissance s'initialise
+                    await new Promise(r => setTimeout(r, 300));
+                }
+                
+                // 2. Puis accéder au micro pour l'enregistrement audio
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: { 
+                        echoCancellation: true,
+                        noiseSuppression: true 
+                    } 
+                });
                 
                 mediaRecorder = new MediaRecorder(stream);
                 audioChunks = [];
@@ -957,14 +978,13 @@
                 recordLabel.textContent = 'Appuyez pour arrêter';
                 startTimer();
                 
-                // Start speech recognition
-                if (speechSupported) {
-                    startSpeechRecognition();
-                }
-                
             } catch (err) {
                 console.error('Erreur micro:', err);
                 showToast('⚠️ Accès au micro refusé');
+                // Arrêter la reconnaissance si le micro échoue
+                if (recognition) {
+                    try { recognition.stop(); } catch(e) {}
+                }
             }
         }
 
@@ -983,12 +1003,16 @@
             }
             
             liveTranscription.classList.remove('active');
+            document.getElementById('speechStatus').style.display = 'none';
         }
 
         // ====== SPEECH RECOGNITION ======
         function startSpeechRecognition() {
             finalTranscript = '';
             interimTranscript = '';
+            const speechStatus = document.getElementById('speechStatus');
+            speechStatus.style.display = 'block';
+            speechStatus.textContent = '⏳ Initialisation transcription...';
             
             try {
                 recognition = new SpeechRecognition();
@@ -999,8 +1023,10 @@
                 
                 recognition.onstart = () => {
                     console.log('🎤 Reconnaissance vocale démarrée');
+                    speechStatus.textContent = '🎤 Transcription active — parlez...';
+                    speechStatus.style.color = 'var(--accent-green)';
                     liveTranscription.classList.add('active');
-                    liveText.innerHTML = '<span class="interim">Parlez maintenant...</span>';
+                    liveText.innerHTML = '<span class="interim">En écoute...</span>';
                 };
                 
                 recognition.onresult = (e) => {
@@ -1022,21 +1048,35 @@
                 recognition.onerror = (e) => {
                     console.warn('⚠️ Erreur reconnaissance:', e.error);
                     if (e.error === 'not-allowed') {
-                        liveText.innerHTML = '<span class="interim">⚠️ Accès au micro refusé pour la transcription</span>';
+                        speechStatus.textContent = '❌ Micro refusé pour la transcription';
+                        speechStatus.style.color = 'var(--accent-red)';
+                        liveText.innerHTML = '<span class="interim">⚠️ Autorisez le micro pour la transcription</span>';
                     } else if (e.error === 'no-speech') {
-                        // Pas grave, on continue
+                        speechStatus.textContent = '🎤 Aucune voix détectée, en attente...';
                     } else if (e.error === 'network') {
-                        liveText.innerHTML = '<span class="interim">⚠️ Connexion requise pour la transcription</span>';
+                        speechStatus.textContent = '❌ Internet requis pour la transcription';
+                        speechStatus.style.color = 'var(--accent-red)';
+                    } else if (e.error === 'service-not-allowed' || e.error === 'not-allowed') {
+                        speechStatus.textContent = '❌ Service de transcription bloqué';
+                        speechStatus.style.color = 'var(--accent-red)';
                     }
                 };
                 
                 recognition.onend = () => {
                     console.log('🎤 Reconnaissance terminée, recording:', isRecording);
-                    // Restart if still recording (Chrome coupe après ~60s)
                     if (isRecording) {
+                        speechStatus.textContent = '🔄 Relance de la transcription...';
                         setTimeout(() => {
-                            try { recognition.start(); } catch(e) { console.warn('Relance échouée:', e); }
+                            try { 
+                                recognition.start(); 
+                            } catch(e) { 
+                                console.warn('Relance échouée:', e);
+                                speechStatus.textContent = '⚠️ Transcription interrompue';
+                                speechStatus.style.color = 'var(--accent-amber)';
+                            }
                         }, 200);
+                    } else {
+                        speechStatus.style.display = 'none';
                     }
                 };
                 
@@ -1044,8 +1084,10 @@
                 
             } catch (e) {
                 console.error('❌ Impossible de démarrer la reconnaissance:', e);
+                speechStatus.textContent = '❌ Transcription non supportée : ' + e.message;
+                speechStatus.style.color = 'var(--accent-red)';
                 liveTranscription.classList.add('active');
-                liveText.innerHTML = '<span class="interim">⚠️ Transcription non disponible sur ce navigateur</span>';
+                liveText.innerHTML = '<span class="interim">⚠️ Transcription non disponible</span>';
             }
         }
 
@@ -1363,6 +1405,89 @@
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 2500);
         }
+
+        // ====== EXPORT / IMPORT ======
+        document.getElementById('exportBtn').addEventListener('click', async () => {
+            const notes = await db.getAll();
+            if (notes.length === 0) {
+                showToast('⚠️ Aucune note à exporter');
+                return;
+            }
+            
+            const exportData = {
+                app: 'ActuetMedia Notes',
+                version: 1,
+                exportDate: new Date().toISOString(),
+                count: notes.length,
+                notes: notes
+            };
+            
+            const json = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            const date = new Date().toISOString().slice(0, 10);
+            a.download = `notes-vocales-${date}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast(`📦 ${notes.length} note(s) exportée(s)`);
+        });
+
+        document.getElementById('importBtn').addEventListener('click', () => {
+            document.getElementById('importFile').click();
+        });
+
+        document.getElementById('importFile').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            try {
+                const text = await file.text();
+                const data = JSON.parse(text);
+                
+                // Vérifier le format
+                if (!data.notes || !Array.isArray(data.notes)) {
+                    showToast('⚠️ Fichier invalide');
+                    return;
+                }
+                
+                const existingNotes = await db.getAll();
+                const existingIds = new Set(existingNotes.map(n => n.id));
+                
+                let imported = 0;
+                let skipped = 0;
+                
+                for (const note of data.notes) {
+                    if (!note.id || !note.type || !note.text || !note.date) continue;
+                    
+                    if (existingIds.has(note.id)) {
+                        skipped++;
+                        continue;
+                    }
+                    
+                    await db.save(note);
+                    imported++;
+                }
+                
+                renderNotes();
+                
+                let msg = `📥 ${imported} note(s) importée(s)`;
+                if (skipped > 0) msg += ` (${skipped} doublon(s) ignoré(s))`;
+                showToast(msg);
+                
+            } catch (err) {
+                console.error('Erreur import:', err);
+                showToast('⚠️ Erreur lors de l\'import');
+            }
+            
+            // Reset le input file
+            e.target.value = '';
+        });
 
         // ====== START ======
         init();
