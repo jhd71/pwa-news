@@ -372,7 +372,7 @@
     <header class="app-header">
         <div class="header-left">
             <a href="index.html" class="back-btn"><span class="material-icons">home</span></a>
-            <div class="app-title">🎙️ Notes <span>Vocales</span> <small style="font-size:0.55rem;color:var(--text-muted);vertical-align:super;">v6</small></div>
+            <div class="app-title">🎙️ Notes <span>Vocales</span> <small style="font-size:0.55rem;color:var(--text-muted);vertical-align:super;">v7</small></div>
         </div>
         <div class="header-right">
             <button class="header-btn" id="themeToggle" title="Changer le thème"><span class="material-icons">light_mode</span></button>
@@ -511,6 +511,7 @@
     let finalTranscript = '';
     let interimTranscript = '';
     let savedTranscript = ''; // Texte accumulé entre les relances
+    let processedCount = 0;  // Nombre de résultats finaux déjà traités
     let currentAudio = null;
     let currentPlayBtn = null;
     let editingNoteId = null;
@@ -599,6 +600,7 @@
             finalTranscript = '';
             interimTranscript = '';
             savedTranscript = '';
+            processedCount = 0;
             isRecording = true;
             recordStartTime = Date.now();
 
@@ -681,15 +683,23 @@
             };
 
             recognition.onresult = (e) => {
-                // V6 : TOUJOURS remplacer, JAMAIS accumuler
-                // Le dernier résultat contient la phrase la plus complète
-                const lastResult = e.results[e.results.length - 1];
-                interimTranscript = lastResult[0].transcript;
+                // V7 : parcourir les résultats à partir de ceux pas encore traités
+                interimTranscript = '';
 
-                // Afficher : texte des sessions précédentes + phrase en cours
+                for (let i = processedCount; i < e.results.length; i++) {
+                    if (e.results[i].isFinal) {
+                        // Ce segment est confirmé → sauvegarder et avancer le compteur
+                        savedTranscript += e.results[i][0].transcript + ' ';
+                        processedCount = i + 1;
+                    } else {
+                        // Segment en cours → afficher temporairement (remplacer, pas ajouter)
+                        interimTranscript = e.results[i][0].transcript;
+                    }
+                }
+
                 liveText.textContent = savedTranscript + interimTranscript;
                 liveText.scrollTop = liveText.scrollHeight;
-                speechStatus.textContent = '🎤 v6 | "' + interimTranscript.substring(0, 40) + '"';
+                speechStatus.textContent = '🎤 v7 | segments:' + processedCount + ' | "' + (interimTranscript || '✓').substring(0, 30) + '"';
             };
 
             recognition.onerror = (e) => {
@@ -699,11 +709,13 @@
 
             recognition.onend = () => {
                 if (isRecording && currentMode === 'dictation') {
-                    // Sauvegarder la phrase en cours avant la relance
+                    // Sauvegarder l'interim en cours avant relance
                     if (interimTranscript) {
                         savedTranscript += interimTranscript + ' ';
                         interimTranscript = '';
                     }
+                    // Reset le compteur car la relance repart de zéro
+                    processedCount = 0;
                     setTimeout(() => {
                         if (!isRecording) return;
                         try { recognition.start(); } catch(e) { speechStatus.textContent = '⚠️ Interrompu'; }
@@ -773,7 +785,7 @@
         });
         renderNotes();
         showToast('✍️ Dictée enregistrée');
-        finalTranscript = ''; interimTranscript = ''; savedTranscript = '';
+        finalTranscript = ''; interimTranscript = ''; savedTranscript = ''; processedCount = 0;
         liveText.innerHTML = ''; recordTimer.textContent = '00:00';
     }
 
