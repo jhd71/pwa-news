@@ -131,5 +131,9 @@
 }
 
 .weather-day-icon img {
-    filter: brightness(1.8);
+    filter: brightness(1.5);
+}
+
+[data-theme="light"] .weather-day-icon img {
+    filter: brightness(0.9);
 }
