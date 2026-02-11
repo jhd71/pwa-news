@@ -650,7 +650,7 @@
             liveTranscription.classList.remove('active');
             speechStatus.style.display = 'none';
             // Sauvegarder la dictée comme note texte
-            const text = (finalTranscript + interimTranscript).trim();
+            const text = (savedTranscript + interimTranscript).trim();
             if (text) {
                 saveDictationNote(text);
             } else {
@@ -681,24 +681,20 @@
             };
 
             recognition.onresult = (e) => {
-                // Récupérer tous les résultats FINAUX
-                let sessionFinal = '';
-                for (let i = 0; i < e.results.length; i++) {
-                    if (e.results[i].isFinal) {
-                        sessionFinal += e.results[i][0].transcript + ' ';
-                    }
+                // Approche simple : ne prendre que le DERNIER résultat
+                const latest = e.results[e.results.length - 1];
+                const text = latest[0].transcript;
+
+                if (latest.isFinal) {
+                    // Ce morceau est confirmé → l'ajouter au texte sauvegardé
+                    savedTranscript += text + ' ';
+                    interimTranscript = '';
+                } else {
+                    // Pas encore confirmé → juste l'afficher temporairement
+                    interimTranscript = text;
                 }
 
-                // Ne prendre que le DERNIER résultat interim (il contient toute la phrase en cours)
-                interimTranscript = '';
-                for (let i = e.results.length - 1; i >= 0; i--) {
-                    if (!e.results[i].isFinal) {
-                        interimTranscript = e.results[i][0].transcript;
-                        break;
-                    }
-                }
-
-                finalTranscript = savedTranscript + sessionFinal;
+                finalTranscript = savedTranscript;
                 liveText.innerHTML = escapeHTML(finalTranscript) + '<span class="interim">' + escapeHTML(interimTranscript) + '</span>';
                 liveText.scrollTop = liveText.scrollHeight;
             };
@@ -710,9 +706,11 @@
 
             recognition.onend = () => {
                 if (isRecording && currentMode === 'dictation') {
-                    // Sauvegarder le texte de cette session avant de relancer
-                    savedTranscript = finalTranscript + interimTranscript;
-                    interimTranscript = '';
+                    // Ajouter l'interim en cours avant la relance
+                    if (interimTranscript) {
+                        savedTranscript += interimTranscript + ' ';
+                        interimTranscript = '';
+                    }
                     setTimeout(() => {
                         if (!isRecording) return;
                         try { recognition.start(); } catch(e) { speechStatus.textContent = '⚠️ Interrompu'; }
