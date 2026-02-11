@@ -129,3 +129,7 @@
         height: 16px;
     }
 }
+
+.weather-day-icon img {
+    filter: brightness(1.8);
+}
