@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Notes Vocales - Actu & Média</title>
+    <meta name="description" content="Dictaphone et notes vocales avec transcription automatique">
+    <meta name="theme-color" content="#0a0a14">
+    
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <link rel="manifest" href="/manifest.json">
+    
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-body: #0a0a14;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --bg-elevated: rgba(255, 255, 255, 0.08);
+            --bg-hover: rgba(255, 255, 255, 0.12);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #f0f0f5;
+            --text-secondary: rgba(255, 255, 255, 0.65);
+            --text-muted: rgba(255, 255, 255, 0.4);
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --accent-red: #ef4444;
+            --accent-red-glow: rgba(239, 68, 68, 0.3);
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --radius: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: var(--bg-body);
+            color: var(--text);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+        }
+
+        /* ====== HEADER ====== */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 20, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover { background: var(--bg-hover); }
+
+        .app-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .app-title span { color: var(--primary-light); }
+
+        .header-right {
+            display: flex;
+            gap: 8px;
+        }
+
+        .header-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .header-btn:hover { background: var(--bg-hover); color: var(--text); }
+        .header-btn .material-icons { font-size: 20px; }
+
+        /* ====== MAIN ====== */
+        .app-main {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px 16px 140px;
+        }
+
+        /* ====== RECORDER ZONE ====== */
+        .recorder-zone {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .recorder-zone.recording {
+            border-color: var(--accent-red);
+            box-shadow: 0 0 30px var(--accent-red-glow);
+        }
+
+        /* Visualizer */
+        .audio-visualizer {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+            transition: opacity 0.3s;
+        }
+
+        .recorder-zone.recording .audio-visualizer {
+            opacity: 1;
+        }
+
+        .viz-bar {
+            width: 4px;
+            height: 8px;
+            background: var(--primary-light);
+            border-radius: 4px;
+            transition: height 0.1s ease;
+        }
+
+        .recorder-zone.recording .viz-bar {
+            animation: vizPulse 0.8s ease-in-out infinite alternate;
+            background: var(--accent-red);
+        }
+
+        @keyframes vizPulse {
+            0% { height: 8px; }
+            100% { height: 50px; }
+        }
+
+        .viz-bar:nth-child(1) { animation-delay: 0s; }
+        .viz-bar:nth-child(2) { animation-delay: 0.1s; }
+        .viz-bar:nth-child(3) { animation-delay: 0.2s; }
+        .viz-bar:nth-child(4) { animation-delay: 0.3s; }
+        .viz-bar:nth-child(5) { animation-delay: 0.15s; }
+        .viz-bar:nth-child(6) { animation-delay: 0.25s; }
+        .viz-bar:nth-child(7) { animation-delay: 0.05s; }
+        .viz-bar:nth-child(8) { animation-delay: 0.35s; }
+        .viz-bar:nth-child(9) { animation-delay: 0.12s; }
+        .viz-bar:nth-child(10) { animation-delay: 0.22s; }
+        .viz-bar:nth-child(11) { animation-delay: 0.08s; }
+        .viz-bar:nth-child(12) { animation-delay: 0.18s; }
+        .viz-bar:nth-child(13) { animation-delay: 0.28s; }
+        .viz-bar:nth-child(14) { animation-delay: 0.04s; }
+        .viz-bar:nth-child(15) { animation-delay: 0.2s; }
+
+        /* Timer */
+        .record-timer {
+            font-size: 2rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            transition: color 0.3s;
+        }
+
+        .recorder-zone.recording .record-timer {
+            color: var(--accent-red);
+        }
+
+        /* Record button */
+        .record-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .record-btn {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-red);
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .record-btn-inner {
+            width: 44px;
+            height: 44px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .record-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 20px var(--accent-red-glow);
+        }
+
+        .recorder-zone.recording .record-btn-inner {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+        }
+
+        .record-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 12px;
+        }
+
+        .recorder-zone.recording .record-label {
+            color: var(--accent-red);
+        }
+
+        /* Transcription live */
+        .live-transcription {
+            display: none;
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .live-transcription.active { display: block; }
+
+        .live-transcription-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-green);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .live-transcription-label .pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .live-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text);
+            min-height: 40px;
+        }
+
+        .live-text .interim {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* ====== WARNING BANNER ====== */
+        .browser-warning {
+            display: none;
+            padding: 14px 16px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: var(--accent-amber);
+            line-height: 1.5;
+        }
+
+        .browser-warning .material-icons {
+            font-size: 18px;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+
+        /* ====== NOTES LIST ====== */
+        .notes-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .notes-title {
+            font-size: 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notes-count {
+            font-size: 0.75rem;
+            background: var(--bg-elevated);
+            color: var(--text-muted);
+            padding: 2px 10px;
+            border-radius: 20px;
+        }
+
+        .notes-empty {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--text-muted);
+        }
+
+        .notes-empty .material-icons {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.3;
+        }
+
+        .notes-empty p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Note card */
+        .note-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .note-card:hover {
+            border-color: var(--primary);
+            background: var(--bg-elevated);
+        }
+
+        .note-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .note-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        .note-type-badge.voice {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+        }
+
+        .note-type-badge.text {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary-light);
+        }
+
+        .note-type-badge .material-icons { font-size: 14px; }
+
+        .note-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .note-content {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            word-break: break-word;
+        }
+
+        /* Audio player in note */
+        .note-audio-player {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .note-play-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .note-play-btn:hover { background: var(--primary-light); transform: scale(1.1); }
+        .note-play-btn .material-icons { font-size: 20px; }
+
+        .note-audio-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .note-audio-duration {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .note-audio-progress {
+            width: 100%;
+            height: 4px;
+            background: var(--border);
+            border-radius: 4px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+
+        .note-audio-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: width 0.2s;
+        }
+
+        /* Note actions */
+        .note-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .note-action-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .note-action-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text);
+        }
+
+        .note-action-btn.delete:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        .note-action-btn .material-icons { font-size: 16px; }
+
+        /* ====== FAB ====== */
+        .fab-text {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: var(--primary);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            transition: all 0.3s;
+            z-index: 90;
+        }
+
+        .fab-text:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .fab-text .material-icons { font-size: 28px; }
+
+        /* ====== TEXT NOTE MODAL ====== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 200;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-content {
+            width: 100%;
+            max-width: 600px;
+            background: #14141f;
+            border-radius: 20px 20px 0 0;
+            padding: 24px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-elevated);
+            border: none;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .modal-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            margin-bottom: 16px;
+        }
+
+        .modal-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+
+        .modal-textarea::placeholder { color: var(--text-muted); }
+
+        .modal-save-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .modal-save-btn:hover { background: var(--primary-light); }
+
+        /* ====== TOAST ====== */
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 12px 24px;
+            background: var(--accent-green);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 999;
+            opacity: 0;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* ====== SEARCH ====== */
+        .search-bar {
+            display: none;
+            margin-bottom: 16px;
+        }
+
+        .search-bar.active { display: block; }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .search-input:focus { border-color: var(--primary); }
+
+        .search-bar .material-icons {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 20px;
+        }
+
+        .search-bar { position: relative; }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 400px) {
+            .app-main { padding: 14px 12px 140px; }
+            .recorder-zone { padding: 18px; }
+            .record-btn { width: 64px; height: 64px; }
+            .record-btn-inner { width: 38px; height: 38px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="app-header">
+        <div class="header-left">
+            <a href="index.html" class="back-btn">
+                <span class="material-icons">home</span>
+            </a>
+            <div class="app-title">🎙️ Notes <span>Vocales</span></div>
+        </div>
+        <div class="header-right">
+            <button class="header-btn" id="searchToggle" title="Rechercher">
+                <span class="material-icons">search</span>
+            </button>
+            <button class="header-btn" id="deleteAllBtn" title="Tout supprimer">
+                <span class="material-icons">delete_sweep</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="app-main">
+
+        <!-- Browser warning -->
+        <div class="browser-warning" id="browserWarning">
+            <span class="material-icons">warning</span>
+            <strong>Navigateur non compatible :</strong> La transcription vocale fonctionne uniquement sur Chrome, Edge et Safari. 
+            L'enregistrement audio reste disponible.
+        </div>
+
+        <!-- Recorder -->
+        <div class="recorder-zone" id="recorderZone">
+            <div class="audio-visualizer" id="visualizer">
+                <div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div>
+                <div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div>
+                <div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div>
+                <div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div>
+                <div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div>
+            </div>
+
+            <div class="record-timer" id="recordTimer">00:00</div>
+
+            <div class="record-controls">
+                <button class="record-btn" id="recordBtn" title="Enregistrer">
+                    <div class="record-btn-inner" id="recordBtnInner"></div>
+                </button>
+            </div>
+            <div class="record-label" id="recordLabel">Appuyez pour enregistrer</div>
+
+            <!-- Live transcription -->
+            <div class="live-transcription" id="liveTranscription">
+                <div class="live-transcription-label">
+                    <span class="pulse"></span>
+                    Transcription en cours
+                </div>
+                <div class="live-text" id="liveText"></div>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-bar" id="searchBar">
+            <span class="material-icons">search</span>
+            <input type="text" class="search-input" id="searchInput" placeholder="Rechercher dans les notes...">
+        </div>
+
+        <!-- Notes list -->
+        <div class="notes-header">
+            <div class="notes-title">
+                📝 Mes notes 
+                <span class="notes-count" id="notesCount">0</span>
+            </div>
+        </div>
+
+        <div id="notesList"></div>
+
+        <div class="notes-empty" id="notesEmpty">
+            <span class="material-icons">mic_none</span>
+            <p>Aucune note pour l'instant.<br>Appuyez sur le micro pour enregistrer<br>ou sur ✏️ pour écrire une note.</p>
+        </div>
+    </main>
+
+    <!-- FAB Text note -->
+    <button class="fab-text" id="fabText" title="Nouvelle note écrite">
+        <span class="material-icons">edit_note</span>
+    </button>
+
+    <!-- Text note modal -->
+    <div class="modal-overlay" id="textModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">✏️ Nouvelle note</div>
+                <button class="modal-close" id="modalClose">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <textarea class="modal-textarea" id="modalTextarea" placeholder="Écrivez votre note ici..."></textarea>
+            <button class="modal-save-btn" id="modalSave">
+                <span class="material-icons">save</span>
+                Enregistrer la note
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ====== DATABASE (IndexedDB pour l'audio) ======
+        class NotesDB {
+            constructor() {
+                this.dbName = 'actuetmedia_notes';
+                this.dbVersion = 1;
+                this.db = null;
+            }
+
+            async init() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, this.dbVersion);
+                    
+                    request.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains('notes')) {
+                            const store = db.createObjectStore('notes', { keyPath: 'id' });
+                            store.createIndex('date', 'date', { unique: false });
+                        }
+                    };
+                    
+                    request.onsuccess = (e) => {
+                        this.db = e.target.result;
+                        resolve();
+                    };
+                    
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async save(note) {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction('notes', 'readwrite');
+                    tx.objectStore('notes').put(note);
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
+            }
+
+            async getAll() {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction('notes', 'readonly');
+                    const request = tx.objectStore('notes').getAll();
+                    request.onsuccess = () => {
+                        const notes = request.result.sort((a, b) => b.date - a.date);
+                        resolve(notes);
+                    };
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async delete(id) {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction('notes', 'readwrite');
+                    tx.objectStore('notes').delete(id);
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
+            }
+
+            async deleteAll() {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction('notes', 'readwrite');
+                    tx.objectStore('notes').clear();
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
+            }
+        }
+
+        // ====== APP ======
+        const db = new NotesDB();
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+        let recordStartTime = 0;
+        let timerInterval = null;
+        let recognition = null;
+        let finalTranscript = '';
+        let interimTranscript = '';
+        let currentAudio = null;
+        let currentPlayBtn = null;
+
+        // Speech Recognition support
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const speechSupported = !!SpeechRecognition;
+
+        // DOM elements
+        const recorderZone = document.getElementById('recorderZone');
+        const recordBtn = document.getElementById('recordBtn');
+        const recordTimer = document.getElementById('recordTimer');
+        const recordLabel = document.getElementById('recordLabel');
+        const liveTranscription = document.getElementById('liveTranscription');
+        const liveText = document.getElementById('liveText');
+        const notesList = document.getElementById('notesList');
+        const notesEmpty = document.getElementById('notesEmpty');
+        const notesCount = document.getElementById('notesCount');
+        const browserWarning = document.getElementById('browserWarning');
+
+        // ====== INIT ======
+        async function init() {
+            await db.init();
+            
+            if (!speechSupported) {
+                browserWarning.style.display = 'block';
+            }
+            
+            renderNotes();
+        }
+
+        // ====== RECORDING ======
+        recordBtn.addEventListener('click', async () => {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        });
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) audioChunks.push(e.data);
+                };
+                
+                mediaRecorder.onstop = async () => {
+                    stream.getTracks().forEach(t => t.stop());
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    await saveVoiceNote(audioBlob);
+                };
+                
+                mediaRecorder.start();
+                isRecording = true;
+                recordStartTime = Date.now();
+                
+                // UI
+                recorderZone.classList.add('recording');
+                recordLabel.textContent = 'Appuyez pour arrêter';
+                startTimer();
+                
+                // Start speech recognition
+                if (speechSupported) {
+                    startSpeechRecognition();
+                }
+                
+            } catch (err) {
+                console.error('Erreur micro:', err);
+                showToast('⚠️ Accès au micro refusé');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+            
+            isRecording = false;
+            recorderZone.classList.remove('recording');
+            recordLabel.textContent = 'Appuyez pour enregistrer';
+            stopTimer();
+            
+            if (recognition) {
+                recognition.stop();
+            }
+            
+            liveTranscription.classList.remove('active');
+        }
+
+        // ====== SPEECH RECOGNITION ======
+        function startSpeechRecognition() {
+            finalTranscript = '';
+            interimTranscript = '';
+            
+            recognition = new SpeechRecognition();
+            recognition.lang = 'fr-FR';
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.maxAlternatives = 1;
+            
+            recognition.onresult = (e) => {
+                interimTranscript = '';
+                for (let i = e.resultIndex; i < e.results.length; i++) {
+                    const transcript = e.results[i][0].transcript;
+                    if (e.results[i].isFinal) {
+                        finalTranscript += transcript + ' ';
+                    } else {
+                        interimTranscript = transcript;
+                    }
+                }
+                
+                liveTranscription.classList.add('active');
+                liveText.innerHTML = finalTranscript + '<span class="interim">' + interimTranscript + '</span>';
+            };
+            
+            recognition.onerror = (e) => {
+                if (e.error !== 'aborted' && e.error !== 'no-speech') {
+                    console.error('Erreur reconnaissance:', e.error);
+                }
+            };
+            
+            recognition.onend = () => {
+                // Restart if still recording (Chrome cuts after ~60s)
+                if (isRecording) {
+                    try { recognition.start(); } catch(e) {}
+                }
+            };
+            
+            recognition.start();
+        }
+
+        // ====== TIMER ======
+        function startTimer() {
+            recordTimer.textContent = '00:00';
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - recordStartTime) / 1000);
+                const min = String(Math.floor(elapsed / 60)).padStart(2, '0');
+                const sec = String(elapsed % 60).padStart(2, '0');
+                recordTimer.textContent = `${min}:${sec}`;
+            }, 200);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        // ====== SAVE VOICE NOTE ======
+        async function saveVoiceNote(audioBlob) {
+            const duration = Math.floor((Date.now() - recordStartTime) / 1000);
+            const text = finalTranscript.trim();
+            
+            // Convert blob to base64 for IndexedDB
+            const reader = new FileReader();
+            reader.onload = async () => {
+                const note = {
+                    id: 'note_' + Date.now(),
+                    type: 'voice',
+                    text: text || '(Aucune transcription)',
+                    audioData: reader.result,
+                    duration: duration,
+                    date: Date.now()
+                };
+                
+                await db.save(note);
+                renderNotes();
+                showToast('🎙️ Note vocale enregistrée');
+                
+                // Reset
+                finalTranscript = '';
+                interimTranscript = '';
+                liveText.innerHTML = '';
+                recordTimer.textContent = '00:00';
+            };
+            reader.readAsDataURL(audioBlob);
+        }
+
+        // ====== SAVE TEXT NOTE ======
+        document.getElementById('modalSave').addEventListener('click', async () => {
+            const text = document.getElementById('modalTextarea').value.trim();
+            if (!text) return;
+            
+            const note = {
+                id: 'note_' + Date.now(),
+                type: 'text',
+                text: text,
+                date: Date.now()
+            };
+            
+            await db.save(note);
+            renderNotes();
+            showToast('📝 Note enregistrée');
+            
+            // Reset & close
+            document.getElementById('modalTextarea').value = '';
+            document.getElementById('textModal').classList.remove('active');
+        });
+
+        // ====== RENDER NOTES ======
+        async function renderNotes(filter = '') {
+            let notes = await db.getAll();
+            
+            if (filter) {
+                const q = filter.toLowerCase();
+                notes = notes.filter(n => n.text.toLowerCase().includes(q));
+            }
+            
+            notesCount.textContent = notes.length;
+            notesEmpty.style.display = notes.length === 0 ? 'block' : 'none';
+            
+            notesList.innerHTML = notes.map(note => {
+                const dateStr = formatDate(note.date);
+                const typeIcon = note.type === 'voice' ? 'mic' : 'edit_note';
+                const typeLabel = note.type === 'voice' ? 'Vocal' : 'Texte';
+                const typeClass = note.type === 'voice' ? 'voice' : 'text';
+                
+                let audioHTML = '';
+                if (note.type === 'voice' && note.audioData) {
+                    const durStr = formatDuration(note.duration);
+                    audioHTML = `
+                        <div class="note-audio-player">
+                            <button class="note-play-btn" onclick="playNoteAudio('${note.id}', this)" data-audio="${note.audioData}">
+                                <span class="material-icons">play_arrow</span>
+                            </button>
+                            <div class="note-audio-info">
+                                <div class="note-audio-duration">${durStr}</div>
+                                <div class="note-audio-progress">
+                                    <div class="note-audio-progress-bar" id="progress_${note.id}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Tronquer le texte affiché
+                const displayText = note.text.length > 200 
+                    ? note.text.substring(0, 200) + '...' 
+                    : note.text;
+                
+                return `
+                    <div class="note-card" id="card_${note.id}">
+                        <div class="note-card-header">
+                            <span class="note-type-badge ${typeClass}">
+                                <span class="material-icons">${typeIcon}</span>
+                                ${typeLabel}
+                            </span>
+                            <span class="note-date">${dateStr}</span>
+                        </div>
+                        ${audioHTML}
+                        <div class="note-content">${escapeHTML(displayText)}</div>
+                        <div class="note-actions">
+                            <button class="note-action-btn" onclick="copyNote('${note.id}')" title="Copier">
+                                <span class="material-icons">content_copy</span> Copier
+                            </button>
+                            <button class="note-action-btn" onclick="shareNote('${note.id}')" title="Partager">
+                                <span class="material-icons">share</span>
+                            </button>
+                            <button class="note-action-btn delete" onclick="deleteNote('${note.id}')" title="Supprimer">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ====== AUDIO PLAYBACK ======
+        function playNoteAudio(noteId, btn) {
+            // Stop previous
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                if (currentPlayBtn) {
+                    currentPlayBtn.innerHTML = '<span class="material-icons">play_arrow</span>';
+                }
+            }
+            
+            const audioSrc = btn.dataset.audio;
+            
+            if (currentPlayBtn === btn && currentAudio && !currentAudio.paused) {
+                currentAudio.pause();
+                btn.innerHTML = '<span class="material-icons">play_arrow</span>';
+                currentAudio = null;
+                currentPlayBtn = null;
+                return;
+            }
+            
+            const audio = new Audio(audioSrc);
+            currentAudio = audio;
+            currentPlayBtn = btn;
+            
+            btn.innerHTML = '<span class="material-icons">pause</span>';
+            
+            const progressBar = document.getElementById('progress_' + noteId);
+            
+            audio.addEventListener('timeupdate', () => {
+                if (audio.duration && progressBar) {
+                    progressBar.style.width = (audio.currentTime / audio.duration * 100) + '%';
+                }
+            });
+            
+            audio.addEventListener('ended', () => {
+                btn.innerHTML = '<span class="material-icons">play_arrow</span>';
+                if (progressBar) progressBar.style.width = '0%';
+                currentAudio = null;
+                currentPlayBtn = null;
+            });
+            
+            audio.play();
+        }
+
+        // ====== ACTIONS ======
+        async function copyNote(id) {
+            const notes = await db.getAll();
+            const note = notes.find(n => n.id === id);
+            if (note) {
+                await navigator.clipboard.writeText(note.text);
+                showToast('📋 Copié dans le presse-papier');
+            }
+        }
+
+        async function shareNote(id) {
+            const notes = await db.getAll();
+            const note = notes.find(n => n.id === id);
+            if (note && navigator.share) {
+                try {
+                    await navigator.share({ text: note.text });
+                } catch(e) {}
+            } else if (note) {
+                await navigator.clipboard.writeText(note.text);
+                showToast('📋 Copié (partage non disponible)');
+            }
+        }
+
+        async function deleteNote(id) {
+            if (!confirm('Supprimer cette note ?')) return;
+            
+            // Stop audio if playing
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+                currentPlayBtn = null;
+            }
+            
+            await db.delete(id);
+            
+            const card = document.getElementById('card_' + id);
+            if (card) {
+                card.style.opacity = '0';
+                card.style.transform = 'translateX(100px)';
+                card.style.transition = 'all 0.3s ease';
+                setTimeout(() => renderNotes(), 300);
+            }
+            
+            showToast('🗑️ Note supprimée');
+        }
+
+        // Delete all
+        document.getElementById('deleteAllBtn').addEventListener('click', async () => {
+            const notes = await db.getAll();
+            if (notes.length === 0) return;
+            
+            if (!confirm(`Supprimer les ${notes.length} note(s) ?`)) return;
+            if (!confirm('Cette action est irréversible. Confirmer ?')) return;
+            
+            if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+            
+            await db.deleteAll();
+            renderNotes();
+            showToast('🗑️ Toutes les notes supprimées');
+        });
+
+        // ====== MODAL ======
+        document.getElementById('fabText').addEventListener('click', () => {
+            document.getElementById('textModal').classList.add('active');
+            document.getElementById('modalTextarea').focus();
+        });
+
+        document.getElementById('modalClose').addEventListener('click', () => {
+            document.getElementById('textModal').classList.remove('active');
+        });
+
+        document.getElementById('textModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('textModal')) {
+                document.getElementById('textModal').classList.remove('active');
+            }
+        });
+
+        // ====== SEARCH ======
+        document.getElementById('searchToggle').addEventListener('click', () => {
+            const bar = document.getElementById('searchBar');
+            bar.classList.toggle('active');
+            if (bar.classList.contains('active')) {
+                document.getElementById('searchInput').focus();
+            } else {
+                document.getElementById('searchInput').value = '';
+                renderNotes();
+            }
+        });
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            renderNotes(e.target.value);
+        });
+
+        // ====== HELPERS ======
+        function formatDate(timestamp) {
+            const d = new Date(timestamp);
+            const now = new Date();
+            const diff = now - d;
+            
+            if (diff < 60000) return 'À l\'instant';
+            if (diff < 3600000) return `Il y a ${Math.floor(diff / 60000)} min`;
+            if (diff < 86400000 && d.getDate() === now.getDate()) {
+                return 'Aujourd\'hui ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            }
+            
+            return d.toLocaleDateString('fr-FR', { 
+                day: 'numeric', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        function formatDuration(seconds) {
+            const min = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const sec = String(seconds % 60).padStart(2, '0');
+            return `${min}:${sec}`;
+        }
+
+        function escapeHTML(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // ====== START ======
+        init();
+    </script>
+</body>
+</html>
