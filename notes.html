@@ -1067,15 +1067,21 @@
         // ====== SAVE VOICE NOTE ======
         async function saveVoiceNote(audioBlob) {
             const duration = Math.floor((Date.now() - recordStartTime) / 1000);
-            const text = finalTranscript.trim();
             
+            // CORRECTION ICI : On récupère aussi 'interimTranscript'
+            // pour ne pas perdre la dernière phrase prononcée.
+            let fullText = (finalTranscript + ' ' + interimTranscript).trim();
+            
+            // Nettoyage des espaces doubles éventuels
+            fullText = fullText.replace(/\s+/g, ' ');
+
             // Convert blob to base64 for IndexedDB
             const reader = new FileReader();
             reader.onload = async () => {
                 const note = {
                     id: 'note_' + Date.now(),
                     type: 'voice',
-                    text: text || '(Aucune transcription)',
+                    text: fullText || '(Aucune transcription)', // Utilise le texte combiné
                     audioData: reader.result,
                     duration: duration,
                     date: Date.now()
