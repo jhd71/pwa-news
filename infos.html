@@ -384,10 +384,20 @@
         }
         
         .action-btn:hover {
-            background: rgba(99, 102, 241, 0.1);
-            border-color: var(--primary-light);
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
         }
         
+		.action-btn .material-icons {
+			font-size: 1.1rem;
+		
+		}
+		
+		.action-btn.open .material-icons.arrow {
+			transform: rotate(180deg);
+		}
+		
         .action-btn.liked {
             display: flex;
 			align-items: center;
