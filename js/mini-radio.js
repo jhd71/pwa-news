@@ -217,15 +217,8 @@ class MiniRadioPlayer {
     if (this.loadStationFromStorage()) {
         this.updateUI();
         this.show();
-        
-        // Si la radio était en lecture sur radio.html, reprendre automatiquement
-        const wasPlaying = localStorage.getItem('radioIsPlaying') === 'true';
-        if (wasPlaying && this.currentStation && this.currentStation.url) {
-            // Petite pause pour laisser l'UI se charger
-            setTimeout(() => {
-                this.play();
-            }, 500);
-        }
+        // Ne PAS tenter de lecture automatique (bloqué par les navigateurs)
+        // L'utilisateur cliquera sur Play lui-même
     }
 }
 
