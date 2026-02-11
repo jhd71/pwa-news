@@ -372,7 +372,7 @@
     <header class="app-header">
         <div class="header-left">
             <a href="index.html" class="back-btn"><span class="material-icons">home</span></a>
-            <div class="app-title">🎙️ Notes <span>Vocales</span> <small style="font-size:0.55rem;color:var(--text-muted);vertical-align:super;">v7</small></div>
+            <div class="app-title">🎙️ Notes <span>Vocales</span> <small style="font-size:0.55rem;color:var(--text-muted);vertical-align:super;">v8</small></div>
         </div>
         <div class="header-right">
             <button class="header-btn" id="themeToggle" title="Changer le thème"><span class="material-icons">light_mode</span></button>
@@ -672,54 +672,46 @@
         try {
             recognition = new SpeechRecognition();
             recognition.lang = 'fr-FR';
-            recognition.continuous = true;
-            recognition.interimResults = true;
+            recognition.continuous = false;       // UNE phrase à la fois
+            recognition.interimResults = true;    // Feedback visuel pendant la phrase
 
             recognition.onstart = () => {
-                speechStatus.textContent = '🎤 Parlez, je transcris...';
+                speechStatus.textContent = '🎤 Parlez...';
                 speechStatus.style.color = 'var(--accent-green)';
                 liveTranscription.classList.add('active');
-                liveText.innerHTML = '<span class="interim">En écoute...</span>';
             };
 
             recognition.onresult = (e) => {
-                // V7 : parcourir les résultats à partir de ceux pas encore traités
-                interimTranscript = '';
+                // V8 : prendre UNIQUEMENT le dernier résultat (le plus complet)
+                const last = e.results[e.results.length - 1];
+                interimTranscript = last[0].transcript;
 
-                for (let i = processedCount; i < e.results.length; i++) {
-                    if (e.results[i].isFinal) {
-                        // Ce segment est confirmé → sauvegarder et avancer le compteur
-                        savedTranscript += e.results[i][0].transcript + ' ';
-                        processedCount = i + 1;
-                    } else {
-                        // Segment en cours → afficher temporairement (remplacer, pas ajouter)
-                        interimTranscript = e.results[i][0].transcript;
-                    }
-                }
-
+                // Afficher : phrases précédentes + phrase en cours
                 liveText.textContent = savedTranscript + interimTranscript;
                 liveText.scrollTop = liveText.scrollHeight;
-                speechStatus.textContent = '🎤 v7 | segments:' + processedCount + ' | "' + (interimTranscript || '✓').substring(0, 30) + '"';
             };
 
             recognition.onerror = (e) => {
-                const msgs = { 'not-allowed': '❌ Micro refusé', 'network': '❌ Internet requis', 'no-speech': '🎤 Parlez...', 'audio-capture': '❌ Micro indisponible' };
-                if (msgs[e.error]) { speechStatus.textContent = msgs[e.error]; speechStatus.style.color = e.error === 'no-speech' ? 'var(--accent-amber)' : 'var(--accent-red)'; }
+                const msgs = { 'not-allowed': '❌ Micro refusé', 'network': '❌ Internet requis', 'no-speech': '🔇 Silence détecté...', 'audio-capture': '❌ Micro indisponible' };
+                if (msgs[e.error]) { speechStatus.textContent = msgs[e.error]; }
             };
 
             recognition.onend = () => {
+                // La phrase est finie → sauvegarder et relancer
+                if (interimTranscript) {
+                    savedTranscript += interimTranscript + '. ';
+                    interimTranscript = '';
+                    // Mettre à jour l'affichage
+                    liveText.textContent = savedTranscript;
+                }
+
+                // Relancer si toujours en enregistrement
                 if (isRecording && currentMode === 'dictation') {
-                    // Sauvegarder l'interim en cours avant relance
-                    if (interimTranscript) {
-                        savedTranscript += interimTranscript + ' ';
-                        interimTranscript = '';
-                    }
-                    // Reset le compteur car la relance repart de zéro
-                    processedCount = 0;
+                    speechStatus.textContent = '🎤 Phrase suivante...';
                     setTimeout(() => {
                         if (!isRecording) return;
                         try { recognition.start(); } catch(e) { speechStatus.textContent = '⚠️ Interrompu'; }
-                    }, 300);
+                    }, 200);
                 }
             };
 
