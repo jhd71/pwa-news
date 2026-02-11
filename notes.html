@@ -681,17 +681,23 @@
             };
 
             recognition.onresult = (e) => {
-                // Reconstruire depuis les résultats de CETTE session
+                // Récupérer tous les résultats FINAUX
                 let sessionFinal = '';
-                interimTranscript = '';
                 for (let i = 0; i < e.results.length; i++) {
                     if (e.results[i].isFinal) {
-                        sessionFinal += e.results[i][0].transcript;
-                    } else {
-                        interimTranscript += e.results[i][0].transcript;
+                        sessionFinal += e.results[i][0].transcript + ' ';
                     }
                 }
-                // Combiner avec le texte des sessions précédentes
+
+                // Ne prendre que le DERNIER résultat interim (il contient toute la phrase en cours)
+                interimTranscript = '';
+                for (let i = e.results.length - 1; i >= 0; i--) {
+                    if (!e.results[i].isFinal) {
+                        interimTranscript = e.results[i][0].transcript;
+                        break;
+                    }
+                }
+
                 finalTranscript = savedTranscript + sessionFinal;
                 liveText.innerHTML = escapeHTML(finalTranscript) + '<span class="interim">' + escapeHTML(interimTranscript) + '</span>';
                 liveText.scrollTop = liveText.scrollHeight;
