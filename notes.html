@@ -6,405 +6,265 @@
     <title>Notes Vocales - Actu & Média</title>
     <meta name="description" content="Dictaphone et notes vocales avec transcription automatique">
     <meta name="theme-color" content="#0a0a14">
-    
     <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
     <link rel="apple-touch-icon" href="/icons/icon-192.png">
     <link rel="manifest" href="/manifest.json">
-    
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    
     <style>
-        /* ====== DARK THEME (défaut) ====== */
+        /* ====== THEMES ====== */
         :root, [data-theme="dark"] {
-            --bg-body: #0a0a14;
-            --bg-card: rgba(255, 255, 255, 0.05);
-            --bg-elevated: rgba(255, 255, 255, 0.08);
-            --bg-hover: rgba(255, 255, 255, 0.12);
-            --bg-header: rgba(10, 10, 20, 0.9);
-            --bg-modal: #14141f;
-            --border: rgba(255, 255, 255, 0.1);
-            --text: #f0f0f5;
-            --text-secondary: rgba(255, 255, 255, 0.65);
-            --text-muted: rgba(255, 255, 255, 0.4);
-            --primary: #6366f1;
-            --primary-light: #818cf8;
-            --accent-red: #ef4444;
-            --accent-red-glow: rgba(239, 68, 68, 0.3);
-            --accent-green: #10b981;
-            --accent-amber: #f59e0b;
-            --radius: 16px;
-            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+            --bg-body: #0a0a14; --bg-card: rgba(255,255,255,0.05); --bg-elevated: rgba(255,255,255,0.08);
+            --bg-hover: rgba(255,255,255,0.12); --bg-header: rgba(10,10,20,0.92); --bg-modal: #14141f;
+            --bg-menu: #1a1a2e; --border: rgba(255,255,255,0.1); --text: #f0f0f5;
+            --text-secondary: rgba(255,255,255,0.65); --text-muted: rgba(255,255,255,0.4);
+            --primary: #6366f1; --primary-light: #818cf8; --accent-red: #ef4444;
+            --accent-red-glow: rgba(239,68,68,0.3); --accent-green: #10b981;
+            --accent-amber: #f59e0b; --radius: 16px; --shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
-
-        /* ====== LIGHT THEME ====== */
         [data-theme="light"] {
-            --bg-body: #f5f5f7;
-            --bg-card: #ffffff;
-            --bg-elevated: #f0f0f3;
-            --bg-hover: #e8e8ec;
-            --bg-header: rgba(245, 245, 247, 0.92);
-            --bg-modal: #ffffff;
-            --border: rgba(0, 0, 0, 0.1);
-            --text: #1a1a2e;
-            --text-secondary: rgba(0, 0, 0, 0.6);
-            --text-muted: rgba(0, 0, 0, 0.4);
-            --primary: #4f46e5;
-            --primary-light: #6366f1;
-            --accent-red: #dc2626;
-            --accent-red-glow: rgba(220, 38, 38, 0.2);
-            --accent-green: #059669;
-            --accent-amber: #d97706;
-            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --bg-body: #f5f5f7; --bg-card: #ffffff; --bg-elevated: #f0f0f3;
+            --bg-hover: #e8e8ec; --bg-header: rgba(245,245,247,0.92); --bg-modal: #ffffff;
+            --bg-menu: #ffffff; --border: rgba(0,0,0,0.1); --text: #1a1a2e;
+            --text-secondary: rgba(0,0,0,0.6); --text-muted: rgba(0,0,0,0.4);
+            --primary: #4f46e5; --primary-light: #6366f1; --accent-red: #dc2626;
+            --accent-red-glow: rgba(220,38,38,0.2); --accent-green: #059669;
+            --accent-amber: #d97706; --shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'DM Sans', -apple-system, sans-serif;
-            background: var(--bg-body);
-            color: var(--text);
-            min-height: 100vh;
-            min-height: 100dvh;
-            overflow-x: hidden;
-            transition: background 0.3s, color 0.3s;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'DM Sans',-apple-system,sans-serif; background:var(--bg-body); color:var(--text); min-height:100vh; min-height:100dvh; overflow-x:hidden; transition:background 0.3s,color 0.3s; }
 
         /* ====== HEADER ====== */
-        .app-header {
-            position: sticky; top: 0; z-index: 100;
-            background: var(--bg-header);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 12px 16px;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .back-btn, .header-btn {
-            width: 38px; height: 38px; border-radius: 12px;
-            background: var(--bg-card); border: 1px solid var(--border);
-            color: var(--text); display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.2s; text-decoration: none;
-        }
-        .header-btn { color: var(--text-secondary); }
-        .back-btn:hover, .header-btn:hover { background: var(--bg-hover); color: var(--text); }
-        .header-btn .material-icons { font-size: 20px; }
-        .app-title { font-size: 1.15rem; font-weight: 700; }
-        .app-title span { color: var(--primary-light); }
-        .header-right { display: flex; gap: 6px; }
+        .app-header { position:sticky; top:0; z-index:100; background:var(--bg-header); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:12px 16px; display:flex; align-items:center; justify-content:space-between; }
+        .header-left { display:flex; align-items:center; gap:12px; }
+        .header-btn { width:44px; height:44px; border-radius:14px; background:var(--bg-card); border:1px solid var(--border); color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s; text-decoration:none; }
+        .header-btn:hover { background:var(--bg-hover); }
+        .header-btn .material-icons { font-size:22px; }
+        [data-theme="light"] .header-btn { box-shadow:var(--shadow); }
+        .app-title { font-size:1.2rem; font-weight:700; white-space:nowrap; }
+        .app-title span { color:var(--primary-light); }
 
-        [data-theme="light"] .back-btn,
-        [data-theme="light"] .header-btn {
-            box-shadow: var(--shadow);
-        }
+        /* ====== SLIDE MENU ====== */
+        .menu-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:200; }
+        .menu-overlay.active { display:block; }
+        .slide-menu { position:fixed; top:0; right:-300px; width:280px; height:100%; background:var(--bg-menu); z-index:201; transition:right 0.3s ease; box-shadow:-4px 0 30px rgba(0,0,0,0.3); overflow-y:auto; }
+        .slide-menu.active { right:0; }
+        [data-theme="light"] .slide-menu { box-shadow:-4px 0 20px rgba(0,0,0,0.1); }
+        .menu-header { padding:20px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+        .menu-header h3 { font-size:1rem; font-weight:700; }
+        .menu-close { width:36px; height:36px; border-radius:50%; background:var(--bg-elevated); border:none; color:var(--text-secondary); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+        .menu-section { padding:12px 0; border-bottom:1px solid var(--border); }
+        .menu-section-title { padding:4px 16px 8px; font-size:0.65rem; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); }
+        .menu-item { display:flex; align-items:center; gap:14px; padding:14px 16px; cursor:pointer; transition:background 0.2s; color:var(--text); text-decoration:none; border:none; background:none; width:100%; font-family:inherit; font-size:0.9rem; }
+        .menu-item:hover { background:var(--bg-hover); }
+        .menu-item .material-icons { font-size:22px; color:var(--text-secondary); width:24px; text-align:center; }
+        .menu-item-desc { font-size:0.7rem; color:var(--text-muted); margin-top:2px; }
+        .menu-toggle { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; }
+        .menu-toggle-label { display:flex; align-items:center; gap:14px; font-size:0.9rem; }
+        .menu-toggle-label .material-icons { font-size:22px; color:var(--text-secondary); }
+        .toggle-switch { position:relative; width:48px; height:26px; cursor:pointer; }
+        .toggle-switch input { opacity:0; width:0; height:0; }
+        .toggle-slider { position:absolute; inset:0; background:var(--border); border-radius:26px; transition:0.3s; }
+        .toggle-slider:before { content:''; position:absolute; height:20px; width:20px; left:3px; bottom:3px; background:white; border-radius:50%; transition:0.3s; }
+        .toggle-switch input:checked + .toggle-slider { background:var(--accent-green); }
+        .toggle-switch input:checked + .toggle-slider:before { transform:translateX(22px); }
+
+        /* Backup section */
+        .backup-config { padding:12px 16px; display:none; }
+        .backup-config.active { display:block; }
+        .backup-input-group { margin-bottom:12px; }
+        .backup-input-group label { display:block; font-size:0.75rem; color:var(--text-muted); margin-bottom:4px; }
+        .backup-input { width:100%; padding:10px 12px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:10px; color:var(--text); font-family:inherit; font-size:0.9rem; outline:none; }
+        .backup-input:focus { border-color:var(--primary); }
+        .backup-actions { display:flex; gap:8px; }
+        .backup-btn { flex:1; padding:10px; border:none; border-radius:10px; font-family:inherit; font-size:0.8rem; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s; }
+        .backup-btn.save { background:var(--accent-green); color:white; }
+        .backup-btn.restore { background:var(--primary); color:white; }
+        .backup-btn:hover { opacity:0.9; transform:translateY(-1px); }
+        .backup-status { font-size:0.75rem; color:var(--text-muted); margin-top:8px; text-align:center; }
 
         /* ====== MAIN ====== */
-        .app-main { max-width: 600px; margin: 0 auto; padding: 20px 16px 140px; }
+        .app-main { max-width:600px; margin:0 auto; padding:20px 16px 140px; }
 
         /* ====== MODE SELECTOR ====== */
-        .mode-selector {
-            display: flex; gap: 8px; margin-bottom: 16px;
-        }
-        .mode-btn {
-            flex: 1; padding: 12px 8px; border-radius: 12px;
-            background: var(--bg-card); border: 2px solid var(--border);
-            color: var(--text-secondary); font-family: inherit; font-size: 0.8rem;
-            font-weight: 600; cursor: pointer; text-align: center;
-            transition: all 0.2s; display: flex; flex-direction: column;
-            align-items: center; gap: 4px;
-        }
-        .mode-btn .material-icons { font-size: 22px; }
-        .mode-btn.active {
-            border-color: var(--primary); color: var(--primary);
-            background: rgba(99, 102, 241, 0.08);
-        }
-        .mode-btn .mode-desc {
-            font-size: 0.65rem; font-weight: 400; opacity: 0.7;
-        }
-
-        [data-theme="light"] .mode-btn {
-            box-shadow: var(--shadow);
-        }
+        .mode-selector { display:flex; gap:8px; margin-bottom:16px; }
+        .mode-btn { flex:1; padding:14px 8px; border-radius:14px; background:var(--bg-card); border:2px solid var(--border); color:var(--text-secondary); font-family:inherit; font-size:0.85rem; font-weight:600; cursor:pointer; text-align:center; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:4px; }
+        .mode-btn .material-icons { font-size:24px; }
+        .mode-btn.active { border-color:var(--primary); color:var(--primary); background:rgba(99,102,241,0.08); }
+        .mode-btn .mode-desc { font-size:0.65rem; font-weight:400; opacity:0.7; }
+        [data-theme="light"] .mode-btn { box-shadow:var(--shadow); }
 
         /* ====== RECORDER ZONE ====== */
-        .recorder-zone {
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: var(--radius); padding: 24px; margin-bottom: 24px;
-            text-align: center; transition: all 0.3s;
-        }
-        .recorder-zone.recording { border-color: var(--accent-red); box-shadow: 0 0 30px var(--accent-red-glow); }
-
-        [data-theme="light"] .recorder-zone { box-shadow: var(--shadow); }
-
-        .audio-visualizer {
-            height: 60px; display: flex; align-items: center; justify-content: center;
-            gap: 3px; margin-bottom: 16px; opacity: 0.3; transition: opacity 0.3s;
-        }
-        .recorder-zone.recording .audio-visualizer { opacity: 1; }
-        .viz-bar {
-            width: 4px; height: 8px; background: var(--primary-light);
-            border-radius: 4px; transition: height 0.08s ease;
-        }
-        .recorder-zone.recording .viz-bar { background: var(--accent-red); }
-
-        .record-timer {
-            font-size: 2rem; font-weight: 700; font-variant-numeric: tabular-nums;
-            color: var(--text-muted); margin-bottom: 16px; transition: color 0.3s;
-        }
-        .recorder-zone.recording .record-timer { color: var(--accent-red); }
-
-        .record-controls { display: flex; align-items: center; justify-content: center; }
-        .record-btn {
-            width: 72px; height: 72px; border-radius: 50%;
-            border: 3px solid var(--accent-red); background: transparent;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: all 0.3s;
-        }
-        .record-btn-inner {
-            width: 44px; height: 44px; background: var(--accent-red);
-            border-radius: 50%; transition: all 0.3s;
-        }
-        .record-btn:hover { transform: scale(1.08); box-shadow: 0 0 20px var(--accent-red-glow); }
-        .recorder-zone.recording .record-btn-inner { width: 28px; height: 28px; border-radius: 6px; }
-
-        .record-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 12px; }
-        .recorder-zone.recording .record-label { color: var(--accent-red); }
-
-        .speech-status { display: none; font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; }
-
-        /* Live transcription */
-        .live-transcription {
-            display: none; margin-top: 20px; padding: 16px;
-            background: var(--bg-elevated); border-radius: 12px;
-            border: 1px solid var(--border); text-align: left;
-        }
-        .live-transcription.active { display: block; }
-        .live-transcription-label {
-            font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
-            letter-spacing: 1px; color: var(--accent-green); margin-bottom: 8px;
-            display: flex; align-items: center; gap: 6px;
-        }
-        .live-transcription-label .pulse {
-            width: 8px; height: 8px; background: var(--accent-green);
-            border-radius: 50%; animation: pulse 1.5s ease-in-out infinite;
-        }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        .live-text { font-size: 0.95rem; line-height: 1.6; color: var(--text); min-height: 40px;
-            max-height: 200px; overflow-y: auto; }
-        .live-text .interim { color: var(--text-muted); font-style: italic; }
-
-        /* Font size control */
-        .font-size-bar {
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px 14px; margin-bottom: 16px;
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 12px;
-        }
-        .font-size-bar label { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
-        .font-size-bar .small-a { font-size: 0.7rem; color: var(--text-muted); }
-        .font-size-bar .big-a { font-size: 1.1rem; color: var(--text-muted); }
-        .font-size-slider {
-            flex: 1; -webkit-appearance: none; appearance: none;
-            height: 4px; background: var(--border); border-radius: 4px; outline: none;
-        }
-        .font-size-slider::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 20px; height: 20px;
-            background: var(--primary); border-radius: 50%; cursor: pointer;
-        }
-        [data-theme="light"] .font-size-bar { box-shadow: var(--shadow); }
-
-        /* Warning */
-        .browser-warning {
-            display: none; padding: 14px 16px;
-            background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: var(--radius); margin-bottom: 16px;
-            font-size: 0.85rem; color: var(--accent-amber); line-height: 1.5;
-        }
-        .browser-warning .material-icons { font-size: 18px; vertical-align: middle; margin-right: 6px; }
+        .recorder-zone { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:24px; text-align:center; transition:all 0.3s; }
+        .recorder-zone.recording { border-color:var(--accent-red); box-shadow:0 0 30px var(--accent-red-glow); }
+        [data-theme="light"] .recorder-zone { box-shadow:var(--shadow); }
+        .audio-visualizer { height:60px; display:flex; align-items:center; justify-content:center; gap:3px; margin-bottom:16px; opacity:0.3; transition:opacity 0.3s; }
+        .recorder-zone.recording .audio-visualizer { opacity:1; }
+        .viz-bar { width:4px; height:8px; background:var(--primary-light); border-radius:4px; transition:height 0.08s ease; }
+        .recorder-zone.recording .viz-bar { background:var(--accent-red); }
+        .record-timer { font-size:2rem; font-weight:700; font-variant-numeric:tabular-nums; color:var(--text-muted); margin-bottom:16px; transition:color 0.3s; }
+        .recorder-zone.recording .record-timer { color:var(--accent-red); }
+        .record-controls { display:flex; align-items:center; justify-content:center; }
+        .record-btn { width:72px; height:72px; border-radius:50%; border:3px solid var(--accent-red); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.3s; }
+        .record-btn-inner { width:44px; height:44px; background:var(--accent-red); border-radius:50%; transition:all 0.3s; }
+        .record-btn:hover { transform:scale(1.08); box-shadow:0 0 20px var(--accent-red-glow); }
+        .recorder-zone.recording .record-btn-inner { width:28px; height:28px; border-radius:6px; }
+        .record-label { font-size:0.8rem; color:var(--text-muted); margin-top:12px; }
+        .recorder-zone.recording .record-label { color:var(--accent-red); }
+        .speech-status { display:none; font-size:0.75rem; color:var(--text-muted); margin-top:8px; }
+        .live-transcription { display:none; margin-top:20px; padding:16px; background:var(--bg-elevated); border-radius:12px; border:1px solid var(--border); text-align:left; }
+        .live-transcription.active { display:block; }
+        .live-transcription-label { font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--accent-green); margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+        .live-transcription-label .pulse { width:8px; height:8px; background:var(--accent-green); border-radius:50%; animation:pulse 1.5s ease-in-out infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+        .live-text { font-size:0.95rem; line-height:1.6; color:var(--text); min-height:40px; max-height:200px; overflow-y:auto; }
+        .live-text .interim { color:var(--text-muted); font-style:italic; }
 
         /* ====== NOTES LIST ====== */
-        .notes-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-        .notes-title { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .notes-count { font-size: 0.75rem; background: var(--bg-elevated); color: var(--text-muted); padding: 2px 10px; border-radius: 20px; }
+        .notes-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+        .notes-title { font-size:1rem; font-weight:700; display:flex; align-items:center; gap:8px; }
+        .notes-count { font-size:0.75rem; background:var(--bg-elevated); color:var(--text-muted); padding:2px 10px; border-radius:20px; }
+        /* Font size control */
+        .font-size-bar { display:flex; align-items:center; gap:10px; padding:8px 14px; margin-bottom:16px; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; }
+        .font-size-bar .small-a { font-size:0.7rem; color:var(--text-muted); }
+        .font-size-bar .big-a { font-size:1.1rem; color:var(--text-muted); }
+        .font-size-slider { flex:1; -webkit-appearance:none; appearance:none; height:4px; background:var(--border); border-radius:4px; outline:none; }
+        .font-size-slider::-webkit-slider-thumb { -webkit-appearance:none; width:20px; height:20px; background:var(--primary); border-radius:50%; cursor:pointer; }
+        [data-theme="light"] .font-size-bar { box-shadow:var(--shadow); }
 
-        .notes-empty { text-align: center; padding: 48px 20px; color: var(--text-muted); }
-        .notes-empty .material-icons { font-size: 48px; margin-bottom: 12px; opacity: 0.3; }
-        .notes-empty p { font-size: 0.9rem; line-height: 1.6; }
-
-        .note-card {
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: var(--radius); padding: 16px; margin-bottom: 12px;
-            transition: all 0.2s; animation: fadeInUp 0.3s ease;
-        }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .note-card:hover { border-color: var(--primary); background: var(--bg-elevated); }
-
-        [data-theme="light"] .note-card { box-shadow: var(--shadow); }
-
-        .note-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
-        .note-type-badge {
-            display: inline-flex; align-items: center; gap: 4px;
-            font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.5px; padding: 3px 10px; border-radius: 20px;
-        }
-        .note-type-badge.voice { background: rgba(239, 68, 68, 0.12); color: var(--accent-red); }
-        .note-type-badge.text { background: rgba(99, 102, 241, 0.12); color: var(--primary-light); }
-        .note-type-badge.dictation { background: rgba(16, 185, 129, 0.12); color: var(--accent-green); }
-        .note-type-badge .material-icons { font-size: 14px; }
-        .note-date { font-size: 0.75rem; color: var(--text-muted); }
-
-        .note-content {
-            font-size: var(--note-font-size, 0.9rem); line-height: 1.6; color: var(--text-secondary);
-            margin-bottom: 12px; word-break: break-word; white-space: pre-wrap;
-            max-height: 300px; overflow-y: auto;
-        }
-
-        .note-audio-player {
-            display: flex; align-items: center; gap: 10px;
-            padding: 10px 14px; background: var(--bg-elevated);
-            border-radius: 12px; margin-bottom: 12px;
-        }
-        .note-play-btn {
-            width: 36px; height: 36px; border-radius: 50%;
-            background: var(--primary); border: none; color: white;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; flex-shrink: 0; transition: all 0.2s;
-        }
-        .note-play-btn:hover { background: var(--primary-light); transform: scale(1.1); }
-        .note-play-btn .material-icons { font-size: 20px; }
-        .note-audio-info { flex: 1; }
-        .note-audio-duration { font-size: 0.75rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
-        .note-audio-progress { width: 100%; height: 4px; background: var(--border); border-radius: 4px; margin-top: 4px; overflow: hidden; }
-        .note-audio-progress-bar { height: 100%; width: 0%; background: var(--primary); border-radius: 4px; transition: width 0.2s; }
-
-        .note-actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
-        .note-action-btn {
-            padding: 6px 10px; border-radius: 8px; background: transparent;
-            border: 1px solid var(--border); color: var(--text-muted);
-            font-size: 0.75rem; font-family: inherit; cursor: pointer;
-            display: flex; align-items: center; gap: 4px; transition: all 0.2s;
-        }
-        .note-action-btn:hover { background: var(--bg-hover); color: var(--text); }
-        .note-action-btn.delete:hover { background: rgba(239, 68, 68, 0.1); border-color: var(--accent-red); color: var(--accent-red); }
-        .note-action-btn .material-icons { font-size: 16px; }
+        .notes-empty { text-align:center; padding:48px 20px; color:var(--text-muted); }
+        .notes-empty .material-icons { font-size:48px; margin-bottom:12px; opacity:0.3; }
+        .notes-empty p { font-size:0.9rem; line-height:1.6; }
+        .note-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; transition:all 0.2s; animation:fadeInUp 0.3s ease; }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+        .note-card:hover { border-color:var(--primary); background:var(--bg-elevated); }
+        [data-theme="light"] .note-card { box-shadow:var(--shadow); }
+        .note-card-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; }
+        .note-type-badge { display:inline-flex; align-items:center; gap:4px; font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; padding:3px 10px; border-radius:20px; }
+        .note-type-badge.voice { background:rgba(239,68,68,0.12); color:var(--accent-red); }
+        .note-type-badge.text { background:rgba(99,102,241,0.12); color:var(--primary-light); }
+        .note-type-badge.dictation { background:rgba(16,185,129,0.12); color:var(--accent-green); }
+        .note-type-badge .material-icons { font-size:14px; }
+        .note-date { font-size:0.75rem; color:var(--text-muted); }
+        .note-content { font-size:var(--note-font-size,0.9rem); line-height:1.6; color:var(--text-secondary); margin-bottom:12px; word-break:break-word; white-space:pre-wrap; max-height:300px; overflow-y:auto; }
+        .note-audio-player { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--bg-elevated); border-radius:12px; margin-bottom:12px; }
+        .note-play-btn { width:36px; height:36px; border-radius:50%; background:var(--primary); border:none; color:white; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all 0.2s; }
+        .note-play-btn:hover { background:var(--primary-light); transform:scale(1.1); }
+        .note-play-btn .material-icons { font-size:20px; }
+        .note-audio-info { flex:1; }
+        .note-audio-duration { font-size:0.75rem; color:var(--text-muted); font-variant-numeric:tabular-nums; }
+        .note-audio-progress { width:100%; height:4px; background:var(--border); border-radius:4px; margin-top:4px; overflow:hidden; }
+        .note-audio-progress-bar { height:100%; width:0%; background:var(--primary); border-radius:4px; transition:width 0.2s; }
+        .note-actions { display:flex; gap:6px; justify-content:flex-end; flex-wrap:wrap; }
+        .note-action-btn { padding:6px 10px; border-radius:8px; background:transparent; border:1px solid var(--border); color:var(--text-muted); font-size:0.75rem; font-family:inherit; cursor:pointer; display:flex; align-items:center; gap:4px; transition:all 0.2s; }
+        .note-action-btn:hover { background:var(--bg-hover); color:var(--text); }
+        .note-action-btn.delete:hover { background:rgba(239,68,68,0.1); border-color:var(--accent-red); color:var(--accent-red); }
+        .note-action-btn .material-icons { font-size:16px; }
 
         /* ====== FAB ====== */
-        .fab-text {
-            position: fixed; bottom: 24px; right: 24px;
-            width: 56px; height: 56px; border-radius: 16px;
-            background: var(--primary); border: none; color: white;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
-            transition: all 0.3s; z-index: 90;
-        }
-        .fab-text:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5); }
-        .fab-text .material-icons { font-size: 28px; }
+        .fab-text { position:fixed; bottom:24px; right:24px; width:56px; height:56px; border-radius:16px; background:var(--primary); border:none; color:white; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 20px rgba(99,102,241,0.4); transition:all 0.3s; z-index:90; }
+        .fab-text:hover { transform:translateY(-3px); }
+        .fab-text .material-icons { font-size:28px; }
 
         /* ====== MODALS ====== */
-        .modal-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px); z-index: 200;
-            align-items: flex-end; justify-content: center;
-        }
-        .modal-overlay.active { display: flex; }
-        .modal-content {
-            width: 100%; max-width: 600px; background: var(--bg-modal);
-            border-radius: 20px 20px 0 0; padding: 24px;
-            max-height: 80vh; overflow-y: auto; animation: slideUp 0.3s ease;
-        }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-        .modal-title { font-size: 1.1rem; font-weight: 700; }
-        .modal-close {
-            width: 36px; height: 36px; border-radius: 50%;
-            background: var(--bg-elevated); border: none;
-            color: var(--text-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer;
-        }
-        .modal-textarea {
-            width: 100%; min-height: 120px; padding: 16px;
-            background: var(--bg-elevated); border: 1px solid var(--border);
-            border-radius: 12px; color: var(--text); font-family: inherit;
-            font-size: 0.95rem; line-height: 1.6; resize: vertical; outline: none; margin-bottom: 16px;
-        }
-        .modal-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); }
-        .modal-textarea::placeholder { color: var(--text-muted); }
-        .modal-save-btn {
-            width: 100%; padding: 14px; background: var(--primary); border: none;
-            border-radius: 12px; color: white; font-family: inherit;
-            font-size: 1rem; font-weight: 600; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;
-        }
-        .modal-save-btn:hover { background: var(--primary-light); }
-
-        /* ====== TOAST ====== */
-        .toast {
-            position: fixed; bottom: 90px; left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            padding: 12px 24px; background: var(--accent-green); color: white;
-            border-radius: 12px; font-size: 0.85rem; font-weight: 600;
-            z-index: 999; opacity: 0; transition: all 0.3s ease; white-space: nowrap;
-        }
-        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:200; align-items:flex-end; justify-content:center; }
+        .modal-overlay.active { display:flex; }
+        .modal-content { width:100%; max-width:600px; background:var(--bg-modal); border-radius:20px 20px 0 0; padding:24px; max-height:80vh; overflow-y:auto; animation:slideUp 0.3s ease; }
+        @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+        .modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+        .modal-title { font-size:1.1rem; font-weight:700; }
+        .modal-close { width:36px; height:36px; border-radius:50%; background:var(--bg-elevated); border:none; color:var(--text-secondary); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+        .modal-textarea { width:100%; min-height:120px; padding:16px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:12px; color:var(--text); font-family:inherit; font-size:0.95rem; line-height:1.6; resize:vertical; outline:none; margin-bottom:16px; }
+        .modal-textarea:focus { border-color:var(--primary); }
+        .modal-textarea::placeholder { color:var(--text-muted); }
+        .modal-save-btn { width:100%; padding:14px; background:var(--primary); border:none; border-radius:12px; color:white; font-family:inherit; font-size:1rem; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
 
         /* ====== SEARCH ====== */
-        .search-bar { display: none; margin-bottom: 16px; position: relative; }
-        .search-bar.active { display: block; }
-        .search-input {
-            width: 100%; padding: 12px 16px 12px 44px;
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 12px; color: var(--text); font-family: inherit; font-size: 0.9rem; outline: none;
-        }
-        .search-input:focus { border-color: var(--primary); }
-        .search-bar .material-icons { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 20px; }
+        .search-bar { display:none; margin-bottom:16px; position:relative; }
+        .search-bar.active { display:block; }
+        .search-input { width:100%; padding:12px 16px 12px 44px; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; color:var(--text); font-family:inherit; font-size:0.9rem; outline:none; }
+        .search-input:focus { border-color:var(--primary); }
+        .search-bar .material-icons { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:20px; }
 
-        @media (max-width: 400px) {
-            .app-main { padding: 14px 12px 140px; }
-            .recorder-zone { padding: 18px; }
-            .record-btn { width: 64px; height: 64px; }
-            .record-btn-inner { width: 38px; height: 38px; }
-            .header-right { gap: 4px; }
-            .header-btn { width: 34px; height: 34px; border-radius: 10px; }
-        }
+        /* ====== TOAST ====== */
+        .toast { position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(100px); padding:12px 24px; background:var(--accent-green); color:white; border-radius:12px; font-size:0.85rem; font-weight:600; z-index:999; opacity:0; transition:all 0.3s ease; white-space:nowrap; max-width:90vw; text-align:center; }
+        .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+
+        @media (max-width:400px) { .app-main{padding:14px 12px 140px} .recorder-zone{padding:18px} .record-btn{width:64px;height:64px} .record-btn-inner{width:38px;height:38px} }
     </style>
 </head>
 <body>
+    <!-- HEADER -->
     <header class="app-header">
         <div class="header-left">
-            <a href="index.html" class="back-btn"><span class="material-icons">home</span></a>
-            <div class="app-title">🎙️ Notes <span>Vocales</span> <small style="font-size:0.55rem;color:var(--text-muted);vertical-align:super;">v8</small></div>
+            <a href="index.html" class="header-btn"><span class="material-icons">home</span></a>
+            <div class="app-title">🎙️ Notes <span>Vocales</span></div>
         </div>
-        <div class="header-right">
-            <button class="header-btn" id="themeToggle" title="Changer le thème"><span class="material-icons">light_mode</span></button>
-            <button class="header-btn" id="searchToggle" title="Rechercher"><span class="material-icons">search</span></button>
-            <button class="header-btn" id="exportBtn" title="Exporter"><span class="material-icons">file_download</span></button>
-            <button class="header-btn" id="importBtn" title="Importer"><span class="material-icons">file_upload</span></button>
-            <button class="header-btn" id="deleteAllBtn" title="Tout supprimer"><span class="material-icons">delete_sweep</span></button>
-            <input type="file" id="importFile" accept=".json" style="display:none">
-        </div>
+        <button class="header-btn" id="menuBtn"><span class="material-icons">menu</span></button>
     </header>
 
-    <main class="app-main">
-        <div class="browser-warning" id="browserWarning">
-            <span class="material-icons">warning</span>
-            <strong>Mode Dictée indisponible :</strong> La transcription vocale nécessite Chrome, Edge ou Safari.
+    <!-- SLIDE MENU -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+    <nav class="slide-menu" id="slideMenu">
+        <div class="menu-header">
+            <h3>⚙️ Menu</h3>
+            <button class="menu-close" id="menuClose"><span class="material-icons">close</span></button>
         </div>
 
-        <!-- Mode selector -->
+        <div class="menu-section">
+            <div class="menu-section-title">Affichage</div>
+            <div class="menu-toggle">
+                <div class="menu-toggle-label"><span class="material-icons">dark_mode</span> Thème sombre</div>
+                <label class="toggle-switch"><input type="checkbox" id="themeSwitch" checked><span class="toggle-slider"></span></label>
+            </div>
+            <button class="menu-item" id="menuSearch"><span class="material-icons">search</span> Rechercher</button>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-section-title">Fichiers</div>
+            <button class="menu-item" id="menuExport"><span class="material-icons">file_download</span> Exporter (.json)</button>
+            <button class="menu-item" id="menuImport"><span class="material-icons">file_upload</span> Importer</button>
+            <input type="file" id="importFile" accept=".json" style="display:none">
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-section-title">Sauvegarde cloud</div>
+            <div class="menu-toggle">
+                <div class="menu-toggle-label"><span class="material-icons">cloud_sync</span> Auto-sauvegarde</div>
+                <label class="toggle-switch"><input type="checkbox" id="backupSwitch"><span class="toggle-slider"></span></label>
+            </div>
+            <div class="backup-config" id="backupConfig">
+                <div class="backup-input-group">
+                    <label>Votre code personnel (à retenir) :</label>
+                    <input type="text" class="backup-input" id="backupCode" placeholder="Ex: herve2025, moncode123..." maxlength="30" autocomplete="off">
+                </div>
+                <div class="backup-actions">
+                    <button class="backup-btn save" id="backupNow"><span class="material-icons" style="font-size:16px">cloud_upload</span> Sauvegarder</button>
+                    <button class="backup-btn restore" id="restoreNow"><span class="material-icons" style="font-size:16px">cloud_download</span> Restaurer</button>
+                </div>
+                <div class="backup-status" id="backupStatus"></div>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-section-title">Danger</div>
+            <button class="menu-item" id="menuDeleteAll" style="color:var(--accent-red)"><span class="material-icons" style="color:var(--accent-red)">delete_sweep</span> Tout supprimer</button>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="app-main">
         <div class="mode-selector">
             <button class="mode-btn active" id="modeAudio" data-mode="audio">
-                <span class="material-icons">mic</span>
-                🎙️ Enregistrer
+                <span class="material-icons">mic</span> 🎙️ Enregistrer
                 <span class="mode-desc">Audio sans transcription</span>
             </button>
             <button class="mode-btn" id="modeDictation" data-mode="dictation">
-                <span class="material-icons">record_voice_over</span>
-                ✍️ Dicter
+                <span class="material-icons">record_voice_over</span> ✍️ Dicter
                 <span class="mode-desc">Texte par la voix</span>
             </button>
         </div>
 
-        <!-- Recorder -->
         <div class="recorder-zone" id="recorderZone">
             <div class="audio-visualizer" id="visualizer">
                 <div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div>
@@ -425,7 +285,6 @@
             </div>
         </div>
 
-        <!-- Search -->
         <div class="search-bar" id="searchBar">
             <span class="material-icons">search</span>
             <input type="text" class="search-input" id="searchInput" placeholder="Rechercher dans les notes...">
@@ -434,8 +293,6 @@
         <div class="notes-header">
             <div class="notes-title">📝 Mes notes <span class="notes-count" id="notesCount">0</span></div>
         </div>
-
-        <!-- Font size -->
         <div class="font-size-bar">
             <span class="small-a">A</span>
             <input type="range" class="font-size-slider" id="fontSizeSlider" min="12" max="22" value="14" step="1">
@@ -448,563 +305,486 @@
         </div>
     </main>
 
-    <button class="fab-text" id="fabText" title="Nouvelle note écrite"><span class="material-icons">edit_note</span></button>
+    <button class="fab-text" id="fabText"><span class="material-icons">edit_note</span></button>
 
-    <!-- Text note modal -->
+    <!-- Modals -->
     <div class="modal-overlay" id="textModal">
         <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">✏️ Nouvelle note</div>
-                <button class="modal-close" id="modalClose"><span class="material-icons">close</span></button>
-            </div>
+            <div class="modal-header"><div class="modal-title">✏️ Nouvelle note</div><button class="modal-close" id="modalClose"><span class="material-icons">close</span></button></div>
             <textarea class="modal-textarea" id="modalTextarea" placeholder="Écrivez votre note ici..."></textarea>
             <button class="modal-save-btn" id="modalSave"><span class="material-icons">save</span> Enregistrer</button>
         </div>
     </div>
-
-    <!-- Edit note modal -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">✏️ Modifier la note</div>
-                <button class="modal-close" id="editModalClose"><span class="material-icons">close</span></button>
-            </div>
-            <textarea class="modal-textarea" id="editTextarea" placeholder="Modifier le texte..."></textarea>
+            <div class="modal-header"><div class="modal-title">✏️ Modifier la note</div><button class="modal-close" id="editModalClose"><span class="material-icons">close</span></button></div>
+            <textarea class="modal-textarea" id="editTextarea"></textarea>
             <button class="modal-save-btn" id="editSave"><span class="material-icons">save</span> Sauvegarder</button>
         </div>
     </div>
-
     <div class="toast" id="toast"></div>
 
-    <script>
-    // ===================================================================
-    // DATABASE
-    // ===================================================================
-    class NotesDB {
-        constructor() { this.dbName = 'actuetmedia_notes'; this.dbVersion = 1; this.db = null; }
-        async init() {
-            return new Promise((res, rej) => {
-                const r = indexedDB.open(this.dbName, this.dbVersion);
-                r.onupgradeneeded = e => { const db = e.target.result; if (!db.objectStoreNames.contains('notes')) db.createObjectStore('notes', { keyPath: 'id' }).createIndex('date', 'date'); };
-                r.onsuccess = e => { this.db = e.target.result; res(); };
-                r.onerror = () => rej(r.error);
-            });
+<script>
+// ===================================================================
+// SUPABASE CLIENT (lightweight, no SDK needed)
+// ===================================================================
+const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
+
+async function supabaseRequest(path, method = 'GET', body = null) {
+    const opts = {
+        method, headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'Content-Type': 'application/json',
+            'Prefer': method === 'POST' ? 'resolution=merge-duplicates' : ''
         }
-        async save(note) { return new Promise((res, rej) => { const tx = this.db.transaction('notes', 'readwrite'); tx.objectStore('notes').put(note); tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error); }); }
-        async get(id) { return new Promise((res, rej) => { const r = this.db.transaction('notes', 'readonly').objectStore('notes').get(id); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
-        async getAll() { return new Promise((res, rej) => { const r = this.db.transaction('notes', 'readonly').objectStore('notes').getAll(); r.onsuccess = () => res(r.result.sort((a, b) => b.date - a.date)); r.onerror = () => rej(r.error); }); }
-        async delete(id) { return new Promise((res, rej) => { const tx = this.db.transaction('notes', 'readwrite'); tx.objectStore('notes').delete(id); tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error); }); }
-        async deleteAll() { return new Promise((res, rej) => { const tx = this.db.transaction('notes', 'readwrite'); tx.objectStore('notes').clear(); tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error); }); }
-    }
+    };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, opts);
+    if (!res.ok) throw new Error(await res.text());
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+}
 
-    // ===================================================================
-    // APP STATE
-    // ===================================================================
-    const db = new NotesDB();
-    let currentMode = 'audio'; // 'audio' ou 'dictation'
-    let isRecording = false;
-    let recordStartTime = 0;
-    let timerInterval = null;
-    let mediaRecorder = null;
-    let audioChunks = [];
-    let recognition = null;
-    let finalTranscript = '';
-    let interimTranscript = '';
-    let savedTranscript = ''; // Texte accumulé entre les relances
-    let processedCount = 0;  // Nombre de résultats finaux déjà traités
-    let currentAudio = null;
-    let currentPlayBtn = null;
-    let editingNoteId = null;
+// ===================================================================
+// DATABASE (IndexedDB)
+// ===================================================================
+class NotesDB {
+    constructor() { this.dbName='actuetmedia_notes'; this.dbVersion=1; this.db=null; }
+    async init() { return new Promise((res,rej)=>{ const r=indexedDB.open(this.dbName,this.dbVersion); r.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains('notes'))db.createObjectStore('notes',{keyPath:'id'}).createIndex('date','date');}; r.onsuccess=e=>{this.db=e.target.result;res();}; r.onerror=()=>rej(r.error); }); }
+    async save(note) { return new Promise((res,rej)=>{const tx=this.db.transaction('notes','readwrite');tx.objectStore('notes').put(note);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);}); }
+    async get(id) { return new Promise((res,rej)=>{const r=this.db.transaction('notes','readonly').objectStore('notes').get(id);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}); }
+    async getAll() { return new Promise((res,rej)=>{const r=this.db.transaction('notes','readonly').objectStore('notes').getAll();r.onsuccess=()=>res(r.result.sort((a,b)=>b.date-a.date));r.onerror=()=>rej(r.error);}); }
+    async delete(id) { return new Promise((res,rej)=>{const tx=this.db.transaction('notes','readwrite');tx.objectStore('notes').delete(id);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);}); }
+    async deleteAll() { return new Promise((res,rej)=>{const tx=this.db.transaction('notes','readwrite');tx.objectStore('notes').clear();tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);}); }
+}
 
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const speechSupported = !!SpeechRecognition;
+// ===================================================================
+// APP STATE
+// ===================================================================
+const db = new NotesDB();
+let currentMode = 'audio';
+let isRecording = false;
+let recordStartTime = 0;
+let timerInterval = null;
+let mediaRecorder = null;
+let audioChunks = [];
+let recognition = null;
+let finalTranscript = '';
+let interimTranscript = '';
+let savedTranscript = '';
+let currentAudio = null;
+let currentPlayBtn = null;
+let editingNoteId = null;
 
-    const $ = id => document.getElementById(id);
-    const recorderZone = $('recorderZone');
-    const recordTimer = $('recordTimer');
-    const recordLabel = $('recordLabel');
-    const speechStatus = $('speechStatus');
-    const liveTranscription = $('liveTranscription');
-    const liveText = $('liveText');
-    const notesList = $('notesList');
-    const notesEmpty = $('notesEmpty');
-    const notesCount = $('notesCount');
-    const vizBars = document.querySelectorAll('.viz-bar');
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const speechSupported = !!SR;
+const $ = id => document.getElementById(id);
 
-    // ===================================================================
-    // THEME
-    // ===================================================================
-    function initTheme() {
-        // Synchroniser avec le thème du site parent si disponible
-        const saved = localStorage.getItem('notes_theme');
-        const siteTheme = document.cookie.match(/theme=(\w+)/)?.[1];
-        const parentTheme = localStorage.getItem('theme');
-        const theme = saved || parentTheme || siteTheme || 'dark';
-        setTheme(theme);
-    }
+// ===================================================================
+// INIT
+// ===================================================================
+async function init() {
+    await db.init();
+    initTheme();
+    initBackup();
+    initFontSize();
+    if (!speechSupported) { $('modeDictation').style.opacity='0.4'; $('modeDictation').style.pointerEvents='none'; }
+    renderNotes();
+}
 
-    function setTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('notes_theme', theme);
-        const icon = $('themeToggle').querySelector('.material-icons');
-        icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
-        // Mettre à jour meta theme-color
-        const meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.content = theme === 'dark' ? '#0a0a14' : '#f5f5f7';
-    }
+// ===================================================================
+// THEME
+// ===================================================================
+function initTheme() {
+    const saved = localStorage.getItem('notes_theme') || localStorage.getItem('theme') || 'dark';
+    setTheme(saved);
+}
+function setTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('notes_theme', t);
+    $('themeSwitch').checked = (t === 'dark');
+    document.querySelector('meta[name="theme-color"]').content = t === 'dark' ? '#0a0a14' : '#f5f5f7';
+}
+$('themeSwitch').addEventListener('change', e => setTheme(e.target.checked ? 'dark' : 'light'));
 
-    $('themeToggle').addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme');
-        setTheme(current === 'dark' ? 'light' : 'dark');
+// ===================================================================
+// FONT SIZE
+// ===================================================================
+function initFontSize() {
+    const saved = localStorage.getItem('notes_font_size');
+    if (saved) { $('fontSizeSlider').value = saved; document.documentElement.style.setProperty('--note-font-size', saved + 'px'); }
+}
+$('fontSizeSlider').addEventListener('input', e => {
+    document.documentElement.style.setProperty('--note-font-size', e.target.value + 'px');
+    localStorage.setItem('notes_font_size', e.target.value);
+});
+
+// ===================================================================
+// SLIDE MENU
+// ===================================================================
+function openMenu() { $('slideMenu').classList.add('active'); $('menuOverlay').classList.add('active'); }
+function closeMenu() { $('slideMenu').classList.remove('active'); $('menuOverlay').classList.remove('active'); }
+$('menuBtn').addEventListener('click', openMenu);
+$('menuClose').addEventListener('click', closeMenu);
+$('menuOverlay').addEventListener('click', closeMenu);
+
+$('menuSearch').addEventListener('click', () => { closeMenu(); const b=$('searchBar'); b.classList.toggle('active'); if(b.classList.contains('active'))$('searchInput').focus(); else{$('searchInput').value='';renderNotes();} });
+$('menuExport').addEventListener('click', () => { closeMenu(); exportNotes(); });
+$('menuImport').addEventListener('click', () => { closeMenu(); $('importFile').click(); });
+$('menuDeleteAll').addEventListener('click', async () => {
+    const notes = await db.getAll();
+    if (!notes.length) return;
+    if (!confirm(`Supprimer les ${notes.length} note(s) ?`)) return;
+    if (!confirm('Irréversible. Confirmer ?')) return;
+    if (currentAudio) { currentAudio.pause(); currentAudio=null; }
+    await db.deleteAll(); renderNotes(); showToast('🗑️ Tout supprimé'); closeMenu();
+});
+
+// ===================================================================
+// MODE SELECTOR
+// ===================================================================
+document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        if (isRecording) return;
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentMode = btn.dataset.mode;
+        $('recordLabel').textContent = currentMode === 'audio' ? 'Appuyez pour enregistrer' : 'Appuyez pour dicter';
     });
+});
 
-    // ===================================================================
-    // MODE SELECTOR
-    // ===================================================================
-    document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            if (isRecording) return; // Pas changer de mode en cours d'enregistrement
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentMode = btn.dataset.mode;
+// ===================================================================
+// RECORDING
+// ===================================================================
+$('recordBtn').addEventListener('click', () => isRecording ? stopRecording() : startRecording());
 
-            if (currentMode === 'audio') {
-                recordLabel.textContent = 'Appuyez pour enregistrer';
-            } else {
-                recordLabel.textContent = 'Appuyez pour dicter';
-            }
-        });
-    });
-
-    // ===================================================================
-    // INIT
-    // ===================================================================
-    async function init() {
-        await db.init();
-        initTheme();
-        if (!speechSupported) {
-            $('browserWarning').style.display = 'block';
-            $('modeDictation').style.opacity = '0.4';
-            $('modeDictation').style.pointerEvents = 'none';
-        }
-        renderNotes();
-    }
-
-    // ===================================================================
-    // RECORDING
-    // ===================================================================
-    $('recordBtn').addEventListener('click', () => isRecording ? stopRecording() : startRecording());
-
-    async function startRecording() {
-        try {
-            finalTranscript = '';
-            interimTranscript = '';
-            savedTranscript = '';
-            processedCount = 0;
-            isRecording = true;
-            recordStartTime = Date.now();
-
-            if (currentMode === 'audio') {
-                // MODE AUDIO : MediaRecorder seul, pas de transcription
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                audioChunks = [];
-                mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
-                mediaRecorder.onstop = () => {
-                    stream.getTracks().forEach(t => t.stop());
-                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                    saveVoiceNote(blob);
-                };
-                mediaRecorder.start();
-                recordLabel.textContent = 'Appuyez pour arrêter';
-
-            } else {
-                // MODE DICTATION : SpeechRecognition seul, pas d'audio
-                startSpeechRecognition();
-                recordLabel.textContent = 'Appuyez pour arrêter';
-            }
-
-            recorderZone.classList.add('recording');
-            startTimer();
-            startVizAnimation();
-
-        } catch (err) {
-            console.error('Erreur:', err);
-            isRecording = false;
-            showToast('⚠️ Accès au micro refusé');
-        }
-    }
-
-    function stopRecording() {
-        isRecording = false;
-        recorderZone.classList.remove('recording');
-        stopTimer();
-        stopVizAnimation();
+async function startRecording() {
+    try {
+        finalTranscript=''; interimTranscript=''; savedTranscript='';
+        isRecording = true;
+        recordStartTime = Date.now();
 
         if (currentMode === 'audio') {
-            recordLabel.textContent = 'Appuyez pour enregistrer';
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
+            const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+            mediaRecorder.ondataavailable = e => { if(e.data.size>0) audioChunks.push(e.data); };
+            mediaRecorder.onstop = () => { stream.getTracks().forEach(t=>t.stop()); saveVoiceNote(new Blob(audioChunks,{type:'audio/webm'})); };
+            mediaRecorder.start();
+            $('recordLabel').textContent = 'Appuyez pour arrêter';
         } else {
-            recordLabel.textContent = 'Appuyez pour dicter';
-            if (recognition) { try { recognition.abort(); } catch(e) {} recognition = null; }
-            liveTranscription.classList.remove('active');
-            speechStatus.style.display = 'none';
-            // Sauvegarder la dictée comme note texte
-            const text = (savedTranscript + interimTranscript).trim();
-            if (text) {
-                saveDictationNote(text);
-            } else {
-                showToast('⚠️ Aucun texte détecté');
-            }
+            startSpeechRecognition();
+            $('recordLabel').textContent = 'Appuyez pour arrêter';
         }
+        $('recorderZone').classList.add('recording');
+        startTimer(); startVizAnimation();
+    } catch(err) { isRecording=false; showToast('⚠️ Accès micro refusé'); }
+}
+
+function stopRecording() {
+    isRecording = false;
+    $('recorderZone').classList.remove('recording');
+    stopTimer(); stopVizAnimation();
+
+    if (currentMode === 'audio') {
+        $('recordLabel').textContent = 'Appuyez pour enregistrer';
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+    } else {
+        $('recordLabel').textContent = 'Appuyez pour dicter';
+        if (recognition) { try{recognition.abort();}catch(e){} recognition=null; }
+        $('liveTranscription').classList.remove('active');
+        $('speechStatus').style.display = 'none';
+        const text = (savedTranscript + interimTranscript).trim();
+        if (text) saveDictationNote(text);
+        else showToast('⚠️ Aucun texte détecté');
     }
+}
 
-    // ===================================================================
-    // SPEECH RECOGNITION (mode dictée uniquement)
-    // ===================================================================
-    function startSpeechRecognition() {
-        speechStatus.style.display = 'block';
-        speechStatus.textContent = '⏳ Initialisation...';
-        speechStatus.style.color = 'var(--text-muted)';
+// ===================================================================
+// SPEECH RECOGNITION (v8 : continuous=false)
+// ===================================================================
+function startSpeechRecognition() {
+    $('speechStatus').style.display = 'block';
+    $('speechStatus').textContent = '⏳ Initialisation...';
+    $('speechStatus').style.color = 'var(--text-muted)';
 
-        try {
-            recognition = new SpeechRecognition();
-            recognition.lang = 'fr-FR';
-            recognition.continuous = false;       // UNE phrase à la fois
-            recognition.interimResults = true;    // Feedback visuel pendant la phrase
+    try {
+        recognition = new SR();
+        recognition.lang = 'fr-FR';
+        recognition.continuous = false;
+        recognition.interimResults = true;
 
-            recognition.onstart = () => {
-                speechStatus.textContent = '🎤 Parlez...';
-                speechStatus.style.color = 'var(--accent-green)';
-                liveTranscription.classList.add('active');
-            };
-
-            recognition.onresult = (e) => {
-                // V8 : prendre UNIQUEMENT le dernier résultat (le plus complet)
-                const last = e.results[e.results.length - 1];
-                interimTranscript = last[0].transcript;
-
-                // Afficher : phrases précédentes + phrase en cours
-                liveText.textContent = savedTranscript + interimTranscript;
-                liveText.scrollTop = liveText.scrollHeight;
-            };
-
-            recognition.onerror = (e) => {
-                const msgs = { 'not-allowed': '❌ Micro refusé', 'network': '❌ Internet requis', 'no-speech': '🔇 Silence détecté...', 'audio-capture': '❌ Micro indisponible' };
-                if (msgs[e.error]) { speechStatus.textContent = msgs[e.error]; }
-            };
-
-            recognition.onend = () => {
-                // La phrase est finie → sauvegarder et relancer
-                if (interimTranscript) {
-                    savedTranscript += interimTranscript + '. ';
-                    interimTranscript = '';
-                    // Mettre à jour l'affichage
-                    liveText.textContent = savedTranscript;
-                }
-
-                // Relancer si toujours en enregistrement
-                if (isRecording && currentMode === 'dictation') {
-                    speechStatus.textContent = '🎤 Phrase suivante...';
-                    setTimeout(() => {
-                        if (!isRecording) return;
-                        try { recognition.start(); } catch(e) { speechStatus.textContent = '⚠️ Interrompu'; }
-                    }, 200);
-                }
-            };
-
-            recognition.start();
-        } catch (e) {
-            speechStatus.textContent = '❌ Non disponible';
-            speechStatus.style.color = 'var(--accent-red)';
-        }
-    }
-
-    // ===================================================================
-    // VIZ ANIMATION (CSS-based, works for both modes)
-    // ===================================================================
-    let vizAnimInterval;
-    function startVizAnimation() {
-        vizAnimInterval = setInterval(() => {
-            vizBars.forEach(bar => {
-                const h = Math.random() * 45 + 8;
-                bar.style.height = h + 'px';
-            });
-        }, 120);
-    }
-    function stopVizAnimation() {
-        clearInterval(vizAnimInterval);
-        vizBars.forEach(bar => bar.style.height = '8px');
-    }
-
-    // ===================================================================
-    // TIMER
-    // ===================================================================
-    function startTimer() {
-        recordTimer.textContent = '00:00';
-        timerInterval = setInterval(() => {
-            const s = Math.floor((Date.now() - recordStartTime) / 1000);
-            recordTimer.textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
-        }, 200);
-    }
-    function stopTimer() { clearInterval(timerInterval); }
-
-    // ===================================================================
-    // SAVE
-    // ===================================================================
-    async function saveVoiceNote(audioBlob) {
-        const duration = Math.floor((Date.now() - recordStartTime) / 1000);
-        const reader = new FileReader();
-        reader.onload = async () => {
-            await db.save({
-                id: 'note_' + Date.now(), type: 'voice',
-                text: '(Note audio)', audioData: reader.result,
-                duration, date: Date.now()
-            });
-            renderNotes();
-            showToast('🎙️ Audio enregistré');
-            recordTimer.textContent = '00:00';
+        recognition.onstart = () => {
+            $('speechStatus').textContent = '🎤 Parlez...';
+            $('speechStatus').style.color = 'var(--accent-green)';
+            $('liveTranscription').classList.add('active');
         };
-        reader.readAsDataURL(audioBlob);
-    }
 
-    async function saveDictationNote(text) {
-        await db.save({
-            id: 'note_' + Date.now(), type: 'dictation',
-            text, date: Date.now()
+        recognition.onresult = (e) => {
+            const last = e.results[e.results.length - 1];
+            interimTranscript = last[0].transcript;
+            $('liveText').textContent = savedTranscript + interimTranscript;
+            $('liveText').scrollTop = $('liveText').scrollHeight;
+        };
+
+        recognition.onerror = (e) => {
+            const msgs = {'not-allowed':'❌ Micro refusé','network':'❌ Internet requis','no-speech':'🔇 Silence...','audio-capture':'❌ Micro indisponible'};
+            if (msgs[e.error]) $('speechStatus').textContent = msgs[e.error];
+        };
+
+        recognition.onend = () => {
+            if (interimTranscript) {
+                savedTranscript += interimTranscript + '. ';
+                interimTranscript = '';
+                $('liveText').textContent = savedTranscript;
+            }
+            if (isRecording && currentMode === 'dictation') {
+                $('speechStatus').textContent = '🎤 Phrase suivante...';
+                setTimeout(() => { if(!isRecording)return; try{recognition.start();}catch(e){$('speechStatus').textContent='⚠️ Interrompu';} }, 200);
+            }
+        };
+
+        recognition.start();
+    } catch(e) { $('speechStatus').textContent = '❌ Non disponible'; $('speechStatus').style.color = 'var(--accent-red)'; }
+}
+
+// ===================================================================
+// VIZ / TIMER
+// ===================================================================
+let vizAnim;
+const vizBars = document.querySelectorAll('.viz-bar');
+function startVizAnimation() { vizAnim=setInterval(()=>{vizBars.forEach(b=>{b.style.height=Math.random()*45+8+'px';});},120); }
+function stopVizAnimation() { clearInterval(vizAnim); vizBars.forEach(b=>b.style.height='8px'); }
+function startTimer() { $('recordTimer').textContent='00:00'; timerInterval=setInterval(()=>{const s=Math.floor((Date.now()-recordStartTime)/1000);$('recordTimer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');},200); }
+function stopTimer() { clearInterval(timerInterval); }
+
+// ===================================================================
+// SAVE NOTES
+// ===================================================================
+async function saveVoiceNote(blob) {
+    const dur = Math.floor((Date.now()-recordStartTime)/1000);
+    const reader = new FileReader();
+    reader.onload = async () => {
+        const note = {id:'note_'+Date.now(),type:'voice',text:'(Note audio)',audioData:reader.result,duration:dur,date:Date.now()};
+        await db.save(note); renderNotes(); showToast('🎙️ Audio enregistré');
+        $('recordTimer').textContent='00:00';
+        autoBackupNote(note);
+    };
+    reader.readAsDataURL(blob);
+}
+
+async function saveDictationNote(text) {
+    const note = {id:'note_'+Date.now(),type:'dictation',text,date:Date.now()};
+    await db.save(note); renderNotes(); showToast('✍️ Dictée enregistrée');
+    savedTranscript=''; interimTranscript='';
+    $('liveText').textContent=''; $('recordTimer').textContent='00:00';
+    autoBackupNote(note);
+}
+
+$('modalSave').addEventListener('click', async () => {
+    const text=$('modalTextarea').value.trim(); if(!text)return;
+    const note = {id:'note_'+Date.now(),type:'text',text,date:Date.now()};
+    await db.save(note); renderNotes(); showToast('📝 Note enregistrée');
+    $('modalTextarea').value=''; $('textModal').classList.remove('active');
+    autoBackupNote(note);
+});
+
+// ===================================================================
+// EDIT NOTE
+// ===================================================================
+async function editNote(id) {
+    const note = await db.get(id); if(!note) return;
+    editingNoteId = id;
+    $('editTextarea').value = note.text==='(Note audio)' ? '' : note.text;
+    $('editModal').classList.add('active'); $('editTextarea').focus();
+}
+$('editSave').addEventListener('click', async () => {
+    if(!editingNoteId) return;
+    const note = await db.get(editingNoteId); if(!note) return;
+    note.text = $('editTextarea').value.trim() || '(Note audio)';
+    await db.save(note); renderNotes(); showToast('✅ Modifiée');
+    $('editModal').classList.remove('active'); editingNoteId=null;
+    autoBackupNote(note);
+});
+$('editModalClose').addEventListener('click', () => { $('editModal').classList.remove('active'); editingNoteId=null; });
+$('editModal').addEventListener('click', e => { if(e.target.id==='editModal'){$('editModal').classList.remove('active');editingNoteId=null;} });
+
+// ===================================================================
+// RENDER NOTES
+// ===================================================================
+async function renderNotes(filter='') {
+    let notes = await db.getAll();
+    if (filter) { const q=filter.toLowerCase(); notes=notes.filter(n=>n.text.toLowerCase().includes(q)); }
+    $('notesCount').textContent = notes.length;
+    $('notesEmpty').style.display = notes.length ? 'none' : 'block';
+
+    $('notesList').innerHTML = notes.map(note => {
+        const d=formatDate(note.date);
+        const badges={voice:{i:'mic',l:'Audio',c:'voice'},dictation:{i:'record_voice_over',l:'Dictée',c:'dictation'},text:{i:'edit_note',l:'Texte',c:'text'}};
+        const b=badges[note.type]||badges.text;
+        let audio='';
+        if(note.type==='voice'&&note.audioData) audio=`<div class="note-audio-player"><button class="note-play-btn" onclick="playAudio('${note.id}',this)" data-audio="${note.audioData}"><span class="material-icons">play_arrow</span></button><div class="note-audio-info"><div class="note-audio-duration">${fmtDur(note.duration)}</div><div class="note-audio-progress"><div class="note-audio-progress-bar" id="prog_${note.id}"></div></div></div></div>`;
+        return `<div class="note-card" id="card_${note.id}"><div class="note-card-header"><span class="note-type-badge ${b.c}"><span class="material-icons">${b.i}</span> ${b.l}</span><span class="note-date">${d}</span></div>${audio}<div class="note-content">${escHTML(note.text)}</div><div class="note-actions"><button class="note-action-btn" onclick="editNote('${note.id}')"><span class="material-icons">edit</span> Éditer</button><button class="note-action-btn" onclick="copyNote('${note.id}')"><span class="material-icons">content_copy</span> Copier</button><button class="note-action-btn" onclick="shareNote('${note.id}')"><span class="material-icons">share</span></button><button class="note-action-btn delete" onclick="deleteNote('${note.id}')"><span class="material-icons">delete</span></button></div></div>`;
+    }).join('');
+}
+
+// ===================================================================
+// PLAYBACK
+// ===================================================================
+function playAudio(id, btn) {
+    const src=btn.dataset.audio, prog=$('prog_'+id);
+    if(currentPlayBtn===btn&&currentAudio){if(!currentAudio.paused){currentAudio.pause();btn.innerHTML='<span class="material-icons">play_arrow</span>';return;}else{currentAudio.play();btn.innerHTML='<span class="material-icons">pause</span>';return;}}
+    if(currentAudio){currentAudio.pause();currentAudio.currentTime=0;if(currentPlayBtn)currentPlayBtn.innerHTML='<span class="material-icons">play_arrow</span>';}
+    const a=new Audio(src);currentAudio=a;currentPlayBtn=btn;btn.innerHTML='<span class="material-icons">pause</span>';
+    a.ontimeupdate=()=>{if(a.duration&&prog)prog.style.width=(a.currentTime/a.duration*100)+'%';};
+    a.onended=()=>{btn.innerHTML='<span class="material-icons">play_arrow</span>';if(prog)prog.style.width='0%';currentAudio=null;currentPlayBtn=null;};
+    a.play();
+}
+
+// ===================================================================
+// ACTIONS
+// ===================================================================
+async function copyNote(id){const n=await db.get(id);if(n){await navigator.clipboard.writeText(n.text);showToast('📋 Copié');}}
+async function shareNote(id){const n=await db.get(id);if(n&&navigator.share){try{await navigator.share({text:n.text});}catch(e){}}else if(n){await navigator.clipboard.writeText(n.text);showToast('📋 Copié');}}
+async function deleteNote(id){if(!confirm('Supprimer cette note ?'))return;if(currentAudio){currentAudio.pause();currentAudio=null;currentPlayBtn=null;}await db.delete(id);const c=$('card_'+id);if(c){c.style.opacity='0';c.style.transform='translateX(100px)';c.style.transition='all 0.3s';}setTimeout(()=>renderNotes(),300);showToast('🗑️ Supprimée');}
+
+// ===================================================================
+// EXPORT / IMPORT
+// ===================================================================
+async function exportNotes() {
+    const notes=await db.getAll();if(!notes.length){showToast('⚠️ Aucune note');return;}
+    const blob=new Blob([JSON.stringify({app:'ActuetMedia Notes',v:1,date:new Date().toISOString(),notes})],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`notes-vocales-${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);showToast(`📦 ${notes.length} exportée(s)`);
+}
+
+$('importFile').addEventListener('change', async e => {
+    const f=e.target.files[0];if(!f)return;
+    try{const d=JSON.parse(await f.text());if(!d.notes?.length){showToast('⚠️ Invalide');return;}
+    const ex=new Set((await db.getAll()).map(n=>n.id));let ok=0,skip=0;
+    for(const n of d.notes){if(!n.id||!n.type||!n.text)continue;if(ex.has(n.id)){skip++;continue;}await db.save(n);ok++;}
+    renderNotes();showToast(`📥 ${ok} importée(s)`+(skip?` (${skip} doublon(s))`:'')); }catch(err){showToast('⚠️ Erreur import');}
+    e.target.value='';
+});
+
+// ===================================================================
+// BACKUP SUPABASE
+// ===================================================================
+function initBackup() {
+    const enabled = localStorage.getItem('notes_backup_enabled') === 'true';
+    const code = localStorage.getItem('notes_backup_code') || '';
+    $('backupSwitch').checked = enabled;
+    $('backupCode').value = code;
+    $('backupConfig').classList.toggle('active', enabled);
+
+    const lastSync = localStorage.getItem('notes_last_sync');
+    if (lastSync) $('backupStatus').textContent = '✅ Dernière synchro : ' + new Date(lastSync).toLocaleString('fr-FR');
+}
+
+$('backupSwitch').addEventListener('change', e => {
+    const on = e.target.checked;
+    localStorage.setItem('notes_backup_enabled', on);
+    $('backupConfig').classList.toggle('active', on);
+    if (on && !$('backupCode').value) $('backupCode').focus();
+});
+
+$('backupCode').addEventListener('change', e => {
+    localStorage.setItem('notes_backup_code', e.target.value.trim().toLowerCase());
+});
+
+// Auto-backup une note après création/modification
+async function autoBackupNote(note) {
+    const enabled = localStorage.getItem('notes_backup_enabled') === 'true';
+    const code = localStorage.getItem('notes_backup_code');
+    if (!enabled || !code) return;
+
+    try {
+        await supabaseRequest('notes_backup', 'POST', {
+            id: note.id, user_code: code, type: note.type,
+            text: note.text, audio_data: note.audioData || null,
+            duration: note.duration || null, date: note.date
         });
-        renderNotes();
-        showToast('✍️ Dictée enregistrée');
-        finalTranscript = ''; interimTranscript = ''; savedTranscript = ''; processedCount = 0;
-        liveText.innerHTML = ''; recordTimer.textContent = '00:00';
-    }
+        localStorage.setItem('notes_last_sync', new Date().toISOString());
+    } catch(e) { console.error('Backup auto échoué:', e); }
+}
 
-    // Save text note from modal
-    $('modalSave').addEventListener('click', async () => {
-        const text = $('modalTextarea').value.trim();
-        if (!text) return;
-        await db.save({ id: 'note_' + Date.now(), type: 'text', text, date: Date.now() });
-        renderNotes(); showToast('📝 Note enregistrée');
-        $('modalTextarea').value = '';
-        $('textModal').classList.remove('active');
-    });
+// Backup complet
+$('backupNow').addEventListener('click', async () => {
+    const code = $('backupCode').value.trim().toLowerCase();
+    if (!code) { showToast('⚠️ Entrez un code'); $('backupCode').focus(); return; }
+    localStorage.setItem('notes_backup_code', code);
 
-    // ===================================================================
-    // EDIT NOTE
-    // ===================================================================
-    async function editNote(id) {
-        const note = await db.get(id);
-        if (!note) return;
-        editingNoteId = id;
-        $('editTextarea').value = note.text === '(Note audio)' ? '' : note.text;
-        $('editModal').classList.add('active');
-        $('editTextarea').focus();
-    }
+    $('backupStatus').textContent = '⏳ Sauvegarde en cours...';
+    try {
+        const notes = await db.getAll();
+        if (!notes.length) { $('backupStatus').textContent = '⚠️ Aucune note'; return; }
 
-    $('editSave').addEventListener('click', async () => {
-        if (!editingNoteId) return;
-        const note = await db.get(editingNoteId);
-        if (!note) return;
-        note.text = $('editTextarea').value.trim() || '(Note audio)';
-        await db.save(note);
-        renderNotes(); showToast('✅ Note modifiée');
-        $('editModal').classList.remove('active');
-        editingNoteId = null;
-    });
-
-    $('editModalClose').addEventListener('click', () => { $('editModal').classList.remove('active'); editingNoteId = null; });
-    $('editModal').addEventListener('click', e => { if (e.target.id === 'editModal') { $('editModal').classList.remove('active'); editingNoteId = null; } });
-
-    // ===================================================================
-    // RENDER
-    // ===================================================================
-    async function renderNotes(filter = '') {
-        let notes = await db.getAll();
-        if (filter) { const q = filter.toLowerCase(); notes = notes.filter(n => n.text.toLowerCase().includes(q)); }
-
-        notesCount.textContent = notes.length;
-        notesEmpty.style.display = notes.length ? 'none' : 'block';
-
-        notesList.innerHTML = notes.map(note => {
-            const dateStr = formatDate(note.date);
-            const badges = {
-                voice: { icon: 'mic', label: 'Audio', cls: 'voice' },
-                dictation: { icon: 'record_voice_over', label: 'Dictée', cls: 'dictation' },
-                text: { icon: 'edit_note', label: 'Texte', cls: 'text' }
-            };
-            const b = badges[note.type] || badges.text;
-
-            let audioHTML = '';
-            if (note.type === 'voice' && note.audioData) {
-                audioHTML = `
-                    <div class="note-audio-player">
-                        <button class="note-play-btn" onclick="playAudio('${note.id}', this)" data-audio="${note.audioData}">
-                            <span class="material-icons">play_arrow</span>
-                        </button>
-                        <div class="note-audio-info">
-                            <div class="note-audio-duration">${formatDuration(note.duration)}</div>
-                            <div class="note-audio-progress"><div class="note-audio-progress-bar" id="prog_${note.id}"></div></div>
-                        </div>
-                    </div>`;
-            }
-
-            const txt = note.text;
-
-            return `
-                <div class="note-card" id="card_${note.id}">
-                    <div class="note-card-header">
-                        <span class="note-type-badge ${b.cls}"><span class="material-icons">${b.icon}</span> ${b.label}</span>
-                        <span class="note-date">${dateStr}</span>
-                    </div>
-                    ${audioHTML}
-                    <div class="note-content">${escapeHTML(txt)}</div>
-                    <div class="note-actions">
-                        <button class="note-action-btn" onclick="editNote('${note.id}')"><span class="material-icons">edit</span> Éditer</button>
-                        <button class="note-action-btn" onclick="copyNote('${note.id}')"><span class="material-icons">content_copy</span> Copier</button>
-                        <button class="note-action-btn" onclick="shareNote('${note.id}')"><span class="material-icons">share</span></button>
-                        <button class="note-action-btn delete" onclick="deleteNote('${note.id}')"><span class="material-icons">delete</span></button>
-                    </div>
-                </div>`;
-        }).join('');
-    }
-
-    // ===================================================================
-    // PLAYBACK
-    // ===================================================================
-    function playAudio(noteId, btn) {
-        const src = btn.dataset.audio;
-        const prog = $('prog_' + noteId);
-
-        if (currentPlayBtn === btn && currentAudio) {
-            if (!currentAudio.paused) { currentAudio.pause(); btn.innerHTML = '<span class="material-icons">play_arrow</span>'; return; }
-            else { currentAudio.play(); btn.innerHTML = '<span class="material-icons">pause</span>'; return; }
+        for (const note of notes) {
+            await supabaseRequest('notes_backup', 'POST', {
+                id: note.id, user_code: code, type: note.type,
+                text: note.text, audio_data: note.audioData || null,
+                duration: note.duration || null, date: note.date
+            });
         }
-
-        if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; if (currentPlayBtn) currentPlayBtn.innerHTML = '<span class="material-icons">play_arrow</span>'; }
-
-        const audio = new Audio(src);
-        currentAudio = audio; currentPlayBtn = btn;
-        btn.innerHTML = '<span class="material-icons">pause</span>';
-        audio.ontimeupdate = () => { if (audio.duration && prog) prog.style.width = (audio.currentTime / audio.duration * 100) + '%'; };
-        audio.onended = () => { btn.innerHTML = '<span class="material-icons">play_arrow</span>'; if (prog) prog.style.width = '0%'; currentAudio = null; currentPlayBtn = null; };
-        audio.play();
+        localStorage.setItem('notes_last_sync', new Date().toISOString());
+        $('backupStatus').textContent = `✅ ${notes.length} note(s) sauvegardée(s)`;
+        showToast(`☁️ ${notes.length} note(s) sauvegardée(s)`);
+    } catch(e) {
+        console.error('Backup:', e);
+        $('backupStatus').textContent = '❌ Erreur : ' + e.message.substring(0, 50);
     }
+});
 
-    // ===================================================================
-    // ACTIONS
-    // ===================================================================
-    async function copyNote(id) {
-        const n = await db.get(id);
-        if (n) { await navigator.clipboard.writeText(n.text); showToast('📋 Copié'); }
+// Restauration
+$('restoreNow').addEventListener('click', async () => {
+    const code = $('backupCode').value.trim().toLowerCase();
+    if (!code) { showToast('⚠️ Entrez votre code'); $('backupCode').focus(); return; }
+    if (!confirm('Restaurer les notes du cloud ?\nLes notes existantes ne seront pas écrasées.')) return;
+
+    $('backupStatus').textContent = '⏳ Restauration...';
+    try {
+        const data = await supabaseRequest(`notes_backup?user_code=eq.${encodeURIComponent(code)}&select=*`);
+        if (!data || !data.length) { $('backupStatus').textContent = '⚠️ Aucune note trouvée pour ce code'; return; }
+
+        const existing = new Set((await db.getAll()).map(n => n.id));
+        let restored = 0;
+        for (const row of data) {
+            if (existing.has(row.id)) continue;
+            await db.save({
+                id: row.id, type: row.type, text: row.text,
+                audioData: row.audio_data || null,
+                duration: row.duration || null, date: row.date
+            });
+            restored++;
+        }
+        renderNotes();
+        $('backupStatus').textContent = `✅ ${restored} note(s) restaurée(s) (${data.length - restored} déjà présente(s))`;
+        showToast(`☁️ ${restored} note(s) restaurée(s)`);
+    } catch(e) {
+        console.error('Restore:', e);
+        $('backupStatus').textContent = '❌ Erreur : ' + e.message.substring(0, 50);
     }
-    async function shareNote(id) {
-        const n = await db.get(id);
-        if (n && navigator.share) { try { await navigator.share({ text: n.text }); } catch(e) {} }
-        else if (n) { await navigator.clipboard.writeText(n.text); showToast('📋 Copié'); }
-    }
-    async function deleteNote(id) {
-        if (!confirm('Supprimer cette note ?')) return;
-        if (currentAudio) { currentAudio.pause(); currentAudio = null; currentPlayBtn = null; }
-        await db.delete(id);
-        const card = $('card_' + id);
-        if (card) { card.style.opacity = '0'; card.style.transform = 'translateX(100px)'; card.style.transition = 'all 0.3s'; }
-        setTimeout(() => renderNotes(), 300);
-        showToast('🗑️ Supprimée');
-    }
+});
 
-    $('deleteAllBtn').addEventListener('click', async () => {
-        const notes = await db.getAll();
-        if (!notes.length) return;
-        if (!confirm(`Supprimer les ${notes.length} note(s) ?`)) return;
-        if (!confirm('Irréversible. Confirmer ?')) return;
-        if (currentAudio) { currentAudio.pause(); currentAudio = null; }
-        await db.deleteAll(); renderNotes(); showToast('🗑️ Tout supprimé');
-    });
+// ===================================================================
+// MODALS / SEARCH
+// ===================================================================
+$('fabText').addEventListener('click', () => { $('textModal').classList.add('active'); $('modalTextarea').focus(); });
+$('modalClose').addEventListener('click', () => $('textModal').classList.remove('active'));
+$('textModal').addEventListener('click', e => { if(e.target.id==='textModal')$('textModal').classList.remove('active'); });
+$('searchInput').addEventListener('input', e => renderNotes(e.target.value));
 
-    // ===================================================================
-    // EXPORT / IMPORT
-    // ===================================================================
-    $('exportBtn').addEventListener('click', async () => {
-        const notes = await db.getAll();
-        if (!notes.length) { showToast('⚠️ Aucune note'); return; }
-        const blob = new Blob([JSON.stringify({ app: 'ActuetMedia Notes', v: 1, date: new Date().toISOString(), notes })], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob); a.download = `notes-vocales-${new Date().toISOString().slice(0, 10)}.json`;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        showToast(`📦 ${notes.length} note(s) exportée(s)`);
-    });
+// ===================================================================
+// HELPERS
+// ===================================================================
+function formatDate(ts){const d=new Date(ts),now=new Date(),diff=now-d;if(diff<60000)return'À l\'instant';if(diff<3600000)return`Il y a ${Math.floor(diff/60000)} min`;if(diff<86400000&&d.getDate()===now.getDate())return'Aujourd\'hui '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+function fmtDur(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function escHTML(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML;}
+function showToast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
-    $('importBtn').addEventListener('click', () => $('importFile').click());
-
-    $('importFile').addEventListener('change', async (e) => {
-        const file = e.target.files[0]; if (!file) return;
-        try {
-            const data = JSON.parse(await file.text());
-            if (!data.notes?.length) { showToast('⚠️ Invalide'); return; }
-            const existing = new Set((await db.getAll()).map(n => n.id));
-            let ok = 0, skip = 0;
-            for (const n of data.notes) {
-                if (!n.id || !n.type || !n.text) continue;
-                if (existing.has(n.id)) { skip++; continue; }
-                await db.save(n); ok++;
-            }
-            renderNotes();
-            showToast(`📥 ${ok} importée(s)` + (skip ? ` (${skip} doublon(s))` : ''));
-        } catch(err) { showToast('⚠️ Erreur import'); }
-        e.target.value = '';
-    });
-
-    // ===================================================================
-    // FONT SIZE
-    // ===================================================================
-    const fontSlider = $('fontSizeSlider');
-    const savedFontSize = localStorage.getItem('notes_font_size');
-    if (savedFontSize) {
-        fontSlider.value = savedFontSize;
-        document.documentElement.style.setProperty('--note-font-size', savedFontSize + 'px');
-    }
-    fontSlider.addEventListener('input', (e) => {
-        const size = e.target.value;
-        document.documentElement.style.setProperty('--note-font-size', size + 'px');
-        localStorage.setItem('notes_font_size', size);
-    });
-
-    // ===================================================================
-    // MODALS
-    // ===================================================================
-    $('fabText').addEventListener('click', () => { $('textModal').classList.add('active'); $('modalTextarea').focus(); });
-    $('modalClose').addEventListener('click', () => $('textModal').classList.remove('active'));
-    $('textModal').addEventListener('click', e => { if (e.target.id === 'textModal') $('textModal').classList.remove('active'); });
-
-    // ===================================================================
-    // SEARCH
-    // ===================================================================
-    $('searchToggle').addEventListener('click', () => {
-        const bar = $('searchBar');
-        bar.classList.toggle('active');
-        if (bar.classList.contains('active')) $('searchInput').focus();
-        else { $('searchInput').value = ''; renderNotes(); }
-    });
-    $('searchInput').addEventListener('input', e => renderNotes(e.target.value));
-
-    // ===================================================================
-    // HELPERS
-    // ===================================================================
-    function formatDate(ts) {
-        const d = new Date(ts), now = new Date(), diff = now - d;
-        if (diff < 60000) return 'À l\'instant';
-        if (diff < 3600000) return `Il y a ${Math.floor(diff / 60000)} min`;
-        if (diff < 86400000 && d.getDate() === now.getDate())
-            return 'Aujourd\'hui ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-        return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-    }
-    function formatDuration(s) { return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
-    function escapeHTML(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-    function showToast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
-
-    init();
-    </script>
+init();
+</script>
 </body>
 </html>
