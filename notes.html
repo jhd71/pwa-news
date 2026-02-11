@@ -932,28 +932,41 @@
         });
 
         async function startRecording() {
-    try {
-        // --- TEST : On commente la partie enregistrement audio ---
-        /*
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        // ... (tout le bloc mediaRecorder)
-        mediaRecorder.start();
-        */ 
-       
-       // On simule le démarrage pour l'interface
-       isRecording = true;
-       recordStartTime = Date.now();
-       recorderZone.classList.add('recording');
-       startTimer();
-
-       // On lance JUSTE la reconnaissance vocale
-       if (speechSupported) {
-           startSpeechRecognition();
-       }
-       
-    } catch (err) { ... }
-}
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) audioChunks.push(e.data);
+                };
+                
+                mediaRecorder.onstop = async () => {
+                    stream.getTracks().forEach(t => t.stop());
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    await saveVoiceNote(audioBlob);
+                };
+                
+                mediaRecorder.start();
+                isRecording = true;
+                recordStartTime = Date.now();
+                
+                // UI
+                recorderZone.classList.add('recording');
+                recordLabel.textContent = 'Appuyez pour arrêter';
+                startTimer();
+                
+                // Start speech recognition
+                if (speechSupported) {
+                    startSpeechRecognition();
+                }
+                
+            } catch (err) {
+                console.error('Erreur micro:', err);
+                showToast('⚠️ Accès au micro refusé');
+            }
+        }
 
         function stopRecording() {
             if (mediaRecorder && mediaRecorder.state !== 'inactive') {
@@ -1054,21 +1067,15 @@
         // ====== SAVE VOICE NOTE ======
         async function saveVoiceNote(audioBlob) {
             const duration = Math.floor((Date.now() - recordStartTime) / 1000);
+            const text = finalTranscript.trim();
             
-            // CORRECTION ICI : On récupère aussi 'interimTranscript'
-            // pour ne pas perdre la dernière phrase prononcée.
-            let fullText = (finalTranscript + ' ' + interimTranscript).trim();
-            
-            // Nettoyage des espaces doubles éventuels
-            fullText = fullText.replace(/\s+/g, ' ');
-
             // Convert blob to base64 for IndexedDB
             const reader = new FileReader();
             reader.onload = async () => {
                 const note = {
                     id: 'note_' + Date.now(),
                     type: 'voice',
-                    text: fullText || '(Aucune transcription)', // Utilise le texte combiné
+                    text: text || '(Aucune transcription)',
                     audioData: reader.result,
                     duration: duration,
                     date: Date.now()
