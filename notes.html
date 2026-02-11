@@ -189,8 +189,29 @@
             border-radius: 50%; animation: pulse 1.5s ease-in-out infinite;
         }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        .live-text { font-size: 0.95rem; line-height: 1.6; color: var(--text); min-height: 40px; }
+        .live-text { font-size: 0.95rem; line-height: 1.6; color: var(--text); min-height: 40px;
+            max-height: 200px; overflow-y: auto; }
         .live-text .interim { color: var(--text-muted); font-style: italic; }
+
+        /* Font size control */
+        .font-size-bar {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 14px; margin-bottom: 16px;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+        .font-size-bar label { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
+        .font-size-bar .small-a { font-size: 0.7rem; color: var(--text-muted); }
+        .font-size-bar .big-a { font-size: 1.1rem; color: var(--text-muted); }
+        .font-size-slider {
+            flex: 1; -webkit-appearance: none; appearance: none;
+            height: 4px; background: var(--border); border-radius: 4px; outline: none;
+        }
+        .font-size-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 20px; height: 20px;
+            background: var(--primary); border-radius: 50%; cursor: pointer;
+        }
+        [data-theme="light"] .font-size-bar { box-shadow: var(--shadow); }
 
         /* Warning */
         .browser-warning {
@@ -233,8 +254,9 @@
         .note-date { font-size: 0.75rem; color: var(--text-muted); }
 
         .note-content {
-            font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);
+            font-size: var(--note-font-size, 0.9rem); line-height: 1.6; color: var(--text-secondary);
             margin-bottom: 12px; word-break: break-word; white-space: pre-wrap;
+            max-height: 300px; overflow-y: auto;
         }
 
         .note-audio-player {
@@ -412,6 +434,13 @@
         <div class="notes-header">
             <div class="notes-title">📝 Mes notes <span class="notes-count" id="notesCount">0</span></div>
         </div>
+
+        <!-- Font size -->
+        <div class="font-size-bar">
+            <span class="small-a">A</span>
+            <input type="range" class="font-size-slider" id="fontSizeSlider" min="12" max="22" value="14" step="1">
+            <span class="big-a">A</span>
+        </div>
         <div id="notesList"></div>
         <div class="notes-empty" id="notesEmpty">
             <span class="material-icons">mic_none</span>
@@ -481,6 +510,7 @@
     let recognition = null;
     let finalTranscript = '';
     let interimTranscript = '';
+    let savedTranscript = ''; // Texte accumulé entre les relances
     let currentAudio = null;
     let currentPlayBtn = null;
     let editingNoteId = null;
@@ -568,6 +598,7 @@
         try {
             finalTranscript = '';
             interimTranscript = '';
+            savedTranscript = '';
             isRecording = true;
             recordStartTime = Date.now();
 
@@ -650,13 +681,20 @@
             };
 
             recognition.onresult = (e) => {
+                // Reconstruire depuis les résultats de CETTE session
+                let sessionFinal = '';
                 interimTranscript = '';
-                for (let i = e.resultIndex; i < e.results.length; i++) {
-                    const t = e.results[i][0].transcript;
-                    if (e.results[i].isFinal) finalTranscript += t + ' ';
-                    else interimTranscript = t;
+                for (let i = 0; i < e.results.length; i++) {
+                    if (e.results[i].isFinal) {
+                        sessionFinal += e.results[i][0].transcript;
+                    } else {
+                        interimTranscript += e.results[i][0].transcript;
+                    }
                 }
-                liveText.innerHTML = finalTranscript + '<span class="interim">' + interimTranscript + '</span>';
+                // Combiner avec le texte des sessions précédentes
+                finalTranscript = savedTranscript + sessionFinal;
+                liveText.innerHTML = escapeHTML(finalTranscript) + '<span class="interim">' + escapeHTML(interimTranscript) + '</span>';
+                liveText.scrollTop = liveText.scrollHeight;
             };
 
             recognition.onerror = (e) => {
@@ -666,6 +704,9 @@
 
             recognition.onend = () => {
                 if (isRecording && currentMode === 'dictation') {
+                    // Sauvegarder le texte de cette session avant de relancer
+                    savedTranscript = finalTranscript + interimTranscript;
+                    interimTranscript = '';
                     setTimeout(() => {
                         if (!isRecording) return;
                         try { recognition.start(); } catch(e) { speechStatus.textContent = '⚠️ Interrompu'; }
@@ -735,7 +776,7 @@
         });
         renderNotes();
         showToast('✍️ Dictée enregistrée');
-        finalTranscript = ''; interimTranscript = '';
+        finalTranscript = ''; interimTranscript = ''; savedTranscript = '';
         liveText.innerHTML = ''; recordTimer.textContent = '00:00';
     }
 
@@ -808,7 +849,7 @@
                     </div>`;
             }
 
-            const txt = note.text.length > 300 ? note.text.substring(0, 300) + '...' : note.text;
+            const txt = note.text;
 
             return `
                 <div class="note-card" id="card_${note.id}">
@@ -912,6 +953,21 @@
             showToast(`📥 ${ok} importée(s)` + (skip ? ` (${skip} doublon(s))` : ''));
         } catch(err) { showToast('⚠️ Erreur import'); }
         e.target.value = '';
+    });
+
+    // ===================================================================
+    // FONT SIZE
+    // ===================================================================
+    const fontSlider = $('fontSizeSlider');
+    const savedFontSize = localStorage.getItem('notes_font_size');
+    if (savedFontSize) {
+        fontSlider.value = savedFontSize;
+        document.documentElement.style.setProperty('--note-font-size', savedFontSize + 'px');
+    }
+    fontSlider.addEventListener('input', (e) => {
+        const size = e.target.value;
+        document.documentElement.style.setProperty('--note-font-size', size + 'px');
+        localStorage.setItem('notes_font_size', size);
     });
 
     // ===================================================================
