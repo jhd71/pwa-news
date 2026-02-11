@@ -372,7 +372,7 @@
     <header class="app-header">
         <div class="header-left">
             <a href="index.html" class="back-btn"><span class="material-icons">home</span></a>
-            <div class="app-title">🎙️ Notes <span>Vocales</span></div>
+            <div class="app-title">🎙️ Notes <span>Vocales</span> <small style="font-size:0.55rem;color:var(--text-muted);vertical-align:super;">v5</small></div>
         </div>
         <div class="header-right">
             <button class="header-btn" id="themeToggle" title="Changer le thème"><span class="material-icons">light_mode</span></button>
@@ -681,22 +681,27 @@
             };
 
             recognition.onresult = (e) => {
-                // Approche simple : ne prendre que le DERNIER résultat
-                const latest = e.results[e.results.length - 1];
-                const text = latest[0].transcript;
+                // V5 : approche ultra-simple
+                // On ignore TOUT sauf le dernier résultat
+                const lastIndex = e.results.length - 1;
+                const result = e.results[lastIndex];
+                const transcript = result[0].transcript;
 
-                if (latest.isFinal) {
-                    // Ce morceau est confirmé → l'ajouter au texte sauvegardé
-                    savedTranscript += text + ' ';
+                if (result.isFinal) {
+                    savedTranscript += transcript + ' ';
                     interimTranscript = '';
                 } else {
-                    // Pas encore confirmé → juste l'afficher temporairement
-                    interimTranscript = text;
+                    // Écraser (pas ajouter) l'interim
+                    interimTranscript = transcript;
                 }
 
-                finalTranscript = savedTranscript;
-                liveText.innerHTML = escapeHTML(finalTranscript) + '<span class="interim">' + escapeHTML(interimTranscript) + '</span>';
+                // Affichage : texte confirmé + interim en cours
+                const display = savedTranscript + interimTranscript;
+                liveText.textContent = display;
                 liveText.scrollTop = liveText.scrollHeight;
+                
+                // Debug visible sous le bouton
+                speechStatus.textContent = '🎤 v5 | finals:' + savedTranscript.split(' ').length + ' | last:"' + transcript.substring(0, 30) + '"';
             };
 
             recognition.onerror = (e) => {
