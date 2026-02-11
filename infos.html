@@ -159,11 +159,15 @@
         
         /* Carte info */
         .info-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.3s ease;
+            display: flex;
+			gap: 1rem;
+			padding: 1.2rem;
+			background: var(--bg-elevated);
+			border-radius: 12px;
+			border: 1px solid var(--border-color);
+			transition: all 0.3s ease;
+			cursor: pointer;
+			flex-direction: column;
         }
         
         .info-card:hover {
@@ -206,7 +210,6 @@
             gap: 0.5rem;
             padding: 1rem 1rem 0.5rem;
             font-size: 0.8rem;
-            color: var(--text-muted);
         }
         
         .info-card-icon {
@@ -215,7 +218,6 @@
         
         .info-card-author {
             font-weight: 600;
-            color: var(--text-secondary);
         }
         
         .info-card-date {
@@ -286,19 +288,18 @@
         }
         
         .see-more-btn {
-            display: none;
-            align-items: center;
-            gap: 0.25rem;
-            margin-top: 0.5rem;
-            padding: 0.4rem 0.8rem;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            color: var(--primary-light);
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            display: inline-flex;
+			align-items: center;
+			gap: 0.3rem;
+			padding: 0.5rem 1rem;
+			background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+			border: none;
+			border-radius: 20px;
+			color: white;
+			font-weight: 600;
+			font-size: 0.85rem;
+			box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+			transition: all 0.2s ease;
         }
         
         .see-more-btn.visible {
@@ -340,7 +341,6 @@
             margin-top: 0.75rem;
             border-top: 1px solid var(--border-color);
             font-size: 0.8rem;
-            color: var(--text-muted);
         }
         
         .info-card-meta {
@@ -367,18 +367,18 @@
         }
         
         .action-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.5rem 1rem;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            display: inline-flex;
+			align-items: center;
+			gap: 0.4rem;
+			padding: 0.6rem 1.2rem;
+			background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+			border: none;
+			border-radius: 20px;
+			color: white;
+			font-weight: 600;
+			font-size: 0.85rem;
+			box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+			transition: all 0.2s ease;
         }
         
         .action-btn:hover {
@@ -387,9 +387,18 @@
         }
         
         .action-btn.liked {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: #ef4444;
-            color: #ef4444;
+            display: flex;
+			align-items: center;
+			gap: 0.4rem;
+			padding: 0.5rem 0.85rem;
+			background: rgba(239, 68, 68, 0.1);
+			border: 1px solid rgba(239, 68, 68, 0.2);
+			border-radius: 20px;
+			color: #f87171;
+			font-size: 0.85rem;
+			font-weight: 500;
+			cursor: pointer;
+			transition: all 0.3s ease;
         }
         
         .action-btn .material-icons {
