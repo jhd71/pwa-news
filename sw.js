@@ -1,12 +1,16 @@
 // ============================================
-// ACTU & MÉDIA - Service Worker v37
+// ACTU & MÉDIA - Service Worker v38
 // ============================================
 
-const CACHE_NAME = 'actu-media-v37';
+const CACHE_NAME = 'actu-media-v38';
 
+// Assets statiques à mettre en cache à l'installation
+// Ne PAS inclure les pages admin (toujours besoin de données fraîches)
 const STATIC_ASSETS = [
     '/',
     '/index.html',
+
+    // CSS
     '/css/styles.css',
     '/css/quick-links.css',
     '/css/support.css',
@@ -14,17 +18,44 @@ const STATIC_ASSETS = [
     '/css/meteo-v2.css',
     '/css/radio-player.css',
     '/css/mini-radio.css',
+
+    // JS
     '/js/app.js',
     '/js/quick-links.js',
     '/js/support.js',
     '/js/mini-radio.js',
+    '/js/radio-player.js',
+    '/js/ios-fixes.js',
+
+    // Pages publiques
     '/radio.html',
-    '/js/radio-player.js'
+    '/meteo.html',
+    '/agenda.html',
+    '/contact.html',
+    '/infos.html',
+    '/mentions-legales.html',
+    '/confidentialite.html',
+    '/proposer.html',
+    '/proposer-evenement.html',
+    '/merci.html',
+
+    // Icônes
+    '/icons/icon-72.png',
+    '/icons/icon-192.png',
+    '/favicon.png'
+];
+
+// Pages/chemins à TOUJOURS chercher sur le réseau (jamais depuis le cache seul)
+const NETWORK_ONLY = [
+    '/api/',
+    '/admin',
+    '/admin-hub',
+    '/admin-news'
 ];
 
 // Installation
 self.addEventListener('install', event => {
-    console.log('📦 SW: Installation');
+    console.log('📦 SW v38: Installation');
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => cache.addAll(STATIC_ASSETS))
@@ -32,9 +63,9 @@ self.addEventListener('install', event => {
     );
 });
 
-// Activation
+// Activation - supprime les anciens caches
 self.addEventListener('activate', event => {
-    console.log('🚀 SW: Activation');
+    console.log('🚀 SW v38: Activation');
     event.waitUntil(
         caches.keys().then(keys => {
             return Promise.all(
@@ -52,15 +83,15 @@ self.addEventListener('fetch', event => {
     // Ignorer les requêtes non GET
     if (request.method !== 'GET') return;
 
-    // Ignorer les requêtes hors origine
+    // Ignorer les requêtes hors origine (CDN, API externes, etc.)
     if (!request.url.startsWith(self.location.origin)) return;
 
     const url = new URL(request.url);
 
-    // Ignorer les API (toujours réseau)
-    if (url.pathname.startsWith('/api/')) return;
+    // Network Only : API et pages admin (toujours besoin de données fraîches)
+    if (NETWORK_ONLY.some(path => url.pathname.startsWith(path))) return;
 
-    // HTML → Network First
+    // HTML → Network First (essaie le réseau, sinon le cache)
     if (request.headers.get('accept')?.includes('text/html')) {
         event.respondWith(
             fetch(request)
@@ -78,12 +109,11 @@ self.addEventListener('fetch', event => {
         return;
     }
 
-    // Assets → Cache First
+    // Assets (CSS, JS, images) → Cache First (rapide, puis met à jour en fond)
     event.respondWith(
         caches.match(request).then(cached => {
-            if (cached) return cached;
-
-            return fetch(request).then(response => {
+            // Lancer une mise à jour en arrière-plan
+            const fetchPromise = fetch(request).then(response => {
                 if (response && response.status === 200) {
                     const clone = response.clone();
                     caches.open(CACHE_NAME).then(cache => {
@@ -91,7 +121,10 @@ self.addEventListener('fetch', event => {
                     });
                 }
                 return response;
-            });
+            }).catch(() => null);
+
+            // Retourner le cache immédiatement si dispo, sinon attendre le réseau
+            return cached || fetchPromise;
         })
     );
 });
@@ -145,53 +178,28 @@ self.addEventListener('push', (event) => {
 
 // Clic sur la notification
 self.addEventListener('notificationclick', (event) => {
-    console.log('👆 Clic sur notification, action:', event.action);
-    console.log('📦 Données notification:', event.notification.data);
-
     event.notification.close();
 
-    // Si l'utilisateur clique sur "Fermer"
-    if (event.action === 'close') {
-        console.log('❌ Action fermer');
-        return;
-    }
+    if (event.action === 'close') return;
 
-    // Récupérer l'URL
     const urlPath = event.notification.data?.url || '/';
     const fullUrl = urlPath.startsWith('http') ? urlPath : 'https://actuetmedia.fr' + urlPath;
-    
-    console.log('🌐 URL à ouvrir:', fullUrl);
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true })
             .then((clientList) => {
-                console.log('📱 Nombre de fenêtres:', clientList.length);
-                
-                // Chercher une fenêtre existante
                 for (const client of clientList) {
-                    console.log('🔍 Fenêtre trouvée:', client.url);
                     if ('focus' in client) {
                         return client.focus().then(() => {
-                            if ('navigate' in client) {
-                                console.log('➡️ Navigation vers:', fullUrl);
-                                return client.navigate(fullUrl);
-                            }
+                            if ('navigate' in client) return client.navigate(fullUrl);
                         });
                     }
                 }
-                
-                // Ouvrir une nouvelle fenêtre
-                console.log('🆕 Ouverture nouvelle fenêtre:', fullUrl);
                 return clients.openWindow(fullUrl);
             })
-            .catch((err) => {
-                console.error('❌ Erreur:', err);
-                return clients.openWindow(fullUrl);
-            })
+            .catch(() => clients.openWindow(fullUrl))
     );
 });
 
 // Fermeture de notification
-self.addEventListener('notificationclose', (event) => {
-    console.log('❌ Notification fermée');
-});
+self.addEventListener('notificationclose', () => {});
