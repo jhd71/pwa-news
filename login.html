@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ActuetMedia.fr - Accès Privé</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            color: #1e3a8a;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .message {
+            background: #fff3cd;
+            border-left: 4px solid #fbbf24;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+        }
+
+        .message h2 {
+            color: #92400e;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .message p {
+            color: #78350f;
+            line-height: 1.6;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .message .signature {
+            margin-top: 1.5rem;
+            font-style: italic;
+            color: #92400e;
+        }
+
+        .login-form {
+            margin-top: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            color: #334155;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .error {
+            background: #fee;
+            color: #c00;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>🏘️ ActuetMedia.fr</h1>
+            <p>Actualités locales de Montceau-les-Mines</p>
+        </div>
+
+        <div class="message">
+            <h2>⚠️ Accès Privé</h2>
+            <p>
+                Après <strong>18 mois</strong> de travail bénévole intensif, une refonte complète du site, 
+                et face à l'absence de soutien de la communauté locale (0 dons, très peu de visites), 
+                j'ai pris la décision de mettre ActuetMedia.fr en <strong>accès privé</strong>.
+            </p>
+            <p>
+                Ce site a été créé avec passion pour servir notre communauté de Montceau-les-Mines, 
+                offrant gratuitement : actualités locales, météo, radio, agenda d'événements, petites annonces, 
+                et bien plus encore.
+            </p>
+            <p>
+                Si vous êtes intéressé par un accès, vous pouvez me contacter pour obtenir le mot de passe.
+            </p>
+            <p class="signature">
+                — Hervé, créateur d'ActuetMedia.fr
+            </p>
+        </div>
+
+        <div class="login-form">
+            <div class="error" id="error">Mot de passe incorrect</div>
+            
+            <form onsubmit="return checkPassword(event)">
+                <div class="form-group">
+                    <label for="password">Mot de passe d'accès :</label>
+                    <input type="password" id="password" placeholder="Entrez le mot de passe" required>
+                </div>
+                <button type="submit">🔓 Accéder au site</button>
+            </form>
+        </div>
+
+        <div class="footer">
+            Pour toute question : <a href="mailto:contact@actuetmedia.fr" style="color: #3b82f6; text-decoration: none; font-weight: 600; transition: color 0.3s;" onmouseover="this.style.color='#1e40af'" onmouseout="this.style.color='#3b82f6'">contact@actuetmedia.fr</a>
+        </div>
+    </div>
+
+    <script>
+        // Mot de passe (changez-le !)
+        const SITE_PASSWORD = 'fc35>$wL72iZA^';
+
+        function checkPassword(event) {
+            event.preventDefault();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error');
+
+            if (password === SITE_PASSWORD) {
+                // Sauvegarder dans sessionStorage
+                sessionStorage.setItem('site_access', 'granted');
+                // Rediriger vers le site
+                window.location.href = 'index.html';
+            } else {
+                errorDiv.style.display = 'block';
+                document.getElementById('password').value = '';
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 3000);
+            }
+
+            return false;
+        }
+    </script>
+</body>
+</html>

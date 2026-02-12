@@ -223,6 +223,12 @@
     <!-- End Google Tag Manager -->
 </head>
 <body>
+<script>
+    // Vérifier l'accès au chargement
+    if (!sessionStorage.getItem('site_access')) {
+        window.location.href = 'login.html';
+    }
+</script>
 
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N8FTF9GC"
