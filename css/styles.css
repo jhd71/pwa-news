@@ -655,7 +655,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 0.75rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .news-item-date {
@@ -664,15 +665,14 @@ body {
 }
 
 .news-item-read {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--primary);
     font-weight: 600;
-    opacity: 0;
-    transition: opacity 0.3s;
+    white-space: nowrap;
 }
 
 .news-item:hover .news-item-read {
-    opacity: 1;
+    text-decoration: underline;
 }
 
 /* Navigation ticker */
@@ -2472,7 +2472,7 @@ p,
     }
 
     .news-item-read {
-        display: none;
+        font-size: 0.65rem;
     }
     
     p {

@@ -304,7 +304,7 @@ function renderNewsSlider(articles) {
                             <div class="news-item-title">${article.title}</div>
                             <div class="news-item-meta">
                                 <span class="news-item-date">${formatDate(article.date)}</span>
-                                <span class="news-item-read">Lire →</span>
+                                <span class="news-item-read">Lire la suite sur ${article.source} →</span>
                             </div>
                         </div>
                     </a>
