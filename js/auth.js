@@ -244,7 +244,6 @@ class SiteAuth {
                             et bien plus encore.
                         </p>
                         <p class="contact-info">
-                            Pour obtenir le mot de passe : 
                             <a href="mailto:contact@actuetmedia.fr?subject=Demande%20d%27acc%C3%A8s%20ActuetMedia&body=Bonjour,%0A%0AJe%20souhaite%20obtenir%20le%20mot%20de%20passe%20pour%20acc%C3%A9der%20au%20site%20ActuetMedia.fr.%0A%0AMerci" 
                                style="color: #3b82f6; text-decoration: none; font-weight: 600;">
                                 contact@actuetmedia.fr
