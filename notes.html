@@ -512,6 +512,10 @@ function startSpeechRecognition() {
     status.textContent = '⏳ Initialisation...';
     status.style.color = 'var(--text-muted)';
 
+    console.log('[SPEECH] === Démarrage ===');
+    console.log('[SPEECH] SpeechRecognition disponible:', !!SR);
+    console.log('[SPEECH] UserAgent:', navigator.userAgent);
+
     try {
         recognition = new SR();
         recognition.lang = 'fr-FR';
@@ -519,22 +523,60 @@ function startSpeechRecognition() {
         recognition.continuous = !isMobile;
         recognition.interimResults = true;
 
+        console.log('[SPEECH] isMobile:', isMobile);
+        console.log('[SPEECH] continuous:', recognition.continuous);
+        console.log('[SPEECH] interimResults:', recognition.interimResults);
+        console.log('[SPEECH] lang:', recognition.lang);
+
         status.textContent = '⏳ ' + (isMobile ? 'Mobile' : 'PC') + ' détecté...';
 
         recognition.onstart = () => {
+            console.log('[SPEECH] ✅ onstart déclenché');
             status.textContent = '🎤 Parlez... (' + (isMobile ? 'mobile' : 'PC') + ')';
             status.style.color = 'var(--accent-green)';
             $('liveTranscription').classList.add('active');
             $('liveText').textContent = 'En écoute...';
         };
 
+        recognition.onaudiostart = () => {
+            console.log('[SPEECH] ✅ onaudiostart - micro capte du son');
+            status.textContent = '🎤 Audio détecté, parlez...';
+            status.style.color = 'var(--accent-green)';
+        };
+
+        recognition.onaudioend = () => {
+            console.log('[SPEECH] ⚠️ onaudioend - audio terminé');
+        };
+
+        recognition.onsoundstart = () => {
+            console.log('[SPEECH] ✅ onsoundstart - son détecté');
+        };
+
+        recognition.onsoundend = () => {
+            console.log('[SPEECH] ⚠️ onsoundend - son terminé');
+        };
+
+        recognition.onspeechstart = () => {
+            console.log('[SPEECH] ✅ onspeechstart - PAROLE détectée');
+            status.textContent = '🎤 Parole détectée...';
+        };
+
+        recognition.onspeechend = () => {
+            console.log('[SPEECH] ⚠️ onspeechend - parole terminée');
+        };
+
         recognition.onresult = (e) => {
+            console.log('[SPEECH] ✅ onresult déclenché !');
+            console.log('[SPEECH] results.length:', e.results.length);
+            console.log('[SPEECH] resultIndex:', e.resultIndex);
+            for (let i = 0; i < e.results.length; i++) {
+                console.log(`[SPEECH] result[${i}]: isFinal=${e.results[i].isFinal}, text="${e.results[i][0].transcript}"`);
+            }
+
             if (isMobile) {
-                // Mobile : continuous=false, prendre le dernier résultat uniquement
                 const last = e.results[e.results.length - 1];
                 interimTranscript = last[0].transcript;
             } else {
-                // PC : continuous=true, utiliser resultIndex (fonctionne bien sur desktop)
                 interimTranscript = '';
                 for (let i = e.resultIndex; i < e.results.length; i++) {
                     const t = e.results[i][0].transcript;
@@ -549,46 +591,52 @@ function startSpeechRecognition() {
             finalTranscript = savedTranscript;
             $('liveText').textContent = finalTranscript + interimTranscript;
             $('liveText').scrollTop = $('liveText').scrollHeight;
+            console.log('[SPEECH] Texte actuel:', finalTranscript + interimTranscript);
         };
 
         recognition.onerror = (e) => {
+            console.error('[SPEECH] ❌ onerror:', e.error, e.message);
             if (e.error === 'aborted') return;
             const msgs = {
                 'not-allowed': '❌ Micro refusé (vérifiez les permissions)',
                 'network': '❌ Internet requis pour la transcription',
-                'no-speech': '🔇 Aucune voix détectée, parlez plus fort',
-                'audio-capture': '❌ Micro indisponible (utilisé par une autre app ?)',
-                'service-not-allowed': '❌ Service bloqué (vérifiez chrome://settings)'
+                'no-speech': '🔇 Aucune voix détectée',
+                'audio-capture': '❌ Micro indisponible',
+                'service-not-allowed': '❌ Service bloqué'
             };
             status.textContent = msgs[e.error] || ('⚠️ Erreur: ' + e.error);
             status.style.color = 'var(--accent-red)';
         };
 
         recognition.onend = () => {
-            // Sauvegarder l'interim en cours
+            console.log('[SPEECH] ⚠️ onend - session terminée. isRecording:', isRecording);
+            console.log('[SPEECH] savedTranscript:', savedTranscript);
+            console.log('[SPEECH] interimTranscript:', interimTranscript);
+
             if (interimTranscript) {
                 savedTranscript += interimTranscript + ' ';
                 interimTranscript = '';
                 finalTranscript = savedTranscript;
                 $('liveText').textContent = savedTranscript;
             }
-            // Relancer si toujours en enregistrement
             if (isRecording && currentMode === 'dictation') {
                 status.textContent = '🎤 Suite...';
                 setTimeout(() => {
                     if (!isRecording) return;
-                    try { recognition.start(); } catch(e) { status.textContent = '⚠️ Relance impossible'; }
+                    console.log('[SPEECH] 🔄 Relance...');
+                    try { recognition.start(); } catch(e) {
+                        console.error('[SPEECH] ❌ Relance échouée:', e);
+                        status.textContent = '⚠️ Relance impossible';
+                    }
                 }, 200);
             }
         };
 
-        recognition.onaudiostart = () => {
-            status.textContent = '🎤 Audio détecté, parlez...';
-            status.style.color = 'var(--accent-green)';
-        };
-
+        console.log('[SPEECH] Appel de recognition.start()...');
         recognition.start();
+        console.log('[SPEECH] recognition.start() appelé avec succès');
     } catch(e) {
+        console.error('[SPEECH] ❌ Exception:', e);
         status.textContent = '❌ Erreur: ' + e.message;
         status.style.color = 'var(--accent-red)';
     }
