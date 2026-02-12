@@ -300,7 +300,6 @@ function renderNewsSlider(articles) {
                     <a href="${article.link}" target="_blank" rel="noopener" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
                         <div class="news-item-icon">${getSourceIcon(article.source)}</div>
                         <div class="news-item-content">
-                            <div class="news-item-source">${article.source}</div>
                             <div class="news-item-title">${article.title}</div>
                             <div class="news-item-meta">
                                 <span class="news-item-date">${formatDate(article.date)}</span>
