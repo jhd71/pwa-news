@@ -504,84 +504,94 @@ function stopRecording() {
 }
 
 // ===================================================================
-// SPEECH RECOGNITION (v8 : continuous=false)
+// SPEECH RECOGNITION (adaptatif PC/Mobile)
 // ===================================================================
 function startSpeechRecognition() {
-    $('speechStatus').style.display = 'block';
-    $('speechStatus').textContent = '⏳ Initialisation...';
-    $('speechStatus').style.color = 'var(--text-muted)';
+    const status = $('speechStatus');
+    status.style.display = 'block';
+    status.textContent = '⏳ Initialisation...';
+    status.style.color = 'var(--text-muted)';
 
     try {
         recognition = new SR();
         recognition.lang = 'fr-FR';
         const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-        recognition.continuous = !isMobile;  // true sur PC, false sur mobile
+        recognition.continuous = !isMobile;
         recognition.interimResults = true;
 
-        const isContinuous = recognition.continuous;
+        status.textContent = '⏳ ' + (isMobile ? 'Mobile' : 'PC') + ' détecté...';
 
         recognition.onstart = () => {
-            $('speechStatus').textContent = '🎤 Parlez...';
-            $('speechStatus').style.color = 'var(--accent-green)';
+            status.textContent = '🎤 Parlez... (' + (isMobile ? 'mobile' : 'PC') + ')';
+            status.style.color = 'var(--accent-green)';
             $('liveTranscription').classList.add('active');
+            $('liveText').textContent = 'En écoute...';
         };
 
         recognition.onresult = (e) => {
-            if (isContinuous) {
-                // PC : mode continuous=true, utiliser resultIndex
-                let sessionFinal = '';
-                interimTranscript = '';
-                for (let i = 0; i < e.results.length; i++) {
-                    if (e.results[i].isFinal) {
-                        sessionFinal += e.results[i][0].transcript + ' ';
-                    } else {
-                        interimTranscript = e.results[i][0].transcript;
-                    }
-                }
-                finalTranscript = savedTranscript + sessionFinal;
-            } else {
-                // Mobile : mode continuous=false, prendre le dernier résultat
+            if (isMobile) {
+                // Mobile : continuous=false, prendre le dernier résultat uniquement
                 const last = e.results[e.results.length - 1];
                 interimTranscript = last[0].transcript;
-                finalTranscript = savedTranscript;
+            } else {
+                // PC : continuous=true, utiliser resultIndex (fonctionne bien sur desktop)
+                interimTranscript = '';
+                for (let i = e.resultIndex; i < e.results.length; i++) {
+                    const t = e.results[i][0].transcript;
+                    if (e.results[i].isFinal) {
+                        savedTranscript += t + ' ';
+                    } else {
+                        interimTranscript = t;
+                    }
+                }
             }
+
+            finalTranscript = savedTranscript;
             $('liveText').textContent = finalTranscript + interimTranscript;
             $('liveText').scrollTop = $('liveText').scrollHeight;
         };
 
         recognition.onerror = (e) => {
-            const msgs = {'not-allowed':'❌ Micro refusé','network':'❌ Internet requis','no-speech':'🔇 Silence détecté','audio-capture':'❌ Micro indisponible','aborted':''};
-            if (e.error === 'aborted') return; // Ignoré, c'est normal à l'arrêt
-            if (msgs[e.error] !== undefined) $('speechStatus').textContent = msgs[e.error];
-            else $('speechStatus').textContent = '⚠️ Erreur: ' + e.error;
+            if (e.error === 'aborted') return;
+            const msgs = {
+                'not-allowed': '❌ Micro refusé (vérifiez les permissions)',
+                'network': '❌ Internet requis pour la transcription',
+                'no-speech': '🔇 Aucune voix détectée, parlez plus fort',
+                'audio-capture': '❌ Micro indisponible (utilisé par une autre app ?)',
+                'service-not-allowed': '❌ Service bloqué (vérifiez chrome://settings)'
+            };
+            status.textContent = msgs[e.error] || ('⚠️ Erreur: ' + e.error);
+            status.style.color = 'var(--accent-red)';
         };
 
         recognition.onend = () => {
-            // Sauvegarder la phrase en cours
+            // Sauvegarder l'interim en cours
             if (interimTranscript) {
                 savedTranscript += interimTranscript + ' ';
                 interimTranscript = '';
+                finalTranscript = savedTranscript;
                 $('liveText').textContent = savedTranscript;
             }
             // Relancer si toujours en enregistrement
             if (isRecording && currentMode === 'dictation') {
-                $('speechStatus').textContent = '🎤 Phrase suivante...';
+                status.textContent = '🎤 Suite...';
                 setTimeout(() => {
                     if (!isRecording) return;
-                    try {
-                        // Sur PC, finalTranscript est déjà accumulé, le sauvegarder
-                        if (isContinuous && finalTranscript) {
-                            savedTranscript = finalTranscript;
-                            finalTranscript = '';
-                        }
-                        recognition.start();
-                    } catch(e) { $('speechStatus').textContent = '⚠️ Interrompu'; }
+                    try { recognition.start(); } catch(e) { status.textContent = '⚠️ Relance impossible'; }
                 }, 200);
             }
         };
 
+        recognition.onaudiostart = () => {
+            status.textContent = '🎤 Audio détecté, parlez...';
+            status.style.color = 'var(--accent-green)';
+        };
+
         recognition.start();
-    } catch(e) { $('speechStatus').textContent = '❌ Non disponible: ' + e.message; $('speechStatus').style.color = 'var(--accent-red)'; }
+    } catch(e) {
+        status.textContent = '❌ Erreur: ' + e.message;
+        status.style.color = 'var(--accent-red)';
+    }
 }
 
 // ===================================================================
