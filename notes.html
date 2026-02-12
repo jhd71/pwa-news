@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-	<!-- 🔐 PROTECTION PAR MOT DE PASSE - DOIT ÊTRE EN PREMIER -->
-    <script src="js/auth.js"></script>
     <title>Notes Vocales - Actu & Média</title>
     <meta name="description" content="Dictaphone et notes vocales avec transcription automatique">
     <meta name="theme-color" content="#0a0a14">
@@ -495,10 +493,11 @@ function stopRecording() {
         if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
     } else {
         $('recordLabel').textContent = 'Appuyez pour dicter';
+        // Récupérer le texte AVANT d'arrêter la reconnaissance
+        const text = (finalTranscript + interimTranscript).trim() || (savedTranscript + interimTranscript).trim();
         if (recognition) { try{recognition.abort();}catch(e){} recognition=null; }
         $('liveTranscription').classList.remove('active');
         $('speechStatus').style.display = 'none';
-        const text = (savedTranscript + interimTranscript).trim();
         if (text) saveDictationNote(text);
         else showToast('⚠️ Aucun texte détecté');
     }
@@ -515,8 +514,11 @@ function startSpeechRecognition() {
     try {
         recognition = new SR();
         recognition.lang = 'fr-FR';
-        recognition.continuous = false;
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        recognition.continuous = !isMobile;  // true sur PC, false sur mobile
         recognition.interimResults = true;
+
+        const isContinuous = recognition.continuous;
 
         recognition.onstart = () => {
             $('speechStatus').textContent = '🎤 Parlez...';
@@ -525,31 +527,61 @@ function startSpeechRecognition() {
         };
 
         recognition.onresult = (e) => {
-            const last = e.results[e.results.length - 1];
-            interimTranscript = last[0].transcript;
-            $('liveText').textContent = savedTranscript + interimTranscript;
+            if (isContinuous) {
+                // PC : mode continuous=true, utiliser resultIndex
+                let sessionFinal = '';
+                interimTranscript = '';
+                for (let i = 0; i < e.results.length; i++) {
+                    if (e.results[i].isFinal) {
+                        sessionFinal += e.results[i][0].transcript + ' ';
+                    } else {
+                        interimTranscript = e.results[i][0].transcript;
+                    }
+                }
+                finalTranscript = savedTranscript + sessionFinal;
+            } else {
+                // Mobile : mode continuous=false, prendre le dernier résultat
+                const last = e.results[e.results.length - 1];
+                interimTranscript = last[0].transcript;
+                finalTranscript = savedTranscript;
+            }
+            $('liveText').textContent = finalTranscript + interimTranscript;
             $('liveText').scrollTop = $('liveText').scrollHeight;
         };
 
         recognition.onerror = (e) => {
-            const msgs = {'not-allowed':'❌ Micro refusé','network':'❌ Internet requis','no-speech':'🔇 Silence...','audio-capture':'❌ Micro indisponible'};
-            if (msgs[e.error]) $('speechStatus').textContent = msgs[e.error];
+            const msgs = {'not-allowed':'❌ Micro refusé','network':'❌ Internet requis','no-speech':'🔇 Silence détecté','audio-capture':'❌ Micro indisponible','aborted':''};
+            if (e.error === 'aborted') return; // Ignoré, c'est normal à l'arrêt
+            if (msgs[e.error] !== undefined) $('speechStatus').textContent = msgs[e.error];
+            else $('speechStatus').textContent = '⚠️ Erreur: ' + e.error;
         };
 
         recognition.onend = () => {
+            // Sauvegarder la phrase en cours
             if (interimTranscript) {
-                savedTranscript += interimTranscript + '. ';
+                savedTranscript += interimTranscript + ' ';
                 interimTranscript = '';
                 $('liveText').textContent = savedTranscript;
             }
+            // Relancer si toujours en enregistrement
             if (isRecording && currentMode === 'dictation') {
                 $('speechStatus').textContent = '🎤 Phrase suivante...';
-                setTimeout(() => { if(!isRecording)return; try{recognition.start();}catch(e){$('speechStatus').textContent='⚠️ Interrompu';} }, 200);
+                setTimeout(() => {
+                    if (!isRecording) return;
+                    try {
+                        // Sur PC, finalTranscript est déjà accumulé, le sauvegarder
+                        if (isContinuous && finalTranscript) {
+                            savedTranscript = finalTranscript;
+                            finalTranscript = '';
+                        }
+                        recognition.start();
+                    } catch(e) { $('speechStatus').textContent = '⚠️ Interrompu'; }
+                }, 200);
             }
         };
 
         recognition.start();
-    } catch(e) { $('speechStatus').textContent = '❌ Non disponible'; $('speechStatus').style.color = 'var(--accent-red)'; }
+    } catch(e) { $('speechStatus').textContent = '❌ Non disponible: ' + e.message; $('speechStatus').style.color = 'var(--accent-red)'; }
 }
 
 // ===================================================================
@@ -580,7 +612,7 @@ async function saveVoiceNote(blob) {
 async function saveDictationNote(text) {
     const note = {id:'note_'+Date.now(),type:'dictation',text,date:Date.now()};
     await db.save(note); renderNotes(); showToast('✍️ Dictée enregistrée');
-    savedTranscript=''; interimTranscript='';
+    savedTranscript=''; interimTranscript=''; finalTranscript='';
     $('liveText').textContent=''; $('recordTimer').textContent='00:00';
     autoBackupNote(note);
 }
