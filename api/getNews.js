@@ -1,29 +1,6 @@
 // api/getNews.js - API pour récupérer les actualités locales
 import Parser from 'rss-parser';
 
-// Extraction de l'image OG depuis la page HTML (fallback)
-async function fetchOgImage(url) {
-    try {
-        const response = await fetch(url, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (compatible; ActuMedia/2.0)'
-            }
-        });
-
-        if (!response.ok) return null;
-
-        const html = await response.text();
-
-        const match = html.match(
-            /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i
-        );
-
-        return match ? match[1] : null;
-    } catch (e) {
-        return null;
-    }
-}
-
 // Cache en mémoire
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 let cachedArticles = null;
@@ -48,16 +25,7 @@ export default async function handler(req, res) {
     }
     
     try {
-        const parser = new Parser({
-            customFields: {
-                item: [
-                    'media:content',
-                    'media:thumbnail', 
-                    'enclosure',
-                    'content:encoded'
-                ]
-            }
-        });
+        const parser = new Parser();
         
         // Flux RSS
         const feeds = [
@@ -67,7 +35,7 @@ export default async function handler(req, res) {
             { name: 'Creusot Infos', url: 'https://raw.githubusercontent.com/jhd71/scraper-creusot/main/data/articles.json', max: 2, type: 'json' },
         ];
 
-        // Récupérer les articles
+        // Récupérer les articles (titre + lien uniquement, pas d'images)
         const fetchPromises = feeds.map(feed => {
             return new Promise(async (resolve) => {
                 try {
@@ -94,7 +62,6 @@ export default async function handler(req, res) {
                         const articles = json.slice(0, feed.max).map(item => ({
                             title: item.title,
                             link: item.link,
-                            image: item.image || null,
                             date: item.date,
                             source: item.source || feed.name
                         }));
@@ -105,59 +72,11 @@ export default async function handler(req, res) {
 
                         console.log(`✅ ${feed.name}: ${feedData.items.length} articles`);
 
-                        const articles = await Promise.all(
-    feedData.items.slice(0, feed.max).map(async item => {
-
-                            // Extraction d'image améliorée
-                            let image = null;
-                            
-                            // 1. Enclosure (standard RSS)
-                            if (item.enclosure?.url) {
-                                image = item.enclosure.url;
-                            }
-                            // 2. Media:content
-                            else if (item['media:content']?.$.url) {
-                                image = item['media:content'].$.url;
-                            }
-                            else if (item['media:content']?.url) {
-                                image = item['media:content'].url;
-                            }
-                            // 3. Media:thumbnail
-                            else if (item['media:thumbnail']?.$.url) {
-                                image = item['media:thumbnail'].$.url;
-                            }
-                            // 4. Chercher dans content:encoded (WordPress)
-                            if (!image && item['content:encoded']) {
-                                const imgMatch = item['content:encoded'].match(/<img[^>]+src=["']([^"']+)["']/i);
-                                if (imgMatch) image = imgMatch[1];
-                            }
-							// 8. Fallback ultime : og:image depuis la page (Le JSL & autres)
-							if (!image && item.link) {
-								image = await fetchOgImage(item.link);
-							}
-                            // 5. Chercher dans content
-                            if (!image && item.content) {
-                                const imgMatch = item.content.match(/<img[^>]+src=["']([^"']+)["']/i);
-                                if (imgMatch) image = imgMatch[1];
-                            }
-                            // 6. Chercher dans description
-                            if (!image && item.contentSnippet) {
-                                const imgMatch = item.contentSnippet.match(/<img[^>]+src=["']([^"']+)["']/i);
-                                if (imgMatch) image = imgMatch[1];
-                            }
-                            // 7. Chercher data-orig-file (WordPress Jetpack)
-                            if (!image && item['content:encoded']) {
-                                const origMatch = item['content:encoded'].match(/data-orig-file=["']([^"']+)["']/i);
-                                if (origMatch) image = origMatch[1];
-                            }
-
-                            return {
-                                title: item.title,
-                                link: item.link,
-                                image,
-                                date: item.pubDate || item.isoDate,
-                                source: feed.name
-                            };
+                        const articles = feedData.items.slice(0, feed.max).map(item => ({
+                            title: item.title,
+                            link: item.link,
+                            date: item.pubDate || item.isoDate,
+                            source: feed.name
                         }));
 
                         return resolve(articles);
