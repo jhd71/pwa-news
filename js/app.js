@@ -878,21 +878,20 @@ async function initCommunity() {
                         </div>
                     </div>
                     
-                    <!-- Actions (Like) -->
+                    <!-- Actions (Like + Commenter sur même ligne) -->
                     <div class="community-item-actions" onclick="event.stopPropagation()">
                         <button class="like-btn ${userLikes.includes(item.id) ? 'liked' : ''}" id="like-btn-${item.id}" onclick="toggleLike(${item.id}, this)">
                             <span class="material-icons">${userLikes.includes(item.id) ? 'favorite' : 'favorite_border'}</span>
                             <span class="like-count" id="like-count-${item.id}">${likeCounts[item.id] || 0}</span>
                         </button>
-                    </div>
-                    
-                    <!-- Section Commentaires -->
-                    <div class="community-comments-section" onclick="event.stopPropagation()">
                         <button class="comments-toggle-btn" onclick="toggleComments(${item.id}, this)">
                             <span class="material-icons">chat_bubble_outline</span>
                             <span>${commentCount > 0 ? commentCount + ' commentaire' + (commentCount > 1 ? 's' : '') : 'Commenter'}</span>
-                            <span class="material-icons arrow">expand_more</span>
                         </button>
+                    </div>
+                    
+                    <!-- Section Commentaires déroulante -->
+                    <div class="community-comments-section" onclick="event.stopPropagation()">
                         <div class="comments-container" id="comments-${item.id}">
                             <div class="comments-list" id="comments-list-${item.id}">
                                 <div class="comments-empty">
