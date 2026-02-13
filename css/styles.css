@@ -2481,7 +2481,7 @@ p,
 
     .news-item-title {
         font-size: 0.85rem;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 4;
     }
 
     .news-item-read {
