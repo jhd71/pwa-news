@@ -337,7 +337,7 @@
                 
                 /* ========== INSTALL PROMPT ========== */
                 .ios-device .install-prompt {
-                    bottom: calc(1rem + var(--ios-safe-area-bottom)) !important;
+                    bottom: calc(0rem + var(--ios-safe-area-bottom)) !important;
                 }
                 
                 /* ========== NOTIFICATION PROMPT ========== */
