@@ -726,18 +726,15 @@ body {
 }
 
 .section-title {
-    margin-bottom: 1rem;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 0.25rem;
-    font-size: 0.7rem;
-    color: #ffffff;
-    font-weight: 600;
-    padding: 0.2rem 0.6rem;
-    background: var(--bg-card);
-    border-radius: 50px;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
-    white-space: nowrap;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
 }
 
 .section-title .material-icons {
@@ -768,7 +765,7 @@ h2, h3 {
     color: inherit;
     transition: all 0.3s ease;
     text-align: center;
-    background: var(--bg-card, linear-gradient(135deg, rgba(30, 30, 50, 0.98) 0%, rgba(20, 20, 35, 0.98) 100%));
+    background: rgb(77 77 77);
     border: 1px solid var(--border-color);
 }
 
@@ -2464,7 +2461,7 @@ p,
 
     .news-item-title {
         font-size: 0.85rem;
-        -webkit-line-clamp: 4;
+        -webkit-line-clamp: 3;
     }
 
     .news-item-read {
