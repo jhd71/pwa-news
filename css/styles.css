@@ -765,7 +765,7 @@ h2, h3 {
     color: inherit;
     transition: all 0.3s ease;
     text-align: center;
-    background: rgb(77 77 77);
+    background: var(--bg-card, linear-gradient(135deg, rgba(30, 30, 50, 0.98) 0%, rgba(20, 20, 35, 0.98) 100%));
     border: 1px solid var(--border-color);
 }
 
