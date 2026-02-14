@@ -680,12 +680,28 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.6rem;
     margin-top: 0.75rem;
 }
 
 .ticker-nav-btn {
-    display: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: var(--bg-elevated);
+    border-radius: 50%;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.ticker-nav-btn:hover {
+    background: rgba(99, 102, 241, 0.2);
+    color: var(--primary-light);
 }
 
 .ticker-dots {
@@ -783,6 +799,12 @@ h2, h3 {
     flex-shrink: 0;
 }
 
+.tile-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
 .tile-name {
     font-weight: 600;
     font-size: 0.8rem;
@@ -796,8 +818,6 @@ h2, h3 {
     font-size: 0.65rem;
     color: var(--text-muted);
     white-space: nowrap;
-    margin-left: auto;
-    flex-shrink: 0;
 }
 
 /* Tuiles supplémentaires */
