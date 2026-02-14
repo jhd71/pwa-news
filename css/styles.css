@@ -3598,6 +3598,9 @@ a.agenda-item:hover {
 .sport-section {
     padding: 1rem;
     border-radius: 16px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .sport-header {
@@ -3980,7 +3983,9 @@ a.agenda-item:hover {
 
 @media (max-width: 480px) {
     .sport-section {
-        padding: 0.75rem;
+    margin: 1rem;
+    padding: 1.25rem;
+    border-radius: 20px;
     }
     
     .sport-matches {
