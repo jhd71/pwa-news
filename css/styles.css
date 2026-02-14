@@ -3670,7 +3670,6 @@ a.agenda-item:hover {
 }
 
 .sport-match-card {
-    background: var(--bg-elevated);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 0.6rem;
@@ -3758,7 +3757,6 @@ a.agenda-item:hover {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: var(--bg-elevated);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 0.5rem 0.7rem;
@@ -3856,7 +3854,6 @@ a.agenda-item:hover {
     align-items: center;
     gap: 0.35rem;
     padding: 0.35rem 0.65rem;
-    background: var(--bg-elevated);
     border: 1px solid var(--border-color);
     border-radius: 10px;
     text-decoration: none;
@@ -3986,6 +3983,8 @@ a.agenda-item:hover {
     margin: 1rem;
     padding: 1.25rem;
     border-radius: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     }
     
     .sport-matches {
