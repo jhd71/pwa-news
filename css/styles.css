@@ -3601,6 +3601,7 @@ a.agenda-item:hover {
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
+	background: var(--bg-card);
 }
 
 .sport-header {
