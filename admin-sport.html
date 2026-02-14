@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚽ Admin Sport - Actu & Média</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --bg: #0f172a;
+            --bg-card: rgba(255, 255, 255, 0.08);
+            --bg-elevated: rgba(255, 255, 255, 0.12);
+            --border: rgba(255, 255, 255, 0.12);
+            --text: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+        }
+        
+        .header-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+        }
+        
+        .btn-primary:hover { transform: translateY(-1px); }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+        
+        .btn-back {
+            background: var(--bg-elevated);
+            color: var(--text);
+            border: 1px solid var(--border);
+            text-decoration: none;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        input, select {
+            padding: 0.6rem 0.8rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+        }
+        
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+        }
+        
+        .checkbox-row input[type="checkbox"] {
+            width: 1.1rem;
+            height: 1.1rem;
+        }
+        
+        .checkbox-row label {
+            font-size: 0.85rem;
+            text-transform: none;
+            color: var(--text);
+        }
+        
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status-bar.success {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--success);
+        }
+        
+        .status-bar.error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--danger);
+        }
+        
+        .status-bar.info {
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: var(--primary-light);
+        }
+        
+        .preview-section {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .preview-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+        
+        .preview-match {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 0.5rem;
+        }
+        
+        .preview-team {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .preview-score {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--primary-light);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .form-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 1rem 0;
+        }
+        
+        .last-update {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 0.5rem;
+        }
+        
+        @media (max-width: 480px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-title">⚽ Admin Sport - FC Montceau</div>
+        <div class="header-actions">
+            <a href="/admin.html" class="btn btn-back">
+                <span class="material-icons" style="font-size:1rem;">arrow_back</span>
+                Admin
+            </a>
+            <button class="btn btn-success" onclick="saveSportData()">
+                <span class="material-icons" style="font-size:1rem;">save</span>
+                Sauvegarder
+            </button>
+        </div>
+    </div>
+
+    <div id="statusBar" style="display:none;"></div>
+
+    <!-- DERNIER MATCH -->
+    <div class="card">
+        <div class="card-title">📊 Dernier match joué</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Date du match</label>
+                <input type="date" id="lastMatchDate">
+            </div>
+            <div class="form-group">
+                <label>Journée</label>
+                <input type="text" id="lastMatchDay" placeholder="Journée 10">
+            </div>
+            <div class="form-group">
+                <label>Équipe domicile</label>
+                <input type="text" id="lastHomeTeam" placeholder="FC Montceau">
+            </div>
+            <div class="form-group">
+                <label>Score domicile</label>
+                <input type="number" id="lastHomeScore" min="0" max="20">
+            </div>
+            <div class="form-group">
+                <label>Équipe extérieur</label>
+                <input type="text" id="lastAwayTeam" placeholder="Adversaire">
+            </div>
+            <div class="form-group">
+                <label>Score extérieur</label>
+                <input type="number" id="lastAwayScore" min="0" max="20">
+            </div>
+            <div class="form-group full-width">
+                <div class="checkbox-row">
+                    <input type="checkbox" id="lastIsHome" checked>
+                    <label for="lastIsHome">FCMB joue à domicile</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROCHAIN MATCH -->
+    <div class="card">
+        <div class="card-title">📅 Prochain match</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Date du match</label>
+                <input type="date" id="nextMatchDate">
+            </div>
+            <div class="form-group">
+                <label>Heure</label>
+                <input type="time" id="nextMatchTime" value="18:00">
+            </div>
+            <div class="form-group">
+                <label>Journée</label>
+                <input type="text" id="nextMatchDay" placeholder="Journée 11">
+            </div>
+            <div class="form-group">
+                <label>Adversaire</label>
+                <input type="text" id="nextAwayTeam" placeholder="Nom de l'adversaire">
+            </div>
+            <div class="form-group full-width">
+                <div class="checkbox-row">
+                    <input type="checkbox" id="nextIsHome" checked>
+                    <label for="nextIsHome">FCMB joue à domicile</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CLASSEMENT -->
+    <div class="card">
+        <div class="card-title">🏆 Classement</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Position</label>
+                <input type="number" id="standingPosition" min="1" max="20">
+            </div>
+            <div class="form-group">
+                <label>Points</label>
+                <input type="number" id="standingPoints" min="0">
+            </div>
+            <div class="form-group">
+                <label>Matchs joués</label>
+                <input type="number" id="standingPlayed" min="0">
+            </div>
+            <div class="form-group">
+                <label>Victoires</label>
+                <input type="number" id="standingWon" min="0">
+            </div>
+            <div class="form-group">
+                <label>Nuls</label>
+                <input type="number" id="standingDrawn" min="0">
+            </div>
+            <div class="form-group">
+                <label>Défaites</label>
+                <input type="number" id="standingLost" min="0">
+            </div>
+            <div class="form-group">
+                <label>Buts pour</label>
+                <input type="number" id="standingGoalsFor" min="0">
+            </div>
+            <div class="form-group">
+                <label>Buts contre</label>
+                <input type="number" id="standingGoalsAgainst" min="0">
+            </div>
+        </div>
+    </div>
+
+    <!-- FORME -->
+    <div class="card">
+        <div class="card-title">📈 Forme (5 derniers matchs)</div>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+            Du plus ancien au plus récent. V = Victoire, N = Nul, D = Défaite
+        </p>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Match 1</label>
+                <select id="form1"><option value="V">V - Victoire</option><option value="N">N - Nul</option><option value="D">D - Défaite</option></select>
+            </div>
+            <div class="form-group">
+                <label>Match 2</label>
+                <select id="form2"><option value="V">V - Victoire</option><option value="N">N - Nul</option><option value="D">D - Défaite</option></select>
+            </div>
+            <div class="form-group">
+                <label>Match 3</label>
+                <select id="form3"><option value="V">V - Victoire</option><option value="N">N - Nul</option><option value="D">D - Défaite</option></select>
+            </div>
+            <div class="form-group">
+                <label>Match 4</label>
+                <select id="form4"><option value="V">V - Victoire</option><option value="N">N - Nul</option><option value="D">D - Défaite</option></select>
+            </div>
+            <div class="form-group">
+                <label>Match 5</label>
+                <select id="form5"><option value="V">V - Victoire</option><option value="N">N - Nul</option><option value="D">D - Défaite</option></select>
+            </div>
+        </div>
+    </div>
+
+    <div class="last-update" id="lastUpdate"></div>
+
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let currentDataId = null;
+
+        // Charger les données existantes
+        async function loadExistingData() {
+            try {
+                const { data, error } = await supabase
+                    .from('sport_data')
+                    .select('*')
+                    .order('updated_at', { ascending: false })
+                    .limit(1)
+                    .single();
+
+                if (error || !data) {
+                    showStatus('Aucune donnée existante. Remplissez le formulaire.', 'info');
+                    return;
+                }
+
+                currentDataId = data.id;
+
+                // Remplir le formulaire
+                // Dernier match
+                if (data.last_match_date) document.getElementById('lastMatchDate').value = data.last_match_date;
+                if (data.last_match_matchday) document.getElementById('lastMatchDay').value = data.last_match_matchday;
+                if (data.last_match_home_team) document.getElementById('lastHomeTeam').value = data.last_match_home_team;
+                if (data.last_match_away_team) document.getElementById('lastAwayTeam').value = data.last_match_away_team;
+                if (data.last_match_home_score !== null) document.getElementById('lastHomeScore').value = data.last_match_home_score;
+                if (data.last_match_away_score !== null) document.getElementById('lastAwayScore').value = data.last_match_away_score;
+                document.getElementById('lastIsHome').checked = data.last_match_is_home !== false;
+
+                // Prochain match
+                if (data.next_match_date) document.getElementById('nextMatchDate').value = data.next_match_date;
+                if (data.next_match_time) document.getElementById('nextMatchTime').value = data.next_match_time;
+                if (data.next_match_matchday) document.getElementById('nextMatchDay').value = data.next_match_matchday;
+                
+                // Déterminer l'adversaire du prochain match
+                if (data.next_match_is_home) {
+                    document.getElementById('nextAwayTeam').value = data.next_match_away_team || '';
+                } else {
+                    document.getElementById('nextAwayTeam').value = data.next_match_home_team || '';
+                }
+                document.getElementById('nextIsHome').checked = data.next_match_is_home !== false;
+
+                // Classement
+                if (data.standing_position) document.getElementById('standingPosition').value = data.standing_position;
+                if (data.standing_points !== null) document.getElementById('standingPoints').value = data.standing_points;
+                if (data.standing_played !== null) document.getElementById('standingPlayed').value = data.standing_played;
+                if (data.standing_won !== null) document.getElementById('standingWon').value = data.standing_won;
+                if (data.standing_drawn !== null) document.getElementById('standingDrawn').value = data.standing_drawn;
+                if (data.standing_lost !== null) document.getElementById('standingLost').value = data.standing_lost;
+                if (data.standing_goals_for !== null) document.getElementById('standingGoalsFor').value = data.standing_goals_for;
+                if (data.standing_goals_against !== null) document.getElementById('standingGoalsAgainst').value = data.standing_goals_against;
+
+                // Forme
+                if (data.form) {
+                    const formArr = data.form.split(',').map(f => f.trim());
+                    for (let i = 0; i < 5; i++) {
+                        const sel = document.getElementById('form' + (i + 1));
+                        if (sel && formArr[i]) sel.value = formArr[i];
+                    }
+                }
+
+                // Date de mise à jour
+                if (data.updated_at) {
+                    const d = new Date(data.updated_at);
+                    document.getElementById('lastUpdate').textContent = 'Dernière mise à jour : ' + d.toLocaleString('fr-FR');
+                }
+
+                showStatus('✅ Données chargées', 'success');
+
+            } catch (err) {
+                console.error('Erreur chargement:', err);
+                showStatus('Erreur de chargement: ' + err.message, 'error');
+            }
+        }
+
+        // Sauvegarder
+        async function saveSportData() {
+            try {
+                const isHome = document.getElementById('nextIsHome').checked;
+                const adversaire = document.getElementById('nextAwayTeam').value.trim();
+
+                const payload = {
+                    // Dernier match
+                    last_match_date: document.getElementById('lastMatchDate').value || null,
+                    last_match_time: '18:00',
+                    last_match_matchday: document.getElementById('lastMatchDay').value.trim() || null,
+                    last_match_home_team: document.getElementById('lastHomeTeam').value.trim() || null,
+                    last_match_away_team: document.getElementById('lastAwayTeam').value.trim() || null,
+                    last_match_home_score: parseInt(document.getElementById('lastHomeScore').value) || 0,
+                    last_match_away_score: parseInt(document.getElementById('lastAwayScore').value) || 0,
+                    last_match_is_home: document.getElementById('lastIsHome').checked,
+
+                    // Prochain match
+                    next_match_date: document.getElementById('nextMatchDate').value || null,
+                    next_match_time: document.getElementById('nextMatchTime').value || '18:00',
+                    next_match_matchday: document.getElementById('nextMatchDay').value.trim() || null,
+                    next_match_home_team: isHome ? 'FC Montceau' : adversaire,
+                    next_match_away_team: isHome ? adversaire : 'FC Montceau',
+                    next_match_is_home: isHome,
+
+                    // Classement
+                    standing_position: parseInt(document.getElementById('standingPosition').value) || null,
+                    standing_points: parseInt(document.getElementById('standingPoints').value) || 0,
+                    standing_played: parseInt(document.getElementById('standingPlayed').value) || 0,
+                    standing_won: parseInt(document.getElementById('standingWon').value) || 0,
+                    standing_drawn: parseInt(document.getElementById('standingDrawn').value) || 0,
+                    standing_lost: parseInt(document.getElementById('standingLost').value) || 0,
+                    standing_goals_for: parseInt(document.getElementById('standingGoalsFor').value) || 0,
+                    standing_goals_against: parseInt(document.getElementById('standingGoalsAgainst').value) || 0,
+
+                    // Forme
+                    form: [
+                        document.getElementById('form1').value,
+                        document.getElementById('form2').value,
+                        document.getElementById('form3').value,
+                        document.getElementById('form4').value,
+                        document.getElementById('form5').value
+                    ].join(','),
+
+                    updated_at: new Date().toISOString(),
+                    updated_by: 'admin'
+                };
+
+                let result;
+                if (currentDataId) {
+                    // Mise à jour
+                    result = await supabase
+                        .from('sport_data')
+                        .update(payload)
+                        .eq('id', currentDataId);
+                } else {
+                    // Première insertion
+                    result = await supabase
+                        .from('sport_data')
+                        .insert(payload)
+                        .select()
+                        .single();
+                    
+                    if (result.data) currentDataId = result.data.id;
+                }
+
+                if (result.error) throw result.error;
+
+                showStatus('✅ Données sauvegardées avec succès !', 'success');
+                document.getElementById('lastUpdate').textContent = 'Dernière mise à jour : ' + new Date().toLocaleString('fr-FR');
+
+            } catch (err) {
+                console.error('Erreur sauvegarde:', err);
+                showStatus('❌ Erreur: ' + err.message, 'error');
+            }
+        }
+
+        function showStatus(message, type) {
+            const bar = document.getElementById('statusBar');
+            bar.className = 'status-bar ' + type;
+            bar.textContent = message;
+            bar.style.display = 'flex';
+            
+            if (type === 'success') {
+                setTimeout(() => { bar.style.display = 'none'; }, 4000);
+            }
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', loadExistingData);
+    </script>
+</body>
+</html>
