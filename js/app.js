@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initExtraTiles();
     initPushNotifications();
     initAgenda();
+    initSport();
     initFontSizeSelector();
     recordVisit();
 });
@@ -297,14 +298,17 @@ function renderNewsSlider(articles) {
         <div class="news-slides" id="newsSlides">
             ${articles.map((article, index) => `
                 <div class="news-slide">
-                    <a href="${article.link}" target="_blank" rel="noopener" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
-                        <div class="news-item-icon">${getSourceIcon(article.source)}</div>
+                    <a href="${article.link}" target="_blank" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
+                        <div class="news-item-image ${!article.image ? 'no-image' : ''}">
+                            ${article.image 
+                                ? `<img src="${article.image}" alt="" loading="lazy" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">` 
+                                : ''}
+                            <div class="news-item-placeholder"><span class="material-icons">article</span></div>
+                        </div>
                         <div class="news-item-content">
+                            <div class="news-item-source">${getSourceIcon(article.source)} ${article.source}</div>
                             <div class="news-item-title">${article.title}</div>
-                            <div class="news-item-meta">
-                                <span class="news-item-date">${formatDate(article.date)}</span>
-                                <span class="news-item-read">Lire la suite sur ${article.source} →</span>
-                            </div>
+                            <div class="news-item-date">${formatDate(article.date)}</div>
                         </div>
                     </a>
                 </div>
@@ -878,20 +882,21 @@ async function initCommunity() {
                         </div>
                     </div>
                     
-                    <!-- Actions (Like + Commenter sur même ligne) -->
+                    <!-- Actions (Like) -->
                     <div class="community-item-actions" onclick="event.stopPropagation()">
                         <button class="like-btn ${userLikes.includes(item.id) ? 'liked' : ''}" id="like-btn-${item.id}" onclick="toggleLike(${item.id}, this)">
                             <span class="material-icons">${userLikes.includes(item.id) ? 'favorite' : 'favorite_border'}</span>
                             <span class="like-count" id="like-count-${item.id}">${likeCounts[item.id] || 0}</span>
                         </button>
+                    </div>
+                    
+                    <!-- Section Commentaires -->
+                    <div class="community-comments-section" onclick="event.stopPropagation()">
                         <button class="comments-toggle-btn" onclick="toggleComments(${item.id}, this)">
                             <span class="material-icons">chat_bubble_outline</span>
                             <span>${commentCount > 0 ? commentCount + ' commentaire' + (commentCount > 1 ? 's' : '') : 'Commenter'}</span>
+                            <span class="material-icons arrow">expand_more</span>
                         </button>
-                    </div>
-                    
-                    <!-- Section Commentaires déroulante -->
-                    <div class="community-comments-section" onclick="event.stopPropagation()">
                         <div class="comments-container" id="comments-${item.id}">
                             <div class="comments-list" id="comments-list-${item.id}">
                                 <div class="comments-empty">
@@ -1792,5 +1797,161 @@ async function recordVisit() {
         }
     } catch (err) {
         console.error('Erreur compteur visites:', err);
+    }
+}
+// ============================================
+// SECTION SPORT - FC MONTCEAU BOURGOGNE
+// ============================================
+
+function initSport() {
+    loadSportData();
+}
+
+async function loadSportData() {
+    const loading = document.getElementById('sportLoading');
+    const content = document.getElementById('sportContent');
+    
+    if (!loading || !content) return;
+
+    try {
+        const supabase = getSupabaseClient();
+        if (!supabase) {
+            console.warn('Sport: Supabase non initialisé');
+            loading.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.8rem;">Données sport indisponibles</span>';
+            return;
+        }
+
+        const { data, error } = await supabase
+            .from('sport_data')
+            .select('*')
+            .order('updated_at', { ascending: false })
+            .limit(1)
+            .single();
+
+        if (error || !data) {
+            console.warn('Sport: pas de données', error);
+            loading.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.8rem;">Données sport indisponibles</span>';
+            return;
+        }
+
+        // === DERNIER MATCH ===
+        const lastDate = document.getElementById('sportLastDate');
+        const lastHome = document.getElementById('sportLastHome');
+        const lastAway = document.getElementById('sportLastAway');
+        const lastHomeScore = document.getElementById('sportLastHomeScore');
+        const lastAwayScore = document.getElementById('sportLastAwayScore');
+        const resultIndicator = document.getElementById('sportResultIndicator');
+        const resultLetter = document.getElementById('sportResultLetter');
+
+        if (data.last_match_date) {
+            const matchDate = new Date(data.last_match_date + 'T00:00:00');
+            lastDate.textContent = data.last_match_matchday + ' · ' + matchDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+            
+            lastHome.textContent = data.last_match_home_team;
+            lastAway.textContent = data.last_match_away_team;
+            lastHomeScore.textContent = data.last_match_home_score;
+            lastAwayScore.textContent = data.last_match_away_score;
+
+            // Mettre en gras le FCMB
+            if (data.last_match_is_home) {
+                lastHome.classList.add('is-fcmb');
+            } else {
+                lastAway.classList.add('is-fcmb');
+            }
+
+            // Indicateur V/N/D
+            const fcmbScore = data.last_match_is_home ? data.last_match_home_score : data.last_match_away_score;
+            const oppScore = data.last_match_is_home ? data.last_match_away_score : data.last_match_home_score;
+            
+            if (fcmbScore > oppScore) {
+                resultIndicator.classList.add('win');
+                resultLetter.textContent = 'V';
+            } else if (fcmbScore < oppScore) {
+                resultIndicator.classList.add('loss');
+                resultLetter.textContent = 'D';
+            } else {
+                resultIndicator.classList.add('draw');
+                resultLetter.textContent = 'N';
+            }
+        }
+
+        // === PROCHAIN MATCH ===
+        const nextDate = document.getElementById('sportNextDate');
+        const nextHome = document.getElementById('sportNextHome');
+        const nextAway = document.getElementById('sportNextAway');
+        const nextTime = document.getElementById('sportNextTime');
+        const nextLabel = document.getElementById('sportNextLabel');
+
+        if (data.next_match_date) {
+            const nDate = new Date(data.next_match_date + 'T00:00:00');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const matchDay = new Date(nDate);
+            matchDay.setHours(0, 0, 0, 0);
+            
+            const isToday = matchDay.getTime() === today.getTime();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const isTomorrow = matchDay.getTime() === tomorrow.getTime();
+
+            let dateStr = data.next_match_matchday + ' · ';
+            if (isToday) {
+                dateStr += '<span class="sport-today-badge">Aujourd\'hui !</span>';
+                nextLabel.innerHTML = '🔴 Ce soir !';
+            } else if (isTomorrow) {
+                dateStr += '<span class="sport-today-badge">Demain</span>';
+            } else {
+                dateStr += nDate.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+            }
+            nextDate.innerHTML = dateStr;
+
+            nextHome.textContent = data.next_match_home_team;
+            nextAway.textContent = data.next_match_away_team;
+            nextTime.textContent = data.next_match_time || '';
+
+            // Mettre en gras le FCMB
+            if (data.next_match_is_home) {
+                nextHome.classList.add('is-fcmb');
+            } else {
+                nextAway.classList.add('is-fcmb');
+            }
+        }
+
+        // === CLASSEMENT ===
+        const posEl = document.getElementById('sportPosition');
+        const statsEl = document.getElementById('sportStats');
+
+        if (data.standing_position) {
+            posEl.textContent = data.standing_position + (data.standing_position === 1 ? 'er' : 'e');
+            posEl.classList.add(data.standing_position <= 3 ? 'top3' : 'mid');
+
+            const diff = data.standing_goals_for - data.standing_goals_against;
+            const diffStr = diff > 0 ? '+' + diff : diff.toString();
+            statsEl.innerHTML = '<strong>' + data.standing_points + ' pts</strong> · ' + data.standing_played + 'J · ' + data.standing_won + 'V ' + data.standing_drawn + 'N ' + data.standing_lost + 'D · ' + diffStr;
+        }
+
+        // === FORME ===
+        const formEl = document.getElementById('sportForm');
+        if (data.form) {
+            const formArr = data.form.split(',');
+            formEl.innerHTML = formArr.map(function(f) {
+                const letter = f.trim();
+                let cls = '';
+                if (letter === 'V') cls = 'win';
+                else if (letter === 'N') cls = 'draw';
+                else if (letter === 'D') cls = 'loss';
+                return '<div class="sport-form-dot ' + cls + '">' + letter + '</div>';
+            }).join('');
+        }
+
+        // Afficher le contenu
+        loading.style.display = 'none';
+        content.style.display = 'block';
+
+        console.log('⚽ Sport: données chargées');
+
+    } catch (err) {
+        console.error('Sport: erreur chargement', err);
+        loading.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.8rem;">Erreur de chargement</span>';
     }
 }
