@@ -1936,6 +1936,13 @@ async function loadSportData() {
             }).join('');
         }
 
+        // === CLASSEMENT COMPLET ===
+        if (data.standings_json && data.standings_json.length > 0) {
+            window._standingsData = data.standings_json;
+            var classementBtn = document.getElementById('sportClassementBtn');
+            if (classementBtn) classementBtn.style.display = 'flex';
+        }
+
         loading.style.display = 'none';
         content.style.display = 'block';
 
@@ -1945,4 +1952,79 @@ async function loadSportData() {
         console.error('Sport: erreur chargement', err);
         loading.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.8rem;">Erreur de chargement</span>';
     }
+}
+
+// ============================================
+// MODAL CLASSEMENT R1 HERBELIN
+// ============================================
+function showStandingsModal() {
+    var overlay = document.getElementById('standingsModalOverlay');
+    var modal = document.getElementById('standingsModal');
+    var body = document.getElementById('standingsModalBody');
+    if (!overlay || !modal || !body) return;
+
+    overlay.classList.add('active');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    var standings = window._standingsData;
+    if (!standings || standings.length === 0) {
+        body.innerHTML = '<div class="standings-loading">Aucune donnée de classement disponible</div>';
+        return;
+    }
+
+    // Trier par position
+    standings.sort(function(a, b) { return a.position - b.position; });
+    var totalTeams = standings.length;
+
+    var html = '<table class="standings-table">';
+    html += '<thead><tr><th>#</th><th>Équipe</th><th>Pts</th><th>J</th><th>V</th><th>N</th><th>D</th><th>BP</th><th>BC</th><th>Diff</th></tr></thead>';
+    html += '<tbody>';
+
+    standings.forEach(function(team) {
+        var isMontceau = team.team.toLowerCase().includes('montceau');
+        var isTop3 = team.position <= 3;
+        var isBottom3 = team.position > totalTeams - 3;
+        var posClass = isTop3 ? 'top3' : (isBottom3 ? 'bottom3' : '');
+        var diff = team.diff || (team.goalsFor - team.goalsAgainst);
+        var diffStr = diff > 0 ? '+' + diff : diff.toString();
+        var diffClass = diff > 0 ? 'standings-diff-pos' : (diff < 0 ? 'standings-diff-neg' : '');
+
+        // Raccourcir les noms longs
+        var displayName = team.team
+            .replace(/\s*\d+$/, '')
+            .replace('A.S.A.', 'ASA')
+            .replace('JURA DOLOIS FOOTBALL', 'Jura Dolois')
+            .replace('FAUVERNEY ROUVRES', 'Fauverney R.');
+
+        // Capitaliser proprement
+        displayName = displayName.split(' ').map(function(w) {
+            if (w.length <= 2) return w;
+            return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+        }).join(' ');
+
+        html += '<tr class="' + (isMontceau ? 'is-montceau' : '') + '">';
+        html += '<td><span class="standings-pos ' + posClass + '">' + team.position + '</span></td>';
+        html += '<td>' + displayName + '</td>';
+        html += '<td class="standings-pts">' + team.points + '</td>';
+        html += '<td>' + team.played + '</td>';
+        html += '<td>' + team.won + '</td>';
+        html += '<td>' + team.drawn + '</td>';
+        html += '<td>' + team.lost + '</td>';
+        html += '<td>' + team.goalsFor + '</td>';
+        html += '<td>' + team.goalsAgainst + '</td>';
+        html += '<td class="' + diffClass + '">' + diffStr + '</td>';
+        html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+    body.innerHTML = html;
+}
+
+function closeStandingsModal() {
+    var overlay = document.getElementById('standingsModalOverlay');
+    var modal = document.getElementById('standingsModal');
+    if (overlay) overlay.classList.remove('active');
+    if (modal) modal.classList.remove('active');
+    document.body.style.overflow = '';
 }

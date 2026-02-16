@@ -340,6 +340,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </div>
                     <span class="material-icons quick-link-arrow">chevron_right</span>
                 </a>
+                <button class="quick-link-item" onclick="showTVModal()">
+                    <div class="quick-link-icon tv">📺</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">TV en direct</div>
+                        <div class="quick-link-desc">Chaînes d'info</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </button>
+                <button class="quick-link-item" onclick="showSportsModal()">
+                    <div class="quick-link-icon sports">⚽</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">Sports</div>
+                        <div class="quick-link-desc">Foot, Basket, Rugby...</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </button>
             </div>
 		
             <!-- Section Transport -->
@@ -361,43 +377,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </div>
                     <span class="material-icons quick-link-arrow">chevron_right</span>
                 </a>
-            </div>
-            
-            <!-- Section Médias -->
-            <div class="quick-links-section">
-                <div class="quick-links-section-title">Médias</div>
-                <a href="https://www.francebleu.fr/bourgogne-franche-comte/saone-et-loire-71/actu" target="_blank" rel="noopener" class="quick-link-item">
-                    <div class="quick-link-icon media">🎙️</div>
-                    <div class="quick-link-text">
-                        <div class="quick-link-name">France Bleu</div>
-                        <div class="quick-link-desc">Saône-et-Loire</div>
-                    </div>
-                    <span class="material-icons quick-link-arrow">chevron_right</span>
-                </a>
-                <a href="https://france3-regions.franceinfo.fr/bourgogne-franche-comte/saone-et-loire" target="_blank" rel="noopener" class="quick-link-item">
-                    <div class="quick-link-icon media">📻</div>
-                    <div class="quick-link-text">
-                        <div class="quick-link-name">France 3</div>
-                        <div class="quick-link-desc">Saône-et-Loire</div>
-                    </div>
-                    <span class="material-icons quick-link-arrow">chevron_right</span>
-                </a>
-                <button class="quick-link-item" onclick="showTVModal()">
-                    <div class="quick-link-icon tv">📺</div>
-                    <div class="quick-link-text">
-                        <div class="quick-link-name">TV en direct</div>
-                        <div class="quick-link-desc">Chaînes d'info</div>
-                    </div>
-                    <span class="material-icons quick-link-arrow">chevron_right</span>
-                </button>
-                <button class="quick-link-item" onclick="showSportsModal()">
-                    <div class="quick-link-icon sports">⚽</div>
-                    <div class="quick-link-text">
-                        <div class="quick-link-name">Sports</div>
-                        <div class="quick-link-desc">Foot, Basket, Rugby...</div>
-                    </div>
-                    <span class="material-icons quick-link-arrow">chevron_right</span>
-                </button>
             </div>
         </div>
     </aside>
@@ -672,6 +651,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </div>
                 <div class="sport-form" id="sportForm"></div>
             </div>
+            <button class="sport-classement-btn" id="sportClassementBtn" onclick="showStandingsModal()" style="display:none;">
+                <span class="material-icons">leaderboard</span>
+                Voir le classement complet
+            </button>
             <div class="sport-teams-row">
                 <a href="https://www.sportcorico.com/clubs/elan-chalon" target="_blank" rel="noopener" class="sport-team-pill">
                     <span class="sport-team-pill-icon">🏀</span>
@@ -690,6 +673,52 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="sport-team-pill-text"><span class="sport-team-pill-name">Ligue 2</span><span class="sport-team-pill-league">Championnat de France</span></div>
                 </a>
             </div>
+        </div>
+    </section>
+
+    <!-- Modal Classement R1 Herbelin -->
+    <div class="standings-modal-overlay" id="standingsModalOverlay" onclick="closeStandingsModal()"></div>
+    <div class="standings-modal" id="standingsModal">
+        <div class="standings-modal-header">
+            <div class="standings-modal-title">
+                <span class="material-icons">emoji_events</span>
+                R1 Herbelin · Poule A
+            </div>
+            <button class="standings-modal-close" onclick="closeStandingsModal()">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="standings-modal-body" id="standingsModalBody">
+            <div class="standings-loading">
+                <span class="material-icons spinning">sync</span> Chargement...
+            </div>
+        </div>
+        <div class="standings-modal-footer">
+            <a href="https://www.sportcorico.com/championnat/bourgogne-franche-comte-regional-1-herbelin-3/phase-unique/poule-a" target="_blank" rel="noopener" class="standings-source-link">
+                <span class="material-icons">open_in_new</span>
+                Voir sur SportCorico
+            </a>
+        </div>
+    </div>
+
+    <!-- Tuiles Médias régionaux -->
+    <section class="media-tiles-section glass">
+        <div class="media-tiles-title">📰 Médias régionaux</div>
+        <div class="media-tiles-row">
+            <a href="https://www.francebleu.fr/bourgogne-franche-comte/saone-et-loire-71/actu" target="_blank" rel="noopener" class="media-tile">
+                <div class="media-tile-icon" style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);">🎙️</div>
+                <div class="media-tile-text">
+                    <span class="media-tile-name">France Bleu</span>
+                    <span class="media-tile-desc">Saône-et-Loire</span>
+                </div>
+            </a>
+            <a href="https://france3-regions.franceinfo.fr/bourgogne-franche-comte/saone-et-loire" target="_blank" rel="noopener" class="media-tile">
+                <div class="media-tile-icon" style="background: linear-gradient(135deg, #0369a1 0%, #06b6d4 100%);">📺</div>
+                <div class="media-tile-text">
+                    <span class="media-tile-name">France 3</span>
+                    <span class="media-tile-desc">Bourgogne</span>
+                </div>
+            </a>
         </div>
     </section>
 	
@@ -912,6 +941,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
          SCRIPTS
          ============================================ -->
     
+    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <!-- Application Scripts -->

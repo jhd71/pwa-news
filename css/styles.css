@@ -3866,3 +3866,268 @@ a.agenda-item:hover {
     .sport-standing-row { padding: 0.6rem 1rem; }
     .sport-team-pill { flex: 1 1 calc(25% - 0.3rem); }
 }
+
+/* ============================================
+   BOUTON VOIR CLASSEMENT
+   ============================================ */
+.sport-classement-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    width: 100%;
+    padding: 0.55rem;
+    margin-top: 0.3rem;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 8px;
+    color: #818cf8;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.sport-classement-btn:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+.sport-classement-btn .material-icons {
+    font-size: 1rem;
+}
+
+/* ============================================
+   MODAL CLASSEMENT
+   ============================================ */
+.standings-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 9998;
+    backdrop-filter: blur(4px);
+}
+.standings-modal-overlay.active { display: block; }
+
+.standings-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 94%;
+    max-width: 520px;
+    max-height: 85vh;
+    background: var(--bg-primary, #1a1a2e);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.standings-modal.active {
+    display: flex;
+    animation: standingsSlideIn 0.3s ease;
+}
+@keyframes standingsSlideIn {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.standings-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(59,130,246,0.1));
+}
+.standings-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary, #eee);
+}
+.standings-modal-title .material-icons {
+    font-size: 1.2rem;
+    color: #fbbf24;
+}
+.standings-modal-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #999);
+    cursor: pointer;
+    padding: 0.3rem;
+    border-radius: 6px;
+}
+.standings-modal-close:hover { background: rgba(255,255,255,0.1); }
+
+.standings-modal-body {
+    overflow-y: auto;
+    padding: 0;
+    flex: 1;
+}
+
+.standings-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 2rem;
+    color: var(--text-secondary, #999);
+    font-size: 0.85rem;
+}
+
+/* Tableau classement */
+.standings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.72rem;
+}
+.standings-table th {
+    position: sticky;
+    top: 0;
+    background: var(--bg-primary, #1a1a2e);
+    color: var(--text-secondary, #999);
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.5rem 0.3rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    z-index: 1;
+}
+.standings-table th:nth-child(2) {
+    text-align: left;
+    padding-left: 0.5rem;
+}
+.standings-table td {
+    padding: 0.45rem 0.3rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text-primary, #ddd);
+}
+.standings-table td:nth-child(2) {
+    text-align: left;
+    padding-left: 0.5rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+}
+.standings-table tr.is-montceau {
+    background: rgba(99, 102, 241, 0.12);
+}
+.standings-table tr.is-montceau td {
+    font-weight: 700;
+    color: #818cf8;
+}
+.standings-table tr.is-montceau td:nth-child(2) {
+    color: #a5b4fc;
+}
+.standings-pos {
+    font-weight: 700;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+}
+.standings-pos.top3 {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+.standings-pos.bottom3 {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+.standings-pts {
+    font-weight: 800;
+    color: #fbbf24 !important;
+}
+.standings-diff-pos { color: #10b981; }
+.standings-diff-neg { color: #ef4444; }
+
+.standings-modal-footer {
+    padding: 0.6rem 1rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    text-align: center;
+}
+.standings-source-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--text-secondary, #999);
+    text-decoration: none;
+    font-size: 0.7rem;
+    transition: color 0.2s;
+}
+.standings-source-link:hover { color: #818cf8; }
+.standings-source-link .material-icons { font-size: 0.9rem; }
+
+/* ============================================
+   TUILES MÉDIAS RÉGIONAUX
+   ============================================ */
+.media-tiles-section {
+    padding: 0.8rem;
+}
+.media-tiles-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary, #eee);
+}
+.media-tiles-row {
+    display: flex;
+    gap: 0.5rem;
+}
+.media-tile {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.7rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text-primary, #ddd);
+    transition: all 0.2s;
+}
+.media-tile:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-1px);
+}
+.media-tile-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+.media-tile-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.media-tile-name {
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+.media-tile-desc {
+    font-size: 0.6rem;
+    color: var(--text-secondary, #999);
+    line-height: 1.2;
+}
