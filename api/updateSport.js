@@ -1,5 +1,5 @@
 // api/updateSport.js - Scraper automatique FC Montceau Bourgogne
-// Source: statfootballclubfrance.fr (HTML propre, mis à jour après chaque journée)
+// Source: SportCorico (SSR, données fiables et à jour)
 // Cron Vercel: tous les jours à 7h du matin
 
 import { createClient } from '@supabase/supabase-js';
@@ -9,13 +9,11 @@ const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5c
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// URLs sources
-const CLASSEMENT_URL = 'https://statfootballclubfrance.fr/bfc-r1-2026.php';
-const RESULTATS_URL = 'https://statfootballclubfrance.fr/bfc-r1-gares-2026.php';
+// URL source : page club SportCorico (SSR = HTML complet côté serveur)
+const SPORTCORICO_URL = 'https://www.sportcorico.com/clubs/fc-montceau-bourgogne/montceau-fc-bourgogn';
 
-// Nom du club (tel qu'il apparaît dans les tableaux)
-const CLUB_NAME = 'FC Montceau Bourgogne';
-const CLUB_SHORT = 'Montceau';
+// Compétition à filtrer (uniquement le championnat)
+const COMPETITION = 'REGIONAL 1 HERBELIN';
 
 export const config = {
     maxDuration: 30,
@@ -27,220 +25,232 @@ export const config = {
 async function fetchHTML(url) {
     const response = await fetch(url, {
         headers: {
-            'User-Agent': 'Mozilla/5.0 (compatible; ActuMedia/2.0)',
-            'Accept': 'text/html,application/xhtml+xml',
-            'Accept-Language': 'fr-FR,fr;q=0.9',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'fr-FR,fr;q=0.9,en;q=0.5',
         }
     });
     if (!response.ok) throw new Error(`HTTP ${response.status} pour ${url}`);
-    const buffer = await response.arrayBuffer();
-    // Le site utilise UTF-8 ou ISO-8859-1, on essaye les deux
-    let html;
-    try {
-        html = new TextDecoder('utf-8').decode(buffer);
-    } catch {
-        html = new TextDecoder('iso-8859-1').decode(buffer);
-    }
-    return html;
+    return await response.text();
 }
 
 // ============================================
-// PARSER LE CLASSEMENT (depuis bfc-r1-2026.php)
+// NETTOYER LE TEXTE HTML
 // ============================================
-function parseClassement(html) {
-    // Le tableau du classement Groupe A a cette structure :
-    // | Rg | Équipe | Pts | J | G | N | P | Bp | Bc | Df |
-    // On cherche la ligne contenant "Montceau"
-    
-    // Regex pour trouver les lignes du tableau de classement
-    // Format: | rang | <a href="...">Nom Club</a> | pts | j | g | n | p | bp | bc | df |
-    const rowRegex = /\|\s*(\d+)\s*\|[^|]*?(?:FC Montceau Bourgogne|Montceau)[^|]*\|\s*(\d+)\s*\|\s*(\d+)\s*\|\s*(\d+)\s*\|\s*(\d+)\s*\|\s*(\d+)\s*\|\s*(\d+)\s*\|\s*(\d+)\s*\|\s*-?\d+\s*\|/i;
-    
-    // Alternative: chercher dans les balises <td>
-    // <td>3</td>...<td>Montceau</td>...<td>17</td>...
-    const tdRegex = /<tr[^>]*>[\s\S]*?<td[^>]*>\s*(\d+)\s*<\/td>[\s\S]*?(?:Montceau|FC Montceau)[\s\S]*?<td[^>]*>\s*(\d+)\s*<\/td>\s*<td[^>]*>\s*(\d+)\s*<\/td>\s*<td[^>]*>\s*(\d+)\s*<\/td>\s*<td[^>]*>\s*(\d+)\s*<\/td>\s*<td[^>]*>\s*(\d+)\s*<\/td>\s*<td[^>]*>\s*(\d+)\s*<\/td>\s*<td[^>]*>\s*(\d+)\s*<\/td>/i;
-    
-    const match = tdRegex.exec(html);
-    
-    if (match) {
-        return {
-            position: parseInt(match[1]),
-            points: parseInt(match[2]),
-            played: parseInt(match[3]),
-            won: parseInt(match[4]),
-            drawn: parseInt(match[5]),
-            lost: parseInt(match[6]),
-            goalsFor: parseInt(match[7]),
-            goalsAgainst: parseInt(match[8]),
-        };
-    }
-    
-    console.log('⚠️ Classement non trouvé avec regex TD, essai alternatif...');
-    
-    // Méthode alternative: chercher tous les <tr> et analyser
-    const allRows = html.match(/<tr[^>]*>[\s\S]*?<\/tr>/gi) || [];
-    for (const row of allRows) {
-        if (row.includes('Montceau') || row.includes('montceau')) {
-            const cells = row.match(/<td[^>]*>([\s\S]*?)<\/td>/gi) || [];
-            const values = cells.map(c => c.replace(/<[^>]+>/g, '').trim());
-            
-            // Trouver les valeurs numériques
-            const nums = values.filter(v => /^\d+$/.test(v)).map(Number);
-            if (nums.length >= 9) {
-                return {
-                    position: nums[0],
-                    points: nums[1],
-                    played: nums[2],
-                    won: nums[3],
-                    drawn: nums[4],
-                    lost: nums[5],
-                    goalsFor: nums[6],
-                    goalsAgainst: nums[7],
-                };
+function cleanText(html) {
+    return html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+}
+
+// ============================================
+// PARSER LE DERNIER MATCH ET PROCHAIN MATCH
+// ============================================
+function parseMatches(html) {
+    const result = { lastMatch: null, nextMatch: null };
+
+    // ---- DERNIER MATCH ----
+    // Structure SportCorico SSR : ## Dernier Match ... contenu ... ## Prochain Match
+    const dernierSection = html.match(/##\s*Dernier Match([\s\S]*?)##\s*Prochain Match/i);
+    if (dernierSection) {
+        const section = dernierSection[1];
+
+        // Chercher le pattern : Team1 ... date ... score ... Team2
+        // Ou : Team1 ... date ... heure ... Team2 (pas encore joué)
+        const scoreMatch = section.match(/(\d{2}\/\d{2}\/\d{4})\s*(\d+)\s*-\s*(\d+)/);
+        const noScoreMatch = section.match(/(\d{2}\/\d{2}\/\d{4})\s*(\d{2}:\d{2})/);
+
+        // Extraire les noms d'équipes (après les logos)
+        // Pattern : "logo TeamName 1]" suivi de texte
+        const teamNames = [];
+        const teamRegex = /(?:logo|!\[)[^\]]*\]\s*\n\s*([A-Z][\w\s'.()-]+\d)/gi;
+        let tm;
+        while ((tm = teamRegex.exec(section)) !== null) {
+            teamNames.push(tm[1].trim());
+        }
+
+        // Alternative : chercher les noms entre les dates/scores
+        if (teamNames.length < 2) {
+            // Pattern plus simple : lignes avec noms d'équipe
+            const lines = section.split('\n').map(l => l.trim()).filter(l => l.length > 2);
+            const namePattern = /^[A-Z][\w\s'.()-]+\d$/;
+            for (const line of lines) {
+                if (namePattern.test(line) && !line.includes('http') && !line.includes('logo')) {
+                    teamNames.push(line);
+                }
             }
         }
-    }
-    
-    return null;
-}
 
-// ============================================
-// PARSER LA PROCHAINE JOURNÉE
-// ============================================
-function parseNextMatch(html) {
-    // Chercher la section de la prochaine journée qui contient "Montceau"
-    // Format dans le HTML: 
-    // <td>14/02-18h00</td><td>FC Montceau Bourgogne - Is-Selongey Football</td>
-    
-    // D'abord trouver le numéro de journée
-    const journeeRegex = /(\d+)(?:ème|ère|e)\s*journée\s*\(([^)]+)\)/i;
-    const journeeMatch = journeeRegex.exec(html);
-    let matchday = '';
-    if (journeeMatch) {
-        matchday = 'Journée ' + journeeMatch[1];
+        if (scoreMatch && teamNames.length >= 2) {
+            const dateStr = scoreMatch[1]; // "14/02/2026"
+            const [day, month, year] = dateStr.split('/');
+            const isHome = teamNames[0].toLowerCase().includes('montceau');
+
+            result.lastMatch = {
+                date: `${year}-${month}-${day}`,
+                homeTeam: isHome ? 'FC Montceau' : teamNames[0].replace(/\s*1$/, '').trim(),
+                awayTeam: isHome ? teamNames[1].replace(/\s*1$/, '').trim() : 'FC Montceau',
+                homeScore: parseInt(scoreMatch[2]),
+                awayScore: parseInt(scoreMatch[3]),
+                isHome: isHome,
+            };
+        } else if (noScoreMatch && teamNames.length >= 2) {
+            // Match pas encore joué (affiché comme "dernier" mais sans score)
+            // On ne met pas à jour le dernier match dans ce cas
+        }
     }
-    
-    // Chercher les matchs à venir (sans score, avec date-heure)
-    // Pattern: date-heure | Equipe1 - Equipe2 | vide | vide
-    const upcomingRegex = /<td[^>]*>\s*(\d{2}\/\d{2})-(\d{2}h\d{2})\s*<\/td>\s*<td[^>]*>\s*(.*?Montceau.*?)\s*<\/td>/gi;
-    
-    let match;
-    while ((match = upcomingRegex.exec(html)) !== null) {
-        const dateStr = match[1]; // "14/02"
-        const timeStr = match[2].replace('h', ':'); // "18:00"
-        const teamsStr = match[3].replace(/<[^>]+>/g, '').trim(); // "FC Montceau Bourgogne - Is-Selongey Football"
-        
-        // Séparer les équipes
-        const teams = teamsStr.split(/\s*-\s*/);
-        if (teams.length >= 2) {
-            const homeTeam = teams[0].trim();
-            const awayTeam = teams.slice(1).join(' - ').trim(); // Au cas où le nom contient un tiret
-            
-            const isHome = homeTeam.toLowerCase().includes('montceau');
-            
-            // Construire la date complète (année en cours ou prochaine)
-            const [day, month] = dateStr.split('/').map(Number);
-            const now = new Date();
-            let year = now.getFullYear();
-            const matchDate = new Date(year, month - 1, day);
-            // Si la date est passée de plus de 6 mois, c'est l'année prochaine
-            if (matchDate < new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000)) {
-                year++;
+
+    // ---- PROCHAIN MATCH ----
+    const prochainSection = html.match(/##\s*Prochain Match([\s\S]*?)(?:##\s*Calendier|##\s*Classement|\[##\s*Calendier)/i);
+    if (prochainSection) {
+        const section = prochainSection[1];
+
+        // Date et heure
+        const dateTimeMatch = section.match(/(\d{2}\/\d{2}\/\d{4})\s*(\d{2}:\d{2})/);
+
+        // Noms d'équipes
+        const teamNames = [];
+        const lines = section.split('\n').map(l => l.trim()).filter(l => l.length > 2);
+        const namePattern = /^[A-Z][\w\s'.()-]+\d$/;
+        for (const line of lines) {
+            if (namePattern.test(line) && !line.includes('http') && !line.includes('logo')) {
+                teamNames.push(line);
             }
-            
-            const fullDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-            
-            return {
-                date: fullDate,
-                time: timeStr,
-                matchday: matchday,
-                homeTeam: isHome ? 'FC Montceau' : homeTeam.replace('Football', '').trim(),
-                awayTeam: isHome ? awayTeam.replace('Football', '').trim() : 'FC Montceau',
+        }
+
+        if (dateTimeMatch && teamNames.length >= 2) {
+            const dateStr = dateTimeMatch[1];
+            const [day, month, year] = dateStr.split('/');
+            const time = dateTimeMatch[2];
+            const isHome = teamNames[0].toLowerCase().includes('montceau');
+
+            result.nextMatch = {
+                date: `${year}-${month}-${day}`,
+                time: time,
+                homeTeam: isHome ? 'FC Montceau' : teamNames[0].replace(/\s*1$/, '').trim(),
+                awayTeam: isHome ? teamNames[1].replace(/\s*1$/, '').trim() : 'FC Montceau',
                 isHome: isHome,
             };
         }
     }
-    
-    return null;
+
+    return result;
 }
 
 // ============================================
-// PARSER LES RÉSULTATS (depuis bfc-r1-gares-2026.php)
+// PARSER TOUS LES RÉSULTATS DU CHAMPIONNAT
 // ============================================
-function parseResults(html) {
-    // Chercher tous les matchs de Montceau avec un score
-    // Format: <td>Equipe1</td><td>score1</td><td>score2</td><td>Equipe2</td>
-    // ou: <td>date</td><td>Equipe1 score - score Equipe2</td>
-    
+function parseAllResults(html) {
     const results = [];
-    
-    // Pattern 1: lignes de résultats dans des tableaux
-    // Chercher les lignes contenant Montceau avec des scores
-    const allRows = html.match(/<tr[^>]*>[\s\S]*?<\/tr>/gi) || [];
-    
-    for (const row of allRows) {
-        if (!row.toLowerCase().includes('montceau')) continue;
-        
-        const cells = (row.match(/<td[^>]*>([\s\S]*?)<\/td>/gi) || [])
-            .map(c => c.replace(/<[^>]+>/g, '').trim());
-        
-        // Chercher un pattern avec des scores (deux chiffres côte à côte)
-        for (let i = 0; i < cells.length - 3; i++) {
-            const team1 = cells[i];
-            const score1 = cells[i + 1];
-            const score2 = cells[i + 2];
-            const team2 = cells[i + 3];
-            
-            if (/^\d+$/.test(score1) && /^\d+$/.test(score2) && 
-                (team1.toLowerCase().includes('montceau') || team2.toLowerCase().includes('montceau'))) {
-                
-                const isHome = team1.toLowerCase().includes('montceau');
-                results.push({
-                    homeTeam: isHome ? 'FC Montceau' : team1.replace(/Football$/i, '').trim(),
-                    awayTeam: isHome ? team2.replace(/Football$/i, '').trim() : 'FC Montceau',
-                    homeScore: parseInt(score1),
-                    awayScore: parseInt(score2),
-                    isHome: isHome,
-                });
+
+    // Chercher tous les blocs de matchs REGIONAL 1 HERBELIN avec un score
+    // Structure : REGIONAL 1 HERBELIN ... Team1 ... date ... score1 - score2 ... Team2
+    // Les matchs sont dans des liens [...](...) 
+
+    // Split par les liens de matchs
+    const matchBlocks = html.split(/\[REGIONAL 1 HERBELIN/gi);
+
+    for (let i = 1; i < matchBlocks.length; i++) {
+        const block = matchBlocks[i];
+
+        // Vérifier qu'il y a un score (match joué)
+        const scoreMatch = block.match(/(\d{2}\/\d{2}\/\d{4})\s*(\d+)\s*-\s*(\d+)/);
+        if (!scoreMatch) continue; // Match pas encore joué, on skip
+
+        // Vérifier que c'est un match de Montceau
+        if (!block.toLowerCase().includes('montceau')) continue;
+
+        // Extraire les noms d'équipes
+        const teamNames = [];
+        const lines = block.split('\n').map(l => l.trim()).filter(l => l.length > 2);
+        const namePattern = /^[A-Z][\w\s'.()-]+\d$/;
+        for (const line of lines) {
+            if (namePattern.test(line) && !line.includes('http') && !line.includes('logo')) {
+                teamNames.push(line);
             }
         }
-    }
-    
-    // Pattern 2: format "Equipe1 X - Y Equipe2" dans une même cellule
-    const inlineScoreRegex = /(?:([^<]+?)\s+(\d+)\s*-\s*(\d+)\s+([^<]+?))/g;
-    let inlineMatch;
-    while ((inlineMatch = inlineScoreRegex.exec(html)) !== null) {
-        const [, team1, s1, s2, team2] = inlineMatch;
-        if (team1.toLowerCase().includes('montceau') || team2.toLowerCase().includes('montceau')) {
-            const isHome = team1.toLowerCase().includes('montceau');
-            // Éviter les doublons
-            const existing = results.find(r => r.homeScore === parseInt(s1) && r.awayScore === parseInt(s2));
-            if (!existing) {
-                results.push({
-                    homeTeam: isHome ? 'FC Montceau' : team1.trim(),
-                    awayTeam: isHome ? team2.trim() : 'FC Montceau',
-                    homeScore: parseInt(s1),
-                    awayScore: parseInt(s2),
-                    isHome: isHome,
-                });
-            }
+
+        if (teamNames.length >= 2) {
+            const isHome = teamNames[0].toLowerCase().includes('montceau');
+            const dateStr = scoreMatch[1];
+            const [day, month, year] = dateStr.split('/');
+
+            results.push({
+                date: `${year}-${month}-${day}`,
+                homeTeam: teamNames[0].trim(),
+                awayTeam: teamNames[1].trim(),
+                homeScore: parseInt(scoreMatch[2]),
+                awayScore: parseInt(scoreMatch[3]),
+                isHome: isHome,
+            });
         }
     }
-    
+
     return results;
 }
 
 // ============================================
-// CALCULER LA FORME (5 derniers résultats)
+// PARSER LA FORME (badges V/D/N dans le header)
 // ============================================
-function computeForm(results) {
-    // Prendre les 5 derniers résultats
-    const last5 = results.slice(-5);
-    
+function parseForm(html) {
+    // Dans le header SportCorico, la forme est affichée comme :
+    // Football\n\nV\n\nD\n\nV\n\nD\n\nD
+    const formSection = html.match(/Football\s+((?:[VDN]\s+){2,}[VDN])/i);
+    if (formSection) {
+        const letters = formSection[1].match(/[VDN]/gi);
+        if (letters && letters.length > 0) {
+            return letters.map(l => l.toUpperCase()).join(',');
+        }
+    }
+
+    // Alternative : chercher dans le texte brut
+    const altForm = html.match(/(?:Forme|form)\s*[:\s]*([VDN](?:\s*[VDN]){2,})/i);
+    if (altForm) {
+        const letters = altForm[1].match(/[VDN]/gi);
+        if (letters) return letters.map(l => l.toUpperCase()).join(',');
+    }
+
+    return null;
+}
+
+// ============================================
+// CALCULER LES STATS DEPUIS LES RÉSULTATS
+// ============================================
+function computeStats(results) {
+    let played = 0, won = 0, drawn = 0, lost = 0, goalsFor = 0, goalsAgainst = 0;
+
+    for (const r of results) {
+        played++;
+        const fcmbScore = r.isHome ? r.homeScore : r.awayScore;
+        const oppScore = r.isHome ? r.awayScore : r.homeScore;
+
+        goalsFor += fcmbScore;
+        goalsAgainst += oppScore;
+
+        if (fcmbScore > oppScore) won++;
+        else if (fcmbScore < oppScore) lost++;
+        else drawn++;
+    }
+
+    return {
+        played,
+        won,
+        drawn,
+        lost,
+        points: won * 3 + drawn,
+        goalsFor,
+        goalsAgainst,
+    };
+}
+
+// ============================================
+// CALCULER LA FORME DEPUIS LES RÉSULTATS
+// ============================================
+function computeFormFromResults(results) {
+    const sorted = [...results].sort((a, b) => a.date.localeCompare(b.date));
+    const last5 = sorted.slice(-5);
+
     return last5.map(r => {
         const fcmbScore = r.isHome ? r.homeScore : r.awayScore;
         const oppScore = r.isHome ? r.awayScore : r.homeScore;
-        
         if (fcmbScore > oppScore) return 'V';
         if (fcmbScore < oppScore) return 'D';
         return 'N';
@@ -251,33 +261,30 @@ function computeForm(results) {
 // MISE À JOUR SUPABASE
 // ============================================
 async function updateSupabase(data) {
-    // Vérifier s'il y a déjà une entrée
     const { data: existing } = await supabase
         .from('sport_data')
         .select('id')
         .order('updated_at', { ascending: false })
         .limit(1)
         .single();
-    
+
     const payload = {
         ...data,
         updated_at: new Date().toISOString(),
-        updated_by: 'scraper-auto',
+        updated_by: 'scraper-sportcorico',
     };
-    
+
     if (existing) {
         const { error } = await supabase
             .from('sport_data')
             .update(payload)
             .eq('id', existing.id);
-        
         if (error) throw error;
         return 'updated';
     } else {
         const { error } = await supabase
             .from('sport_data')
             .insert(payload);
-        
         if (error) throw error;
         return 'inserted';
     }
@@ -287,116 +294,127 @@ async function updateSupabase(data) {
 // HANDLER PRINCIPAL
 // ============================================
 export default async function handler(req, res) {
-    // CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    
+
     if (req.method === 'OPTIONS') return res.status(200).end();
-    
-    // Sécurité: vérifier le token pour les appels manuels (le cron Vercel passe automatiquement)
+
     const authHeader = req.headers.authorization;
     const cronSecret = process.env.CRON_SECRET;
-    
-    // Autoriser si: cron Vercel, ou token correct, ou pas de secret configuré
-    const isAuthorized = !cronSecret || 
-        authHeader === `Bearer ${cronSecret}` || 
+    const isAuthorized = !cronSecret ||
+        authHeader === `Bearer ${cronSecret}` ||
         req.headers['x-vercel-cron'] === '1';
-    
+
     if (!isAuthorized && req.method !== 'GET') {
         return res.status(401).json({ error: 'Non autorisé' });
     }
-    
+
     try {
-        console.log('⚽ Début scraping FC Montceau...');
+        console.log('⚽ Début scraping FC Montceau (SportCorico)...');
         const updateData = {};
         let logs = [];
-        
-        // === 1. SCRAPER LE CLASSEMENT + PROCHAIN MATCH ===
-        try {
-            const classementHTML = await fetchHTML(CLASSEMENT_URL);
-            logs.push('✅ Page classement récupérée');
-            
-            // Classement
-            const classement = parseClassement(classementHTML);
-            if (classement) {
-                updateData.standing_position = classement.position;
-                updateData.standing_points = classement.points;
-                updateData.standing_played = classement.played;
-                updateData.standing_won = classement.won;
-                updateData.standing_drawn = classement.drawn;
-                updateData.standing_lost = classement.lost;
-                updateData.standing_goals_for = classement.goalsFor;
-                updateData.standing_goals_against = classement.goalsAgainst;
-                logs.push(`✅ Classement: ${classement.position}e, ${classement.points} pts`);
-            } else {
-                logs.push('⚠️ Classement non trouvé');
-            }
-            
-            // Prochain match
-            const nextMatch = parseNextMatch(classementHTML);
-            if (nextMatch) {
-                updateData.next_match_date = nextMatch.date;
-                updateData.next_match_time = nextMatch.time;
-                updateData.next_match_matchday = nextMatch.matchday;
-                updateData.next_match_home_team = nextMatch.homeTeam;
-                updateData.next_match_away_team = nextMatch.awayTeam;
-                updateData.next_match_is_home = nextMatch.isHome;
-                logs.push(`✅ Prochain match: ${nextMatch.homeTeam} vs ${nextMatch.awayTeam} le ${nextMatch.date}`);
-            } else {
-                logs.push('⚠️ Prochain match non trouvé');
-            }
-        } catch (err) {
-            logs.push('❌ Erreur classement: ' + err.message);
+
+        // === 1. FETCH LA PAGE SPORTCORICO ===
+        const html = await fetchHTML(SPORTCORICO_URL);
+        logs.push('✅ Page SportCorico récupérée (' + html.length + ' chars)');
+
+        // === 2. PARSER DERNIER MATCH + PROCHAIN MATCH ===
+        const { lastMatch, nextMatch } = parseMatches(html);
+
+        if (lastMatch) {
+            updateData.last_match_date = lastMatch.date;
+            updateData.last_match_home_team = lastMatch.homeTeam;
+            updateData.last_match_away_team = lastMatch.awayTeam;
+            updateData.last_match_home_score = lastMatch.homeScore;
+            updateData.last_match_away_score = lastMatch.awayScore;
+            updateData.last_match_is_home = lastMatch.isHome;
+            logs.push(`✅ Dernier match: ${lastMatch.homeTeam} ${lastMatch.homeScore}-${lastMatch.awayScore} ${lastMatch.awayTeam}`);
+        } else {
+            logs.push('⚠️ Dernier match: pas de score trouvé (match peut-être pas encore joué)');
         }
-        
-        // === 2. SCRAPER LES RÉSULTATS ===
-        try {
-            const resultatsHTML = await fetchHTML(RESULTATS_URL);
-            logs.push('✅ Page résultats récupérée');
-            
-            const results = parseResults(resultatsHTML);
-            
-            if (results.length > 0) {
-                // Dernier match
-                const lastResult = results[results.length - 1];
-                updateData.last_match_home_team = lastResult.homeTeam;
-                updateData.last_match_away_team = lastResult.awayTeam;
-                updateData.last_match_home_score = lastResult.homeScore;
-                updateData.last_match_away_score = lastResult.awayScore;
-                updateData.last_match_is_home = lastResult.isHome;
-                logs.push(`✅ Dernier résultat: ${lastResult.homeTeam} ${lastResult.homeScore}-${lastResult.awayScore} ${lastResult.awayTeam}`);
-                
-                // Forme (5 derniers matchs)
-                const form = computeForm(results);
-                if (form) {
-                    updateData.form = form;
-                    logs.push(`✅ Forme: ${form}`);
+
+        if (nextMatch) {
+            updateData.next_match_date = nextMatch.date;
+            updateData.next_match_time = nextMatch.time;
+            updateData.next_match_home_team = nextMatch.homeTeam;
+            updateData.next_match_away_team = nextMatch.awayTeam;
+            updateData.next_match_is_home = nextMatch.isHome;
+            logs.push(`✅ Prochain match: ${nextMatch.homeTeam} vs ${nextMatch.awayTeam} le ${nextMatch.date} à ${nextMatch.time}`);
+        } else {
+            logs.push('⚠️ Prochain match non trouvé');
+        }
+
+        // === 3. PARSER TOUS LES RÉSULTATS DU CHAMPIONNAT ===
+        const allResults = parseAllResults(html);
+        logs.push(`📊 ${allResults.length} matchs de championnat trouvés`);
+
+        if (allResults.length > 0) {
+            // Calculer les stats
+            const stats = computeStats(allResults);
+            updateData.standing_points = stats.points;
+            updateData.standing_played = stats.played;
+            updateData.standing_won = stats.won;
+            updateData.standing_drawn = stats.drawn;
+            updateData.standing_lost = stats.lost;
+            updateData.standing_goals_for = stats.goalsFor;
+            updateData.standing_goals_against = stats.goalsAgainst;
+            logs.push(`✅ Stats: ${stats.points} pts, ${stats.played}J, ${stats.won}V-${stats.drawn}N-${stats.lost}D, ${stats.goalsFor}bp-${stats.goalsAgainst}bc`);
+
+            // Forme calculée depuis les résultats
+            const computedForm = computeFormFromResults(allResults);
+            if (computedForm) {
+                updateData.form = computedForm;
+                logs.push(`✅ Forme (calculée): ${computedForm}`);
+            }
+
+            // Dernier match depuis les résultats (si pas trouvé dans la section Dernier Match)
+            if (!lastMatch) {
+                const sorted = [...allResults].sort((a, b) => a.date.localeCompare(b.date));
+                const latest = sorted[sorted.length - 1];
+                if (latest) {
+                    updateData.last_match_date = latest.date;
+                    updateData.last_match_home_team = latest.isHome ? 'FC Montceau' : latest.homeTeam.replace(/\s*1$/, '');
+                    updateData.last_match_away_team = latest.isHome ? latest.awayTeam.replace(/\s*1$/, '') : 'FC Montceau';
+                    updateData.last_match_home_score = latest.homeScore;
+                    updateData.last_match_away_score = latest.awayScore;
+                    updateData.last_match_is_home = latest.isHome;
+                    logs.push(`✅ Dernier match (depuis résultats): ${latest.homeTeam} ${latest.homeScore}-${latest.awayScore} ${latest.awayTeam}`);
                 }
-            } else {
-                logs.push('⚠️ Aucun résultat trouvé');
             }
-        } catch (err) {
-            logs.push('⚠️ Erreur résultats: ' + err.message + ' (non bloquant)');
         }
-        
-        // === 3. METTRE À JOUR SUPABASE ===
+
+        // === 4. FORME DEPUIS LE HEADER (plus fiable si disponible) ===
+        const headerForm = parseForm(html);
+        if (headerForm) {
+            updateData.form = headerForm; // Remplace la forme calculée
+            logs.push(`✅ Forme (header SportCorico): ${headerForm}`);
+        }
+
+        // === 5. POSITION (ne peut pas être calculée sans les autres équipes) ===
+        // On ne met PAS à jour standing_position ici
+        // L'admin peut le mettre manuellement via admin-sport.html
+        // Ou on garde la dernière valeur en base
+        logs.push('ℹ️ Position: non modifiée (mise à jour manuelle via admin)');
+
+        // === 6. METTRE À JOUR SUPABASE ===
         if (Object.keys(updateData).length > 0) {
             const action = await updateSupabase(updateData);
             logs.push(`✅ Supabase ${action}`);
         } else {
             logs.push('⚠️ Aucune donnée à mettre à jour');
         }
-        
+
         console.log('⚽ Scraping terminé:', logs.join(' | '));
-        
+
         return res.status(200).json({
             success: true,
             timestamp: new Date().toISOString(),
+            source: 'SportCorico',
             logs: logs,
             data: updateData,
         });
-        
+
     } catch (err) {
         console.error('❌ Erreur scraping sport:', err);
         return res.status(500).json({
