@@ -624,22 +624,6 @@ body {
     border-radius: 14px;
 }
 
-/* Badge source en haut */
-.news-item-source {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.7rem;
-    color: #ffffff;
-    font-weight: 600;
-    padding: 0.25rem 0.65rem;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-    border-radius: 50px;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
-    width: fit-content;
-    margin-bottom: 0.5rem;
-}
-
 /* Contenu de l'article */
 .news-item-content {
     display: flex;
