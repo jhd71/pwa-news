@@ -348,14 +348,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </div>
                     <span class="material-icons quick-link-arrow">chevron_right</span>
                 </button>
-                <button class="quick-link-item" onclick="showSportsModal()">
-                    <div class="quick-link-icon sports">⚽</div>
+                <a href="https://www.directvelo.com/" target="_blank" rel="noopener" class="quick-link-item">
+                    <div class="quick-link-icon sports">🚴</div>
                     <div class="quick-link-text">
-                        <div class="quick-link-name">Sports</div>
-                        <div class="quick-link-desc">Foot, Basket, Rugby...</div>
+                        <div class="quick-link-name">Cyclisme</div>
+                        <div class="quick-link-desc">Direct Vélo · Résultats</div>
                     </div>
                     <span class="material-icons quick-link-arrow">chevron_right</span>
-                </button>
+                </a>
             </div>
 		
             <!-- Section Transport -->
@@ -572,6 +572,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </button>
     </section>
 
+    <!-- Tuiles Médias régionaux -->
+    <section class="media-tiles-section glass">
+        <div class="media-tiles-title">📰 Médias régionaux</div>
+        <div class="media-tiles-row">
+            <a href="https://www.francebleu.fr/bourgogne-franche-comte/saone-et-loire-71/actu" target="_blank" rel="noopener" class="media-tile">
+                <div class="media-tile-icon" style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);">🎙️</div>
+                <div class="media-tile-text">
+                    <span class="media-tile-name">France Bleu</span>
+                    <span class="media-tile-desc">Saône-et-Loire</span>
+                </div>
+            </a>
+            <a href="https://france3-regions.franceinfo.fr/bourgogne-franche-comte/saone-et-loire" target="_blank" rel="noopener" class="media-tile">
+                <div class="media-tile-icon" style="background: linear-gradient(135deg, #0369a1 0%, #06b6d4 100%);">📺</div>
+                <div class="media-tile-text">
+                    <span class="media-tile-name">France 3</span>
+                    <span class="media-tile-desc">Bourgogne</span>
+                </div>
+            </a>
+        </div>
+    </section>
+
 <!-- Agenda Local -->
     <section class="agenda-section glass">
         <div class="agenda-header">
@@ -651,7 +672,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </div>
                 <div class="sport-form" id="sportForm"></div>
             </div>
-            <button class="sport-classement-btn" id="sportClassementBtn" onclick="showStandingsModal()" style="display:none;">
+            <button class="sport-classement-btn" id="sportClassementBtn" onclick="showStandingsModal()">
                 <span class="material-icons">leaderboard</span>
                 Voir le classement complet
             </button>
@@ -700,27 +721,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </a>
         </div>
     </div>
-
-    <!-- Tuiles Médias régionaux -->
-    <section class="media-tiles-section glass">
-        <div class="media-tiles-title">📰 Médias régionaux</div>
-        <div class="media-tiles-row">
-            <a href="https://www.francebleu.fr/bourgogne-franche-comte/saone-et-loire-71/actu" target="_blank" rel="noopener" class="media-tile">
-                <div class="media-tile-icon" style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);">🎙️</div>
-                <div class="media-tile-text">
-                    <span class="media-tile-name">France Bleu</span>
-                    <span class="media-tile-desc">Saône-et-Loire</span>
-                </div>
-            </a>
-            <a href="https://france3-regions.franceinfo.fr/bourgogne-franche-comte/saone-et-loire" target="_blank" rel="noopener" class="media-tile">
-                <div class="media-tile-icon" style="background: linear-gradient(135deg, #0369a1 0%, #06b6d4 100%);">📺</div>
-                <div class="media-tile-text">
-                    <span class="media-tile-name">France 3</span>
-                    <span class="media-tile-desc">Bourgogne</span>
-                </div>
-            </a>
-        </div>
-    </section>
 	
     <!-- Widget Cinéma -->
     <section class="cinema-section glass">
