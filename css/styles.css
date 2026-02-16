@@ -4077,30 +4077,43 @@ a.agenda-item:hover {
    ============================================ */
 .media-tiles-section {
     padding: 0.8rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 16px;
 }
 .media-tiles-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
     font-size: 0.85rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
-    color: var(--text-primary, #eee);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-primary);
+    margin-bottom: 0.6rem;
+    padding-left: 0.75rem;
+    border-left: 3px solid var(--primary);
 }
 .media-tiles-row {
     display: flex;
     gap: 0.5rem;
 }
 .media-tile {
-    flex: 1 1 0;
-    min-width: 0;
+    flex: 0 1 calc(25% - 0.75rem);
+    /* padding: 0.6rem 1rem; */
     display: flex;
+    flex-direction: row;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.6rem 0.7rem;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 10px;
+    padding: 0.5rem 0.85rem;
+    border-radius: 12px;
     text-decoration: none;
-    color: var(--text-primary, #ddd);
-    transition: all 0.2s;
+    color: inherit;
+    transition: all 0.3s ease;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    min-width: 0;
 }
 .media-tile:hover {
     background: rgba(255,255,255,0.08);
@@ -4123,7 +4136,7 @@ a.agenda-item:hover {
     min-width: 0;
 }
 .media-tile-name {
-    font-size: 0.78rem;
+    font-size: 1rem;
     font-weight: 600;
     line-height: 1.2;
 }
