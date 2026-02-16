@@ -550,23 +550,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="tiles-grid">
             <a href="https://www.lejsl.com/edition-montceau-les-mines" target="_blank" rel="noopener" class="tile glass">
                 <div class="tile-icon">📰</div>
-                <div class="tile-name">Le JSL</div>
-                <div class="tile-subtitle">Montceau</div>
+                <div class="tile-text">
+                    <div class="tile-name">Le JSL</div>
+                    <div class="tile-subtitle">Montceau</div>
+                </div>
             </a>
             <a href="https://montceau-news.com/" target="_blank" rel="noopener" class="tile glass">
                 <div class="tile-icon">🏙️</div>
-                <div class="tile-name">Montceau News</div>
-                <div class="tile-subtitle">Local</div>
+                <div class="tile-text">
+                    <div class="tile-name">Montceau News</div>
+                    <div class="tile-subtitle">Local</div>
+                </div>
             </a>
             <a href="https://www.creusot-infos.com" target="_blank" rel="noopener" class="tile glass">
                 <div class="tile-icon">🏭</div>
-                <div class="tile-name">Creusot Infos</div>
-                <div class="tile-subtitle">Bassin minier</div>
+                <div class="tile-text">
+                    <div class="tile-name">Creusot Infos</div>
+                    <div class="tile-subtitle">Bassin minier</div>
+                </div>
             </a>
             <a href="https://linformateurdebourgogne.com/" target="_blank" rel="noopener" class="tile glass">
                 <div class="tile-icon">📋</div>
-                <div class="tile-name">L'Informateur</div>
-                <div class="tile-subtitle">Bourgogne</div>
+                <div class="tile-text">
+                    <div class="tile-name">L'Informateur</div>
+                    <div class="tile-subtitle">Bourgogne</div>
+                </div>
             </a>
         </div>
         
@@ -574,23 +582,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="tiles-grid tiles-extra" id="tilesExtra">
             <a href="https://www.lejsl.com/edition-chalon-sur-saone" target="_blank" rel="noopener" class="tile glass">
                 <div class="tile-icon">🍷</div>
-                <div class="tile-name">Le JSL</div>
-                <div class="tile-subtitle">Chalon-sur-Saône</div>
+                <div class="tile-text">
+                    <div class="tile-name">Le JSL</div>
+                    <div class="tile-subtitle">Chalon-sur-Saône</div>
+                </div>
             </a>
             <a href="https://www.lejsl.com/edition-macon" target="_blank" rel="noopener" class="tile glass">
                 <div class="tile-icon">🍇</div>
-                <div class="tile-name">Le JSL</div>
-                <div class="tile-subtitle">Mâcon</div>
+                <div class="tile-text">
+                    <div class="tile-name">Le JSL</div>
+                    <div class="tile-subtitle">Mâcon</div>
+                </div>
             </a>
             <a href="https://actu.fr/bourgogne-franche-comte/dijon_21231" target="_blank" rel="noopener" class="tile glass">
 				<div class="tile-icon">🦉</div>
-				<div class="tile-name">Actu.fr</div>
-				<div class="tile-subtitle">Dijon</div>
+				<div class="tile-text">
+				    <div class="tile-name">Actu.fr</div>
+				    <div class="tile-subtitle">Dijon</div>
+				</div>
 			</a>
             <a href="https://www.lejsl.com/edition-autun" target="_blank" rel="noopener" class="tile glass">
                 <div class="tile-icon">🏛️</div>
-                <div class="tile-name">Le JSL</div>
-                <div class="tile-subtitle">Autun</div>
+                <div class="tile-text">
+                    <div class="tile-name">Le JSL</div>
+                    <div class="tile-subtitle">Autun</div>
+                </div>
             </a>
         </div>
         
@@ -702,11 +718,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
             <!-- Autres équipes locales -->
             <div class="sport-teams-row">
-                <a href="https://www.elanchalon.com/" target="_blank" rel="noopener" class="sport-team-pill">
+                <a href="https://www.sportcorico.com/clubs/elan-chalon" target="_blank" rel="noopener" class="sport-team-pill">
                     <span class="sport-team-pill-icon">🏀</span>
                     <div class="sport-team-pill-text">
                         <span class="sport-team-pill-name">ELAN Chalon</span>
-                        <span class="sport-team-pill-league">Pro A · Basket</span>
+                        <span class="sport-team-pill-league">Pro B · Basket</span>
                     </div>
                 </a>
                 <a href="https://www.sportcorico.com/clubs/rc-montceau-bourgogne" target="_blank" rel="noopener" class="sport-team-pill">
@@ -1198,13 +1214,4 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             
             if (later) {
                 localStorage.setItem('donation_popup_last', Date.now().toString());
-            }
-        };
-        
-        // Afficher après 60 secondes
-        setTimeout(showDonationPopup, POPUP_DELAY);
-    })();
-    </script>
-</body>
-</html>
             

@@ -248,6 +248,7 @@ body {
 [data-theme="light"] .news-carousel,
 [data-theme="light"] .news-item,
 [data-theme="light"] .cinema-section,
+[data-theme="light"] .sport-section,
 [data-theme="light"] .community-section,
 [data-theme="light"] .quick-links-section,
 [data-theme="light"] .local-sites-section,
@@ -337,6 +338,7 @@ body {
    ============================================ */
 .news-carousel,
 .cinema-section,
+.sport-section,
 .community-section,
 .quick-links-section,
 .local-sites-section,
@@ -587,7 +589,7 @@ body {
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    min-height: 140px;
+    min-height: 80px;
     padding: 0;
     background: var(--bg-elevated);
     border-radius: 16px;
@@ -769,7 +771,7 @@ body {
    TUILES SITES LOCAUX
    ============================================ */
 .tiles-section {
-    padding: 1rem;
+    padding: 0.75rem 1rem;
 }
 
 .section-title {
@@ -780,7 +782,7 @@ body {
     font-weight: 800;
     letter-spacing: -0.02em;
     color: var(--text-secondary);
-    margin-bottom: 1rem;
+    margin-bottom: 0.6rem;
     padding: 0 0.5rem;
 }
 
@@ -796,29 +798,31 @@ h2, h3 {
 }
 
 .tiles-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .tile {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    padding: 1.5rem 1rem;
-    border-radius: 20px;
+    padding: 0.5rem 0.85rem;
+    border-radius: 12px;
     text-decoration: none;
     color: inherit;
     transition: all 0.3s ease;
-    text-align: center;
+    text-align: left;
     background: rgb(77 77 77);
     border: 1px solid var(--border-color);
+    flex: 1 1 calc(50% - 0.25rem);
+    min-width: 0;
+    gap: 0.5rem;
 }
 
 .tile:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 12px 40px var(--shadow-color);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--shadow-color);
     background: var(--bg-elevated);
 }
 
@@ -827,20 +831,31 @@ h2, h3 {
 }
 
 .tile-icon {
-    font-size: 2.5rem;
-    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.tile-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
 }
 
 .tile-name {
     font-weight: 600;
-    font-size: 0.9rem;
-    margin-bottom: 0.25rem;
+    font-size: 0.8rem;
     color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .tile-subtitle {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Tuiles supplémentaires */
@@ -902,7 +917,7 @@ h2, h3 {
 /* ============================================
    WIDGET CINÉMA
    ============================================ */
-.agenda-section, .cinema-section {
+.agenda-section, .cinema-section, .sport-section {
     margin: 1rem;
     padding: 1.25rem;
     border-radius: 20px;
@@ -2615,6 +2630,7 @@ p,
     
     .news-ticker-section,
     .cinema-section,
+    .sport-section,
     .community-section,
     .seo-section,
     .tiles-section,
@@ -2678,6 +2694,7 @@ p,
     
     .news-ticker-section,
     .cinema-section,
+    .sport-section,
     .community-section,
     .seo-section,
     .tiles-section,
@@ -2721,15 +2738,16 @@ p,
     }
     
     .tile {
-        padding: 2rem 1.5rem;
+        flex: 1 1 calc(25% - 0.375rem);
+        padding: 0.5rem 0.85rem;
     }
     
     .tile-icon {
-        font-size: 3rem;
+        font-size: 1.25rem;
     }
     
     .tile-name {
-        font-size: 1rem;
+        font-size: 0.85rem;
     }
     
     .community-item-image {
@@ -3596,8 +3614,7 @@ a.agenda-item:hover {
    ============================================ */
 
 .sport-section {
-    padding: 1rem;
-    border-radius: 16px;
+    /* styles partagés via .agenda-section, .cinema-section, .sport-section */
 }
 
 .sport-header {

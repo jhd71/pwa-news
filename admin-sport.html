@@ -552,14 +552,14 @@
 
         const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentDataId = null;
 
         // Charger les données existantes
         async function loadExistingData() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('sport_data')
                     .select('*')
                     .order('updated_at', { ascending: false })
@@ -680,13 +680,13 @@
                 let result;
                 if (currentDataId) {
                     // Mise à jour
-                    result = await supabase
+                    result = await supabaseClient
                         .from('sport_data')
                         .update(payload)
                         .eq('id', currentDataId);
                 } else {
                     // Première insertion
-                    result = await supabase
+                    result = await supabaseClient
                         .from('sport_data')
                         .insert(payload)
                         .select()
