@@ -93,7 +93,6 @@
                 .ios-device .quick-links-grid,
                 .ios-device .tiles-grid {
                     grid-template-columns: repeat(2, 1fr) !important;
-                    gap: 1rem !important;
                 }
 
                 .ios-device .quick-link-tile,

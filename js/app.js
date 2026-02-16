@@ -298,7 +298,7 @@ function renderNewsSlider(articles) {
         <div class="news-slides" id="newsSlides">
             ${articles.map((article, index) => `
                 <div class="news-slide">
-                    <a href="${article.link}" target="_blank" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
+                    <a href="${article.link}" target="_blank" rel="noopener" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
                         <div class="news-item-content">
                             <div class="news-item-source">${getSourceIcon(article.source)} ${article.source}</div>
                             <div class="news-item-title">${article.title}</div>
@@ -876,21 +876,20 @@ async function initCommunity() {
                         </div>
                     </div>
                     
-                    <!-- Actions (Like) -->
+                    <!-- Actions (Like + Commenter sur même ligne) -->
                     <div class="community-item-actions" onclick="event.stopPropagation()">
                         <button class="like-btn ${userLikes.includes(item.id) ? 'liked' : ''}" id="like-btn-${item.id}" onclick="toggleLike(${item.id}, this)">
                             <span class="material-icons">${userLikes.includes(item.id) ? 'favorite' : 'favorite_border'}</span>
                             <span class="like-count" id="like-count-${item.id}">${likeCounts[item.id] || 0}</span>
                         </button>
-                    </div>
-                    
-                    <!-- Section Commentaires -->
-                    <div class="community-comments-section" onclick="event.stopPropagation()">
                         <button class="comments-toggle-btn" onclick="toggleComments(${item.id}, this)">
                             <span class="material-icons">chat_bubble_outline</span>
                             <span>${commentCount > 0 ? commentCount + ' commentaire' + (commentCount > 1 ? 's' : '') : 'Commenter'}</span>
-                            <span class="material-icons arrow">expand_more</span>
                         </button>
+                    </div>
+                    
+                    <!-- Section Commentaires déroulante -->
+                    <div class="community-comments-section" onclick="event.stopPropagation()">
                         <div class="comments-container" id="comments-${item.id}">
                             <div class="comments-list" id="comments-list-${item.id}">
                                 <div class="comments-empty">
@@ -1808,13 +1807,6 @@ async function loadSportData() {
     if (!loading || !content) return;
 
     try {
-        const supabase = getSupabaseClient();
-        if (!supabase) {
-            console.warn('Sport: Supabase non initialisé');
-            loading.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.8rem;">Données sport indisponibles</span>';
-            return;
-        }
-
         const { data, error } = await supabase
             .from('sport_data')
             .select('*')
@@ -1839,21 +1831,19 @@ async function loadSportData() {
 
         if (data.last_match_date) {
             const matchDate = new Date(data.last_match_date + 'T00:00:00');
-            lastDate.textContent = data.last_match_matchday + ' · ' + matchDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+            lastDate.textContent = (data.last_match_matchday || '') + ' · ' + matchDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
             
             lastHome.textContent = data.last_match_home_team;
             lastAway.textContent = data.last_match_away_team;
             lastHomeScore.textContent = data.last_match_home_score;
             lastAwayScore.textContent = data.last_match_away_score;
 
-            // Mettre en gras le FCMB
             if (data.last_match_is_home) {
                 lastHome.classList.add('is-fcmb');
             } else {
                 lastAway.classList.add('is-fcmb');
             }
 
-            // Indicateur V/N/D
             const fcmbScore = data.last_match_is_home ? data.last_match_home_score : data.last_match_away_score;
             const oppScore = data.last_match_is_home ? data.last_match_away_score : data.last_match_home_score;
             
@@ -1888,7 +1878,7 @@ async function loadSportData() {
             tomorrow.setDate(tomorrow.getDate() + 1);
             const isTomorrow = matchDay.getTime() === tomorrow.getTime();
 
-            let dateStr = data.next_match_matchday + ' · ';
+            let dateStr = (data.next_match_matchday || '') + ' · ';
             if (isToday) {
                 dateStr += '<span class="sport-today-badge">Aujourd\'hui !</span>';
                 nextLabel.innerHTML = '🔴 Ce soir !';
@@ -1903,7 +1893,6 @@ async function loadSportData() {
             nextAway.textContent = data.next_match_away_team;
             nextTime.textContent = data.next_match_time || '';
 
-            // Mettre en gras le FCMB
             if (data.next_match_is_home) {
                 nextHome.classList.add('is-fcmb');
             } else {
@@ -1938,7 +1927,6 @@ async function loadSportData() {
             }).join('');
         }
 
-        // Afficher le contenu
         loading.style.display = 'none';
         content.style.display = 'block';
 
