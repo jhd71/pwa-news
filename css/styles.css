@@ -4082,4 +4082,40 @@ a.agenda-item:hover {
 .standings-source-link:hover { color: #818cf8; }
 .standings-source-link .material-icons { font-size: 0.9rem; }
 
-
+/* Light theme pour la modal classement */
+[data-theme="light"] .standings-modal {
+    background: #fff;
+    border-color: rgba(0,0,0,0.12);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+[data-theme="light"] .standings-modal-header {
+    border-bottom-color: rgba(0,0,0,0.08);
+    background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(59,130,246,0.05));
+}
+[data-theme="light"] .standings-modal-close:hover {
+    background: rgba(0,0,0,0.06);
+}
+[data-theme="light"] .standings-table th {
+    background: #fff;
+    color: #666;
+    border-bottom-color: rgba(0,0,0,0.1);
+}
+[data-theme="light"] .standings-table td {
+    color: #333;
+    border-bottom-color: rgba(0,0,0,0.06);
+}
+[data-theme="light"] .standings-table tr.is-montceau {
+    background: rgba(99, 102, 241, 0.08);
+}
+[data-theme="light"] .standings-table tr.is-montceau td {
+    color: #4f46e5;
+}
+[data-theme="light"] .standings-table tr.is-montceau td:nth-child(2) {
+    color: #6366f1;
+}
+[data-theme="light"] .standings-modal-footer {
+    border-top-color: rgba(0,0,0,0.08);
+}
+[data-theme="light"] .standings-modal-overlay {
+    background: rgba(0,0,0,0.3);
+}
