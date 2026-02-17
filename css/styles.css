@@ -3560,15 +3560,9 @@ a.agenda-item:hover {
     font-weight: 700;
     font-size: 1rem;
     color: var(--text-primary);
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 12px;
-    padding-left: 0.75rem;
-    border-left: 3px solid var(--primary);
 }
 
-.sport-title-icon { font-size: 1.1rem; }
+.sport-title-icon { font-size: 1.2rem; }
 
 .sport-badge {
     font-size: 0.65rem;
@@ -3877,25 +3871,21 @@ a.agenda-item:hover {
    BOUTON VOIR CLASSEMENT
    ============================================ */
 .sport-classement-btn {
-    margin-bottom: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
-    padding: 0.65rem 1.25rem;
-    margin-top: 0.75rem;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    border: none;
-    border-radius: 25px;
-    color: white;
-    font-size: 0.85rem;
+    width: 100%;
+    padding: 0.55rem;
+    margin-top: 0.3rem;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 8px;
+    color: #818cf8;
+    font-size: 0.75rem;
     font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 12px rgba(99, 102, 241, 0.35);
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 .sport-classement-btn:hover {
     background: rgba(99, 102, 241, 0.2);
@@ -4087,43 +4077,30 @@ a.agenda-item:hover {
    ============================================ */
 .media-tiles-section {
     padding: 0.8rem;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-    border-radius: 16px;
 }
 .media-tiles-title {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
     font-size: 0.85rem;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-primary);
-    margin-bottom: 0.6rem;
-    padding-left: 0.75rem;
-    border-left: 3px solid var(--primary);
+    margin-bottom: 0.5rem;
+    color: var(--text-primary, #eee);
 }
 .media-tiles-row {
     display: flex;
     gap: 0.5rem;
-    align-items: baseline;
 }
 .media-tile {
+    flex: 1 1 0;
+    min-width: 0;
     display: flex;
-    flex-direction: row;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 0.85rem;
-    border-radius: 12px;
+    padding: 0.6rem 0.7rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
     text-decoration: none;
-    color: inherit;
-    transition: all 0.3s ease;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-color);
-    flex: 0 1 calc(50% - 0.25rem);
-    min-width: 0;
+    color: var(--text-primary, #ddd);
+    transition: all 0.2s;
 }
 .media-tile:hover {
     background: rgba(255,255,255,0.08);
@@ -4146,12 +4123,9 @@ a.agenda-item:hover {
     min-width: 0;
 }
 .media-tile-name {
+    font-size: 0.78rem;
     font-weight: 600;
-    font-size: 0.8rem;
-    color: var(--text-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.2;
 }
 .media-tile-desc {
     font-size: 0.6rem;
