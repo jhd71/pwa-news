@@ -3568,7 +3568,7 @@ a.agenda-item:hover {
     border-left: 3px solid var(--primary);
 }
 
-.sport-title-icon { font-size: 1rem; }
+.sport-title-icon { font-size: 1.1rem; }
 
 .sport-badge {
     font-size: 0.65rem;
