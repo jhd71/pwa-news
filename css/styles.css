@@ -4108,10 +4108,10 @@ a.agenda-item:hover {
 .media-tiles-row {
     display: flex;
     gap: 0.5rem;
+    align-items: baseline;
+    padding: 0.75rem 1rem 16px;
 }
 .media-tile {
-    flex: 0 1 calc(25% - 0.75rem);
-    /* padding: 0.6rem 1rem; */
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -4123,6 +4123,7 @@ a.agenda-item:hover {
     transition: all 0.3s ease;
     background: var(--bg-elevated);
     border: 1px solid var(--border-color);
+    flex: 0 1 calc(50% - 0.25rem);
     min-width: 0;
 }
 .media-tile:hover {
@@ -4146,9 +4147,12 @@ a.agenda-item:hover {
     min-width: 0;
 }
 .media-tile-name {
-    font-size: 1rem;
     font-weight: 600;
-    line-height: 1.2;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .media-tile-desc {
     font-size: 0.6rem;
