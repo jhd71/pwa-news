@@ -20,6 +20,14 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/meteo-v2.css">
     <!-- Les icônes météo utilisent maintenant les Meteocons SVG (pas besoin de CSS) -->
+    <style>
+        /* Fix iOS safe-area pour la page météo */
+        @supports (padding-top: env(safe-area-inset-top)) {
+            .header {
+                padding-top: calc(0.6rem + env(safe-area-inset-top)) !important;
+            }
+        }
+    </style>
 </head>
 <body>
     
@@ -386,5 +394,6 @@
             return descriptions[code] || 'Conditions variables';
         }
     </script>
+    <script src="ios-fixes.js"></script>
 </body>
 </html>
