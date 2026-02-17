@@ -3560,9 +3560,15 @@ a.agenda-item:hover {
     font-weight: 700;
     font-size: 1rem;
     color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 12px;
+    padding-left: 0.75rem;
+    border-left: 3px solid var(--primary);
 }
 
-.sport-title-icon { font-size: 1.2rem; }
+.sport-title-icon { font-size: 1rem; }
 
 .sport-badge {
     font-size: 0.65rem;
@@ -3871,22 +3877,25 @@ a.agenda-item:hover {
    BOUTON VOIR CLASSEMENT
    ============================================ */
 .sport-classement-btn {
+    margin-bottom: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
-    width: 100%;
-    padding: 0.55rem;
+    padding: 0.65rem 1.25rem;
     margin-top: 0.75rem;
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.25);
-    border-radius: 8px;
-    color: #818cf8;
-    font-size: 0.75rem;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-size: 0.85rem;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 2rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 12px rgba(99, 102, 241, 0.35);
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 .sport-classement-btn:hover {
     background: rgba(99, 102, 241, 0.2);
