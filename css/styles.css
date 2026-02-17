@@ -3875,24 +3875,34 @@ a.agenda-item:hover {
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
-    width: 100%;
-    padding: 0.55rem;
-    margin-top: 0.3rem;
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.25);
-    border-radius: 8px;
-    color: #818cf8;
-    font-size: 0.75rem;
+    padding: 0.65rem 1.25rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.8rem;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 12px rgba(99, 102, 241, 0.35);
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 .sport-classement-btn:hover {
-    background: rgba(99, 102, 241, 0.2);
-    border-color: rgba(99, 102, 241, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
 }
 .sport-classement-btn .material-icons {
     font-size: 1rem;
+}
+[data-theme="light"] .sport-classement-btn {
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+[data-theme="light"] .sport-classement-btn:hover {
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
 }
 
 /* ============================================
@@ -4072,63 +4082,4 @@ a.agenda-item:hover {
 .standings-source-link:hover { color: #818cf8; }
 .standings-source-link .material-icons { font-size: 0.9rem; }
 
-/* ============================================
-   TUILES MÉDIAS RÉGIONAUX
-   ============================================ */
-.media-tiles-section {
-    padding: 0.8rem;
-}
-.media-tiles-title {
-    font-size: 0.85rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    color: var(--text-primary, #eee);
-}
-.media-tiles-row {
-    display: flex;
-    gap: 0.5rem;
-}
-.media-tile {
-    flex: 1 1 0;
-    min-width: 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 0.7rem;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 10px;
-    text-decoration: none;
-    color: var(--text-primary, #ddd);
-    transition: all 0.2s;
-}
-.media-tile:hover {
-    background: rgba(255,255,255,0.08);
-    border-color: rgba(255,255,255,0.15);
-    transform: translateY(-1px);
-}
-.media-tile-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    flex-shrink: 0;
-}
-.media-tile-text {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-}
-.media-tile-name {
-    font-size: 0.78rem;
-    font-weight: 600;
-    line-height: 1.2;
-}
-.media-tile-desc {
-    font-size: 0.6rem;
-    color: var(--text-secondary, #999);
-    line-height: 1.2;
-}
+
