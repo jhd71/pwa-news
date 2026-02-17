@@ -225,10 +225,7 @@ body {
 [data-theme="light"] .modal,
 [data-theme="light"] .modal-content,
 [data-theme="light"] .support-panel,
-[data-theme="light"] .pwa-modal,
-[data-theme="light"] .install-prompt,
-[data-theme="light"] .install-banner,
-[data-theme="light"] .pwa-install-banner {
+[data-theme="light"] .install-prompt {
     background: #ffffff;
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
@@ -245,21 +242,14 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-[data-theme="light"] .news-carousel,
 [data-theme="light"] .news-item,
 [data-theme="light"] .cinema-section,
 [data-theme="light"] .sport-section,
 [data-theme="light"] .community-section,
 [data-theme="light"] .quick-links-section,
-[data-theme="light"] .local-sites-section,
 [data-theme="light"] .footer {
     background: #ffffff4d;
     border: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-[data-theme="light"] .tile {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 [data-theme="light"] .community-item {
@@ -267,7 +257,10 @@ body {
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-
+[data-theme="light"] .tile {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
 
 /* ============================================
    MODE CLAIR - Boutons et liens rapides
@@ -318,11 +311,6 @@ body {
     color: #1e293b;
 }
 
-[data-theme="light"] .weather-bar {
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
 /* ============================================
    MODE CLAIR - Footer
    ============================================ */
@@ -338,28 +326,22 @@ body {
 /* ============================================
    MODE SOMBRE - Sections principales
    ============================================ */
-.news-carousel,
 .cinema-section,
 .sport-section,
 .community-section,
 .quick-links-section,
-.local-sites-section,
 .section,
 .card {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Items dans les sections */
-.news-item,
-.cinema-item,
-.community-card {
+.news-item {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.news-item:hover,
-.cinema-item:hover,
-.community-card:hover {
+.news-item:hover {
     background: rgba(255, 255, 255, 0.1);
 }
 
@@ -367,19 +349,14 @@ body {
    MODE SOMBRE - Modales avec fond solide
    ============================================ */
 .modal-overlay,
-.support-overlay,
-.pwa-modal-overlay,
-.install-prompt-overlay {
+.support-overlay {
     background: rgba(0, 0, 0, 0.8);
 }
 
 .modal,
 .modal-content,
 .support-panel,
-.pwa-modal,
-.install-prompt,
-.install-banner,
-.pwa-install-banner {
+.install-prompt {
     background: #1a1a2e;
     border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
@@ -456,60 +433,6 @@ body {
         margin: 1rem auto;
         margin-bottom: 2rem;
     }
-}
-
-/* ============================================
-   BARRE MÉTÉO
-   ============================================ */
-.weather-bar {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: var(--bg-elevated);
-    border-radius: 50px;
-    width: 100%;
-    max-width: 340px;
-    justify-content: center;
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.3s ease;
-}
-
-.weather-bar:hover {
-    background: rgba(99, 102, 241, 0.15);
-    transform: scale(1.02);
-}
-
-.weather-day {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    padding: 0.2rem 0.4rem;
-}
-
-.weather-day-label {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    font-weight: 500;
-}
-
-.weather-day-icon {
-    font-size: 1.3rem;
-}
-
-.weather-day-temp {
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--text-primary);
-}
-
-.weather-separator {
-    width: 1px;
-    height: 20px;
-    background-color: var(--border-color);
-    flex-shrink: 0;
 }
 
 /* ============================================
@@ -900,19 +823,6 @@ h2, h3 {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
-}
-
-.cinema-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 600;
-    font-size: 1rem;
-    color: var(--text-primary);
-}
-
-.cinema-title .material-icons {
-    color: var(--danger);
 }
 
 .cinema-link {   
@@ -1668,23 +1578,6 @@ h2, h3 {
     -webkit-line-clamp: unset;
 }
 
-.community-item-meta {
-    display: flex;
-    gap: 0.75rem;
-    font-size: 0.75rem;
-    justify-content: flex-start;
-}
-
-.community-item-meta span {
-    display: flex;
-    gap: 0.2rem;
-    align-items: center;
-}
-
-.community-item-meta .material-icons {
-    font-size: 0.9rem;
-}
-
 /* Wrapper image avec effet zoom */
 .community-image-wrapper {
     display: flex;
@@ -2207,19 +2100,6 @@ h2, h3 {
 
 .like-count {
     font-weight: 600;
-}
-
-/* Compteur de vues */
-.views-count {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    color: var(--text-muted);
-    font-size: 0.8rem;
-}
-
-.views-count .material-icons {
-    font-size: 1rem;
 }
 
 /* ============================================
@@ -2803,11 +2683,6 @@ p,
 
 .community-item-footer .community-item-views .material-icons {
     font-size: 1.1rem;
-}
-
-/* Masquer l'ancienne section meta si elle existe encore */
-.community-item-meta {
-    display: none !important;
 }
 
 /* ============================================
