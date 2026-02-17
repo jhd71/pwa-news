@@ -3877,7 +3877,7 @@ a.agenda-item:hover {
     gap: 0.4rem;
     width: 100%;
     padding: 0.55rem;
-    margin-top: 1rem;
+    margin-top: 0.75rem;
     background: rgba(99, 102, 241, 0.1);
     border: 1px solid rgba(99, 102, 241, 0.25);
     border-radius: 8px;
@@ -3886,7 +3886,7 @@ a.agenda-item:hover {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 }
 .sport-classement-btn:hover {
     background: rgba(99, 102, 241, 0.2);
