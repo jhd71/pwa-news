@@ -618,6 +618,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
     </section>
 
+<!-- Widget Cinéma -->
+    <section class="cinema-section glass">
+        <div class="cinema-section-title">🎬 Cinémas</div>
+        <div class="cinema-header">
+            <div class="cinema-tabs">
+                <button class="cinema-tab active" id="tabCapitole" onclick="switchCinema('capitole')">
+                    <span class="material-icons">movie</span>
+                    Le Capitole
+                </button>
+                <button class="cinema-tab" id="tabMagic" onclick="switchCinema('magic')">
+                    <span class="material-icons">movie</span>
+                    Magic
+                </button>
+            </div>
+            <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" rel="noopener" class="cinema-link" id="cinemaLink">
+                Voir tout
+                <span class="material-icons">arrow_forward</span>
+            </a>
+        </div>
+        <div class="cinema-subtitle" id="cinemaSubtitle">Montceau-les-Mines • <span class="cinema-today">Aujourd'hui</span></div>
+        <div class="cinema-content" id="cinemaContent">
+            <div class="cinema-loading">
+                <span class="material-icons spinning">theaters</span>
+                <span>Chargement du programme...</span>
+            </div>
+        </div>
+    </section>
+	
     <!-- Section Sport - FC Montceau Bourgogne -->
     <section class="sport-section glass" id="sportSection">
         <div class="sport-header">
@@ -721,35 +749,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 Voir sur SportCorico
             </a>
         </div>
-    </div>
-	
-    <!-- Widget Cinéma -->
-    <section class="cinema-section glass">
-        <div class="cinema-section-title">🎬 Cinémas</div>
-        <div class="cinema-header">
-            <div class="cinema-tabs">
-                <button class="cinema-tab active" id="tabCapitole" onclick="switchCinema('capitole')">
-                    <span class="material-icons">movie</span>
-                    Le Capitole
-                </button>
-                <button class="cinema-tab" id="tabMagic" onclick="switchCinema('magic')">
-                    <span class="material-icons">movie</span>
-                    Magic
-                </button>
-            </div>
-            <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" rel="noopener" class="cinema-link" id="cinemaLink">
-                Voir tout
-                <span class="material-icons">arrow_forward</span>
-            </a>
-        </div>
-        <div class="cinema-subtitle" id="cinemaSubtitle">Montceau-les-Mines • <span class="cinema-today">Aujourd'hui</span></div>
-        <div class="cinema-content" id="cinemaContent">
-            <div class="cinema-loading">
-                <span class="material-icons spinning">theaters</span>
-                <span>Chargement du programme...</span>
-            </div>
-        </div>
-    </section>
+    </div>	  
 
     <!-- Section Infos de la communauté -->
     <section class="community-section glass" id="communitySection">
