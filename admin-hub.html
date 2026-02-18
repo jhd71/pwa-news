@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Hub Admin</title>
+    <title>Hub Admin | Actu & Média</title>
     <meta name="robots" content="noindex, nofollow">
     
     <!-- ⚠️ PAS de manifest PWA pour éviter les conflits de notifications -->
@@ -15,6 +15,7 @@
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
     <style>
@@ -31,6 +32,16 @@
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
+        }
+
+        [data-theme="light"] {
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-elevated: #f8fafc;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -79,8 +90,9 @@
         .login-avatar .material-icons { font-size: 40px; color: white; }
 
         .login-box h1 {
+            font-family: 'Outfit', sans-serif;
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 900;
             margin-bottom: 6px;
         }
 
@@ -168,6 +180,7 @@
         .hub-container {
             max-width: 500px;
             margin: 0 auto;
+            position: relative;
         }
 
         /* Header */
@@ -191,15 +204,47 @@
         .hub-logo .material-icons { font-size: 32px; color: white; }
 
         .hub-header h1 {
+            font-family: 'Outfit', sans-serif;
             font-size: 1.4rem;
-            font-weight: 700;
+            font-weight: 900;
             margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .hub-header h1 .amp {
+            color: #f59e0b;
+            font-weight: 400;
+            font-style: italic;
         }
 
         .hub-header p {
             color: var(--text-muted);
             font-size: 0.85rem;
         }
+
+        /* Theme toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .theme-toggle:hover {
+            background: var(--bg-elevated);
+            color: var(--primary-light);
+            border-color: var(--primary);
+        }
+        .theme-toggle .material-icons { font-size: 1.15rem; }
 
         /* Status bar */
         .status-bar {
@@ -322,7 +367,7 @@
         /* Quick actions */
         .quick-actions {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             margin-top: 28px;
             margin-bottom: 28px;
@@ -349,6 +394,8 @@
             background: var(--bg-elevated);
             border-color: var(--primary);
             color: var(--text);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .quick-btn .material-icons {
@@ -400,6 +447,9 @@
             .link-card { padding: 14px; gap: 12px; }
             .card-icon { width: 46px; height: 46px; }
             .card-icon .material-icons { font-size: 22px; }
+            .quick-actions { grid-template-columns: repeat(2, 1fr); }
+            .theme-toggle { top: 12px; right: 12px; width: 36px; height: 36px; }
+            .theme-toggle .material-icons { font-size: 1rem; }
         }
     </style>
 </head>
@@ -412,7 +462,7 @@
                 <span class="material-icons">admin_panel_settings</span>
             </div>
             <h1>Espace Admin</h1>
-            <p>Actu & Média — Montceau-les-Mines</p>
+            <p>Actu <span style="color:#f59e0b;font-style:italic;">&</span> Média — Montceau-les-Mines</p>
 
             <form id="loginForm">
                 <div class="login-field">
@@ -437,11 +487,14 @@
 
             <!-- Header -->
             <div class="hub-header">
+                <button class="theme-toggle" onclick="toggleTheme()" title="Changer le thème">
+                    <span class="material-icons" id="themeIcon">light_mode</span>
+                </button>
                 <div class="hub-logo">
                     <span class="material-icons">dashboard</span>
                 </div>
-                <h1>Hub Admin</h1>
-                <p>Actu & Média — <span class="clock" id="clock"></span></p>
+                <h1>Actu <span class="amp">&</span> Média — Hub Admin</h1>
+                <p><span class="clock" id="clock"></span></p>
             </div>
 
             <!-- Status -->
@@ -542,7 +595,7 @@
 
             <!-- Footer -->
             <div class="hub-footer">
-                <p>Actu & Média © 2025 — Hub Admin v1.0</p>
+                <p>Actu <span style="color:#f59e0b;font-style:italic;">&</span> Média © 2025-2026 — Hub Admin v2.0</p>
                 <button class="logout-link" onclick="logout()">
                     <span class="material-icons">logout</span>
                     Déconnexion
@@ -614,13 +667,40 @@
         // ====== HORLOGE ======
         function updateClock() {
             const now = new Date();
-            const options = { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' };
-            const formatted = now.toLocaleDateString('fr-FR', options);
+            const jours = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+            const mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+            const h = now.getHours().toString().padStart(2,'0');
+            const m = now.getMinutes().toString().padStart(2,'0');
+            const formatted = `${jours[now.getDay()]} ${now.getDate()} ${mois[now.getMonth()]} · ${h}h${m}`;
             const el = document.getElementById('clock');
             if (el) el.textContent = formatted;
         }
 
+        // ====== THÈME CLAIR/SOMBRE ======
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('admin_hub_theme', next);
+            updateThemeIcon(next);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) icon.textContent = theme === 'light' ? 'dark_mode' : 'light_mode';
+        }
+
+        function initTheme() {
+            const saved = localStorage.getItem('admin_hub_theme') || localStorage.getItem('admin_theme') || 'dark';
+            if (saved === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+            updateThemeIcon(saved);
+        }
+
         // ====== INIT ======
+        initTheme();
         checkSession();
         document.getElementById('loginPassword').focus();
     </script>
