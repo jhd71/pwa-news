@@ -252,15 +252,17 @@ body {
     border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+[data-theme="light"] .tile {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
 [data-theme="light"] .community-item {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-[data-theme="light"] .tile {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.06);
-}
+
 
 /* ============================================
    MODE CLAIR - Boutons et liens rapides
@@ -2389,6 +2391,12 @@ p,
         font-size: 0.65rem;
     }
     
+    .cinema-tabs { gap: 0.3rem; }
+    .cinema-tab { padding: 0.35rem 0.6rem; font-size: 0.75rem; }
+    .cinema-tab .material-icons { font-size: 0.9rem; }
+    .cinema-link { padding: 0.2rem 0.5rem; font-size: 0.7rem; }
+    .cinema-header { gap: 0.4rem; }
+    
     p {
         margin-bottom: 1rem;
     }
@@ -3435,6 +3443,9 @@ a.agenda-item:hover {
     font-weight: 700;
     font-size: 1rem;
     color: var(--text-primary);
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .sport-title-icon { font-size: 1.2rem; }
@@ -3452,7 +3463,8 @@ a.agenda-item:hover {
 .sport-link {
     display: flex;
     gap: 0.25rem;
-    padding: 0.2rem 0.7rem;
+    padding: 0.2rem 0.6rem;
+    flex-shrink: 0;
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     color: white;
     font-size: 0.8rem;
@@ -3731,6 +3743,9 @@ a.agenda-item:hover {
 }
 
 @media (max-width: 480px) {
+    .sport-header { gap: 0.3rem; }
+    .sport-title { font-size: 0.9rem; gap: 0.35rem; }
+    .sport-link { padding: 0.2rem 0.5rem; font-size: 0.75rem; }
     .sport-matches { grid-template-columns: 1fr 1fr; gap: 0.4rem; }
     .sport-match-card { padding: 0.5rem; }
     .sport-team-name { font-size: 0.7rem; }
