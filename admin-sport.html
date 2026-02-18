@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>⚽ Admin Sport - Actu & Média</title>
     <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -18,13 +20,24 @@
             --border: rgba(255, 255, 255, 0.12);
             --text: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
         }
+
+        [data-theme="light"] {
+            --bg: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-elevated: #f8fafc;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+        }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
@@ -45,17 +58,49 @@
         }
         
         .header-title {
-            font-size: 1.3rem;
-            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 900;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            letter-spacing: -0.3px;
+        }
+        
+        .header-title .amp {
+            color: #f59e0b;
+            font-weight: 400;
+            font-style: italic;
         }
         
         .header-actions {
             display: flex;
             gap: 0.5rem;
+            align-items: center;
         }
+        
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50%;
+            color: var(--primary-light);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .header-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .header-btn .material-icons { font-size: 1.15rem; }
         
         .btn {
             padding: 0.5rem 1rem;
@@ -95,6 +140,16 @@
             border-radius: 16px;
             padding: 1.25rem;
             margin-bottom: 1rem;
+            transition: box-shadow 0.3s ease, transform 0.2s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
         }
         
         .card-title {
@@ -258,6 +313,54 @@
             text-align: center;
             padding: 0.5rem;
         }
+
+        /* Live preview du prochain match */
+        .live-preview {
+            background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.08));
+            border: 1px solid rgba(99,102,241,0.25);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 0.75rem;
+            text-align: center;
+        }
+        .live-preview-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-light);
+            margin-bottom: 0.5rem;
+        }
+        .live-preview-match {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .live-preview-vs {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+        .live-preview-meta {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.4rem;
+        }
+
+        /* Indicateur modifications non sauvegardées */
+        .unsaved-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--warning);
+            border-radius: 50%;
+            display: none;
+            animation: pulse 1.5s ease infinite;
+        }
+        .unsaved-dot.visible { display: inline-block; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
         
         @media (max-width: 480px) {
             body {
@@ -282,14 +385,12 @@
                 gap: 0.4rem;
             }
             
-            .header-actions .btn {
-                padding: 0.45rem 0.7rem;
-                font-size: 0.75rem;
-                border-radius: 8px;
-                flex: 1;
-                justify-content: center;
-                min-width: 0;
+            .header-btn {
+                width: 36px;
+                height: 36px;
             }
+
+            .header-btn .material-icons { font-size: 1rem; }
             
             .card {
                 padding: 0.85rem;
@@ -367,7 +468,7 @@
             box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
         }
         .login-avatar .material-icons { font-size: 40px; color: white; }
-        .login-box h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+        .login-box h1 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 900; margin-bottom: 6px; color: var(--text); }
         .login-box p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 32px; }
         .login-field { position: relative; margin-bottom: 16px; }
         .login-field .material-icons {
@@ -405,7 +506,7 @@
                 <span class="material-icons">sports_soccer</span>
             </div>
             <h1>Admin Sport</h1>
-            <p>FC Montceau Bourgogne</p>
+            <p>Actu <span style="color:#f59e0b;font-style:italic;">&</span> Média — FC Montceau Bourgogne</p>
             <form id="loginForm">
                 <div class="login-field">
                     <span class="material-icons">key</span>
@@ -427,20 +528,24 @@
     <div class="admin-content" id="adminContent">
 
     <div class="header">
-        <div class="header-title">⚽ Admin Sport - FC Montceau</div>
+        <div class="header-title">⚽ Actu <span class="amp">&</span> Média — Sport</div>
         <div class="header-actions">
-            <a href="/admin.html" class="btn btn-back">
-                <span class="material-icons" style="font-size:1rem;">arrow_back</span>
-                Admin
+            <span class="unsaved-dot" id="unsavedDot" title="Modifications non sauvegardées"></span>
+            <button class="header-btn" onclick="toggleTheme()" title="Changer le thème">
+                <span class="material-icons" id="themeIcon">light_mode</span>
+            </button>
+            <button class="header-btn" onclick="runScraper()" title="Scraper automatique">
+                <span class="material-icons">sync</span>
+            </button>
+            <button class="header-btn" onclick="saveSportData()" title="Sauvegarder" style="background:rgba(16,185,129,0.2);border-color:rgba(16,185,129,0.4);color:var(--success);">
+                <span class="material-icons">save</span>
+            </button>
+            <a href="/admin.html" class="header-btn" title="Admin principal">
+                <span class="material-icons">admin_panel_settings</span>
             </a>
-            <button class="btn btn-primary" onclick="runScraper()">
-                <span class="material-icons" style="font-size:1rem;">sync</span>
-                Scraper auto
-            </button>
-            <button class="btn btn-success" onclick="saveSportData()">
-                <span class="material-icons" style="font-size:1rem;">save</span>
-                Sauvegarder
-            </button>
+            <a href="/index.html" class="header-btn" title="Accueil">
+                <span class="material-icons">home</span>
+            </a>
         </div>
     </div>
 
@@ -516,6 +621,16 @@
                     <label for="nextIsHome">FCMB joue à domicile</label>
                 </div>
             </div>
+        </div>
+        <!-- Aperçu live du prochain match -->
+        <div class="live-preview" id="nextMatchPreview">
+            <div class="live-preview-label">Aperçu</div>
+            <div class="live-preview-match">
+                <span id="previewHome">FC Montceau</span>
+                <span class="live-preview-vs">vs</span>
+                <span id="previewAway">—</span>
+            </div>
+            <div class="live-preview-meta" id="previewMeta"></div>
         </div>
     </div>
 
@@ -809,7 +924,108 @@
         document.addEventListener('DOMContentLoaded', () => {
             checkSession();
             document.getElementById('loginPassword').focus();
+            initTheme();
+            initLivePreview();
+            initUnsavedTracking();
         });
+
+        // === THÈME CLAIR/SOMBRE ===
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('admin_sport_theme', next);
+            updateThemeIcon(next);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) icon.textContent = theme === 'light' ? 'dark_mode' : 'light_mode';
+        }
+
+        function initTheme() {
+            const saved = localStorage.getItem('admin_sport_theme') || localStorage.getItem('admin_theme') || 'dark';
+            if (saved === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+            updateThemeIcon(saved);
+        }
+
+        // === APERÇU LIVE PROCHAIN MATCH ===
+        function updateNextMatchPreview() {
+            const isHome = document.getElementById('nextIsHome').checked;
+            const adversaire = document.getElementById('nextAwayTeam').value.trim() || '—';
+            const date = document.getElementById('nextMatchDate').value;
+            const time = document.getElementById('nextMatchTime').value;
+            const journee = document.getElementById('nextMatchDay').value.trim();
+
+            document.getElementById('previewHome').textContent = isHome ? 'FC Montceau' : adversaire;
+            document.getElementById('previewAway').textContent = isHome ? adversaire : 'FC Montceau';
+
+            let meta = [];
+            if (journee) meta.push(journee);
+            if (date) {
+                const d = new Date(date + 'T12:00:00');
+                meta.push(d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }));
+            }
+            if (time) meta.push(time);
+            meta.push(isHome ? '🏠 Domicile' : '✈️ Extérieur');
+
+            document.getElementById('previewMeta').textContent = meta.join(' · ');
+        }
+
+        function initLivePreview() {
+            ['nextAwayTeam', 'nextMatchDate', 'nextMatchTime', 'nextMatchDay'].forEach(function(id) {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('input', updateNextMatchPreview);
+            });
+            const nextIsHome = document.getElementById('nextIsHome');
+            if (nextIsHome) nextIsHome.addEventListener('change', updateNextMatchPreview);
+            // Mise à jour initiale
+            updateNextMatchPreview();
+        }
+
+        // === INDICATEUR MODIFICATIONS NON SAUVEGARDÉES ===
+        let hasUnsavedChanges = false;
+
+        function initUnsavedTracking() {
+            const allInputs = document.querySelectorAll('.admin-content input, .admin-content select');
+            allInputs.forEach(function(input) {
+                input.addEventListener('change', function() {
+                    hasUnsavedChanges = true;
+                    const dot = document.getElementById('unsavedDot');
+                    if (dot) dot.classList.add('visible');
+                });
+            });
+
+            // Alerte si on quitte avec des modifications
+            window.addEventListener('beforeunload', function(e) {
+                if (hasUnsavedChanges) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            });
+        }
+
+        // Marquer comme sauvegardé après save
+        const _origSaveSportData = saveSportData;
+        saveSportData = async function() {
+            await _origSaveSportData();
+            hasUnsavedChanges = false;
+            const dot = document.getElementById('unsavedDot');
+            if (dot) dot.classList.remove('visible');
+        };
+
+        // Mettre à jour le preview après chargement des données
+        const _origLoadExistingData = loadExistingData;
+        loadExistingData = async function() {
+            await _origLoadExistingData();
+            updateNextMatchPreview();
+            hasUnsavedChanges = false;
+            const dot = document.getElementById('unsavedDot');
+            if (dot) dot.classList.remove('visible');
+        };
         async function runScraper() {
             const statusEl = document.getElementById('scraperStatus');
             statusEl.style.display = 'flex';
