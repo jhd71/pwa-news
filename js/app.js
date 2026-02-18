@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAgenda();
     initSport();
     initFontSizeSelector();
+    initDateBar();
     recordVisit();
 });
 
@@ -1807,6 +1808,92 @@ async function recordVisit() {
         console.error('Erreur compteur visites:', err);
     }
 }
+
+// ============================================
+// BARRE DATE & SAINT DU JOUR
+// ============================================
+function initDateBar() {
+    const dayEl = document.getElementById('dateBarDay');
+    const saintEl = document.getElementById('dateBarSaint');
+    if (!dayEl || !saintEl) return;
+
+    // Saints du jour (index 0 = 1er janvier)
+    const saints = [
+        // Janvier
+        "Marie","Basile","Geneviève","Odilon","Édouard","Melchior","Raymond","Lucien","Alix","Guillaume",
+        "Paulin","Tatiana","Yvette","Nina","Rémi","Marcel","Roseline","Prisca","Marius","Sébastien",
+        "Agnès","Vincent","Barnard","François de Sales","Conv. de Paul","Paule","Angèle","Thomas d'Aquin","Gildas","Martine","Marcelle",
+        // Février
+        "Ella","Présentation","Blaise","Véronique","Agathe","Gaston","Eugénie","Jacqueline","Apolline","Arnaud",
+        "N-D de Lourdes","Félix","Béatrice","Valentin","Claude","Julienne","Alexis","Bernadette","Gabin","Aimée",
+        "Damien","Isabelle","Lazare","Modeste","Roméo","Nestor","Honorine","Romain",
+        // Mars
+        "Aubin","Charles le Bon","Guénolé","Casimir","Olive","Colette","Félicité","Jean de Dieu","Françoise","Vivien",
+        "Rosine","Justine","Rodrigue","Mathilde","Louise","Bénédicte","Patrick","Cyrille","Joseph","Herbert",
+        "Clémence","Léa","Victorien","Cath. de Suède","Humbert","Larissa","Habib","Gontran","Gwladys","Amédée","Benjamin",
+        // Avril
+        "Hugues","Sandrine","Richard","Isidore","Irène","Marcellin","J-B de la Salle","Julie","Gautier","Fulbert",
+        "Stanislas","Jules","Ida","Maxime","Paterne","Benoît-Joseph","Anicet","Parfait","Emma","Odette",
+        "Anselme","Alexandre","Georges","Fidèle","Marc","Alida","Zita","Valérie","Cath. de Sienne","Robert",
+        // Mai
+        "Jérémie","Boris","Philippe","Sylvain","Judith","Prudence","Gisèle","Désiré","Pacôme","Solange",
+        "Estelle","Achille","Rolande","Matthias","Denise","Honoré","Pascal","Éric","Yves","Bernardin",
+        "Constantin","Émile","Didier","Donatien","Sophie","Bérenger","Augustin","Germain","Aymar","Ferdinand","Visit. de Marie",
+        // Juin
+        "Justin","Blandine","Kévin","Clotilde","Igor","Norbert","Gilbert","Médard","Diane","Landry",
+        "Barnabé","Guy","Antoine de Padoue","Élisée","Germaine","J-F Régis","Hervé","Léonce","Romuald","Silvère",
+        "Rodolphe","Alban","Audrey","Jean-Baptiste","Prosper","Anthelme","Fernand","Irénée","Pierre et Paul","Martial",
+        // Juillet
+        "Thierry","Martinien","Thomas","Florent","Antoine","Mariette","Raoul","Thibaut","Amandine","Ulrich",
+        "Benoît","Olivier","Henri et Joël","Fête nationale","Donald","N-D du Carmel","Charlotte","Frédéric","Arsène","Marina",
+        "Victor","Marie-Madeleine","Brigitte","Christine","Jacques","Anne et Joachim","Nathalie","Samson","Marthe","Juliette","Ignace de Loyola",
+        // Août
+        "Alphonse","Julien Eymard","Lydie","Jean-M Vianney","Abel","Transfiguration","Gaëtan","Dominique","Amour","Laurent",
+        "Claire","Clarisse","Hippolyte","Evrard","Assomption","Armel","Hyacinthe","Hélène","Jean Eudes","Bernard",
+        "Christophe","Fabrice","Rose de Lima","Barthélemy","Louis","Natacha","Monique","Augustin","Sabine","Fiacre","Aristide",
+        // Septembre
+        "Gilles","Ingrid","Grégoire","Rosalie","Raïssa","Bertrand","Reine","Nativité","Alain","Inès",
+        "Adelphe","Apollinaire","Aimé","Materne","Roland","Édith","Renaud","Nadège","Émilie","Davy",
+        "Matthieu","Maurice","Constance","Thècle","Hermann","Côme et Damien","Vinc. de Paul","Venceslas","Michel","Jérôme",
+        // Octobre
+        "Thérèse","Léger","Gérard","François d'Assise","Fleur","Bruno","Serge","Pélagie","Denis","Ghislain",
+        "Firmin","Wilfrid","Géraud","Juste","Thérèse d'Avila","Edwige","Baudouin","Luc","René","Adeline",
+        "Céline","Élodie","Jean de Capistran","Florentin","Crépin","Dimitri","Émeline","Simon et Jude","Narcisse","Bienvenu","Quentin",
+        // Novembre
+        "Toussaint","Défunts","Hubert","Charles","Sylvie","Bertille","Carine","Geoffrey","Théodore","Léon",
+        "Martin","Christian","Brice","Sidoine","Albert","Marguerite","Élisabeth","Aude","Tanguy","Edmond",
+        "Présent. de Marie","Cécile","Clément","Flora","Catherine","Delphine","Sévrin","Jacq. de la Marche","Saturnin","André",
+        // Décembre
+        "Florence","Viviane","François Xavier","Barbara","Gérald","Nicolas","Ambroise","Immac. Conception","Pierre Fourier","Romaric",
+        "Daniel","Jeanne de Chantal","Lucie","Odile","Ninon","Alice","Gaël","Gatien","Urbain","Abraham",
+        "Pierre Canisius","Françoise-Xavière","Armand","Adèle","Noël","Étienne","Jean","Innocents","David","Roger","Sylvestre"
+    ];
+
+    function updateDateBar() {
+        const now = new Date();
+        const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+        const mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+        
+        const heure = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const jour = jours[now.getDay()];
+        const numero = now.getDate();
+        const nomMois = mois[now.getMonth()];
+        
+        dayEl.textContent = `${jour} ${numero} ${nomMois} · ${heure}h${minutes}`;
+        
+        // Saint du jour
+        const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000) - 1;
+        const saint = saints[dayOfYear] || '';
+        if (saint) {
+            saintEl.textContent = `Bonne fête aux ${saint} !`;
+        }
+    }
+
+    updateDateBar();
+    setInterval(updateDateBar, 30000); // Mise à jour toutes les 30 secondes
+}
+
 // ============================================
 // SECTION SPORT - FC MONTCEAU BOURGOGNE
 // ============================================

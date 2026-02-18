@@ -166,6 +166,41 @@ body {
     color: #f472b6;
 }
 
+/* ============================================
+   BARRE DATE & SAINT DU JOUR
+   ============================================ */
+.date-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.4rem 1rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.3px;
+}
+
+.date-bar-day {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.date-bar-separator {
+    opacity: 0.4;
+}
+
+.date-bar-saint {
+    font-style: italic;
+    opacity: 0.85;
+}
+
+@media (max-width: 480px) {
+    .date-bar {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.5rem;
+    }
+}
+
 /* Bouton thème */
 .theme-toggle {
     display: flex;
