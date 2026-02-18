@@ -1,8 +1,8 @@
 // ============================================
-// ACTU & MÉDIA - Service Worker v38
+// ACTU & MÉDIA - Service Worker v39
 // ============================================
 
-const CACHE_NAME = 'actu-media-v38';
+const CACHE_NAME = 'actu-media-v39';
 
 // Assets statiques à mettre en cache à l'installation
 // Ne PAS inclure les pages admin (toujours besoin de données fraîches)
