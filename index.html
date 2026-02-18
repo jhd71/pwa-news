@@ -1134,5 +1134,29 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         setTimeout(showDonationPopup, POPUP_DELAY);
     })();
     </script>
+	<!-- Bouton retour en haut -->
+<button class="scroll-top-btn" id="scrollTopBtn" aria-label="Retour en haut">
+    <span class="material-icons">keyboard_arrow_up</span>
+</button>
+
+<script>
+// Bouton retour en haut
+(function() {
+    const btn = document.getElementById('scrollTopBtn');
+    if (!btn) return;
+    
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 600) {
+            btn.classList.add('visible');
+        } else {
+            btn.classList.remove('visible');
+        }
+    });
+    
+    btn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+})();
+</script>
 </body>
 </html>

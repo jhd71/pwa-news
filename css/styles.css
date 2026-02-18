@@ -368,9 +368,9 @@ body {
    FOOTER
    ============================================ */
 .footer {
-    margin: 1rem;
+    margin: 1.5rem 1rem;
     margin-bottom: 2rem;
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
     border-radius: 20px;
     text-align: center;
     box-sizing: border-box;
@@ -390,13 +390,16 @@ body {
 }
 
 .footer p {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    line-height: 1.6;
     color: var(--text-primary);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .footer-sub {
-    margin-top: 0.5rem;
-    font-size: 0.7rem;
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
 }
 
@@ -813,7 +816,7 @@ h2, h3 {
    WIDGET CINÉMA
    ============================================ */
 .agenda-section, .cinema-section, .sport-section {
-    margin: 1rem;
+    margin: 1.5rem 1rem;
     padding: 1.25rem;
     border-radius: 20px;
     background: var(--bg-card);
@@ -1431,7 +1434,7 @@ h2, h3 {
    SECTION INFOS COMMUNAUTÉ
    ============================================ */
 .community-section {
-    margin: 1rem;
+    margin: 1.5rem 1rem;
     padding: 1.25rem;
     border-radius: 24px;
     box-sizing: border-box;
@@ -4010,4 +4013,52 @@ a.agenda-item:hover {
 }
 [data-theme="light"] .standings-modal-overlay {
     background: rgba(0,0,0,0.3);
+}
+
+/* ============================================
+   BOUTON RETOUR EN HAUT
+   ============================================ */
+.scroll-top-btn {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 900;
+}
+
+.scroll-top-btn.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.scroll-top-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+.scroll-top-btn:active {
+    transform: translateY(0);
+}
+
+.scroll-top-btn .material-icons {
+    font-size: 1.4rem;
+}
+
+[data-theme="light"] .scroll-top-btn {
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
 }
