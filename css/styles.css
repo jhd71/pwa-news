@@ -3625,7 +3625,6 @@ a.agenda-item:hover {
 
 .sport-standing-stats strong {
     font-weight: 700;
-    background: linear-gradient(145deg, #f59e0b 0%, #f97316 100%);
 }
 
 .sport-form { display: flex; gap: 0.25rem; flex-shrink: 0; }
