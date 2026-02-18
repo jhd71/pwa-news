@@ -3557,9 +3557,10 @@ a.agenda-item:hover {
 .sport-match-time {
     font-size: 0.85rem;
     font-weight: 700;
-    color: var(--primary-light);
     text-align: center;
     padding: 0.2rem 0;
+    background: linear-gradient(145deg, #f59e0b 0%, #f97316 100%);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
 }
 
 .sport-match-vs {
@@ -3598,9 +3599,10 @@ a.agenda-item:hover {
 }
 
 .sport-position.mid {
-    background: var(--bg-card);
     border: 2px solid var(--border-color);
-    color: var(--text-primary);
+    color: #ffffff;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
 }
 
 .sport-standing-info { flex: 1; min-width: 0; }
@@ -3622,7 +3624,8 @@ a.agenda-item:hover {
 
 .sport-standing-stats strong {
     font-weight: 700;
-    color: var(--primary-light);
+    background: linear-gradient(145deg, #f59e0b 0%, #f97316 100%);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
 }
 
 .sport-form { display: flex; gap: 0.25rem; flex-shrink: 0; }
