@@ -1,1796 +1,2134 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#1e1b4b">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <title>Proposer un événement - Actu & Média Montceau</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Cropper.js pour le recadrage -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
-    
-    <style>
-        :root {
-            --primary: #6366f1;
-            --primary-light: #818cf8;
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-card: rgba(255, 255, 255, 0.05);
-            --bg-elevated: rgba(255, 255, 255, 0.08);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.8);
-            --text-muted: rgba(255, 255, 255, 0.5);
-            --border-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        [data-theme="light"] {
-            --bg-primary: #f8fafc;
-            --bg-secondary: #f1f5f9;
-            --bg-card: rgba(255, 255, 255, 0.95);
-            --bg-elevated: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
-            --border-color: #e2e8f0;
-        }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-        
-        .page-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem;
-            background: var(--bg-elevated);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .back-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        
-        .back-btn:hover { background: var(--primary); border-color: var(--primary); color: white; }
-        .page-title h1 { font-size: 1.2rem; font-weight: 700; }
-        .page-title p { font-size: 0.8rem; color: var(--text-muted); }
-        
-        .form-container { padding: 1rem; max-width: 600px; margin: 0 auto; padding-bottom: 100px; }
-        
-        .form-intro {
-            text-align: center;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
-            border-radius: 16px;
-            border: 1px solid rgba(99, 102, 241, 0.2);
-        }
-        
-        .form-intro-icon { font-size: 3rem; margin-bottom: 0.5rem; }
-        .form-intro-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
-        .form-intro-text { font-size: 0.9rem; color: var(--text-secondary); }
-        
-        .event-form { display: flex; flex-direction: column; gap: 1.25rem; }
-        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        
-        .form-label {
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-        
-        .form-label .material-icons { font-size: 1.1rem; color: var(--primary-light); }
-        .form-label .required { color: #ef4444; }
-        
-        .form-input, .form-select, .form-textarea {
-            padding: 0.75rem 1rem;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 16px;
-            font-family: inherit;
-            transition: all 0.2s;
-        }
-        
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-        
-        .form-input::placeholder, .form-textarea::placeholder { color: var(--text-muted); }
-        .form-textarea { min-height: 120px; resize: vertical; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .form-hint { font-size: 0.8rem; color: var(--text-muted); }
-        
-        /* Compteur de caractères */
-        .char-counter {
-            display: flex;
-            justify-content: flex-end;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-top: 0.2rem;
-            font-variant-numeric: tabular-nums;
-            transition: color 0.2s;
-        }
-        .char-counter.warn { color: #f59e0b; font-weight: 600; }
-        .char-counter.danger { color: #ef4444; font-weight: 600; }
-        
-        /* Bandeau brouillon */
-        .draft-banner {
-            display: none;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1rem;
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.25);
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            font-size: 0.8rem;
-            color: #f59e0b;
-        }
-        .draft-banner.show { display: flex; }
-        .draft-banner .material-icons { font-size: 1.1rem; }
-        .draft-restore-btn {
-            margin-left: auto;
-            padding: 0.35rem 0.75rem;
-            background: rgba(245, 158, 11, 0.2);
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            border-radius: 8px;
-            color: inherit;
-            font-size: 0.75rem;
-            font-weight: 600;
-            font-family: inherit;
-            cursor: pointer;
-        }
-        .draft-discard-btn {
-            padding: 0.3rem 0.5rem;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-        
-        [data-theme="light"] .form-input,
-        [data-theme="light"] .form-select,
-        [data-theme="light"] .form-textarea { background: white; border-color: #e2e8f0; }
-        
-        /* Catégories */
-        .category-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; }
-        
-        .category-option {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.25rem;
-            padding: 0.6rem 0.25rem;
-            background: var(--bg-elevated);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.25s;
-        }
-        
-        .category-option:hover { border-color: var(--primary-light); transform: translateY(-1px); }
-        .category-option.selected { border-color: var(--primary); background: rgba(99, 102, 241, 0.15); box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.3); transform: scale(1.02); }
-        .category-option input { display: none; }
-        .category-option-icon { font-size: 1.35rem; line-height: 1; }
-        .category-option-name { font-size: 0.65rem; font-weight: 600; color: var(--text-secondary); text-align: center; line-height: 1.2; }
-        .category-option.selected .category-option-name { color: var(--primary-light); font-weight: 700; }
-        
-        [data-theme="light"] .category-option { background: white; }
-        [data-theme="light"] .category-option.selected { background: rgba(99, 102, 241, 0.1); }
-        
-        /* Récurrence */
-        .recurrence-toggle {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .recurrence-toggle:hover { border-color: var(--primary-light); }
-        .recurrence-toggle.active { border-color: var(--primary); background: rgba(99, 102, 241, 0.1); }
-        .recurrence-toggle input { display: none; }
-        
-        .recurrence-checkbox {
-            width: 22px;
-            height: 22px;
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-        
-        .recurrence-toggle.active .recurrence-checkbox { background: var(--primary); border-color: var(--primary); }
-        .recurrence-checkbox .material-icons { font-size: 1rem; color: white; opacity: 0; }
-        .recurrence-toggle.active .recurrence-checkbox .material-icons { opacity: 1; }
-        .recurrence-text { flex: 1; }
-        .recurrence-text strong { display: block; font-size: 0.9rem; }
-        .recurrence-text small { font-size: 0.8rem; color: var(--text-muted); }
-        
-        .recurrence-options {
-            display: none;
-            margin-top: 0.75rem;
-            padding: 1rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-        }
-        
-        .recurrence-options.show { display: block; }
-        .recurrence-days { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
-        
-        .recurrence-day {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 48px;
-            height: 48px;
-            background: var(--bg-elevated);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            user-select: none;
-        }
-        
-        .recurrence-day:hover { 
-            border-color: var(--primary-light); 
-            background: rgba(99, 102, 241, 0.1);
-        }
-        
-        .recurrence-day.selected { 
-            background: var(--primary) !important; 
-            border-color: var(--primary) !important; 
-            color: white !important;
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-        }
-        
-        .recurrence-day input { display: none; }
-        
-        [data-theme="light"] .recurrence-day { background: white; }
-        [data-theme="light"] .recurrence-day.selected { 
-            background: var(--primary) !important; 
-            color: white !important; 
-        }
-        
-        /* === BOUTONS PHOTO === */
-        .photo-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-            margin-bottom: 0.75rem;
-        }
-        
-        .photo-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem;
-            background: rgba(99, 102, 241, 0.1);
-            border: 2px solid var(--primary);
-            border-radius: 12px;
-            color: var(--primary-light);
-            font-size: 0.85rem;
-            font-weight: 600;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .photo-btn:hover {
-            background: rgba(99, 102, 241, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .photo-btn .material-icons { font-size: 1.75rem; }
-        .photo-buttons.hidden { display: none; }
-        
-        [data-theme="light"] .photo-btn { background: rgba(99, 102, 241, 0.08); }
-        [data-theme="light"] .photo-btn:hover { background: rgba(99, 102, 241, 0.15); }
+// ============================================
+// ACTU & MÉDIA - Application JavaScript v2
+// ============================================
 
-        /* === PREVIEW PHOTO === */
-        .photo-preview-wrapper {
-            display: none;
-            position: relative;
-            border: 2px solid var(--primary);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        
-        .photo-preview-wrapper.show { display: block; }
-        
-        .photo-preview {
-            width: 100%;
-            max-height: 250px;
-            object-fit: cover;
-            display: block;
-        }
-        
-        .photo-info {
-            padding: 0.5rem 0.75rem;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            font-size: 0.75rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .photo-remove-btn {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            width: 36px;
-            height: 36px;
-            background: rgba(239, 68, 68, 0.9);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-        
-        .photo-remove-btn:hover { background: #dc2626; transform: scale(1.1); }
-        
-        /* Boutons de rotation */
-        .photo-rotate-buttons {
-            position: absolute;
-            bottom: 45px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .photo-rotate-btn {
-            width: 40px;
-            height: 40px;
-            background: rgba(99, 102, 241, 0.9);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-        
-        .photo-rotate-btn:hover { background: #6366f1; transform: scale(1.1); }
-        .photo-rotate-btn .material-icons { font-size: 1.25rem; }
-        
-        /* Bouton recadrer */
-        .photo-crop-btn {
-            position: absolute;
-            top: 0.5rem;
-            left: 0.5rem;
-            padding: 0.4rem 0.75rem;
-            background: rgba(99, 102, 241, 0.9);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.35rem;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        
-        .photo-crop-btn:hover { background: #6366f1; transform: scale(1.05); }
-        .photo-crop-btn .material-icons { font-size: 1rem; }
-        
-        /* Modal de recadrage */
-        .crop-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 10001;
-            background: rgba(0, 0, 0, 0.95);
-            flex-direction: column;
-        }
-        
-        .crop-modal.show { display: flex; }
-        
-        .crop-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.8);
-        }
-        
-        .crop-title {
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .crop-close-btn {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .crop-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            padding: 1rem;
-        }
-        
-        .crop-container img { max-width: 100%; max-height: 100%; }
-        
-        .crop-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.8);
-        }
-        
-        .crop-ratios {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .crop-ratio-btn {
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            color: white;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .crop-ratio-btn:hover, .crop-ratio-btn.active {
-            background: rgba(99, 102, 241, 0.5);
-            border-color: #6366f1;
-        }
-        
-        .crop-actions {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-        
-        .crop-cancel-btn {
-            padding: 0.75rem 1.5rem;
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid #ef4444;
-            border-radius: 10px;
-            color: #ef4444;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .crop-cancel-btn:hover { background: #ef4444; color: white; }
-        
-        .crop-validate-btn {
-            padding: 0.75rem 1.5rem;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .crop-validate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
-        
-        .photo-upload-input { display: none; }
-        
-        .upload-progress {
-            display: none;
-            margin-top: 0.75rem;
-        }
-        
-        .upload-progress.show { display: block; }
-        
-        .progress-bar {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary) 0%, #10b981 100%);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-        
-        .progress-text {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
-            text-align: center;
-        }
-        
-        /* Camera modal */
-        .camera-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 10000;
-            background: #000;
-            flex-direction: column;
-        }
-        
-        .camera-modal.show { display: flex; }
-        
-        .camera-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.8);
-        }
-        
-        .camera-title {
-            color: white;
-            font-weight: 600;
-        }
-        
-        .camera-close-btn {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .camera-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            background: #000;
-        }
-        
-        .camera-video {
-            max-width: 100%;
-            max-height: 100%;
-        }
-        
-        .camera-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 2rem;
-            padding: 1.5rem;
-            background: rgba(0, 0, 0, 0.8);
-        }
-        
-        .camera-capture-btn {
-            width: 70px;
-            height: 70px;
-            background: white;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .camera-capture-btn:hover { transform: scale(1.1); }
-        .camera-capture-btn:active { transform: scale(0.95); }
-        
-        .camera-switch-btn {
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .camera-loading, .camera-error {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: white;
-        }
-        
-        .camera-loading { display: none; }
-        .camera-error { display: none; color: #ef4444; }
+// === CACHE LOCAL CINÉMA ===
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
-        .submit-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 1rem;
+function getCachedData(key) {
+    try {
+        const cached = localStorage.getItem(key);
+        if (!cached) return null;
+        
+        const { data, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp > CACHE_DURATION) {
+            localStorage.removeItem(key);
+            return null;
         }
-        
-        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4); }
-        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .submit-btn .material-icons.spinning { animation: spin 1s linear infinite; }
-        
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        
-        .success-message {
-            display: none;
-            text-align: center;
-            padding: 2rem;
-            background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            border-radius: 16px;
-            margin-top: 1rem;
+        return data;
+    } catch (e) {
+        return null;
+    }
+}
+
+function setCachedData(key, data) {
+    try {
+        localStorage.setItem(key, JSON.stringify({
+            data: data,
+            timestamp: Date.now()
+        }));
+    } catch (e) {
+        console.log('Cache storage failed');
+    }
+}
+
+// Configuration
+const CONFIG = {
+    news: {
+        apiUrl: '/api/getNews',
+        refreshInterval: 10 * 60 * 1000
+    },
+    cinema: {
+        capitole: {
+            dataUrl: 'https://raw.githubusercontent.com/jhd71/scraper-cinema/main/data/cinema.json',
+            nom: 'Le Capitole',
+            ville: 'Montceau-les-Mines',
+            siteUrl: 'https://www.cinemacapitole-montceau.fr/horaires/'
+        },
+        magic: {
+            dataUrl: 'https://raw.githubusercontent.com/jhd71/scraper-cinema-magic/main/data/cinema-magic.json',
+            nom: 'Magic',
+            ville: 'Le Creusot',
+            siteUrl: 'https://www.cinemamagic-creusot.fr/horaires/'
         }
-        
-        .success-message.show { display: block; }
-        .success-message-icon { font-size: 3rem; margin-bottom: 0.5rem; }
-        .success-message-title { font-size: 1.2rem; font-weight: 600; color: #22c55e; margin-bottom: 0.5rem; }
-        .success-message-text { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
-        .success-buttons { display: flex; flex-direction: column; gap: 0.75rem; }
-        
-        .success-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.4rem;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .success-btn.primary { background: var(--primary); color: white; }
-        .success-btn.primary:hover { background: var(--primary-light); }
-        .success-btn.secondary { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); }
-        .success-btn.secondary:hover { background: var(--bg-elevated); }
-        
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--bg-elevated);
-            border: 1px solid var(--border-color);
-            padding: 0.75rem 1.25rem;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            z-index: 10002;
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-        
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-        .toast.error { border-color: #ef4444; }
-        
-        @media (max-width: 480px) {
-            .category-grid { grid-template-columns: repeat(3, 1fr); }
-            .form-row { grid-template-columns: 1fr; }
-            .recurrence-day { width: 42px; height: 42px; font-size: 0.8rem; }
-        }
-    </style>
-</head>
-<body>
-    <header class="page-header">
-        <a href="agenda.html" class="back-btn">
-            <span class="material-icons">arrow_back</span>
-        </a>
-        <div class="page-title">
-            <h1>📅 Proposer un événement</h1>
-            <p>Partagez avec la communauté</p>
-        </div>
-    </header>
+    },
+    supabase: {
+        url: 'https://ekjgfiyhkythqcnmhzea.supabase.co',
+        key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4'
+    }
+};
+
+// Instance unique Supabase (évite les multiples instances)
+let supabaseClient = null;
+
+function getSupabaseClient() {
+    if (!supabaseClient && typeof window.supabase !== 'undefined') {
+        supabaseClient = window.supabase.createClient(CONFIG.supabase.url, CONFIG.supabase.key);
+        console.log('✅ Supabase initialisé (instance unique)');
+    }
+    return supabaseClient;
+}
+
+// Exposer globalement pour les autres scripts
+window.getSupabaseClient = getSupabaseClient;
+
+// État de l'application
+let newsCurrentSlide = 0;
+let newsSlides = [];
+let newsAutoPlayInterval = null;
+let deferredPrompt = null;
+
+// ============================================
+// INITIALISATION
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 Actu & Média - Initialisation');
     
-    <div class="form-container">
-        <div class="form-intro">
-            <div class="form-intro-icon">🎉</div>
-            <div class="form-intro-title">Vous organisez un événement ?</div>
-            <div class="form-intro-text">
-                Partagez-le avec les habitants de Montceau et environs !<br>
-                Votre proposition sera validée avant publication.
-            </div>
-        </div>
+    initTheme();
+    initWeather();
+    initNews();
+    initCinema();
+    initCommunity();
+    initServiceWorker();
+    initInstallPrompt();
+    initExtraTiles();
+    initPushNotifications();
+    initAgenda();
+    initSport();
+    initFontSizeSelector();
+    initDateBar();
+    recordVisit();
+});
+
+// ============================================
+// MÉTÉO (Open-Meteo - sans clé API) - J+2
+// ============================================
+async function initWeather() {
+    try {
+        const latitude = 46.6667;
+        const longitude = 4.3667;
+
+        const response = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&daily=temperature_2m_max,weathercode&timezone=Europe/Paris`
+        );
+
+        if (!response.ok) throw new Error('Erreur météo');
+
+        const data = await response.json();
+
+        // Aujourd'hui (J+0)
+        const tempToday = Math.round(data.current_weather.temperature);
         
-        <form class="event-form" id="eventForm">
-            <!-- Bandeau brouillon -->
-            <div class="draft-banner" id="draftBanner">
-                <span class="material-icons">edit_note</span>
-                <span>Brouillon sauvegardé</span>
-                <button type="button" class="draft-restore-btn" onclick="restoreDraft()">Restaurer</button>
-                <button type="button" class="draft-discard-btn" onclick="discardDraft()">✕</button>
-            </div>
+        const icon0 = document.getElementById('weatherIcon0');
+        const temp0 = document.getElementById('weatherTemp0');
+        if (icon0) icon0.innerHTML = getWeatherIcon(data.current_weather.weathercode, 'small');
+        if (temp0) temp0.textContent = `${tempToday}°`;
+
+        // Demain (J+1)
+        if (data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length > 1) {
+            const tempJ1 = Math.round(data.daily.temperature_2m_max[1]);
             
-            <div class="form-group">
-                <label class="form-label">
-                    <span class="material-icons">title</span>
-                    Titre de l'événement <span class="required">*</span>
-                </label>
-                <input type="text" class="form-input" id="eventTitle" placeholder="Ex: Marché de Noël, Concert Jazz..." maxlength="200" required>
-                <div class="char-counter" id="titleCounter">0 / 200</div>
-            </div>
+            const icon1 = document.getElementById('weatherIcon1');
+            const temp1 = document.getElementById('weatherTemp1');
+            if (icon1) icon1.innerHTML = getWeatherIcon(data.daily.weathercode[1], 'small');
+            if (temp1) temp1.textContent = `${tempJ1}°`;
+        }
+
+        // Après-demain (J+2)
+        if (data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length > 2) {
+            const tempJ2 = Math.round(data.daily.temperature_2m_max[2]);
+            const dayNameJ2 = getDayName(2);
             
-            <div class="form-group">
-                <label class="form-label">
-                    <span class="material-icons">category</span>
-                    Catégorie <span class="required">*</span>
-                </label>
-                <div class="category-grid" id="categoryGrid">
-                    <label class="category-option">
-                        <input type="radio" name="category" value="sport">
-                        <span class="category-option-icon">⚽</span>
-                        <span class="category-option-name">Sport</span>
-                    </label>
-                    <label class="category-option">
-                        <input type="radio" name="category" value="concert">
-                        <span class="category-option-icon">🎵</span>
-                        <span class="category-option-name">Concert</span>
-                    </label>
-                    <label class="category-option">
-                        <input type="radio" name="category" value="spectacle">
-                        <span class="category-option-icon">🎭</span>
-                        <span class="category-option-name">Spectacle</span>
-                    </label>
-                    <label class="category-option">
-                        <input type="radio" name="category" value="expo">
-                        <span class="category-option-icon">🖼️</span>
-                        <span class="category-option-name">Expo</span>
-                    </label>
-                    <label class="category-option">
-                        <input type="radio" name="category" value="marche">
-                        <span class="category-option-icon">🛒</span>
-                        <span class="category-option-name">Marché</span>
-                    </label>
-                    <label class="category-option">
-                        <input type="radio" name="category" value="brocante">
-                        <span class="category-option-icon">📦</span>
-                        <span class="category-option-name">Brocante</span>
-                    </label>
-                    <label class="category-option">
-                        <input type="radio" name="category" value="fete">
-                        <span class="category-option-icon">🎉</span>
-                        <span class="category-option-name">Fête</span>
-                    </label>
-                    <label class="category-option">
-                        <input type="radio" name="category" value="repas">
-                        <span class="category-option-icon">🍽️</span>
-                        <span class="category-option-name">Repas</span>
-                    </label>
-                    <label class="category-option">
-                        <input type="radio" name="category" value="atelier">
-                        <span class="category-option-icon">🎨</span>
-                        <span class="category-option-name">Atelier</span>
-                    </label>
-                    <label class="category-option">
-                        <input type="radio" name="category" value="enfants">
-                        <span class="category-option-icon">👨‍👩‍👧</span>
-                        <span class="category-option-name">Famille</span>
-                    </label>
-                    <label class="category-option">
-                        <input type="radio" name="category" value="nature">
-                        <span class="category-option-icon">🥾</span>
-                        <span class="category-option-name">Rando</span>
-                    </label>
-                    <label class="category-option">
-                        <input type="radio" name="category" value="solidarite">
-                        <span class="category-option-icon">🤝</span>
-                        <span class="category-option-name">Solidarité</span>
-                    </label>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label class="recurrence-toggle" id="recurrenceToggle">
-                    <input type="checkbox" id="isRecurrent">
-                    <span class="recurrence-checkbox">
-                        <span class="material-icons">check</span>
-                    </span>
-                    <span class="recurrence-text">
-                        <strong>Événement récurrent</strong>
-                        <small>Se répète chaque semaine (ex: marché du jeudi)</small>
-                    </span>
-                </label>
-                
-                <div class="recurrence-options" id="recurrenceOptions">
-                    <label class="form-label" style="margin-bottom: 0.5rem;">
-                        <span class="material-icons">repeat</span>
-                        Jours de la semaine
-                    </label>
-                    <div class="recurrence-days" id="recurrenceDays">
-                        <div class="recurrence-day" data-day="1">Lun</div>
-                        <div class="recurrence-day" data-day="2">Mar</div>
-                        <div class="recurrence-day" data-day="3">Mer</div>
-                        <div class="recurrence-day" data-day="4">Jeu</div>
-                        <div class="recurrence-day" data-day="5">Ven</div>
-                        <div class="recurrence-day" data-day="6">Sam</div>
-                        <div class="recurrence-day" data-day="0">Dim</div>
-                    </div>
-                    <div class="form-row" style="margin-top: 1rem;">
-                        <div class="form-group">
-                            <label class="form-label">
-                                <span class="material-icons">schedule</span>
-                                Heure de début
-                            </label>
-                            <input type="time" class="form-input" id="eventStartTimeRecurring">
+            const label2 = document.getElementById('weatherLabel2');
+            const icon2 = document.getElementById('weatherIcon2');
+            const temp2 = document.getElementById('weatherTemp2');
+            if (label2) label2.textContent = dayNameJ2;
+            if (icon2) icon2.innerHTML = getWeatherIcon(data.daily.weathercode[2], 'small');
+            if (temp2) temp2.textContent = `${tempJ2}°`;
+        }
+
+        console.log('🌤️ Météo chargée (J+0, J+1, J+2)');
+
+    } catch (error) {
+        console.error('❌ Erreur météo:', error);
+    }
+}
+
+function getDayName(daysFromNow) {
+    const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+    const date = new Date();
+    date.setDate(date.getDate() + daysFromNow);
+    return days[date.getDay()];
+}
+
+function getWeatherEmoji(code) {
+    // Retourne emoji pour compatibilité (utilisé dans textContent)
+    if (code === 0) return '☀️';
+    if ([1, 2, 3].includes(code)) return '⛅';
+    if ([45, 48].includes(code)) return '🌫️';
+    if ([51, 53, 55, 61, 63, 65].includes(code)) return '🌧️';
+    if ([66, 67].includes(code)) return '🌧️';
+    if ([71, 73, 75, 77].includes(code)) return '❄️';
+    if ([80, 81, 82].includes(code)) return '🌦️';
+    if ([95, 96, 99].includes(code)) return '⛈️';
+    return '🌤️';
+}
+
+// Icône météo moderne v2 (avec nuages sombres pour pluie/orage)
+// URL de base des icônes Meteocons (animées, gratuites, licence MIT)
+const METEOCONS_BASE = 'https://basmilius.github.io/weather-icons/production/fill/all/';
+const ICON_SIZES = { small: 32, medium: 48, large: 72, xlarge: 120 };
+
+function getWeatherIcon(code, size = 'medium') {
+    const px = ICON_SIZES[size] || 48;
+    const name = getMeteoconName(code);
+    return `<img src="${METEOCONS_BASE}${name}.svg" width="${px}" height="${px}" alt="météo" style="display:block;">`;
+}
+
+function getMeteoconName(code) {
+    const hour = new Date().getHours();
+    const isDay = hour >= 7 && hour < 20;
+    const daySuffix = isDay ? 'day' : 'night';
+    
+    if (code === 0) return isDay ? 'clear-day' : 'clear-night';
+    if (code === 1) return `partly-cloudy-${daySuffix}`;
+    if (code === 2) return `overcast-${daySuffix}`;
+    if (code === 3) return 'overcast';
+    if ([45, 48].includes(code)) return 'fog';
+    if ([51, 53, 55].includes(code)) return 'drizzle';
+    if ([61, 80].includes(code)) return `partly-cloudy-${daySuffix}-rain`;
+    if ([63, 81].includes(code)) return 'rain';
+    if ([65, 66, 67, 82].includes(code)) return 'rain';
+    if ([71, 73, 75, 77, 85, 86].includes(code)) return 'snow';
+    if (code === 95) return 'thunderstorms-rain';
+    if ([96, 99].includes(code)) return 'thunderstorms';
+    return `partly-cloudy-${daySuffix}`;
+}
+
+
+// ============================================
+// THÈME (Multi-thèmes)
+// ============================================
+const THEMES = ['dark', 'light'];
+
+const THEME_ICONS = {
+    'dark': 'dark_mode',
+    'light': 'light_mode'
+};
+
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    applyTheme(savedTheme);
+    
+    // Bouton toggle header (cycle tous les thèmes)
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const currentIndex = THEMES.indexOf(current);
+            const nextIndex = (currentIndex + 1) % THEMES.length;
+            const newTheme = THEMES[nextIndex];
+            applyTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    }
+    
+    // Sélecteur de thèmes (dans panel support)
+    document.querySelectorAll('.theme-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const theme = btn.getAttribute('data-theme');
+            applyTheme(theme);
+            localStorage.setItem('theme', theme);
+        });
+    });
+}
+
+function applyTheme(theme) {
+    // "dark" = pas d'attribut (utilise :root)
+    if (theme === 'dark') {
+        document.documentElement.removeAttribute('data-theme');
+    } else {
+        document.documentElement.setAttribute('data-theme', theme);
+    }
+    
+    // Mettre à jour l'icône du toggle header
+    const themeIcon = document.getElementById('themeIcon');
+    if (themeIcon) {
+        themeIcon.textContent = THEME_ICONS[theme] || 'dark_mode';
+    }
+    
+    // Mettre à jour le bouton actif dans le sélecteur
+    document.querySelectorAll('.theme-option').forEach(btn => {
+        const btnTheme = btn.getAttribute('data-theme');
+        btn.classList.toggle('active', btnTheme === theme);
+    });
+}
+
+// ============================================
+// NEWS SWIPER
+// ============================================
+async function initNews() {
+    const container = document.getElementById('newsTicker');
+    
+    try {
+        const response = await fetch(CONFIG.news.apiUrl);
+        if (!response.ok) throw new Error('Erreur API');
+        
+        const articles = await response.json();
+        
+        if (articles && articles.length > 0) {
+            newsSlides = articles;
+            renderNewsSlider(articles);
+            initNewsNavigation();
+            startNewsAutoPlay();
+            console.log(`📰 ${articles.length} articles chargés`);
+        } else {
+            showNewsError('Aucune actualité disponible');
+        }
+    } catch (error) {
+        console.error('❌ Erreur news:', error);
+        showNewsError('Impossible de charger les actualités');
+    }
+}
+
+function renderNewsSlider(articles) {
+    const container = document.getElementById('newsTicker');
+    const dotsContainer = document.getElementById('tickerDots');
+    
+    container.innerHTML = `
+        <div class="news-slides" id="newsSlides">
+            ${articles.map((article, index) => `
+                <div class="news-slide">
+                    <a href="${article.link}" target="_blank" rel="noopener" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
+                        <div class="news-item-icon">${getSourceIcon(article.source)}</div>
+                        <div class="news-item-content">
+                            <div class="news-item-title">${article.title}</div>
+                            <div class="news-item-meta">
+                                <span class="news-item-date">${formatDate(article.date)}</span>
+                                <span class="news-item-read">Lire la suite sur ${article.source} →</span>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">
-                                <span class="material-icons">schedule</span>
-                                Heure de fin
-                            </label>
-                            <input type="time" class="form-input" id="eventEndTimeRecurring">
-                        </div>
-                    </div>
+                    </a>
                 </div>
-            </div>
-            
-            <div id="singleDateFields">
-                <div class="form-group">
-                    <label class="form-label">
-                        <span class="material-icons">event</span>
-                        Date <span class="required">*</span>
-                    </label>
-                    <input type="date" class="form-input" id="eventDate" required>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">
-                            <span class="material-icons">schedule</span>
-                            Heure de début
-                        </label>
-                        <input type="time" class="form-input" id="eventStartTime">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">
-                            <span class="material-icons">schedule</span>
-                            Heure de fin
-                        </label>
-                        <input type="time" class="form-input" id="eventEndTime">
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">
-                    <span class="material-icons">place</span>
-                    Lieu <span class="required">*</span>
-                </label>
-                <input type="text" class="form-input" id="eventLocation" placeholder="Ex: Place de la Mairie, Salle des fêtes..." maxlength="200" required>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">
-                    <span class="material-icons">description</span>
-                    Description
-                </label>
-                <textarea class="form-textarea" id="eventDescription" placeholder="Décrivez votre événement..." maxlength="1000"></textarea>
-                <div class="char-counter" id="descCounter">0 / 1000</div>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">
-                    <span class="material-icons">link</span>
-                    Lien (optionnel)
-                </label>
-                <input type="url" class="form-input" id="eventLink" placeholder="https://...">
-            </div>
-            
-            <!-- Upload Photo avec compression/rotation/recadrage -->
-            <div class="form-group">
-                <label class="form-label">
-                    <span class="material-icons">add_photo_alternate</span>
-                    Photo (optionnel)
-                </label>
-                
-                <!-- Boutons pour choisir la source -->
-                <div class="photo-buttons" id="photoButtons">
-                    <button type="button" class="photo-btn" id="takePhotoBtn">
-                        <span class="material-icons">photo_camera</span>
-                        <span>Prendre une photo</span>
-                    </button>
-                    <button type="button" class="photo-btn" id="choosePhotoBtn">
-                        <span class="material-icons">photo_library</span>
-                        <span>Galerie</span>
-                    </button>
-                </div>
-                
-                <!-- Preview de la photo -->
-                <div class="photo-preview-wrapper" id="photoPreviewWrapper">
-                    <img src="" alt="Aperçu" class="photo-preview" id="photoPreview">
-                    <button type="button" class="photo-remove-btn" id="photoRemoveBtn" title="Supprimer la photo">
-                        <span class="material-icons" style="font-size: 1.3rem;">close</span>
-                    </button>
-                    <button type="button" class="photo-crop-btn" onclick="openCropModal()" title="Recadrer l'image">
-                        <span class="material-icons">crop</span>
-                        Recadrer
-                    </button>
-                    <div class="photo-rotate-buttons">
-                        <button type="button" class="photo-rotate-btn" onclick="rotatePreviewPhoto(-90)" title="Pivoter à gauche">
-                            <span class="material-icons">rotate_left</span>
-                        </button>
-                        <button type="button" class="photo-rotate-btn" onclick="rotatePreviewPhoto(90)" title="Pivoter à droite">
-                            <span class="material-icons">rotate_right</span>
-                        </button>
-                    </div>
-                    <div class="photo-info">
-                        <span id="photoSize">0 Ko</span>
-                        <span>✓ Compressée</span>
-                    </div>
-                </div>
-                
-                <!-- Input pour galerie -->
-                <input type="file" class="photo-upload-input" id="photoInput" accept="image/*">
-                
-                <div class="upload-progress" id="uploadProgress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                    <div class="progress-text" id="progressText">Compression en cours...</div>
-                </div>
-                <div class="form-hint">📷 Prenez une photo sur le vif ou choisissez dans votre galerie</div>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">
-                    <span class="material-icons">person</span>
-                    Votre nom / organisation <span class="required">*</span>
-                </label>
-                <input type="text" class="form-input" id="eventAuthor" placeholder="Ex: Mairie de Montceau, Association..." maxlength="100" required>
-            </div>
-            
-            <button type="submit" class="submit-btn" id="submitBtn">
-                <span class="material-icons">send</span>
-                Proposer l'événement
-            </button>
-        </form>
+            `).join('')}
+        </div>
+    `;
+    
+    dotsContainer.innerHTML = articles.map((_, index) => 
+        `<div class="ticker-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>`
+    ).join('');
+    
+    dotsContainer.querySelectorAll('.ticker-dot').forEach(dot => {
+        dot.addEventListener('click', () => {
+            goToNewsSlide(parseInt(dot.dataset.index));
+        });
+    });
+}
+
+function initNewsNavigation() {
+    const prevBtn = document.getElementById('tickerPrev');
+    const nextBtn = document.getElementById('tickerNext');
+    
+    prevBtn.addEventListener('click', () => {
+        goToNewsSlide(newsCurrentSlide - 1);
+        resetNewsAutoPlay();
+    });
+    
+    nextBtn.addEventListener('click', () => {
+        goToNewsSlide(newsCurrentSlide + 1);
+        resetNewsAutoPlay();
+    });
+    
+    // Swipe touch
+    const container = document.getElementById('newsTicker');
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    container.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    
+    container.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) {
+                goToNewsSlide(newsCurrentSlide + 1);
+            } else {
+                goToNewsSlide(newsCurrentSlide - 1);
+            }
+            resetNewsAutoPlay();
+        }
+    }, { passive: true });
+}
+
+function goToNewsSlide(index, smooth = true) {
+    const slides = document.getElementById('newsSlides');
+    const dots = document.querySelectorAll('.ticker-dot');
+    
+    if (!slides || !newsSlides.length) return;
+    
+    // Calculer le nouvel index
+    let newIndex = index;
+    let needsInstantJump = false;
+    
+    if (index < 0) {
+        newIndex = newsSlides.length - 1;
+        needsInstantJump = true;
+    } else if (index >= newsSlides.length) {
+        newIndex = 0;
+        needsInstantJump = true;
+    }
+    
+    // Si on boucle (fin → début ou début → fin), désactiver la transition
+    if (needsInstantJump && smooth) {
+        slides.style.transition = 'none';
+        slides.style.transform = `translateX(-${newIndex * 100}%)`;
         
-        <div class="success-message" id="successMessage">
-            <div class="success-message-icon">✅</div>
-            <div class="success-message-title">Événement proposé !</div>
-            <div class="success-message-text">Merci ! Votre événement sera validé et publié prochainement.</div>
-            <div class="success-buttons">
-                <a href="agenda.html" class="success-btn primary">
-                    <span class="material-icons">event</span>
-                    Retour à l'agenda
-                </a>
-                <a href="index.html" class="success-btn secondary">
-                    <span class="material-icons">home</span>
-                    Retour à l'accueil
-                </a>
+        // Forcer le reflow puis réactiver la transition
+        slides.offsetHeight;
+        setTimeout(() => {
+            slides.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        }, 50);
+    } else {
+        slides.style.transform = `translateX(-${newIndex * 100}%)`;
+    }
+    
+    newsCurrentSlide = newIndex;
+    
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === newIndex);
+    });
+}
+
+function startNewsAutoPlay() {
+    // S'assurer qu'il n'y a pas déjà un intervalle actif
+    if (newsAutoPlayInterval) {
+        clearInterval(newsAutoPlayInterval);
+    }
+    
+    newsAutoPlayInterval = setInterval(() => {
+        goToNewsSlide(newsCurrentSlide + 1);
+    }, 6000); // 6 secondes entre chaque slide
+}
+
+function resetNewsAutoPlay() {
+    if (newsAutoPlayInterval) {
+        clearInterval(newsAutoPlayInterval);
+        newsAutoPlayInterval = null;
+    }
+    startNewsAutoPlay();
+}
+
+function showNewsError(message) {
+    const container = document.getElementById('newsTicker');
+    container.innerHTML = `
+        <div class="news-ticker-loading">
+            <span class="material-icons">error_outline</span>
+            ${message}
+        </div>
+    `;
+}
+
+function getSourceIcon(source) {
+    const icons = {
+        'Le JSL': '📰',
+        'Montceau News': '🏙️',
+        'Creusot Infos': '🏭',
+        "L'Informateur": '📋',
+        'France Bleu': '🎙️'
+    };
+    return icons[source] || '📰';
+}
+
+function formatDate(dateString) {
+    if (!dateString) return '';
+    
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    
+    if (diffMins < 60) {
+        return `Il y a ${diffMins} min`;
+    } else if (diffHours < 24) {
+        return `Il y a ${diffHours}h`;
+    } else if (diffDays < 7) {
+        return `Il y a ${diffDays}j`;
+    } else {
+        return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+    }
+}
+
+// ============================================
+// CINÉMA
+// ============================================
+// Variable pour stocker le cinéma actif
+let currentCinema = 'capitole';
+
+async function initCinema() {
+    await loadCinema(currentCinema);
+}
+
+async function loadCinema(cinemaKey) {
+    const container = document.getElementById('cinemaContent');
+    const config = CONFIG.cinema[cinemaKey];
+    
+    if (!config) {
+        console.error('Cinéma inconnu:', cinemaKey);
+        return;
+    }
+    
+    // Clé de cache
+    const cacheKey = `cinema_${cinemaKey}`;
+    
+    // Afficher le cache immédiatement si disponible (pas de flash)
+    const cachedFilms = getCachedData(cacheKey);
+    if (cachedFilms && cachedFilms.length > 0) {
+        renderCinema(cachedFilms, cinemaKey);
+    } else {
+        // Afficher le loading seulement si pas de cache
+        container.innerHTML = `
+            <div class="cinema-loading">
+                <span class="material-icons spinning">theaters</span>
+                <span>Chargement du programme...</span>
             </div>
-        </div>
-    </div>
+        `;
+    }
     
-    <!-- Modal Camera -->
-    <div class="camera-modal" id="cameraModal">
-        <div class="camera-header">
-            <span class="camera-title">📷 Prendre une photo</span>
-            <button type="button" class="camera-close-btn" id="cameraCloseBtn">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="camera-container">
-            <video class="camera-video" id="cameraVideo" autoplay playsinline></video>
-            <div class="camera-loading" id="cameraLoading">
-                <span class="material-icons spinning">sync</span>
-                <p>Chargement de la caméra...</p>
-            </div>
-            <div class="camera-error" id="cameraError">
-                <span class="material-icons">error</span>
-                <p>Impossible d'accéder à la caméra</p>
-            </div>
-        </div>
-        <div class="camera-controls">
-            <button type="button" class="camera-switch-btn" id="cameraSwitchBtn">
-                <span class="material-icons">flip_camera_ios</span>
-            </button>
-            <button type="button" class="camera-capture-btn" id="cameraCaptureBtn"></button>
-            <div style="width: 50px;"></div>
-        </div>
-    </div>
-    
-    <!-- Canvas pour capture -->
-    <canvas id="cameraCanvas" style="display:none;"></canvas>
-    
-    <!-- Modal de recadrage -->
-    <div class="crop-modal" id="cropModal">
-        <div class="crop-header">
-            <span class="crop-title"><span class="material-icons">crop</span> Recadrer l'image</span>
-            <button type="button" class="crop-close-btn" onclick="closeCropModal()">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="crop-container">
-            <img id="cropImage" src="">
-        </div>
-        <div class="crop-controls">
-            <div class="crop-ratios">
-                <button type="button" class="crop-ratio-btn active" onclick="setCropRatio(NaN, this)">Libre</button>
-                <button type="button" class="crop-ratio-btn" onclick="setCropRatio(1, this)">1:1</button>
-                <button type="button" class="crop-ratio-btn" onclick="setCropRatio(4/3, this)">4:3</button>
-                <button type="button" class="crop-ratio-btn" onclick="setCropRatio(16/9, this)">16:9</button>
-            </div>
-            <div class="crop-actions">
-                <button type="button" class="crop-cancel-btn" onclick="closeCropModal()">
-                    <span class="material-icons">close</span>
-                    Annuler
-                </button>
-                <button type="button" class="crop-validate-btn" onclick="applyCrop()">
-                    <span class="material-icons">check</span>
-                    Valider
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Toast notification -->
-    <div class="toast" id="toast">
-        <span class="toast-icon">✅</span>
-        <span class="toast-text">Message</span>
-    </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Cropper.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
-    
-    <script>
-        const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        let compressedPhotoBlob = null;
-        let cropper = null;
-        let selectedDays = [];
-        let currentStream = null;
-        let facingMode = 'environment';
-        
-        // === ÉLÉMENTS DOM ===
-        const takePhotoBtn = document.getElementById('takePhotoBtn');
-        const choosePhotoBtn = document.getElementById('choosePhotoBtn');
-        const photoButtons = document.getElementById('photoButtons');
-        const photoInput = document.getElementById('photoInput');
-        const photoPreview = document.getElementById('photoPreview');
-        const photoPreviewWrapper = document.getElementById('photoPreviewWrapper');
-        const photoRemoveBtn = document.getElementById('photoRemoveBtn');
-        const photoSizeEl = document.getElementById('photoSize');
-        const uploadProgress = document.getElementById('uploadProgress');
-        const progressFill = document.getElementById('progressFill');
-        const progressText = document.getElementById('progressText');
-        
-        const cameraModal = document.getElementById('cameraModal');
-        const cameraVideo = document.getElementById('cameraVideo');
-        const cameraCanvas = document.getElementById('cameraCanvas');
-        const cameraCloseBtn = document.getElementById('cameraCloseBtn');
-        const cameraCaptureBtn = document.getElementById('cameraCaptureBtn');
-        const cameraSwitchBtn = document.getElementById('cameraSwitchBtn');
-        const cameraLoading = document.getElementById('cameraLoading');
-        const cameraError = document.getElementById('cameraError');
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            initTheme();
-            initCategorySelection();
-            initRecurrence();
-            initPhotoUpload();
-            initForm();
-            setMinDate();
-            initCharCounters();
-            initDraft();
+    try {
+        const response = await fetch(config.dataUrl + '?t=' + Date.now(), {
+            cache: 'no-store'
         });
         
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            if (savedTheme === 'light') {
-                document.documentElement.setAttribute('data-theme', 'light');
+        if (!response.ok) throw new Error('Erreur cinéma');
+        
+        const data = await response.json();
+        
+        if (data.films && data.films.length > 0) {
+            // Sauvegarder en cache
+            setCachedData(cacheKey, data.films);
+            
+            // Mettre à jour l'affichage si différent du cache
+            if (!cachedFilms || JSON.stringify(data.films) !== JSON.stringify(cachedFilms)) {
+                renderCinema(data.films, cinemaKey);
+            }
+            console.log(`🎬 ${data.films.length} films chargés pour ${config.nom}`);
+        } else {
+            if (!cachedFilms) {
+                showCinemaFallback(cinemaKey);
             }
         }
-        
-        // === COMPTEUR DE CARACTÈRES ===
-        function updateCharCounter(input, counterId, max) {
-            const counter = document.getElementById(counterId);
-            if (!counter) return;
-            const len = input.value.length;
-            counter.textContent = len + ' / ' + max;
-            counter.classList.remove('warn', 'danger');
-            if (len > max * 0.9) counter.classList.add('danger');
-            else if (len > max * 0.75) counter.classList.add('warn');
+    } catch (error) {
+        console.error(`❌ Erreur cinéma ${config.nom}:`, error);
+        if (!cachedFilms) {
+            showCinemaFallback(cinemaKey);
         }
-        
-        function initCharCounters() {
-            const title = document.getElementById('eventTitle');
-            const desc = document.getElementById('eventDescription');
-            if (title) title.addEventListener('input', () => updateCharCounter(title, 'titleCounter', 200));
-            if (desc) desc.addEventListener('input', () => updateCharCounter(desc, 'descCounter', 1000));
+    }
+}
+
+function switchCinema(cinemaKey) {
+    currentCinema = cinemaKey;
+    const config = CONFIG.cinema[cinemaKey];
+    
+    // Mettre à jour les onglets
+    document.getElementById('tabCapitole').classList.toggle('active', cinemaKey === 'capitole');
+    document.getElementById('tabMagic').classList.toggle('active', cinemaKey === 'magic');
+    
+    // Mettre à jour le lien "Voir tout"
+    document.getElementById('cinemaLink').href = config.siteUrl;
+    
+    // Mettre à jour le sous-titre (ville + aujourd'hui)
+    document.getElementById('cinemaSubtitle').innerHTML = config.ville + ' • <span class="cinema-today">Aujourd\'hui</span>';
+    
+    // Charger les films
+    loadCinema(cinemaKey);
+}
+
+function renderCinema(films, cinemaKey = 'capitole') {
+    const container = document.getElementById('cinemaContent');
+    const config = CONFIG.cinema[cinemaKey];
+    const hasMore = films.length > 4;
+    
+    container.innerHTML = `
+        <div class="cinema-films">
+            ${films.map((film, index) => `
+                <a href="${film.lien || config.siteUrl}" 
+                   target="_blank" 
+                   class="cinema-film fade-in" 
+                   style="animation-delay: ${index * 0.05}s">
+                    <div class="cinema-film-info">
+                        <div class="cinema-film-title">${film.titre}</div>
+                        <div class="cinema-film-meta">
+                            <span>🎭 ${film.genre || 'Film'}</span>
+                        </div>
+                        <div class="cinema-film-meta">
+                            <span>⏱️ ${film.duree || 'N/A'}</span>
+                        </div>
+                        <div class="cinema-film-times">
+                            ${(film.horaires || []).slice(0, 5).map(time => 
+                                `<span class="cinema-time">${time}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    ${film.affiche ? `
+                        <div class="cinema-film-poster">
+                            <img src="${film.affiche}" alt="${film.titre}" loading="lazy">
+                        </div>
+                    ` : ''}
+                </a>
+            `).join('')}
+        </div>
+        ${hasMore ? `
+            <div class="cinema-scroll-hint">
+                <span class="material-icons">swipe</span>
+                Scroll pour voir plus
+            </div>
+        ` : ''}
+    `;
+}
+
+function showCinemaFallback(cinemaKey = 'capitole') {
+    const container = document.getElementById('cinemaContent');
+    const config = CONFIG.cinema[cinemaKey];
+    
+    container.innerHTML = `
+        <div style="text-align: center; padding: 1.5rem;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🎬</div>
+            <div style="font-weight: 600; margin-bottom: 0.5rem;">${config.nom}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
+                ${config.ville}
+            </div>
+            <a href="${config.siteUrl}" 
+               target="_blank"
+               style="display: inline-flex; align-items: center; gap: 0.5rem; 
+                      padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+                      color: white; border-radius: 50px; text-decoration: none; font-weight: 600;">
+                <span class="material-icons" style="font-size: 1.25rem;">movie</span>
+                Voir le programme
+            </a>
+        </div>
+    `;
+}
+
+// ============================================
+// INSTALLATION PWA
+// ============================================
+function initInstallPrompt() {
+    const installPrompt = document.getElementById('installPrompt');
+    const installBtn = document.getElementById('installBtn');
+    const dismissBtn = document.getElementById('dismissBtn');
+    const iosModal = document.getElementById('iosInstallModal');
+    const iosCloseBtn = document.getElementById('iosCloseBtn');
+    
+    // Vérifier si déjà installé
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        console.log('📱 App déjà installée');
+        return;
+    }
+    
+    // Vérifier si déjà refusé récemment
+    const dismissed = localStorage.getItem('installDismissed');
+    if (dismissed) {
+        const dismissedTime = parseInt(dismissed);
+        const daysPassed = (Date.now() - dismissedTime) / (1000 * 60 * 60 * 24);
+        if (daysPassed < 7) {
+            console.log('📱 Installation refusée il y a moins de 7 jours');
+            return;
         }
-        
-        // === BROUILLON AUTOMATIQUE ===
-        const EVT_DRAFT_KEY = 'proposer_evt_draft';
-        
-        function saveDraft() {
-            const t = document.getElementById('eventTitle').value;
-            const d = document.getElementById('eventDescription').value;
-            if (!t && !d) return;
-            const cat = document.querySelector('input[name="category"]:checked');
-            const draft = {
-                title: t,
-                category: cat ? cat.value : null,
-                description: d,
-                location: document.getElementById('eventLocation').value,
-                link: document.getElementById('eventLink').value,
-                author: document.getElementById('eventAuthor').value,
-                date: document.getElementById('eventDate').value,
-                savedAt: Date.now()
-            };
-            localStorage.setItem(EVT_DRAFT_KEY, JSON.stringify(draft));
-        }
-        
-        window.restoreDraft = function() {
-            try {
-                const draft = JSON.parse(localStorage.getItem(EVT_DRAFT_KEY));
-                if (!draft) return;
-                if (draft.category) {
-                    const radio = document.querySelector('input[name="category"][value="' + draft.category + '"]');
-                    if (radio) {
-                        radio.checked = true;
-                        document.querySelectorAll('.category-option').forEach(o => o.classList.remove('selected'));
-                        radio.closest('.category-option').classList.add('selected');
-                    }
-                }
-                if (draft.title) { document.getElementById('eventTitle').value = draft.title; updateCharCounter(document.getElementById('eventTitle'), 'titleCounter', 200); }
-                if (draft.description) { document.getElementById('eventDescription').value = draft.description; updateCharCounter(document.getElementById('eventDescription'), 'descCounter', 1000); }
-                if (draft.location) document.getElementById('eventLocation').value = draft.location;
-                if (draft.link) document.getElementById('eventLink').value = draft.link;
-                if (draft.author) document.getElementById('eventAuthor').value = draft.author;
-                if (draft.date) document.getElementById('eventDate').value = draft.date;
-                document.getElementById('draftBanner').classList.remove('show');
-                showToast('Brouillon restauré ✏️');
-            } catch(e) { console.log('Erreur restauration:', e); }
-        };
-        
-        window.discardDraft = function() {
-            localStorage.removeItem(EVT_DRAFT_KEY);
-            document.getElementById('draftBanner').classList.remove('show');
-        };
-        
-        function initDraft() {
-            try {
-                const raw = localStorage.getItem(EVT_DRAFT_KEY);
-                if (!raw) return;
-                const draft = JSON.parse(raw);
-                if (draft && (draft.title || draft.description) && (Date.now() - draft.savedAt < 86400000)) {
-                    document.getElementById('draftBanner').classList.add('show');
-                } else {
-                    localStorage.removeItem(EVT_DRAFT_KEY);
-                }
-            } catch(e) {}
-            // Auto-save toutes les 10 secondes
-            setInterval(saveDraft, 10000);
-        }
-        
-        function initCategorySelection() {
-            document.querySelectorAll('.category-option').forEach(option => {
-                option.addEventListener('click', () => {
-                    document.querySelectorAll('.category-option').forEach(o => o.classList.remove('selected'));
-                    option.classList.add('selected');
-                });
-            });
-        }
-        
-        function initRecurrence() {
-            const toggle = document.getElementById('recurrenceToggle');
-            const checkbox = document.getElementById('isRecurrent');
-            const options = document.getElementById('recurrenceOptions');
-            const singleDateFields = document.getElementById('singleDateFields');
-            
-            toggle.addEventListener('click', () => {
-                checkbox.checked = !checkbox.checked;
-                toggle.classList.toggle('active', checkbox.checked);
-                options.classList.toggle('show', checkbox.checked);
-                singleDateFields.style.display = checkbox.checked ? 'none' : 'block';
-                
-                if (checkbox.checked) {
-                    document.getElementById('eventDate').removeAttribute('required');
-                } else {
-                    document.getElementById('eventDate').setAttribute('required', '');
-                }
-            });
-            
-            document.querySelectorAll('.recurrence-day').forEach(day => {
-                day.addEventListener('click', () => {
-                    const dayNum = day.dataset.day;
-                    day.classList.toggle('selected');
-                    
-                    if (day.classList.contains('selected')) {
-                        if (!selectedDays.includes(dayNum)) {
-                            selectedDays.push(dayNum);
-                        }
-                    } else {
-                        selectedDays = selectedDays.filter(d => d !== dayNum);
-                    }
-                });
-            });
-        }
-        
-        function setMinDate() {
-            const dateInput = document.getElementById('eventDate');
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            dateInput.min = `${year}-${month}-${day}`;
-        }
-        
-        // === UPLOAD PHOTO ===
-        function initPhotoUpload() {
-            takePhotoBtn.addEventListener('click', openCamera);
-            choosePhotoBtn.addEventListener('click', () => photoInput.click());
-            
-            photoInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    if (file.size > 10 * 1024 * 1024) {
-                        showToast('Image trop volumineuse (max 10 Mo)', true);
-                        return;
-                    }
-                    processPhoto(file);
-                }
-            });
-            
-            photoRemoveBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                compressedPhotoBlob = null;
-                photoInput.value = '';
-                photoPreview.src = '';
-                photoPreviewWrapper.classList.remove('show');
-                photoButtons.classList.remove('hidden');
-            });
-            
-            cameraCloseBtn.addEventListener('click', closeCamera);
-            cameraCaptureBtn.addEventListener('click', capturePhoto);
-            cameraSwitchBtn.addEventListener('click', switchCamera);
-        }
-        
-        // === CAMERA ===
-        function openCamera() {
-            cameraModal.classList.add('show');
-            cameraLoading.style.display = 'block';
-            cameraError.style.display = 'none';
-            startCamera();
-        }
-        
-        function startCamera() {
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
+    }
+    
+    // Détecter iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isInStandaloneMode = window.navigator.standalone === true;
+    
+    if (isIOS && !isInStandaloneMode) {
+        // iOS - Afficher après 3 secondes
+        setTimeout(() => {
+            if (installPrompt) {
+                installPrompt.classList.add('show');
             }
-            
-            const constraints = {
-                video: { facingMode: facingMode, width: { ideal: 1920 }, height: { ideal: 1080 } },
-                audio: false
-            };
-            
-            navigator.mediaDevices.getUserMedia(constraints)
-                .then(stream => {
-                    currentStream = stream;
-                    cameraVideo.srcObject = stream;
-                    cameraLoading.style.display = 'none';
-                })
-                .catch(err => {
-                    console.error('Erreur caméra:', err);
-                    cameraLoading.style.display = 'none';
-                    cameraError.style.display = 'block';
-                });
-        }
+        }, 3000);
         
-        function closeCamera() {
-            cameraModal.classList.remove('show');
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-                currentStream = null;
-            }
-        }
-        
-        function switchCamera() {
-            facingMode = facingMode === 'environment' ? 'user' : 'environment';
-            startCamera();
-        }
-        
-        function capturePhoto() {
-            const ctx = cameraCanvas.getContext('2d');
-            cameraCanvas.width = cameraVideo.videoWidth;
-            cameraCanvas.height = cameraVideo.videoHeight;
-            ctx.drawImage(cameraVideo, 0, 0);
-            
-            cameraCanvas.toBlob(blob => {
-                closeCamera();
-                processPhoto(blob);
-            }, 'image/jpeg', 0.92);
-        }
-        
-        // === TRAITER LA PHOTO (compression) ===
-        function processPhoto(fileOrBlob) {
-            uploadProgress.classList.add('show');
-            progressFill.style.width = '20%';
-            progressText.textContent = 'Compression en cours...';
-            
-            compressImage(fileOrBlob, 1200, 0.8, function(blob, dataUrl) {
-                compressedPhotoBlob = blob;
-                
-                photoPreview.src = dataUrl;
-                photoPreviewWrapper.classList.add('show');
-                photoButtons.classList.add('hidden');
-                
-                const sizeKo = Math.round(blob.size / 1024);
-                photoSizeEl.textContent = sizeKo + ' Ko';
-                
-                progressFill.style.width = '100%';
-                progressText.textContent = 'Compression terminée !';
-                setTimeout(() => {
-                    uploadProgress.classList.remove('show');
-                }, 800);
+        if (installBtn) {
+            installBtn.addEventListener('click', () => {
+                installPrompt.classList.remove('show');
+                if (iosModal) {
+                    iosModal.classList.add('show');
+                }
             });
         }
         
-        // === LECTURE ORIENTATION EXIF ===
-        function getExifOrientation(file, callback) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const view = new DataView(e.target.result);
-                
-                if (view.getUint16(0, false) !== 0xFFD8) {
-                    callback(1);
-                    return;
-                }
-                
-                const length = view.byteLength;
-                let offset = 2;
-                
-                while (offset < length) {
-                    if (view.getUint16(offset, false) === 0xFFE1) {
-                        const exifLength = view.getUint16(offset + 2, false);
-                        const exifOffset = offset + 4;
-                        
-                        if (view.getUint32(exifOffset, false) !== 0x45786966) {
-                            callback(1);
-                            return;
-                        }
-                        
-                        const tiffOffset = exifOffset + 6;
-                        const littleEndian = view.getUint16(tiffOffset, false) === 0x4949;
-                        
-                        const ifdOffset = tiffOffset + view.getUint32(tiffOffset + 4, littleEndian);
-                        const numEntries = view.getUint16(ifdOffset, littleEndian);
-                        
-                        for (let i = 0; i < numEntries; i++) {
-                            const entryOffset = ifdOffset + 2 + (i * 12);
-                            const tag = view.getUint16(entryOffset, littleEndian);
-                            
-                            if (tag === 0x0112) {
-                                const orientation = view.getUint16(entryOffset + 8, littleEndian);
-                                callback(orientation);
-                                return;
-                            }
-                        }
-                        
-                        callback(1);
-                        return;
-                    }
-                    
-                    offset += 2 + view.getUint16(offset + 2, false);
-                }
-                
-                callback(1);
-            };
-            reader.readAsArrayBuffer(file.slice(0, 65536));
-        }
-        
-        // === COMPRESSION D'IMAGE ===
-        function compressImage(fileOrBlob, maxWidth, quality, callback) {
-            getExifOrientation(fileOrBlob, function(orientation) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const srcWidth = img.width;
-                        const srcHeight = img.height;
-                        
-                        const needsSwap = (orientation >= 5 && orientation <= 8);
-                        const displayWidth = needsSwap ? srcHeight : srcWidth;
-                        const displayHeight = needsSwap ? srcWidth : srcHeight;
-                        
-                        let scale = 1;
-                        if (displayWidth > maxWidth) {
-                            scale = maxWidth / displayWidth;
-                        }
-                        
-                        const finalWidth = Math.round(displayWidth * scale);
-                        const finalHeight = Math.round(displayHeight * scale);
-                        
-                        const canvas = document.createElement('canvas');
-                        canvas.width = finalWidth;
-                        canvas.height = finalHeight;
-                        
-                        const ctx = canvas.getContext('2d');
-                        ctx.translate(finalWidth / 2, finalHeight / 2);
-                        
-                        switch (orientation) {
-                            case 2: ctx.scale(-1, 1); break;
-                            case 3: ctx.rotate(Math.PI); break;
-                            case 4: ctx.scale(1, -1); break;
-                            case 5: ctx.rotate(0.5 * Math.PI); ctx.scale(1, -1); break;
-                            case 6: ctx.rotate(0.5 * Math.PI); break;
-                            case 7: ctx.rotate(-0.5 * Math.PI); ctx.scale(1, -1); break;
-                            case 8: ctx.rotate(-0.5 * Math.PI); break;
-                        }
-                        
-                        const drawWidth = srcWidth * scale;
-                        const drawHeight = srcHeight * scale;
-                        ctx.drawImage(img, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
-                        
-                        canvas.toBlob(function(blob) {
-                            const dataUrl = canvas.toDataURL('image/jpeg', quality);
-                            callback(blob, dataUrl);
-                        }, 'image/jpeg', quality);
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(fileOrBlob);
+        if (iosCloseBtn) {
+            iosCloseBtn.addEventListener('click', () => {
+                iosModal.classList.remove('show');
             });
         }
         
-        // === RECADRAGE ===
-        function openCropModal() {
-            const modal = document.getElementById('cropModal');
-            const cropImage = document.getElementById('cropImage');
-            
-            cropImage.src = photoPreview.src;
-            modal.classList.add('show');
+        if (iosModal) {
+            iosModal.addEventListener('click', (e) => {
+                if (e.target === iosModal) {
+                    iosModal.classList.remove('show');
+                }
+            });
+        }
+    } else {
+        // Android / Chrome - Écouter l'événement beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('📱 Installation disponible');
             
             setTimeout(() => {
-                if (cropper) cropper.destroy();
-                cropper = new Cropper(cropImage, {
-                    viewMode: 1,
-                    dragMode: 'move',
-                    aspectRatio: NaN,
-                    autoCropArea: 0.9,
-                    responsive: true,
-                    restore: false,
-                    guides: true,
-                    center: true,
-                    highlight: true,
-                    cropBoxMovable: true,
-                    cropBoxResizable: true,
-                    toggleDragModeOnDblclick: false
-                });
-            }, 100);
-            
-            document.querySelectorAll('.crop-ratio-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector('.crop-ratio-btn').classList.add('active');
-        }
+                if (installPrompt) {
+                    installPrompt.classList.add('show');
+                }
+            }, 3000);
+        });
         
-        function closeCropModal() {
-            document.getElementById('cropModal').classList.remove('show');
-            if (cropper) {
-                cropper.destroy();
-                cropper = null;
-            }
-        }
-        
-        function setCropRatio(ratio, btn) {
-            if (cropper) cropper.setAspectRatio(ratio);
-            document.querySelectorAll('.crop-ratio-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-        
-        function applyCrop() {
-            if (!cropper) return;
-            
-            const canvas = cropper.getCroppedCanvas({
-                maxWidth: 1200,
-                maxHeight: 1200,
-                imageSmoothingEnabled: true,
-                imageSmoothingQuality: 'high'
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+                
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                console.log(`📱 Installation: ${outcome}`);
+                deferredPrompt = null;
+                installPrompt.classList.remove('show');
             });
-            
-            canvas.toBlob(function(blob) {
-                compressedPhotoBlob = blob;
-                
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-                photoPreview.src = dataUrl;
-                
-                const sizeKo = Math.round(blob.size / 1024);
-                photoSizeEl.textContent = sizeKo + ' Ko';
-                
-                closeCropModal();
-                showToast('Image recadrée');
-            }, 'image/jpeg', 0.85);
+        }
+    }
+    
+    // Bouton ignorer
+    if (dismissBtn) {
+        dismissBtn.addEventListener('click', () => {
+            installPrompt.classList.remove('show');
+            localStorage.setItem('installDismissed', Date.now().toString());
+        });
+    }
+    
+    // Écouter l'installation réussie
+    window.addEventListener('appinstalled', () => {
+        console.log('✅ App installée !');
+        if (installPrompt) {
+            installPrompt.classList.remove('show');
+        }
+        deferredPrompt = null;
+    });
+}
+
+// ============================================
+// SERVICE WORKER
+// ============================================
+function initServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('✅ Service Worker enregistré'))
+            .catch(err => console.error('❌ SW Error:', err));
+    }
+}
+
+// ============================================
+// INFOS COMMUNAUTÉ (Supabase)
+// ============================================
+async function initCommunity() {
+    const contentEl = document.getElementById('communityContent');
+    const emptyEl = document.getElementById('communityEmpty');
+    const sectionEl = document.getElementById('communitySection');
+    
+    // Vérifier que les éléments existent
+    if (!contentEl || !emptyEl) {
+        console.log('⚠️ Section communauté non trouvée');
+        return;
+    }
+    
+    try {
+        // Vérifier que Supabase est chargé
+        if (typeof window.supabase === 'undefined') {
+            console.log('⚠️ Supabase non chargé, section communauté masquée');
+            if (sectionEl) sectionEl.style.display = 'none';
+            return;
         }
         
-        // === ROTATION ===
-        function rotatePreviewPhoto(degrees) {
-            const img = photoPreview;
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            
-            const image = new Image();
-            image.onload = function() {
-                if (Math.abs(degrees) === 90) {
-                    canvas.width = image.height;
-                    canvas.height = image.width;
-                } else {
-                    canvas.width = image.width;
-                    canvas.height = image.height;
-                }
-                
-                ctx.translate(canvas.width / 2, canvas.height / 2);
-                ctx.rotate((degrees * Math.PI) / 180);
-                ctx.drawImage(image, -image.width / 2, -image.height / 2);
-                
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-                img.src = dataUrl;
-                
-                canvas.toBlob(function(blob) {
-                    compressedPhotoBlob = blob;
-                    const sizeKo = Math.round(blob.size / 1024);
-                    photoSizeEl.textContent = sizeKo + ' Ko';
-                }, 'image/jpeg', 0.85);
-                
-                showToast('Image pivotée');
-            };
-            image.src = img.src;
+        // Utiliser l'instance unique Supabase
+        const supabaseClient = getSupabaseClient();
+        if (!supabaseClient) {
+            console.log('⚠️ Supabase non disponible');
+            return;
         }
         
-        // === UPLOAD VERS SUPABASE ===
-        async function uploadPhoto(blob) {
-            const fileName = Date.now() + '-' + Math.random().toString(36).substring(7) + '.jpg';
-            const filePath = 'event-images/' + fileName;
-            
-            uploadProgress.classList.add('show');
-            progressFill.style.width = '50%';
-            progressText.textContent = 'Envoi en cours...';
-            
-            try {
-                const result = await supabaseClient.storage
-                    .from('event-images')
-                    .upload(filePath, blob, {
-                        cacheControl: '3600',
-                        upsert: false,
-                        contentType: 'image/jpeg'
-                    });
-                
-                if (result.error) throw result.error;
-                
-                progressFill.style.width = '100%';
-                progressText.textContent = 'Envoi terminé !';
-                
-                const { data: urlData } = supabaseClient.storage
-                    .from('event-images')
-                    .getPublicUrl(filePath);
-                
-                setTimeout(() => {
-                    uploadProgress.classList.remove('show');
-                }, 500);
-                
-                return urlData.publicUrl;
-            } catch (error) {
-                console.error('Erreur upload:', error);
-                uploadProgress.classList.remove('show');
-                throw error;
-            }
+        // Charger les propositions approuvées
+        const { data, error } = await supabaseClient
+            .from('news_submissions')
+            .select('*')
+            .eq('status', 'approved')
+            .order('pinned', { ascending: false })
+            .order('created_at', { ascending: false })
+            .limit(3);
+        
+        if (error) throw error;
+        
+        // Si aucune donnée
+        if (!data || data.length === 0) {
+            contentEl.style.display = 'none';
+            emptyEl.style.display = 'block';
+            console.log('📭 Aucune info communauté');
+            return;
         }
         
-        // === TOAST ===
-        function showToast(message, isError) {
-            const toast = document.getElementById('toast');
-            const toastIcon = toast.querySelector('.toast-icon');
-            const toastText = toast.querySelector('.toast-text');
-            
-            toastIcon.textContent = isError ? '❌' : '✅';
-            toastText.textContent = message;
-            if (isError) {
-                toast.classList.add('error');
-            } else {
-                toast.classList.remove('error');
-            }
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 4000);
-        }
-        
-        // === FORMULAIRE ===
-        function initForm() {
-            document.getElementById('eventForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                const submitBtn = document.getElementById('submitBtn');
-                const originalContent = submitBtn.innerHTML;
-                
-                const categorySelected = document.querySelector('input[name="category"]:checked');
-                if (!categorySelected) {
-                    showToast('Veuillez sélectionner une catégorie', true);
-                    return;
-                }
-                
-                const isRecurrent = document.getElementById('isRecurrent').checked;
-                if (isRecurrent && selectedDays.length === 0) {
-                    showToast('Veuillez sélectionner au moins un jour de la semaine', true);
-                    return;
-                }
-                
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span class="material-icons spinning">sync</span> Envoi en cours...';
-                
+        // *** COMPTEUR DE VUES AU CHARGEMENT ***
+        // Compter une vue pour chaque info affichée (1 fois par jour par info)
+        const today = new Date().toISOString().split('T')[0];
+        for (const item of data) {
+            const viewedKey = `submission_viewed_${item.id}_${today}`;
+            if (!localStorage.getItem(viewedKey)) {
                 try {
-                    let imageUrl = null;
-                    if (compressedPhotoBlob) {
-                        try {
-                            imageUrl = await uploadPhoto(compressedPhotoBlob);
-                        } catch (uploadError) {
-                            showToast('Erreur lors de l\'envoi de la photo. Réessayez.', true);
-                            submitBtn.disabled = false;
-                            submitBtn.innerHTML = originalContent;
-                            return;
-                        }
+                    const { error: viewError } = await supabaseClient.rpc('increment_submission_views', { submission_id: item.id });
+                    if (!viewError) {
+                        localStorage.setItem(viewedKey, 'true');
+                        item.views = (item.views || 0) + 1; // Mettre à jour localement pour l'affichage
+                        console.log(`👁️ Vue comptée pour info #${item.id}`);
                     }
-                    
-                    const eventData = {
-                        title: document.getElementById('eventTitle').value,
-                        category: categorySelected.value,
-                        location: document.getElementById('eventLocation').value,
-                        description: document.getElementById('eventDescription').value || null,
-                        link: document.getElementById('eventLink').value || null,
-                        author: document.getElementById('eventAuthor').value,
-                        image_url: imageUrl,
-                        status: 'pending',
-                        is_recurring: isRecurrent,
-                        views: 0,
-                        created_at: new Date().toISOString()
-                    };
-                    
-                    if (isRecurrent) {
-                        eventData.recurrence_days = selectedDays.join(',');
-                        eventData.event_time = document.getElementById('eventStartTimeRecurring').value || null;
-                        eventData.end_time = document.getElementById('eventEndTimeRecurring').value || null;
-                        eventData.event_date = null;
-                    } else {
-                        eventData.event_date = document.getElementById('eventDate').value;
-                        eventData.event_time = document.getElementById('eventStartTime').value || null;
-                        eventData.end_time = document.getElementById('eventEndTime').value || null;
+                } catch (e) {
+                    console.log('⚠️ Erreur compteur vue:', e);
+                }
+            }
+        }
+        
+        // Charger le nombre de commentaires pour chaque actualité
+        const newsIds = data.map(item => item.id);
+        let commentCounts = {};
+        let likeCounts = {};
+        let userLikes = [];
+        const userFingerprint = getUserFingerprint();
+        
+        try {
+            const { data: comments } = await supabaseClient
+                .from('news_comments')
+                .select('news_id')
+                .eq('status', 'approved')
+                .in('news_id', newsIds);
+            
+            if (comments) {
+                comments.forEach(c => {
+                    commentCounts[c.news_id] = (commentCounts[c.news_id] || 0) + 1;
+                });
+            }
+        } catch (e) {
+            console.log('⚠️ Erreur chargement compteurs commentaires:', e);
+        }
+        
+        // Charger les likes
+        try {
+            const { data: likes } = await supabaseClient
+                .from('news_likes')
+                .select('news_id, user_fingerprint')
+                .in('news_id', newsIds);
+            
+            if (likes) {
+                likes.forEach(l => {
+                    likeCounts[l.news_id] = (likeCounts[l.news_id] || 0) + 1;
+                    if (l.user_fingerprint === userFingerprint) {
+                        userLikes.push(l.news_id);
                     }
+                });
+            }
+        } catch (e) {
+            console.log('⚠️ Erreur chargement likes:', e);
+        }
+        
+        // Stocker les likes de l'utilisateur pour référence
+        window.userLikes = userLikes;
+        window.likeCounts = likeCounts;
+        
+        // Masquer les articles épinglés pour les visiteurs qui les ont déjà vus
+        const filteredData = data.filter(item => {
+            if (item.pinned) {
+                const seenKey = `pinned_seen_${item.id}`;
+                if (localStorage.getItem(seenKey)) {
+                    return false; // Déjà vu, on ne l'affiche pas
+                }
+                localStorage.setItem(seenKey, 'true'); // Marquer comme vu
+            }
+            return true;
+        });
+
+        // Afficher les infos
+        contentEl.innerHTML = filteredData.map(item => {
+            const commentCount = commentCounts[item.id] || 0;
+            return `
+            <div class="community-item ${item.pinned ? 'pinned' : ''}" data-id="${item.id}">
+                ${item.pinned ? '<div class="community-pinned-badge"><span class="material-icons">push_pin</span> Épinglé</div>' : ''}
+                <!-- HEADER : Emoji + Auteur + Date -->
+                <div class="community-item-header">
+                    <span class="community-item-icon">${getCommunityIcon(item.type)}</span>
+                    <span class="community-item-author">${escapeHtml(item.author || 'Actu & Média')}</span>
+                    <span class="community-item-separator">·</span>
+                    <span class="community-item-date">${formatCommunityDate(item.created_at)}</span>
+                </div>
+                
+                <div class="community-item-content">
+                    <div class="community-item-title">${escapeHtml(item.title)}</div>
+                    ${item.image_url ? `<div class="community-image-wrapper"><div class="community-image-inner" onclick="event.stopPropagation(); openImageModal('${item.image_url}', '${(item.source_name || '').replace(/'/g, "\\'")}')"><img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image"><div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>${item.source_name ? `<div class="community-image-credit">📷 ${escapeHtml(item.source_name)}</div>` : ''}</div></div>` : ''}
+                    <div class="community-item-desc" id="desc-${item.id}">${linkifyContent(item.content)}</div>
+                    <button class="see-more-btn" id="see-more-${item.id}" onclick="event.stopPropagation(); toggleSeeMore(${item.id})">
+                        <span>Voir plus</span>
+                        <span class="material-icons">expand_more</span>
+                    </button>
+                    ${item.link ? `<a href="${item.link}" target="_blank" class="community-item-link" onclick="event.stopPropagation()"><span class="material-icons">link</span>Voir le lien</a>` : ''}
                     
-                    const { error } = await supabaseClient
-                        .from('events')
-                        .insert([eventData]);
+                    <!-- FOOTER : Lieu + Vues -->
+                    <div class="community-item-footer">
+                        <div class="community-item-location">
+                            <span class="material-icons">place</span>
+                            <span>${escapeHtml(item.location || 'Montceau-les-Mines')}</span>
+                        </div>
+                        <div class="community-item-views">
+                            <span class="material-icons">visibility</span>
+                            <span>${item.views || 0}</span>
+                        </div>
+                    </div>
                     
-                    if (error) throw error;
+                    <!-- Actions (Like + Commenter sur même ligne) -->
+                    <div class="community-item-actions" onclick="event.stopPropagation()">
+                        <button class="like-btn ${userLikes.includes(item.id) ? 'liked' : ''}" id="like-btn-${item.id}" onclick="toggleLike(${item.id}, this)">
+                            <span class="material-icons">${userLikes.includes(item.id) ? 'favorite' : 'favorite_border'}</span>
+                            <span class="like-count" id="like-count-${item.id}">${likeCounts[item.id] || 0}</span>
+                        </button>
+                        <button class="comments-toggle-btn" onclick="toggleComments(${item.id}, this)">
+                            <span class="material-icons">chat_bubble_outline</span>
+                            <span>${commentCount > 0 ? commentCount + ' commentaire' + (commentCount > 1 ? 's' : '') : 'Commenter'}</span>
+                        </button>
+                    </div>
                     
-                    // Notification email
-                    try {
-                        await fetch('/api/sendEmail', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                type: 'evenement',
-                                title: eventData.title,
-                                author: eventData.author,
-                                content: eventData.description || 'Pas de description'
-                            })
-                        });
-                    } catch (e) {
-                        console.log('Email notification non envoyée:', e);
+                    <!-- Section Commentaires déroulante -->
+                    <div class="community-comments-section" onclick="event.stopPropagation()">
+                        <div class="comments-container" id="comments-${item.id}">
+                            <div class="comments-list" id="comments-list-${item.id}">
+                                <div class="comments-empty">
+                                    <div class="comments-empty-icon">💬</div>
+                                    Chargement...
+                                </div>
+                            </div>
+                            <form class="comment-form" onsubmit="submitComment(event, ${item.id})">
+                                <div class="comment-form-row">
+                                    <input type="text" class="comment-input" id="comment-author-${item.id}" placeholder="Votre pseudo" maxlength="50" required>
+                                </div>
+                                <textarea class="comment-input comment-textarea" id="comment-content-${item.id}" placeholder="Votre commentaire..." maxlength="500" required></textarea>
+                                <button type="submit" class="comment-submit-btn">
+                                    <span class="material-icons">send</span>
+                                    Envoyer
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `}).join('');
+        
+        // Ajouter le bouton "Voir toutes les infos"
+        contentEl.innerHTML += `
+            <a href="infos.html" class="community-voir-tout">
+                <span class="material-icons">article</span>
+                <span>Voir toutes les infos</span>
+            </a>
+        `;
+        
+        emptyEl.style.display = 'none';
+        console.log(`📢 ${data.length} infos communauté chargées (accueil)`);
+        
+        // Détecter les textes tronqués et afficher le bouton "Voir plus"
+        setTimeout(() => {
+            data.forEach(item => {
+                const descEl = document.getElementById(`desc-${item.id}`);
+                const btnEl = document.getElementById(`see-more-${item.id}`);
+                if (descEl && btnEl) {
+                    if (descEl.scrollHeight > descEl.clientHeight + 10) {
+                        descEl.classList.add('truncated');
+                        btnEl.classList.add('visible');
                     }
-                    
-                    showToast('Événement proposé avec succès ! 🎉');
-                    
-                    localStorage.removeItem(EVT_DRAFT_KEY);
-                    document.getElementById('eventForm').style.display = 'none';
-                    document.getElementById('successMessage').classList.add('show');
-                    
-                } catch (error) {
-                    console.error('Erreur:', error);
-                    showToast('Erreur lors de l\'envoi. Réessayez.', true);
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalContent;
                 }
             });
+        }, 100);
+        
+    } catch (error) {
+        console.error('❌ Erreur communauté:', error);
+        contentEl.innerHTML = '';
+        emptyEl.style.display = 'block';
+    }
+}
+
+function getCommunityIcon(type) {
+    const icons = {
+        'actualite': '📰',
+        'evenement': '🎪',
+        'sport': '⚽',
+        'culture': '🎭',
+        'economie': '🏪',
+        'solidarite': '🤝',
+        'travaux': '🚧',
+        'environnement': '🌿',
+        'education': '🎓',
+        'pratique': 'ℹ️',
+        'insolite': '😮',
+        'photo': '📸'
+    };
+    return icons[type] || '📰';
+}
+
+function formatCommunityDate(dateStr) {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diff = now - date;
+    
+    // Moins d'une heure
+    if (diff < 3600000) {
+        const mins = Math.floor(diff / 60000);
+        return `Il y a ${mins} min`;
+    }
+    
+    // Moins d'un jour
+    if (diff < 86400000) {
+        const hours = Math.floor(diff / 3600000);
+        return `Il y a ${hours}h`;
+    }
+    
+    // Moins d'une semaine
+    if (diff < 604800000) {
+        const days = Math.floor(diff / 86400000);
+        return `Il y a ${days} jour${days > 1 ? 's' : ''}`;
+    }
+    
+    // Plus d'une semaine
+    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Convertir les URLs en liens cliquables (après escapeHtml)
+function linkifyContent(text) {
+    if (!text) return '';
+    // D'abord échapper le HTML
+    let safe = escapeHtml(text);
+    // Puis convertir les URLs en liens cliquables
+    const urlRegex = /(https?:\/\/[^\s<]+)/g;
+    return safe.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" class="community-link">$1</a>');
+}
+
+// ============================================
+// GESTION DES COMMENTAIRES
+// ============================================
+async function toggleComments(newsId, btn) {
+    const container = document.getElementById(`comments-${newsId}`);
+    const isOpen = container.classList.contains('open');
+    
+    if (isOpen) {
+        container.classList.remove('open');
+        btn.classList.remove('open');
+    } else {
+        container.classList.add('open');
+        btn.classList.add('open');
+        loadComments(newsId);
+    }
+}
+
+async function loadComments(newsId) {
+    const listEl = document.getElementById(`comments-list-${newsId}`);
+    
+    try {
+        const supabaseClient = getSupabaseClient();
+        if (!supabaseClient) return;
+        
+        const { data, error } = await supabaseClient
+            .from('news_comments')
+            .select('*')
+            .eq('news_id', newsId)
+            .eq('status', 'approved')
+            .order('created_at', { ascending: false })
+            .limit(10);
+        
+        if (error) throw error;
+        
+        if (!data || data.length === 0) {
+            listEl.innerHTML = `
+                <div class="comments-empty">
+                    <div class="comments-empty-icon">💬</div>
+                    Aucun commentaire pour le moment.<br>Soyez le premier !
+                </div>
+            `;
+            return;
         }
-    </script>
-</body>
-</html>
+        
+        listEl.innerHTML = data.map(comment => `
+            <div class="comment-item">
+                <div class="comment-item-header">
+                    <span class="comment-item-author">👤 ${escapeHtml(comment.author)}</span>
+                    <span class="comment-item-date">${formatCommunityDate(comment.created_at)}</span>
+                </div>
+                <div class="comment-item-content">${escapeHtml(comment.content)}</div>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Erreur chargement commentaires:', error);
+        listEl.innerHTML = `
+            <div class="comments-empty">
+                <div class="comments-empty-icon">❌</div>
+                Erreur de chargement
+            </div>
+        `;
+    }
+}
+
+async function submitComment(event, newsId) {
+    event.preventDefault();
+    
+    const authorInput = document.getElementById(`comment-author-${newsId}`);
+    const contentInput = document.getElementById(`comment-content-${newsId}`);
+    const form = event.target;
+    const submitBtn = form.querySelector('.comment-submit-btn');
+    
+    const author = authorInput.value.trim();
+    const content = contentInput.value.trim();
+    
+    if (!author || !content) return;
+    
+    // Désactiver le bouton
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="material-icons">hourglass_empty</span> Envoi...';
+    
+    try {
+        const supabaseClient = getSupabaseClient();
+        if (!supabaseClient) throw new Error('Supabase non disponible');
+        
+        const { error } = await supabaseClient
+            .from('news_comments')
+            .insert([{
+                news_id: newsId,
+                author: author,
+                content: content,
+                status: 'pending'
+            }]);
+        
+        if (error) throw error;
+        
+        // Envoyer notification email
+        try {
+            await fetch('/api/sendEmail', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: 'commentaire',
+                    author: author,
+                    content: content,
+                    newsTitle: document.querySelector(`#comments-${newsId}`)?.closest('.community-item')?.querySelector('.community-item-title')?.textContent || 'Actualité'
+                })
+            });
+        } catch (e) {
+            console.log('Email notification non envoyée:', e);
+        }
+        
+        // Afficher message de succès
+        form.innerHTML = `
+            <div class="comment-success">
+                ✅ Merci ! Votre commentaire sera visible après validation.
+            </div>
+        `;
+        
+        // Restaurer le formulaire après 5 secondes
+        setTimeout(() => {
+            form.innerHTML = `
+                <div class="comment-form-row">
+                    <input type="text" class="comment-input" id="comment-author-${newsId}" placeholder="Votre pseudo" maxlength="50" required>
+                </div>
+                <textarea class="comment-input comment-textarea" id="comment-content-${newsId}" placeholder="Votre commentaire..." maxlength="500" required></textarea>
+                <button type="submit" class="comment-submit-btn">
+                    <span class="material-icons">send</span>
+                    Envoyer
+                </button>
+            `;
+        }, 5000);
+        
+    } catch (error) {
+        console.error('Erreur envoi commentaire:', error);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span class="material-icons">send</span> Envoyer';
+        alert('Erreur lors de l\'envoi. Réessayez.');
+    }
+}
+
+// ============================================
+// GESTION DES LIKES
+// ============================================
+function getUserFingerprint() {
+    let fp = localStorage.getItem('user_fingerprint');
+    if (!fp) {
+        fp = 'fp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('user_fingerprint', fp);
+    }
+    return fp;
+}
+
+async function toggleLike(newsId, btn) {
+    const supabaseClient = getSupabaseClient();
+    if (!supabaseClient) return;
+    
+    const userFingerprint = getUserFingerprint();
+    const isLiked = btn.classList.contains('liked');
+    const countEl = document.getElementById(`like-count-${newsId}`);
+    const icon = btn.querySelector('.material-icons');
+    let currentCount = parseInt(countEl.textContent) || 0;
+    
+    try {
+        if (isLiked) {
+            // Retirer le like
+            const { error } = await supabaseClient
+                .from('news_likes')
+                .delete()
+                .eq('news_id', newsId)
+                .eq('user_fingerprint', userFingerprint);
+            
+            if (error) throw error;
+            
+            btn.classList.remove('liked');
+            icon.textContent = 'favorite_border';
+            countEl.textContent = Math.max(0, currentCount - 1);
+            
+            // Mettre à jour le tableau local
+            window.userLikes = window.userLikes.filter(id => id !== newsId);
+            
+        } else {
+            // Ajouter le like
+            const { error } = await supabaseClient
+                .from('news_likes')
+                .insert([{
+                    news_id: newsId,
+                    user_fingerprint: userFingerprint
+                }]);
+            
+            if (error) throw error;
+            
+            btn.classList.add('liked');
+            icon.textContent = 'favorite';
+            countEl.textContent = currentCount + 1;
+            
+            // Mettre à jour le tableau local
+            window.userLikes.push(newsId);
+        }
+    } catch (error) {
+        console.error('Erreur like:', error);
+        // En cas d'erreur (ex: déjà liké), on ne fait rien
+    }
+}
+
+function toggleSeeMore(newsId) {
+    const descEl = document.getElementById(`desc-${newsId}`);
+    const btnEl = document.getElementById(`see-more-${newsId}`);
+    
+    if (!descEl || !btnEl) return;
+    
+    const isExpanded = descEl.classList.contains('expanded');
+    
+    if (isExpanded) {
+        // Réduire
+        descEl.classList.remove('expanded');
+        btnEl.classList.remove('expanded');
+        btnEl.querySelector('span:first-child').textContent = 'Voir plus';
+    } else {
+        // Déplier
+        descEl.classList.add('expanded');
+        btnEl.classList.add('expanded');
+        btnEl.querySelector('span:first-child').textContent = 'Voir moins';
+    }
+}
+
+// Fonction pour ouvrir une image en grand
+function openImageModal(imageUrl, sourceName = '') {
+    // Créer le modal s'il n'existe pas
+    let modal = document.getElementById('imageModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'imageModal';
+        modal.className = 'image-modal';
+        modal.innerHTML = `
+            <div class="image-modal-backdrop" onclick="closeImageModal()"></div>
+            <div class="image-modal-content">
+                <button class="image-modal-close" onclick="closeImageModal()">
+                    <span class="material-icons">close</span>
+                </button>
+                <img id="modalImage" src="" alt="Image">
+                <div id="modalImageCredit" class="image-modal-credit"></div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    document.getElementById('modalImage').src = imageUrl;
+    
+    // Afficher le crédit si disponible
+    const creditEl = document.getElementById('modalImageCredit');
+    if (sourceName && sourceName.trim() !== '') {
+        creditEl.textContent = '📷 ' + sourceName;
+        creditEl.style.display = 'block';
+    } else {
+        creditEl.style.display = 'none';
+    }
+    
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+}
+
+// ============================================
+// RAFRAÎCHISSEMENT PÉRIODIQUE
+// ============================================
+setInterval(() => {
+    console.log('🔄 Rafraîchissement des actualités...');
+    initNews();
+}, CONFIG.news.refreshInterval);
+
+// ============================================
+// TOGGLE VILLES SUPPLÉMENTAIRES
+// ============================================
+function toggleExtraTiles() {
+    const tilesExtra = document.getElementById('tilesExtra');
+    const toggleBtn = document.getElementById('tilesToggle');
+    const toggleIcon = document.getElementById('tilesToggleIcon');
+    const toggleText = document.getElementById('tilesToggleText');
+    
+    if (!tilesExtra || !toggleBtn) return;
+    
+    const isExpanded = tilesExtra.classList.contains('show');
+    
+    if (isExpanded) {
+        // Fermer
+        tilesExtra.classList.remove('show');
+        toggleBtn.classList.remove('expanded');
+        toggleIcon.textContent = 'expand_more';
+        toggleText.textContent = 'Plus de villes';
+        localStorage.setItem('tilesExpanded', 'false');
+    } else {
+        // Ouvrir
+        tilesExtra.classList.add('show');
+        toggleBtn.classList.add('expanded');
+        toggleIcon.textContent = 'expand_less';
+        toggleText.textContent = 'Moins de villes';
+        localStorage.setItem('tilesExpanded', 'true');
+    }
+}
+
+// Restaurer l'état au chargement
+function initExtraTiles() {
+    const saved = localStorage.getItem('tilesExpanded');
+    if (saved === 'true') {
+        const tilesExtra = document.getElementById('tilesExtra');
+        const toggleBtn = document.getElementById('tilesToggle');
+        const toggleIcon = document.getElementById('tilesToggleIcon');
+        const toggleText = document.getElementById('tilesToggleText');
+        
+        if (tilesExtra && toggleBtn) {
+            tilesExtra.classList.add('show');
+            toggleBtn.classList.add('expanded');
+            toggleIcon.textContent = 'expand_less';
+            toggleText.textContent = 'Moins de villes';
+        }
+    }
+}
+
+// Exposer la fonction globalement
+window.toggleExtraTiles = toggleExtraTiles;
+
+// ============================================
+// NOTIFICATIONS PUSH
+// ============================================
+
+let pushSubscription = null;
+
+// Initialiser les notifications au chargement
+async function initPushNotifications() {
+    // Vérifier si les notifications sont supportées
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        console.log('❌ Push non supporté');
+        return;
+    }
+
+    try {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
+
+        if (subscription) {
+            // Déjà abonné - stocker l'abonnement
+            pushSubscription = subscription;
+            console.log('✅ Déjà abonné aux notifications');
+            updateNotifButton(true);
+        } else {
+            // Pas encore abonné
+            pushSubscription = null;
+            updateNotifButton(false);
+            
+            // Si permission déjà accordée mais pas d'abonnement → créer l'abonnement
+            if (Notification.permission === 'granted') {
+                console.log('🔄 Permission accordée, création de l\'abonnement...');
+                setTimeout(() => {
+                    subscribeToPush();
+                }, 2000);
+            } 
+            // Si permission pas encore demandée → afficher le popup
+            else if (Notification.permission === 'default') {
+                const notifDismissed = localStorage.getItem('notifPromptDismissed');
+                const lastDismiss = notifDismissed ? parseInt(notifDismissed) : 0;
+                const daysSinceDismiss = (Date.now() - lastDismiss) / (1000 * 60 * 60 * 24);
+                
+                if (!notifDismissed || daysSinceDismiss > 7) {
+                    setTimeout(() => {
+                        showNotifPrompt();
+                    }, 5000);
+                }
+            }
+            // Si permission refusée → ne rien faire
+            else {
+                console.log('❌ Notifications refusées par l\'utilisateur');
+            }
+        }
+    } catch (error) {
+        console.error('❌ Erreur init push:', error);
+    }
+}
+
+// Afficher le popup de notification
+function showNotifPrompt() {
+    const prompt = document.getElementById('notifPrompt');
+    if (prompt && Notification.permission === 'default') {
+        prompt.classList.add('show');
+    }
+}
+
+// Fermer le popup
+function closeNotifPrompt(saveDismiss = false) {
+    const prompt = document.getElementById('notifPrompt');
+    if (prompt) {
+        prompt.classList.remove('show');
+        if (saveDismiss) {
+            localStorage.setItem('notifPromptDismissed', Date.now().toString());
+        }
+    }
+}
+
+// Accepter les notifications depuis le popup
+async function acceptNotifPrompt() {
+    closeNotifPrompt(false);
+    await subscribeToPush();
+}
+
+// Mettre à jour l'apparence du bouton
+function updateNotifButton(isSubscribed) {
+    const btn = document.getElementById('notifSubscribeBtn');
+    const icon = document.getElementById('notifIcon');
+    const title = document.getElementById('notifTitle');
+    const desc = document.getElementById('notifDesc');
+    const arrow = document.getElementById('notifArrow');
+
+    if (!btn) return;
+
+    if (isSubscribed) {
+        btn.classList.add('subscribed');
+        icon.textContent = '🔔';
+        icon.classList.add('subscribed');
+        title.textContent = 'Notifications activées';
+        desc.textContent = 'Cliquez pour désactiver';
+        arrow.textContent = 'notifications_active';
+    } else {
+        btn.classList.remove('subscribed');
+        icon.textContent = '🔕';
+        icon.classList.remove('subscribed');
+        title.textContent = 'Activer les notifications';
+        desc.textContent = 'Recevoir les alertes infos';
+        arrow.textContent = 'notifications_none';
+    }
+}
+
+// Toggle abonnement
+async function togglePushSubscription() {
+    const btn = document.getElementById('notifSubscribeBtn');
+    if (!btn) return;
+
+    btn.classList.add('loading');
+
+    try {
+        if (pushSubscription) {
+            // Se désabonner
+            await unsubscribeFromPush();
+        } else {
+            // S'abonner
+            await subscribeToPush();
+        }
+    } catch (error) {
+        console.error('❌ Erreur toggle push:', error);
+        alert('Erreur : ' + error.message);
+    } finally {
+        btn.classList.remove('loading');
+    }
+}
+
+// S'abonner aux notifications
+async function subscribeToPush() {
+    // Demander la permission
+    const permission = await Notification.requestPermission();
+
+    if (permission !== 'granted') {
+        alert('Vous devez autoriser les notifications pour recevoir les alertes.');
+        return;
+    }
+
+    // Récupérer la clé publique VAPID
+    const response = await fetch('/api/subscribe');
+    const { publicKey } = await response.json();
+
+    if (!publicKey) {
+        throw new Error('Clé VAPID non disponible');
+    }
+
+    // Convertir la clé
+    const applicationServerKey = urlBase64ToUint8Array(publicKey);
+
+    // S'abonner
+    const registration = await navigator.serviceWorker.ready;
+    pushSubscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: applicationServerKey
+    });
+
+    // Envoyer l'abonnement au serveur
+    const subscribeResponse = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pushSubscription.toJSON())
+    });
+
+    if (!subscribeResponse.ok) {
+        throw new Error('Erreur lors de l\'enregistrement');
+    }
+
+    updateNotifButton(true);
+    console.log('✅ Abonné aux notifications');
+
+    // Notification de confirmation
+    showToast('🔔 Notifications activées !', 'Vous recevrez les alertes infos.');
+}
+
+// Se désabonner
+async function unsubscribeFromPush() {
+    if (!pushSubscription) return;
+
+    // Supprimer côté serveur
+    await fetch('/api/subscribe', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ endpoint: pushSubscription.endpoint })
+    });
+
+    // Supprimer côté client
+    await pushSubscription.unsubscribe();
+    pushSubscription = null;
+
+    updateNotifButton(false);
+    console.log('✅ Désabonné des notifications');
+
+    showToast('🔕 Notifications désactivées', 'Vous ne recevrez plus les alertes.');
+}
+
+// Convertir clé VAPID base64 en Uint8Array
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+// Toast de confirmation
+function showToast(title, message) {
+    // Utiliser le toast existant ou en créer un simple
+    const existingToast = document.querySelector('.notification-toast');
+    if (existingToast) {
+        existingToast.querySelector('.notification-toast-title').textContent = title;
+        existingToast.querySelector('.notification-toast-text').textContent = message;
+        existingToast.classList.add('show');
+        setTimeout(() => existingToast.classList.remove('show'), 3000);
+    } else {
+        alert(title + '\n' + message);
+    }
+}
+
+// ============================================
+// SÉLECTEUR TAILLE DE TEXTE
+// ============================================
+function initFontSizeSelector() {
+    const buttons = document.querySelectorAll('.font-size-btn');
+    
+    if (buttons.length === 0) return;
+    
+    // Charger la préférence sauvegardée
+    const savedSize = localStorage.getItem('fontSize') || 'normal';
+    document.documentElement.setAttribute('data-font-size', savedSize);
+    
+    // Mettre à jour le bouton actif
+    buttons.forEach(btn => {
+        if (btn.dataset.size === savedSize) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    // Ajouter les événements de clic
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const size = btn.dataset.size;
+            
+            // Appliquer la taille
+            document.documentElement.setAttribute('data-font-size', size);
+            
+            // Sauvegarder la préférence
+            localStorage.setItem('fontSize', size);
+            
+            // Mettre à jour les boutons actifs
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            console.log('📏 Taille de texte:', size);
+        });
+    });
+    
+    console.log('✅ Sélecteur taille de texte initialisé');
+}
+
+// ============================================
+// AGENDA HOMEPAGE
+// ============================================
+async function initAgenda() {
+    const contentEl = document.getElementById('agendaContent');
+    const emptyEl = document.getElementById('agendaEmpty');
+    
+    if (!contentEl) return;
+    
+    try {
+        const supabase = getSupabaseClient();
+        if (!supabase) return;
+        
+        const today = new Date();
+		const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+        
+        // 1. Charger les événements NON récurrents à venir
+        const { data: regularEvents, error: err1 } = await supabase
+            .from('events')
+            .select('*')
+            .eq('status', 'approved')
+            .eq('is_recurring', false)
+            .gte('event_date', todayStr)
+            .order('event_date', { ascending: true })
+            .limit(5);
+        
+        // 2. Charger les événements RÉCURRENTS (UNE SEULE FOIS chacun)
+        const { data: recurringEvents, error: err2 } = await supabase
+            .from('events')
+            .select('*')
+            .eq('status', 'approved')
+            .eq('is_recurring', true);
+        
+        if (err1) console.error('Erreur events réguliers:', err1);
+        if (err2) console.error('Erreur events récurrents:', err2);
+        
+        // 3. Préparer les événements récurrents avec leur label
+        const processedRecurring = (recurringEvents || []).map(event => {
+            const days = event.recurrence_days ? event.recurrence_days.split(',').map(d => dayNames[parseInt(d)]) : [];
+            return {
+                ...event,
+                _recurrenceLabel: `Tous les ${days.join(', ')}`,
+                _sortOrder: 0 // Les récurrents en premier
+            };
+        });
+        
+        // 4. Préparer les événements réguliers
+        const processedRegular = (regularEvents || []).map(event => ({
+            ...event,
+            _sortOrder: 1
+        }));
+        
+        // 5. Combiner : récurrents d'abord, puis par date (limité à 3 pour l'accueil)
+        const allEvents = [...processedRecurring, ...processedRegular].slice(0, 3);
+        
+        if (!allEvents || allEvents.length === 0) {
+            contentEl.innerHTML = '';
+            if (emptyEl) emptyEl.style.display = 'block';
+            return;
+        }
+        
+        if (emptyEl) emptyEl.style.display = 'none';
+        
+        contentEl.innerHTML = allEvents.map(event => {
+            // Pour les récurrents : afficher le label au lieu de la date
+            if (event.is_recurring) {
+                return `
+                    <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
+                        <div class="agenda-item-date recurring">
+                            <span class="material-icons agenda-item-day">sync</span>
+                            <span class="agenda-item-month">HEBDO</span>
+                        </div>
+                        <div class="agenda-item-content">
+                            <div class="agenda-item-title">${escapeHtml(event.title)}</div>
+                            <div class="agenda-item-info">
+                                <span class="agenda-info-highlight"><span class="material-icons">event_repeat</span>${event._recurrenceLabel}</span>
+                                ${event.event_time ? `<span><span class="material-icons">schedule</span>${formatAgendaTime(event.event_time)}</span>` : ''}
+                            </div>
+                            <div class="agenda-item-info">
+                                ${event.location ? `<span><span class="material-icons">place</span>${escapeHtml(event.location)}</span>` : ''}
+                                <span class="agenda-views"><span class="material-icons">visibility</span>${event.views || 0}</span>
+                            </div>
+                            <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
+                        </div>
+                    </a>
+                `;
+            }
+            
+            // Pour les événements uniques : afficher la date
+            const date = new Date(event.event_date + 'T12:00:00');
+			const day = date.getDate();
+			const month = date.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '').toUpperCase();
+            
+            return `
+                <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
+                    <div class="agenda-item-date">
+                        <span class="agenda-item-day">${day}</span>
+                        <span class="agenda-item-month">${month}</span>
+                    </div>
+                    <div class="agenda-item-content">
+                        <div class="agenda-item-title">${escapeHtml(event.title)}</div>
+                        <div class="agenda-item-info">
+                            ${event.event_time ? `<span><span class="material-icons">schedule</span>${formatAgendaTime(event.event_time)}</span>` : ''}
+                            ${event.location ? `<span><span class="material-icons">place</span>${escapeHtml(event.location)}</span>` : ''}
+                            <span class="agenda-views"><span class="material-icons">visibility</span>${event.views || 0}</span>
+                        </div>
+                        <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
+                    </div>
+                </a>
+            `;
+        }).join('');
+        
+        // Ajouter le bouton "Voir tout l'agenda" en bas
+        contentEl.innerHTML += `
+            <a href="agenda.html" class="agenda-voir-tout">
+                <span>Voir tout l'agenda</span>
+                <span class="material-icons">calendar_month</span>
+            </a>
+        `;
+        
+        console.log(`📅 ${allEvents.length} événements agenda chargés`);
+        
+    } catch (error) {
+        console.error('❌ Erreur initAgenda:', error);
+    }
+}
+
+function formatAgendaTime(timeStr) {
+    if (!timeStr) return '';
+    const [h, m] = timeStr.split(':');
+    return `${h}h${m !== '00' ? m : ''}`;
+}
+
+function getAgendaCategoryIcon(category) {
+    const icons = { 'sport': '⚽', 'concert': '🎵', 'spectacle': '🎭', 'expo': '🖼️', 'marche': '🛒', 'brocante': '📦', 'fete': '🎉', 'repas': '🍽️', 'atelier': '🎨', 'enfants': '👨‍👩‍👧', 'nature': '🥾', 'solidarite': '🤝', 'culture': '🎭' };
+    return icons[category] || '📅';
+}
+
+function getAgendaCategoryLabel(category) {
+    const labels = { 'sport': 'Sport', 'concert': 'Concert', 'spectacle': 'Spectacle', 'expo': 'Expo', 'marche': 'Marché', 'brocante': 'Brocante', 'fete': 'Fête', 'repas': 'Repas', 'atelier': 'Atelier', 'enfants': 'Famille', 'nature': 'Rando', 'solidarite': 'Solidarité', 'culture': 'Culture' };
+    return labels[category] || 'Événement';
+}
+
+window.togglePushSubscription = togglePushSubscription;
+window.showNotifPrompt = showNotifPrompt;
+window.closeNotifPrompt = closeNotifPrompt;
+window.acceptNotifPrompt = acceptNotifPrompt;
+window.toggleSeeMore = toggleSeeMore;
+window.toggleComments = toggleComments;
+window.submitComment = submitComment;
+window.toggleLike = toggleLike;
+window.openImageModal = openImageModal;
+window.closeImageModal = closeImageModal;
+
+// ============================================
+// COMPTEUR DE VISITES
+// ============================================
+async function recordVisit() {
+    try {
+        const supabase = getSupabaseClient();
+        if (!supabase) return;
+        
+        // Clé unique par jour pour ce visiteur
+        const today = new Date().toISOString().split('T')[0];
+        const visitorKey = `visitor_${today}`;
+        
+        // Vérifier si c'est un nouveau visiteur aujourd'hui
+        const isNewVisitor = !localStorage.getItem(visitorKey);
+        
+        // Enregistrer la visite
+        const { error } = await supabase.rpc('record_visit', { is_new_visitor: isNewVisitor });
+        
+        if (!error) {
+            // Marquer comme déjà visité aujourd'hui
+            if (isNewVisitor) {
+                localStorage.setItem(visitorKey, 'true');
+                console.log('👤 Nouveau visiteur enregistré');
+            } else {
+                console.log('📄 Page vue enregistrée');
+            }
+        }
+    } catch (err) {
+        console.error('Erreur compteur visites:', err);
+    }
+}
+
+// ============================================
+// BARRE DATE & SAINT DU JOUR
+// ============================================
+function initDateBar() {
+    const dayEl = document.getElementById('dateBarDay');
+    const saintEl = document.getElementById('dateBarSaint');
+    if (!dayEl || !saintEl) return;
+
+    // Saints du jour (index 0 = 1er janvier)
+    const saints = [
+        // Janvier
+        "Marie","Basile","Geneviève","Odilon","Édouard","Melchior","Raymond","Lucien","Alix","Guillaume",
+        "Paulin","Tatiana","Yvette","Nina","Rémi","Marcel","Roseline","Prisca","Marius","Sébastien",
+        "Agnès","Vincent","Barnard","François de Sales","Conv. de Paul","Paule","Angèle","Thomas d'Aquin","Gildas","Martine","Marcelle",
+        // Février
+        "Ella","Présentation","Blaise","Véronique","Agathe","Gaston","Eugénie","Jacqueline","Apolline","Arnaud",
+        "N-D de Lourdes","Félix","Béatrice","Valentin","Claude","Julienne","Alexis","Bernadette","Gabin","Aimée",
+        "Damien","Isabelle","Lazare","Modeste","Roméo","Nestor","Honorine","Romain",
+        // Mars
+        "Aubin","Charles le Bon","Guénolé","Casimir","Olive","Colette","Félicité","Jean de Dieu","Françoise","Vivien",
+        "Rosine","Justine","Rodrigue","Mathilde","Louise","Bénédicte","Patrick","Cyrille","Joseph","Herbert",
+        "Clémence","Léa","Victorien","Cath. de Suède","Humbert","Larissa","Habib","Gontran","Gwladys","Amédée","Benjamin",
+        // Avril
+        "Hugues","Sandrine","Richard","Isidore","Irène","Marcellin","J-B de la Salle","Julie","Gautier","Fulbert",
+        "Stanislas","Jules","Ida","Maxime","Paterne","Benoît-Joseph","Anicet","Parfait","Emma","Odette",
+        "Anselme","Alexandre","Georges","Fidèle","Marc","Alida","Zita","Valérie","Cath. de Sienne","Robert",
+        // Mai
+        "Jérémie","Boris","Philippe","Sylvain","Judith","Prudence","Gisèle","Désiré","Pacôme","Solange",
+        "Estelle","Achille","Rolande","Matthias","Denise","Honoré","Pascal","Éric","Yves","Bernardin",
+        "Constantin","Émile","Didier","Donatien","Sophie","Bérenger","Augustin","Germain","Aymar","Ferdinand","Visit. de Marie",
+        // Juin
+        "Justin","Blandine","Kévin","Clotilde","Igor","Norbert","Gilbert","Médard","Diane","Landry",
+        "Barnabé","Guy","Antoine de Padoue","Élisée","Germaine","J-F Régis","Hervé","Léonce","Romuald","Silvère",
+        "Rodolphe","Alban","Audrey","Jean-Baptiste","Prosper","Anthelme","Fernand","Irénée","Pierre et Paul","Martial",
+        // Juillet
+        "Thierry","Martinien","Thomas","Florent","Antoine","Mariette","Raoul","Thibaut","Amandine","Ulrich",
+        "Benoît","Olivier","Henri et Joël","Fête nationale","Donald","N-D du Carmel","Charlotte","Frédéric","Arsène","Marina",
+        "Victor","Marie-Madeleine","Brigitte","Christine","Jacques","Anne et Joachim","Nathalie","Samson","Marthe","Juliette","Ignace de Loyola",
+        // Août
+        "Alphonse","Julien Eymard","Lydie","Jean-M Vianney","Abel","Transfiguration","Gaëtan","Dominique","Amour","Laurent",
+        "Claire","Clarisse","Hippolyte","Evrard","Assomption","Armel","Hyacinthe","Hélène","Jean Eudes","Bernard",
+        "Christophe","Fabrice","Rose de Lima","Barthélemy","Louis","Natacha","Monique","Augustin","Sabine","Fiacre","Aristide",
+        // Septembre
+        "Gilles","Ingrid","Grégoire","Rosalie","Raïssa","Bertrand","Reine","Nativité","Alain","Inès",
+        "Adelphe","Apollinaire","Aimé","Materne","Roland","Édith","Renaud","Nadège","Émilie","Davy",
+        "Matthieu","Maurice","Constance","Thècle","Hermann","Côme et Damien","Vinc. de Paul","Venceslas","Michel","Jérôme",
+        // Octobre
+        "Thérèse","Léger","Gérard","François d'Assise","Fleur","Bruno","Serge","Pélagie","Denis","Ghislain",
+        "Firmin","Wilfrid","Géraud","Juste","Thérèse d'Avila","Edwige","Baudouin","Luc","René","Adeline",
+        "Céline","Élodie","Jean de Capistran","Florentin","Crépin","Dimitri","Émeline","Simon et Jude","Narcisse","Bienvenu","Quentin",
+        // Novembre
+        "Toussaint","Défunts","Hubert","Charles","Sylvie","Bertille","Carine","Geoffrey","Théodore","Léon",
+        "Martin","Christian","Brice","Sidoine","Albert","Marguerite","Élisabeth","Aude","Tanguy","Edmond",
+        "Présent. de Marie","Cécile","Clément","Flora","Catherine","Delphine","Sévrin","Jacq. de la Marche","Saturnin","André",
+        // Décembre
+        "Florence","Viviane","François Xavier","Barbara","Gérald","Nicolas","Ambroise","Immac. Conception","Pierre Fourier","Romaric",
+        "Daniel","Jeanne de Chantal","Lucie","Odile","Ninon","Alice","Gaël","Gatien","Urbain","Abraham",
+        "Pierre Canisius","Françoise-Xavière","Armand","Adèle","Noël","Étienne","Jean","Innocents","David","Roger","Sylvestre"
+    ];
+
+    function updateDateBar() {
+        const now = new Date();
+        const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+        const mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+        
+        const heure = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const jour = jours[now.getDay()];
+        const numero = now.getDate();
+        const nomMois = mois[now.getMonth()];
+        
+        dayEl.textContent = `${jour} ${numero} ${nomMois} · ${heure}h${minutes}`;
+        
+        // Saint du jour
+        const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000) - 1;
+        const saint = saints[dayOfYear] || '';
+        if (saint) {
+            saintEl.textContent = `Bonne fête aux ${saint} !`;
+        }
+    }
+
+    updateDateBar();
+    setInterval(updateDateBar, 30000); // Mise à jour toutes les 30 secondes
+}
+
+// ============================================
+// SECTION SPORT - FC MONTCEAU BOURGOGNE
+// ============================================
+
+function initSport() {
+    loadSportData();
+}
+
+async function loadSportData() {
+    const loading = document.getElementById('sportLoading');
+    const content = document.getElementById('sportContent');
+    
+    if (!loading || !content) return;
+
+    try {
+        const supabaseClient = getSupabaseClient();
+        if (!supabaseClient) {
+            loading.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.8rem;">Données sport indisponibles</span>';
+            return;
+        }
+
+        const { data, error } = await supabaseClient
+            .from('sport_data')
+            .select('*')
+            .order('updated_at', { ascending: false })
+            .limit(1)
+            .single();
+
+        if (error || !data) {
+            console.warn('Sport: pas de données', error);
+            loading.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.8rem;">Données sport indisponibles</span>';
+            return;
+        }
+
+        // === DERNIER MATCH ===
+        const lastDate = document.getElementById('sportLastDate');
+        const lastHome = document.getElementById('sportLastHome');
+        const lastAway = document.getElementById('sportLastAway');
+        const lastHomeScore = document.getElementById('sportLastHomeScore');
+        const lastAwayScore = document.getElementById('sportLastAwayScore');
+        const resultIndicator = document.getElementById('sportResultIndicator');
+        const resultLetter = document.getElementById('sportResultLetter');
+
+        if (data.last_match_date) {
+            const matchDate = new Date(data.last_match_date + 'T00:00:00');
+            lastDate.textContent = (data.last_match_matchday || '') + ' · ' + matchDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+            
+            lastHome.textContent = data.last_match_home_team;
+            lastAway.textContent = data.last_match_away_team;
+            lastHomeScore.textContent = data.last_match_home_score;
+            lastAwayScore.textContent = data.last_match_away_score;
+
+            if (data.last_match_is_home) {
+                lastHome.classList.add('is-fcmb');
+            } else {
+                lastAway.classList.add('is-fcmb');
+            }
+
+            const fcmbScore = data.last_match_is_home ? data.last_match_home_score : data.last_match_away_score;
+            const oppScore = data.last_match_is_home ? data.last_match_away_score : data.last_match_home_score;
+            
+            if (fcmbScore > oppScore) {
+                resultIndicator.classList.add('win');
+                resultLetter.textContent = 'V';
+            } else if (fcmbScore < oppScore) {
+                resultIndicator.classList.add('loss');
+                resultLetter.textContent = 'D';
+            } else {
+                resultIndicator.classList.add('draw');
+                resultLetter.textContent = 'N';
+            }
+        }
+
+        // === PROCHAIN MATCH ===
+        const nextDate = document.getElementById('sportNextDate');
+        const nextHome = document.getElementById('sportNextHome');
+        const nextAway = document.getElementById('sportNextAway');
+        const nextTime = document.getElementById('sportNextTime');
+        const nextLabel = document.getElementById('sportNextLabel');
+
+        if (data.next_match_date) {
+            const nDate = new Date(data.next_match_date + 'T00:00:00');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const matchDay = new Date(nDate);
+            matchDay.setHours(0, 0, 0, 0);
+            
+            const isToday = matchDay.getTime() === today.getTime();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const isTomorrow = matchDay.getTime() === tomorrow.getTime();
+
+            let dateStr = (data.next_match_matchday || '') + ' · ';
+            if (isToday) {
+                dateStr += '<span class="sport-today-badge">Aujourd\'hui !</span>';
+                nextLabel.innerHTML = '🔴 Ce soir !';
+            } else if (isTomorrow) {
+                dateStr += '<span class="sport-today-badge">Demain</span>';
+            } else {
+                dateStr += nDate.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+            }
+            nextDate.innerHTML = dateStr;
+
+            nextHome.textContent = data.next_match_home_team;
+            nextAway.textContent = data.next_match_away_team;
+            nextTime.textContent = data.next_match_time || '';
+
+            if (data.next_match_is_home) {
+                nextHome.classList.add('is-fcmb');
+            } else {
+                nextAway.classList.add('is-fcmb');
+            }
+        }
+
+        // === CLASSEMENT ===
+        const posEl = document.getElementById('sportPosition');
+        const statsEl = document.getElementById('sportStats');
+
+        if (data.standing_position) {
+            posEl.textContent = data.standing_position + (data.standing_position === 1 ? 'er' : 'e');
+            posEl.classList.add(data.standing_position <= 3 ? 'top3' : 'mid');
+
+            const diff = data.standing_goals_for - data.standing_goals_against;
+            const diffStr = diff > 0 ? '+' + diff : diff.toString();
+            statsEl.innerHTML = '<strong>' + data.standing_points + ' pts</strong> · ' + data.standing_played + 'J · ' + data.standing_won + 'V ' + data.standing_drawn + 'N ' + data.standing_lost + 'D · ' + diffStr;
+        }
+
+        // === FORME ===
+        const formEl = document.getElementById('sportForm');
+        if (data.form) {
+            const formArr = data.form.split(',');
+            formEl.innerHTML = formArr.map(function(f) {
+                const letter = f.trim();
+                let cls = '';
+                if (letter === 'V') cls = 'win';
+                else if (letter === 'N') cls = 'draw';
+                else if (letter === 'D') cls = 'loss';
+                return '<div class="sport-form-dot ' + cls + '">' + letter + '</div>';
+            }).join('');
+        }
+
+        // === CLASSEMENT COMPLET ===
+        if (data.standings_json && data.standings_json.length > 0) {
+            window._standingsData = data.standings_json;
+        }
+
+        loading.style.display = 'none';
+        content.style.display = 'block';
+
+        console.log('⚽ Sport: données chargées');
+
+    } catch (err) {
+        console.error('Sport: erreur chargement', err);
+        loading.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.8rem;">Erreur de chargement</span>';
+    }
+}
+
+// ============================================
+// MODAL CLASSEMENT R1 HERBELIN
+// ============================================
+function showStandingsModal() {
+    var overlay = document.getElementById('standingsModalOverlay');
+    var modal = document.getElementById('standingsModal');
+    var body = document.getElementById('standingsModalBody');
+    if (!overlay || !modal || !body) return;
+
+    overlay.classList.add('active');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    var standings = window._standingsData;
+    if (!standings || standings.length === 0) {
+        body.innerHTML = '<div class="standings-loading" style="flex-direction: column; gap: 0.8rem; padding: 2rem 1rem;">' +
+            '<span class="material-icons" style="font-size: 2rem; color: #fbbf24;">emoji_events</span>' +
+            '<div style="text-align: center; font-size: 0.8rem; color: var(--text-secondary);">Le classement complet sera disponible<br>après la prochaine mise à jour du scraper.</div>' +
+            '<a href="https://www.sportcorico.com/championnat/bourgogne-franche-comte-regional-1-herbelin-3/phase-unique/poule-a" target="_blank" rel="noopener" style="color: #818cf8; font-size: 0.75rem; text-decoration: none;">Voir sur SportCorico →</a>' +
+            '</div>';
+        return;
+    }
+
+    // Trier par position
+    standings.sort(function(a, b) { return a.position - b.position; });
+    var totalTeams = standings.length;
+
+    var html = '<table class="standings-table">';
+    html += '<thead><tr><th>#</th><th>Équipe</th><th>Pts</th><th>J</th><th>V</th><th>N</th><th>D</th><th>BP</th><th>BC</th><th>Diff</th></tr></thead>';
+    html += '<tbody>';
+
+    standings.forEach(function(team) {
+        var isMontceau = team.team.toLowerCase().includes('montceau');
+        var isTop3 = team.position <= 3;
+        var isBottom3 = team.position > totalTeams - 3;
+        var posClass = isTop3 ? 'top3' : (isBottom3 ? 'bottom3' : '');
+        var diff = team.diff || (team.goalsFor - team.goalsAgainst);
+        var diffStr = diff > 0 ? '+' + diff : diff.toString();
+        var diffClass = diff > 0 ? 'standings-diff-pos' : (diff < 0 ? 'standings-diff-neg' : '');
+
+        // Raccourcir les noms longs
+        var displayName = team.team
+            .replace(/\s*\d+$/, '')
+            .replace('A.S.A.', 'ASA')
+            .replace('JURA DOLOIS FOOTBALL', 'Jura Dolois')
+            .replace('FAUVERNEY ROUVRES', 'Fauverney R.');
+
+        // Capitaliser proprement
+        displayName = displayName.split(' ').map(function(w) {
+            if (w.length <= 2) return w;
+            return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+        }).join(' ');
+
+        html += '<tr class="' + (isMontceau ? 'is-montceau' : '') + '">';
+        html += '<td><span class="standings-pos ' + posClass + '">' + team.position + '</span></td>';
+        html += '<td>' + displayName + '</td>';
+        html += '<td class="standings-pts">' + team.points + '</td>';
+        html += '<td>' + team.played + '</td>';
+        html += '<td>' + team.won + '</td>';
+        html += '<td>' + team.drawn + '</td>';
+        html += '<td>' + team.lost + '</td>';
+        html += '<td>' + team.goalsFor + '</td>';
+        html += '<td>' + team.goalsAgainst + '</td>';
+        html += '<td class="' + diffClass + '">' + diffStr + '</td>';
+        html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+    body.innerHTML = html;
+}
+
+function closeStandingsModal() {
+    var overlay = document.getElementById('standingsModalOverlay');
+    var modal = document.getElementById('standingsModal');
+    if (overlay) overlay.classList.remove('active');
+    if (modal) modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
