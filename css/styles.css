@@ -105,10 +105,11 @@ body {
 
 .header-title {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
     flex: 1;
     justify-content: center;
+    gap: 0;
 }
 
 .header-left-btns,
@@ -124,14 +125,32 @@ body {
 }
 
 .header h1 {
+    font-family: 'Outfit', sans-serif;
     font-size: 1.5rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #ffffff 0%, var(--primary-light) 50%, var(--primary) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: -0.5px;
+    font-weight: 900;
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+    letter-spacing: -1px;
     white-space: nowrap;
+    line-height: 1.1;
+}
+
+.header-amp {
+    color: #f59e0b;
+    -webkit-text-fill-color: #f59e0b;
+    font-weight: 400;
+    font-style: italic;
+    padding: 0 1px;
+}
+
+.header-subtitle {
+    font-size: 0.55rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.4);
+    -webkit-text-fill-color: rgba(255, 255, 255, 0.4);
+    margin-top: 1px;
 }
 
 /* Boutons du header */
@@ -248,10 +267,13 @@ body {
 }
 
 [data-theme="light"] .header h1 {
-    background: linear-gradient(135deg, #1e293b 0%, var(--primary) 50%, var(--primary-light) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #1e293b;
+    -webkit-text-fill-color: #1e293b;
+}
+
+[data-theme="light"] .header-subtitle {
+    color: rgba(30, 41, 59, 0.4);
+    -webkit-text-fill-color: rgba(30, 41, 59, 0.4);
 }
 
 /* ============================================
