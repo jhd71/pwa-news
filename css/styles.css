@@ -3853,6 +3853,10 @@ a.agenda-item:hover {
     font-size: 0.9rem;
     font-weight: 700;
     color: var(--text-primary, #eee);
+    background: linear-gradient(135deg, #10b981, #059669);
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    color: white;
 }
 .standings-modal-title .material-icons {
     font-size: 1.2rem;
