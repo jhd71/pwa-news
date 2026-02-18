@@ -132,32 +132,81 @@
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .form-hint { font-size: 0.8rem; color: var(--text-muted); }
         
+        /* Compteur de caractères */
+        .char-counter {
+            display: flex;
+            justify-content: flex-end;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+            font-variant-numeric: tabular-nums;
+            transition: color 0.2s;
+        }
+        .char-counter.warn { color: #f59e0b; font-weight: 600; }
+        .char-counter.danger { color: #ef4444; font-weight: 600; }
+        
+        /* Bandeau brouillon */
+        .draft-banner {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-size: 0.8rem;
+            color: #f59e0b;
+        }
+        .draft-banner.show { display: flex; }
+        .draft-banner .material-icons { font-size: 1.1rem; }
+        .draft-restore-btn {
+            margin-left: auto;
+            padding: 0.35rem 0.75rem;
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 8px;
+            color: inherit;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .draft-discard-btn {
+            padding: 0.3rem 0.5rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        
         [data-theme="light"] .form-input,
         [data-theme="light"] .form-select,
         [data-theme="light"] .form-textarea { background: white; border-color: #e2e8f0; }
         
         /* Catégories */
-        .category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+        .category-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; }
         
         .category-option {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.3rem;
-            padding: 0.75rem;
+            gap: 0.25rem;
+            padding: 0.6rem 0.25rem;
             background: var(--bg-elevated);
             border: 2px solid var(--border-color);
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.25s;
         }
         
-        .category-option:hover { border-color: var(--primary-light); }
-        .category-option.selected { border-color: var(--primary); background: rgba(99, 102, 241, 0.15); }
+        .category-option:hover { border-color: var(--primary-light); transform: translateY(-1px); }
+        .category-option.selected { border-color: var(--primary); background: rgba(99, 102, 241, 0.15); box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.3); transform: scale(1.02); }
         .category-option input { display: none; }
-        .category-option-icon { font-size: 1.5rem; }
-        .category-option-name { font-size: 0.8rem; font-weight: 500; color: var(--text-secondary); }
-        .category-option.selected .category-option-name { color: var(--primary-light); font-weight: 600; }
+        .category-option-icon { font-size: 1.35rem; line-height: 1; }
+        .category-option-name { font-size: 0.65rem; font-weight: 600; color: var(--text-secondary); text-align: center; line-height: 1.2; }
+        .category-option.selected .category-option-name { color: var(--primary-light); font-weight: 700; }
         
         [data-theme="light"] .category-option { background: white; }
         [data-theme="light"] .category-option.selected { background: rgba(99, 102, 241, 0.1); }
@@ -712,7 +761,7 @@
         .toast.error { border-color: #ef4444; }
         
         @media (max-width: 480px) {
-            .category-grid { grid-template-columns: repeat(2, 1fr); }
+            .category-grid { grid-template-columns: repeat(3, 1fr); }
             .form-row { grid-template-columns: 1fr; }
             .recurrence-day { width: 42px; height: 42px; font-size: 0.8rem; }
         }
@@ -740,12 +789,21 @@
         </div>
         
         <form class="event-form" id="eventForm">
+            <!-- Bandeau brouillon -->
+            <div class="draft-banner" id="draftBanner">
+                <span class="material-icons">edit_note</span>
+                <span>Brouillon sauvegardé</span>
+                <button type="button" class="draft-restore-btn" onclick="restoreDraft()">Restaurer</button>
+                <button type="button" class="draft-discard-btn" onclick="discardDraft()">✕</button>
+            </div>
+            
             <div class="form-group">
                 <label class="form-label">
                     <span class="material-icons">title</span>
                     Titre de l'événement <span class="required">*</span>
                 </label>
                 <input type="text" class="form-input" id="eventTitle" placeholder="Ex: Marché de Noël, Concert Jazz..." maxlength="200" required>
+                <div class="char-counter" id="titleCounter">0 / 200</div>
             </div>
             
             <div class="form-group">
@@ -760,9 +818,19 @@
                         <span class="category-option-name">Sport</span>
                     </label>
                     <label class="category-option">
-                        <input type="radio" name="category" value="culture">
+                        <input type="radio" name="category" value="concert">
+                        <span class="category-option-icon">🎵</span>
+                        <span class="category-option-name">Concert</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="radio" name="category" value="spectacle">
                         <span class="category-option-icon">🎭</span>
-                        <span class="category-option-name">Culture</span>
+                        <span class="category-option-name">Spectacle</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="radio" name="category" value="expo">
+                        <span class="category-option-icon">🖼️</span>
+                        <span class="category-option-name">Expo</span>
                     </label>
                     <label class="category-option">
                         <input type="radio" name="category" value="marche">
@@ -771,13 +839,8 @@
                     </label>
                     <label class="category-option">
                         <input type="radio" name="category" value="brocante">
-                        <span class="category-option-icon">🏷️</span>
+                        <span class="category-option-icon">📦</span>
                         <span class="category-option-name">Brocante</span>
-                    </label>
-                    <label class="category-option">
-                        <input type="radio" name="category" value="concert">
-                        <span class="category-option-icon">🎵</span>
-                        <span class="category-option-name">Concert</span>
                     </label>
                     <label class="category-option">
                         <input type="radio" name="category" value="fete">
@@ -785,9 +848,29 @@
                         <span class="category-option-name">Fête</span>
                     </label>
                     <label class="category-option">
-                        <input type="radio" name="category" value="autre">
-                        <span class="category-option-icon">📌</span>
-                        <span class="category-option-name">Autre</span>
+                        <input type="radio" name="category" value="repas">
+                        <span class="category-option-icon">🍽️</span>
+                        <span class="category-option-name">Repas</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="radio" name="category" value="atelier">
+                        <span class="category-option-icon">🎨</span>
+                        <span class="category-option-name">Atelier</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="radio" name="category" value="enfants">
+                        <span class="category-option-icon">👨‍👩‍👧</span>
+                        <span class="category-option-name">Famille</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="radio" name="category" value="nature">
+                        <span class="category-option-icon">🥾</span>
+                        <span class="category-option-name">Rando</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="radio" name="category" value="solidarite">
+                        <span class="category-option-icon">🤝</span>
+                        <span class="category-option-name">Solidarité</span>
                     </label>
                 </div>
             </div>
@@ -878,7 +961,7 @@
                     Description
                 </label>
                 <textarea class="form-textarea" id="eventDescription" placeholder="Décrivez votre événement..." maxlength="1000"></textarea>
-                <span class="form-hint">Max. 1000 caractères</span>
+                <div class="char-counter" id="descCounter">0 / 1000</div>
             </div>
             
             <div class="form-group">
@@ -1087,6 +1170,8 @@
             initPhotoUpload();
             initForm();
             setMinDate();
+            initCharCounters();
+            initDraft();
         });
         
         function initTheme() {
@@ -1094,6 +1179,88 @@
             if (savedTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
             }
+        }
+        
+        // === COMPTEUR DE CARACTÈRES ===
+        function updateCharCounter(input, counterId, max) {
+            const counter = document.getElementById(counterId);
+            if (!counter) return;
+            const len = input.value.length;
+            counter.textContent = len + ' / ' + max;
+            counter.classList.remove('warn', 'danger');
+            if (len > max * 0.9) counter.classList.add('danger');
+            else if (len > max * 0.75) counter.classList.add('warn');
+        }
+        
+        function initCharCounters() {
+            const title = document.getElementById('eventTitle');
+            const desc = document.getElementById('eventDescription');
+            if (title) title.addEventListener('input', () => updateCharCounter(title, 'titleCounter', 200));
+            if (desc) desc.addEventListener('input', () => updateCharCounter(desc, 'descCounter', 1000));
+        }
+        
+        // === BROUILLON AUTOMATIQUE ===
+        const EVT_DRAFT_KEY = 'proposer_evt_draft';
+        
+        function saveDraft() {
+            const t = document.getElementById('eventTitle').value;
+            const d = document.getElementById('eventDescription').value;
+            if (!t && !d) return;
+            const cat = document.querySelector('input[name="category"]:checked');
+            const draft = {
+                title: t,
+                category: cat ? cat.value : null,
+                description: d,
+                location: document.getElementById('eventLocation').value,
+                link: document.getElementById('eventLink').value,
+                author: document.getElementById('eventAuthor').value,
+                date: document.getElementById('eventDate').value,
+                savedAt: Date.now()
+            };
+            localStorage.setItem(EVT_DRAFT_KEY, JSON.stringify(draft));
+        }
+        
+        window.restoreDraft = function() {
+            try {
+                const draft = JSON.parse(localStorage.getItem(EVT_DRAFT_KEY));
+                if (!draft) return;
+                if (draft.category) {
+                    const radio = document.querySelector('input[name="category"][value="' + draft.category + '"]');
+                    if (radio) {
+                        radio.checked = true;
+                        document.querySelectorAll('.category-option').forEach(o => o.classList.remove('selected'));
+                        radio.closest('.category-option').classList.add('selected');
+                    }
+                }
+                if (draft.title) { document.getElementById('eventTitle').value = draft.title; updateCharCounter(document.getElementById('eventTitle'), 'titleCounter', 200); }
+                if (draft.description) { document.getElementById('eventDescription').value = draft.description; updateCharCounter(document.getElementById('eventDescription'), 'descCounter', 1000); }
+                if (draft.location) document.getElementById('eventLocation').value = draft.location;
+                if (draft.link) document.getElementById('eventLink').value = draft.link;
+                if (draft.author) document.getElementById('eventAuthor').value = draft.author;
+                if (draft.date) document.getElementById('eventDate').value = draft.date;
+                document.getElementById('draftBanner').classList.remove('show');
+                showToast('Brouillon restauré ✏️');
+            } catch(e) { console.log('Erreur restauration:', e); }
+        };
+        
+        window.discardDraft = function() {
+            localStorage.removeItem(EVT_DRAFT_KEY);
+            document.getElementById('draftBanner').classList.remove('show');
+        };
+        
+        function initDraft() {
+            try {
+                const raw = localStorage.getItem(EVT_DRAFT_KEY);
+                if (!raw) return;
+                const draft = JSON.parse(raw);
+                if (draft && (draft.title || draft.description) && (Date.now() - draft.savedAt < 86400000)) {
+                    document.getElementById('draftBanner').classList.add('show');
+                } else {
+                    localStorage.removeItem(EVT_DRAFT_KEY);
+                }
+            } catch(e) {}
+            // Auto-save toutes les 10 secondes
+            setInterval(saveDraft, 10000);
         }
         
         function initCategorySelection() {
@@ -1612,6 +1779,7 @@
                     
                     showToast('Événement proposé avec succès ! 🎉');
                     
+                    localStorage.removeItem(EVT_DRAFT_KEY);
                     document.getElementById('eventForm').style.display = 'none';
                     document.getElementById('successMessage').classList.add('show');
                     

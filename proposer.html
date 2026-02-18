@@ -195,10 +195,76 @@
             margin-top: 0.35rem;
         }
         
+        /* Compteur de caractères */
+        .char-counter {
+            display: flex;
+            justify-content: flex-end;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+            font-variant-numeric: tabular-nums;
+            transition: color 0.2s;
+        }
+        .char-counter.warn { color: #f59e0b; font-weight: 600; }
+        .char-counter.danger { color: #ef4444; font-weight: 600; }
+        
+        /* Bandeau brouillon */
+        .draft-banner {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-size: 0.8rem;
+            color: #f59e0b;
+        }
+        .draft-banner.show { display: flex; }
+        .draft-banner .material-icons { font-size: 1.1rem; }
+        .draft-restore-btn {
+            margin-left: auto;
+            padding: 0.35rem 0.75rem;
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 8px;
+            color: inherit;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .draft-restore-btn:hover { background: rgba(245, 158, 11, 0.35); }
+        .draft-discard-btn {
+            padding: 0.3rem 0.5rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        
+        /* Étapes numérotées */
+        .form-step-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(135deg, var(--primary, #6366f1), #8b5cf6);
+            border-radius: 50%;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
         /* Types d'actualité */
         .type-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 0.5rem;
         }
         
@@ -206,22 +272,25 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.35rem;
-            padding: 0.75rem 0.5rem;
+            gap: 0.3rem;
+            padding: 0.6rem 0.25rem;
             background: rgba(255, 255, 255, 0.03);
             border: 2px solid var(--border-color);
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
         }
         
         .type-option:hover {
             background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-1px);
         }
         
         .type-option.selected {
             border-color: var(--primary);
             background: rgba(99, 102, 241, 0.15) !important;
+            box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.3);
+            transform: scale(1.02);
         }
         
         .type-option input {
@@ -229,14 +298,20 @@
         }
         
         .type-icon {
-            font-size: 1.5rem;
+            font-size: 1.35rem;
+            line-height: 1;
         }
         
         .type-label {
-            font-size: 0.7rem;
+            font-size: 0.62rem;
             font-weight: 600;
             color: var(--text-secondary);
             text-align: center;
+            line-height: 1.2;
+        }
+        
+        .type-option.selected .type-label {
+            color: var(--primary-light, #818cf8);
         }
         
         /* === BOUTONS PHOTO === */
@@ -972,7 +1047,7 @@
 
         @media (max-width: 400px) {
             .type-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
             }
         }
     </style>
@@ -995,11 +1070,19 @@
         
         <!-- Formulaire -->
         <div class="propose-form-container">
+            <!-- Bandeau brouillon -->
+            <div class="draft-banner" id="draftBanner">
+                <span class="material-icons">edit_note</span>
+                <span>Brouillon sauvegardé</span>
+                <button class="draft-restore-btn" onclick="restoreDraft()">Restaurer</button>
+                <button class="draft-discard-btn" onclick="discardDraft()">✕</button>
+            </div>
+            
             <form class="propose-form" id="proposeForm">
                 <!-- Type -->
                 <div class="form-group">
                     <label class="form-label">
-                        <span class="material-icons" style="font-size: 1.1rem;">category</span>
+                        <span class="form-step-badge">1</span>
                         Type d'actualité <span class="required">*</span>
                     </label>
                     <div class="type-grid">
@@ -1025,17 +1108,37 @@
                         </label>
                         <label class="type-option" data-type="economie">
                             <input type="radio" name="type" value="economie">
-                            <span class="type-icon">💼</span>
-                            <span class="type-label">Économie</span>
+                            <span class="type-icon">🏪</span>
+                            <span class="type-label">Commerce</span>
+                        </label>
+                        <label class="type-option" data-type="solidarite">
+                            <input type="radio" name="type" value="solidarite">
+                            <span class="type-icon">🤝</span>
+                            <span class="type-label">Solidarité</span>
+                        </label>
+                        <label class="type-option" data-type="travaux">
+                            <input type="radio" name="type" value="travaux">
+                            <span class="type-icon">🚧</span>
+                            <span class="type-label">Travaux</span>
+                        </label>
+                        <label class="type-option" data-type="environnement">
+                            <input type="radio" name="type" value="environnement">
+                            <span class="type-icon">🌿</span>
+                            <span class="type-label">Environnement</span>
+                        </label>
+                        <label class="type-option" data-type="education">
+                            <input type="radio" name="type" value="education">
+                            <span class="type-icon">🎓</span>
+                            <span class="type-label">Éducation</span>
                         </label>
                         <label class="type-option" data-type="pratique">
                             <input type="radio" name="type" value="pratique">
-                            <span class="type-icon">💡</span>
+                            <span class="type-icon">ℹ️</span>
                             <span class="type-label">Info pratique</span>
                         </label>
                         <label class="type-option" data-type="insolite">
                             <input type="radio" name="type" value="insolite">
-                            <span class="type-icon">🤔</span>
+                            <span class="type-icon">😮</span>
                             <span class="type-label">Insolite</span>
                         </label>
                         <label class="type-option" data-type="photo">
@@ -1043,31 +1146,27 @@
                             <span class="type-icon">📸</span>
                             <span class="type-label">Photo/Vidéo</span>
                         </label>
-                        <label class="type-option" data-type="autre">
-                            <input type="radio" name="type" value="autre">
-                            <span class="type-icon">📋</span>
-                            <span class="type-label">Autre</span>
-                        </label>
                     </div>
                 </div>
                 
                 <!-- Titre -->
                 <div class="form-group">
                     <label class="form-label">
-                        <span class="material-icons" style="font-size: 1.1rem;">title</span>
+                        <span class="form-step-badge">2</span>
                         Titre <span class="required">*</span>
                     </label>
                     <input type="text" class="form-input" name="title" id="title" placeholder="Ex: Brocante ce dimanche à Blanzy" required maxlength="150">
+                    <div class="char-counter" id="titleCounter">0 / 150</div>
                 </div>
                 
                 <!-- Contenu -->
                 <div class="form-group">
                     <label class="form-label">
-                        <span class="material-icons" style="font-size: 1.1rem;">description</span>
+                        <span class="form-step-badge">3</span>
                         Description <span class="required">*</span>
                     </label>
                     <textarea class="form-textarea" name="content" id="content" placeholder="Décrivez l'actualité en détail : quoi, où, quand, qui..." required maxlength="2000"></textarea>
-                    <div class="form-hint">Maximum 2000 caractères</div>
+                    <div class="char-counter" id="contentCounter">0 / 2000</div>
                 </div>
                 
                 <!-- Upload Photo -->
@@ -1894,6 +1993,101 @@
         var savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+        
+        // === COMPTEUR DE CARACTÈRES ===
+        function updateCharCounter(input, counterId, max) {
+            var counter = document.getElementById(counterId);
+            if (!counter) return;
+            var len = input.value.length;
+            counter.textContent = len + ' / ' + max;
+            counter.classList.remove('warn', 'danger');
+            if (len > max * 0.9) counter.classList.add('danger');
+            else if (len > max * 0.75) counter.classList.add('warn');
+        }
+        
+        // Brancher les compteurs
+        document.getElementById('title').addEventListener('input', function() {
+            updateCharCounter(this, 'titleCounter', 150);
+        });
+        document.getElementById('content').addEventListener('input', function() {
+            updateCharCounter(this, 'contentCounter', 2000);
+        });
+        
+        // === BROUILLON AUTOMATIQUE ===
+        var DRAFT_KEY = 'proposer_actu_draft';
+        
+        function saveDraft() {
+            var t = document.getElementById('title').value;
+            var c = document.getElementById('content').value;
+            if (!t && !c) return;
+            var draft = {
+                type: document.querySelector('input[name="type"]:checked') ? document.querySelector('input[name="type"]:checked').value : 'actualite',
+                title: t,
+                content: c,
+                location: document.getElementById('location').value,
+                link: document.getElementById('link').value,
+                author: document.getElementById('author').value,
+                email: document.getElementById('email').value,
+                savedAt: Date.now()
+            };
+            localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+        }
+        
+        function restoreDraft() {
+            try {
+                var draft = JSON.parse(localStorage.getItem(DRAFT_KEY));
+                if (!draft) return;
+                // Restaurer le type
+                var typeRadio = document.querySelector('input[name="type"][value="' + draft.type + '"]');
+                if (typeRadio) {
+                    typeRadio.checked = true;
+                    document.querySelectorAll('.type-option').forEach(function(o) { o.classList.remove('selected'); });
+                    typeRadio.closest('.type-option').classList.add('selected');
+                }
+                if (draft.title) { document.getElementById('title').value = draft.title; updateCharCounter(document.getElementById('title'), 'titleCounter', 150); }
+                if (draft.content) { document.getElementById('content').value = draft.content; updateCharCounter(document.getElementById('content'), 'contentCounter', 2000); }
+                if (draft.location) document.getElementById('location').value = draft.location;
+                if (draft.link) document.getElementById('link').value = draft.link;
+                if (draft.author) document.getElementById('author').value = draft.author;
+                if (draft.email) document.getElementById('email').value = draft.email;
+                document.getElementById('draftBanner').classList.remove('show');
+                showToast('Brouillon restauré ✏️', false);
+            } catch(e) { console.log('Erreur restauration brouillon:', e); }
+        }
+        
+        function discardDraft() {
+            localStorage.removeItem(DRAFT_KEY);
+            document.getElementById('draftBanner').classList.remove('show');
+        }
+        
+        // Vérifier s'il y a un brouillon au chargement
+        (function checkDraft() {
+            try {
+                var raw = localStorage.getItem(DRAFT_KEY);
+                if (!raw) return;
+                var draft = JSON.parse(raw);
+                if (draft && (draft.title || draft.content) && (Date.now() - draft.savedAt < 86400000)) {
+                    document.getElementById('draftBanner').classList.add('show');
+                } else {
+                    localStorage.removeItem(DRAFT_KEY);
+                }
+            } catch(e) {}
+        })();
+        
+        // Auto-save toutes les 10 secondes
+        setInterval(saveDraft, 10000);
+        
+        // Nettoyer le brouillon après envoi réussi
+        var _origSuccessEl = document.getElementById('successMessage');
+        if (_origSuccessEl) {
+            new MutationObserver(function(mutations) {
+                mutations.forEach(function(m) {
+                    if (m.target.style && m.target.style.display === 'block') {
+                        localStorage.removeItem(DRAFT_KEY);
+                    }
+                });
+            }).observe(_origSuccessEl, { attributes: true, attributeFilter: ['style'] });
         }
     </script>
     <!-- Cropper.js -->
