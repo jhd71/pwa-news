@@ -13,6 +13,7 @@
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
     <!-- Supabase -->
@@ -33,6 +34,18 @@
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
+            --input-bg: #22222b;
+        }
+
+        [data-theme="light"] {
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-elevated: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --input-bg: #f8fafc;
         }
 
         * {
@@ -72,6 +85,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .header-icon .material-icons {
@@ -79,29 +93,52 @@
             color: white;
         }
 
+        .header-info { flex: 1; min-width: 0; }
+
         .header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+
+        .header h1 .amp {
+            color: #f59e0b;
+            font-weight: 400;
+            font-style: italic;
         }
 
         .header p {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
-        .back-link {
-            margin-left: auto;
-            color: var(--text-muted);
-            text-decoration: none;
+        .header-actions {
             display: flex;
             align-items: center;
-            gap: 4px;
-            font-size: 0.9rem;
-            transition: color 0.2s;
+            gap: 0.5rem;
+            flex-shrink: 0;
         }
 
-        .back-link:hover {
-            color: var(--primary);
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50%;
+            color: var(--primary-light);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .header-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
 
         /* Cards */
@@ -111,6 +148,11 @@
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 20px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .card-title {
@@ -126,6 +168,31 @@
         .card-title .material-icons {
             color: var(--primary);
         }
+
+        .card-title .step-badge {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Character counter */
+        .char-counter {
+            text-align: right;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            transition: color 0.2s;
+        }
+        .char-counter.warn { color: var(--warning); }
+        .char-counter.danger { color: var(--danger); }
 
         /* URL Extractor */
         .url-input-group {
@@ -155,7 +222,7 @@
         .form-textarea {
             width: 100%;
             padding: 12px 16px;
-            background: #22222b;
+            background: var(--input-bg);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             color: var(--text-primary);
@@ -396,6 +463,24 @@
                 padding: 12px;
             }
 
+            .header {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .header h1 {
+                font-size: 1.1rem;
+            }
+
+            .header-actions {
+                gap: 0.4rem;
+            }
+
+            .header-btn {
+                width: 36px;
+                height: 36px;
+            }
+
             .url-input-group {
                 flex-direction: column;
             }
@@ -407,6 +492,10 @@
             .btn {
                 width: 100%;
             }
+
+            .card {
+                padding: 16px;
+            }
         }
     </style>
 </head>
@@ -417,21 +506,28 @@
             <div class="header-icon">
                 <span class="material-icons">post_add</span>
             </div>
-            <div>
-                <h1>Ajouter une info</h1>
+            <div class="header-info">
+                <h1>Actu <span class="amp">&</span> Média — Ajouter une info</h1>
                 <p>Infos de la communauté</p>
             </div>
-            <a href="index.html" class="back-link">
-                <span class="material-icons">arrow_back</span>
-                Retour
-            </a>
+            <div class="header-actions">
+                <button class="header-btn" onclick="toggleTheme()" title="Changer le thème">
+                    <span class="material-icons" id="themeIcon">light_mode</span>
+                </button>
+                <a href="admin.html" class="header-btn" title="Admin principal">
+                    <span class="material-icons">admin_panel_settings</span>
+                </a>
+                <a href="index.html" class="header-btn" title="Accueil">
+                    <span class="material-icons">home</span>
+                </a>
+            </div>
         </header>
 
         <!-- Étape 1: Extraction URL -->
         <div class="card">
             <h2 class="card-title">
-                <span class="material-icons">link</span>
-                1. Coller l'URL de l'article
+                <span class="step-badge">1</span>
+                Coller l'URL de l'article
             </h2>
             
             <div class="url-input-group">
@@ -450,8 +546,8 @@
         <!-- Étape 2: Formulaire -->
         <div class="card" id="formCard">
             <h2 class="card-title">
-                <span class="material-icons">edit</span>
-                2. Vérifier et publier
+                <span class="step-badge">2</span>
+                Vérifier et publier
             </h2>
 
             <form id="newsForm">
@@ -473,14 +569,18 @@
                 <div class="form-group">
                     <label class="form-label">Titre *</label>
                     <input type="text" id="newsTitle" class="form-input" required
-                           placeholder="Titre de l'article">
+                           placeholder="Titre de l'article" maxlength="200"
+                           oninput="updateCounter(this, 'titleCounter', 200)">
+                    <div class="char-counter" id="titleCounter">0/200</div>
                 </div>
 
                 <!-- Contenu -->
                 <div class="form-group">
                     <label class="form-label">Résumé / Description *</label>
                     <textarea id="newsContent" class="form-textarea" required
-                              placeholder="Court résumé de l'article..."></textarea>
+                              placeholder="Court résumé de l'article..." maxlength="3000"
+                              oninput="updateCounter(this, 'contentCounter', 3000)"></textarea>
+                    <div class="char-counter" id="contentCounter">0/3000</div>
                 </div>
 
                 <!-- Lieu -->
@@ -1014,6 +1114,52 @@
                 return false;
             }
         }
+
+        // === THÈME CLAIR/SOMBRE ===
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('admin_news_theme', next);
+            updateThemeIcon(next);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (icon) icon.textContent = theme === 'light' ? 'dark_mode' : 'light_mode';
+        }
+
+        function initTheme() {
+            const saved = localStorage.getItem('admin_news_theme') || localStorage.getItem('admin_theme') || 'dark';
+            if (saved === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+            updateThemeIcon(saved);
+        }
+        initTheme();
+
+        // === COMPTEUR DE CARACTÈRES ===
+        function updateCounter(input, counterId, max) {
+            const counter = document.getElementById(counterId);
+            if (!counter) return;
+            const len = input.value.length;
+            counter.textContent = `${len}/${max}`;
+            counter.classList.remove('warn', 'danger');
+            if (len > max * 0.9) counter.classList.add('danger');
+            else if (len > max * 0.75) counter.classList.add('warn');
+        }
+
+        // === RACCOURCI ÉCHAP ===
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('loginModal');
+                if (modal) {
+                    // Ne pas fermer le login modal (sécurité)
+                    return;
+                }
+            }
+        });
     </script>
 </body>
 </html>
