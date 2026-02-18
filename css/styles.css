@@ -4028,3 +4028,51 @@ a.agenda-item:hover {
 [data-theme="light"] .standings-modal-overlay {
     background: rgba(0,0,0,0.3);
 }
+
+/* ============================================
+   BOUTON RETOUR EN HAUT
+   ============================================ */
+.scroll-top-btn {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 900;
+}
+
+.scroll-top-btn.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.scroll-top-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+.scroll-top-btn:active {
+    transform: translateY(0);
+}
+
+.scroll-top-btn .material-icons {
+    font-size: 1.4rem;
+}
+
+[data-theme="light"] .scroll-top-btn {
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
