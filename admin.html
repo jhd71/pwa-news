@@ -7,6 +7,7 @@
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<!-- Cropper.js pour le recadrage -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
@@ -125,9 +126,12 @@
             z-index: 100;
         }
         
-        .admin-title { display: flex; align-items: center; gap: 0.75rem; font-size: 1.25rem; font-weight: 700; }
-        .admin-title span { font-size: 1.5rem; }
-        .admin-header-actions { display: flex; align-items: center; gap: 0.75rem; }
+        .admin-title { display: flex; align-items: center; gap: 0.75rem; }
+        .admin-title-text { display: flex; flex-direction: column; }
+        .admin-title-main { font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 900; letter-spacing: -0.5px; }
+        .admin-title-main .amp { color: #f59e0b; font-weight: 400; font-style: italic; }
+        .admin-title-sub { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.5px; }
+        .admin-header-actions { display: flex; align-items: center; gap: 0.5rem; }
         
         .home-btn {
             display: flex;
@@ -175,8 +179,16 @@
             border-radius: 12px;
             padding: 1rem;
             text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: default;
         }
         
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-icon { font-size: 1.25rem; margin-bottom: 0.35rem; }
         .stat-value { font-size: 1.75rem; font-weight: 700; color: var(--primary-light); }
         .stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem; }
         .stat-card.unread .stat-value { color: var(--warning); }
@@ -189,7 +201,11 @@
             padding: 0 1rem;
             border-bottom: 1px solid var(--glass-border);
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
         }
+        
+        .tabs::-webkit-scrollbar { display: none; }
         
         .tab {
             padding: 0.875rem 1rem;
@@ -1215,11 +1231,14 @@
         
         /* Responsive général admin */
         @media (max-width: 600px) {
-            .admin-header { flex-direction: column; gap: 1rem; text-align: center; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
-            .stat-card { padding: 0.75rem; }
-            .stat-value { font-size: 1.5rem; }
+            .admin-header { flex-direction: column; gap: 0.75rem; text-align: center; }
+            .admin-title { justify-content: center; }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+            .stat-card { padding: 0.75rem 0.5rem; }
+            .stat-value { font-size: 1.35rem; }
+            .stat-icon { font-size: 1rem; }
             .publish-form { padding: 0 0.5rem; }
+            .tab { padding: 0.75rem 0.65rem; font-size: 0.7rem; }
         }
 		
 		/* === COMMENTAIRES === */
@@ -1552,6 +1571,59 @@
 			display: flex;
 		}
 
+        /* === BARRE DE RECHERCHE === */
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        .search-bar:focus-within { border-color: var(--primary); }
+        .search-bar .material-icons { color: var(--text-muted); font-size: 1.1rem; }
+        .search-input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+        }
+        .search-input::placeholder { color: var(--text-muted); }
+        .search-count { font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; }
+
+        /* === HORODATAGE === */
+        .last-updated {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+        .last-updated .material-icons { font-size: 0.85rem; }
+        .last-updated.refreshing .material-icons { animation: spin 1s linear infinite; }
+
+        /* === PULSE INDICATOR === */
+        .auto-refresh-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 0.35rem;
+            animation: pulse 2s ease infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
     </style>
 </head>
 <body>
@@ -1575,7 +1647,12 @@
     <!-- DASHBOARD -->
     <div class="dashboard" id="dashboard">
         <header class="admin-header">
-            <div class="admin-title"><span>📊</span> Administration</div>
+            <div class="admin-title">
+                <div class="admin-title-text">
+                    <div class="admin-title-main">Actu <span class="amp">&</span> Média — Admin</div>
+                    <div class="admin-title-sub" id="adminDateTime"></div>
+                </div>
+            </div>
             <div class="admin-header-actions">
 			<button onclick="toggleTheme()" class="home-btn" title="Changer le thème"><span class="material-icons" id="themeIcon">light_mode</span></button>
 			<a href="index.html" class="home-btn" title="Accueil"><span class="material-icons">home</span></a>
@@ -1584,12 +1661,12 @@
         </header>
         
         <div class="stats-grid">
-            <div class="stat-card"><div class="stat-value" id="statTotalMessages">-</div><div class="stat-label">Messages</div></div>
-            <div class="stat-card unread"><div class="stat-value" id="statUnreadMessages">-</div><div class="stat-label">Non lus</div></div>
-            <div class="stat-card unread"><div class="stat-value" id="statPendingPropositions">-</div><div class="stat-label">Propositions</div></div>
-            <div class="stat-card unread"><div class="stat-value" id="statPendingComments">-</div><div class="stat-label">Commentaires</div></div>
-            <div class="stat-card unread"><div class="stat-value" id="statPendingEvents">-</div><div class="stat-label">Événements</div></div>
-            <div class="stat-card success"><div class="stat-value" id="statPublished">-</div><div class="stat-label">Publiées</div></div>
+            <div class="stat-card"><div class="stat-icon">📬</div><div class="stat-value" id="statTotalMessages">-</div><div class="stat-label">Messages</div></div>
+            <div class="stat-card unread"><div class="stat-icon">🔔</div><div class="stat-value" id="statUnreadMessages">-</div><div class="stat-label">Non lus</div></div>
+            <div class="stat-card unread"><div class="stat-icon">📰</div><div class="stat-value" id="statPendingPropositions">-</div><div class="stat-label">Propositions</div></div>
+            <div class="stat-card unread"><div class="stat-icon">💬</div><div class="stat-value" id="statPendingComments">-</div><div class="stat-label">Commentaires</div></div>
+            <div class="stat-card unread"><div class="stat-icon">📅</div><div class="stat-value" id="statPendingEvents">-</div><div class="stat-label">Événements</div></div>
+            <div class="stat-card success"><div class="stat-icon">✅</div><div class="stat-value" id="statPublished">-</div><div class="stat-label">Publiées</div></div>
         </div>
         
         <div class="tabs">
@@ -1683,13 +1760,25 @@
         
         <!-- MESSAGES -->
         <div class="tab-content" id="tabMessages">
+            <div class="last-updated" id="messagesUpdated"><span class="material-icons">schedule</span> <span>—</span></div>
             <button class="refresh-btn" onclick="loadMessages()"><span class="material-icons">refresh</span> Actualiser</button>
+            <div class="search-bar">
+                <span class="material-icons">search</span>
+                <input type="text" class="search-input" id="searchMessages" placeholder="Rechercher un message..." oninput="filterMessages()">
+                <span class="search-count" id="searchMessagesCount"></span>
+            </div>
             <div class="messages-list" id="messagesList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
         </div>
         
         <!-- PROPOSITIONS -->
         <div class="tab-content" id="tabPropositions">
+            <div class="last-updated" id="propositionsUpdated"><span class="material-icons">schedule</span> <span>—</span></div>
             <button class="refresh-btn" onclick="loadPropositions()"><span class="material-icons">refresh</span> Actualiser</button>
+            <div class="search-bar">
+                <span class="material-icons">search</span>
+                <input type="text" class="search-input" id="searchPropositions" placeholder="Rechercher une proposition..." oninput="filterPropositions()">
+                <span class="search-count" id="searchPropositionsCount"></span>
+            </div>
             <div class="messages-list" id="propositionsList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
         </div>
         
@@ -1924,7 +2013,13 @@
 		
         <!-- PUBLIÉES -->
         <div class="tab-content" id="tabPublished">
+            <div class="last-updated" id="publishedUpdated"><span class="material-icons">schedule</span> <span>—</span></div>
             <button class="refresh-btn" onclick="loadPublishedArticles()"><span class="material-icons">refresh</span> Actualiser</button>
+            <div class="search-bar">
+                <span class="material-icons">search</span>
+                <input type="text" class="search-input" id="searchPublished" placeholder="Rechercher une publication..." oninput="filterPublished()">
+                <span class="search-count" id="searchPublishedCount"></span>
+            </div>
             <div class="messages-list" id="publishedList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
         </div>
         
@@ -3179,159 +3274,6 @@
             document.getElementById('approvedCommentsList').style.display = tab === 'approved' ? 'block' : 'none';
         }
         
-		// ============================================
-        // COMMENTAIRES D'ÉVÉNEMENTS
-        // ============================================
-        
-        async function loadEventComments() {
-            const pendingContainer = document.getElementById('pendingEventCommentsList');
-            const approvedContainer = document.getElementById('approvedEventCommentsList');
-            
-            pendingContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
-            approvedContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
-            
-            try {
-                // Charger les commentaires en attente
-                const { data: pending, error: errPending } = await supabaseClient
-                    .from('event_comments')
-                    .select('*')
-                    .eq('status', 'pending')
-                    .order('created_at', { ascending: false });
-                
-                if (errPending) throw errPending;
-                
-                // Charger les commentaires approuvés
-                const { data: approved, error: errApproved } = await supabaseClient
-                    .from('event_comments')
-                    .select('*')
-                    .eq('status', 'approved')
-                    .order('created_at', { ascending: false });
-                
-                if (errApproved) throw errApproved;
-                
-                // Charger les titres des événements
-                const eventIds = [...new Set([...pending, ...approved].map(c => c.event_id))];
-                let eventTitles = {};
-                
-                if (eventIds.length > 0) {
-                    const { data: eventsData } = await supabaseClient
-                        .from('events')
-                        .select('id, title')
-                        .in('id', eventIds);
-                    
-                    if (eventsData) {
-                        eventsData.forEach(e => eventTitles[e.id] = e.title);
-                    }
-                }
-                
-                // Mettre à jour les compteurs
-                document.getElementById('badgeEventComments').textContent = pending.length;
-                document.getElementById('badgeEventComments').style.display = pending.length > 0 ? 'inline-flex' : 'none';
-                document.getElementById('countPendingEventComments').textContent = pending.length;
-                document.getElementById('countApprovedEventComments').textContent = approved.length;
-                
-                // Mettre à jour badge principal
-                const totalPending = pending.length + (parseInt(document.getElementById('countPending')?.textContent) || 0);
-                document.getElementById('badgeComments').textContent = totalPending;
-                document.getElementById('badgeComments').style.display = totalPending > 0 ? 'inline-flex' : 'none';
-                
-                // Afficher les commentaires en attente
-                if (pending.length === 0) {
-                    pendingContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💬</div><p>Aucun commentaire en attente</p></div>';
-                } else {
-                    pendingContainer.innerHTML = pending.map(c => renderEventCommentCard(c, eventTitles, 'pending')).join('');
-                }
-                
-                // Afficher les commentaires approuvés
-                if (approved.length === 0) {
-                    approvedContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">✅</div><p>Aucun commentaire approuvé</p></div>';
-                } else {
-                    approvedContainer.innerHTML = approved.map(c => renderEventCommentCard(c, eventTitles, 'approved')).join('');
-                }
-                
-                console.log('📅 Commentaires événements chargés:', pending.length, 'en attente,', approved.length, 'approuvés');
-                
-                // Notification toast si commentaires en attente
-                if (pending.length > 0) {
-                    showToast(`💬 ${pending.length} commentaire${pending.length > 1 ? 's' : ''} d'événement${pending.length > 1 ? 's' : ''} à modérer`);
-                }
-                
-            } catch (error) {
-                console.error('Erreur chargement commentaires événements:', error);
-                pendingContainer.innerHTML = '<div class="empty-state"><p>❌ Erreur de chargement</p></div>';
-            }
-        }
-        
-        function renderEventCommentCard(comment, eventTitles, status) {
-            const eventTitle = eventTitles[comment.event_id] || 'Événement #' + comment.event_id;
-            const date = new Date(comment.created_at);
-            const dateStr = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-            
-            return `
-                <div class="comment-card ${status}" style="border-left:3px solid #60a5fa;">
-                    <div class="comment-news-ref" style="color:#60a5fa;">
-                        <span class="material-icons" style="font-size:1rem;">event</span>
-                        ${escapeHtml(eventTitle.substring(0, 50))}${eventTitle.length > 50 ? '...' : ''}
-                    </div>
-                    <div class="comment-author">👤 ${escapeHtml(comment.author_name)}</div>
-                    <div class="comment-content">${escapeHtml(comment.content)}</div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
-                        <span class="comment-date">${dateStr}</span>
-                        <div class="message-actions">
-                            ${status === 'pending' ? `<button class="action-btn mark-read" onclick="approveEventComment(${comment.id})"><span class="material-icons">check</span>Approuver</button>` : ''}
-                            <button class="action-btn delete" onclick="deleteEventComment(${comment.id})"><span class="material-icons">delete</span>Suppr</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        function showEventCommentTab(tab) {
-            document.getElementById('tabPendingEventComments').classList.toggle('active', tab === 'pending');
-            document.getElementById('tabApprovedEventComments').classList.toggle('active', tab === 'approved');
-            document.getElementById('pendingEventCommentsList').style.display = tab === 'pending' ? 'block' : 'none';
-            document.getElementById('approvedEventCommentsList').style.display = tab === 'approved' ? 'block' : 'none';
-        }
-        
-        async function approveEventComment(id) {
-            try {
-                const { error } = await supabaseClient
-                    .from('event_comments')
-                    .update({ status: 'approved' })
-                    .eq('id', id);
-                
-                if (error) throw error;
-                showToast('Commentaire approuvé ✅');
-                loadEventComments();
-            } catch (error) {
-                console.error('Erreur approbation:', error);
-                showToast('Erreur: ' + error.message, true);
-            }
-        }
-        
-        async function deleteEventComment(id) {
-            if (!confirm('Supprimer ce commentaire ?')) return;
-            
-            try {
-                const { error } = await supabaseClient
-                    .from('event_comments')
-                    .delete()
-                    .eq('id', id);
-                
-                if (error) throw error;
-                showToast('Commentaire supprimé 🗑️');
-                loadEventComments();
-            } catch (error) {
-                console.error('Erreur suppression:', error);
-                showToast('Erreur: ' + error.message, true);
-            }
-        }
-        
-        // Fonction pour charger tous les commentaires
-        async function loadAllComments() {
-            await loadPendingComments();
-            await loadEventComments();
-        }
 		
         async function approveComment(id) {
             try {
@@ -4430,6 +4372,161 @@
             }
             updateThemeIcon(savedTheme);
         }
+        
+        // === DATE/HEURE HEADER ===
+        function updateAdminDateTime() {
+            const el = document.getElementById('adminDateTime');
+            if (!el) return;
+            const now = new Date();
+            const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+            const mois = ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
+            const h = now.getHours().toString().padStart(2,'0');
+            const m = now.getMinutes().toString().padStart(2,'0');
+            el.textContent = `${jours[now.getDay()]} ${now.getDate()} ${mois[now.getMonth()]} · ${h}h${m}`;
+        }
+        updateAdminDateTime();
+        setInterval(updateAdminDateTime, 30000);
+        
+        // === HORODATAGE "Dernière MàJ" ===
+        function setLastUpdated(elementId) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            const now = new Date();
+            const h = now.getHours().toString().padStart(2,'0');
+            const m = now.getMinutes().toString().padStart(2,'0');
+            el.innerHTML = `<span class="material-icons">schedule</span> <span>MàJ à ${h}h${m}</span> <span class="auto-refresh-dot"></span>`;
+        }
+        
+        // Patcher les fonctions de chargement pour ajouter l'horodatage
+        const _origLoadMessages = typeof loadMessages === 'function' ? loadMessages : null;
+        const _origLoadPropositions = typeof loadPropositions === 'function' ? loadPropositions : null;
+        const _origLoadPublished = typeof loadPublishedArticles === 'function' ? loadPublishedArticles : null;
+        
+        // On patche via un observer sur les listes pour détecter quand elles sont mises à jour
+        const listObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(m) {
+                if (m.target.id === 'messagesList') setLastUpdated('messagesUpdated');
+                if (m.target.id === 'propositionsList') setLastUpdated('propositionsUpdated');
+                if (m.target.id === 'publishedList') setLastUpdated('publishedUpdated');
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            ['messagesList','propositionsList','publishedList'].forEach(function(id) {
+                const el = document.getElementById(id);
+                if (el) listObserver.observe(el, { childList: true });
+            });
+        });
+        
+        // === RECHERCHE / FILTRE ===
+        function filterList(inputId, listId, countId) {
+            const query = document.getElementById(inputId).value.toLowerCase().trim();
+            const list = document.getElementById(listId);
+            const countEl = document.getElementById(countId);
+            if (!list) return;
+            
+            const cards = list.querySelectorAll('.message-card, .article-card, .comment-card');
+            let visible = 0;
+            let total = cards.length;
+            
+            cards.forEach(function(card) {
+                const text = card.textContent.toLowerCase();
+                const match = !query || text.includes(query);
+                card.style.display = match ? '' : 'none';
+                if (match) visible++;
+            });
+            
+            if (countEl) {
+                countEl.textContent = query ? `${visible}/${total}` : '';
+            }
+        }
+        
+        function filterMessages() { filterList('searchMessages', 'messagesList', 'searchMessagesCount'); }
+        function filterPropositions() { filterList('searchPropositions', 'propositionsList', 'searchPropositionsCount'); }
+        function filterPublished() { filterList('searchPublished', 'publishedList', 'searchPublishedCount'); }
+        
+        // === AUTO-REFRESH BADGES (toutes les 2 min) ===
+        let autoRefreshInterval = null;
+        
+        function startAutoRefresh() {
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            autoRefreshInterval = setInterval(function() {
+                if (!supabaseClient) return;
+                // Rafraîchir silencieusement les compteurs
+                refreshBadges();
+            }, 120000); // 2 minutes
+        }
+        
+        async function refreshBadges() {
+            try {
+                // Messages non lus
+                const { count: unread } = await supabaseClient
+                    .from('contact_messages')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('is_read', false);
+                const unreadEl = document.getElementById('statUnreadMessages');
+                if (unreadEl && unread !== null) unreadEl.textContent = unread;
+                
+                // Propositions en attente
+                const { count: pending } = await supabaseClient
+                    .from('news_submissions')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'pending');
+                const pendingEl = document.getElementById('statPendingPropositions');
+                if (pendingEl && pending !== null) pendingEl.textContent = pending;
+                
+                // Badges sur les onglets
+                const badgeMsg = document.getElementById('badgeMessages');
+                if (badgeMsg && unread > 0) { badgeMsg.textContent = unread; badgeMsg.style.display = 'inline-flex'; }
+                else if (badgeMsg) badgeMsg.style.display = 'none';
+                
+                const badgeProp = document.getElementById('badgePropositions');
+                if (badgeProp && pending > 0) { badgeProp.textContent = pending; badgeProp.style.display = 'inline-flex'; }
+                else if (badgeProp) badgeProp.style.display = 'none';
+                
+            } catch (err) {
+                // Silencieux - pas de toast pour l'auto-refresh
+                console.log('Auto-refresh badges:', err.message);
+            }
+        }
+        
+        // === RACCOURCIS CLAVIER ===
+        document.addEventListener('keydown', function(e) {
+            // Échap → Fermer les modales
+            if (e.key === 'Escape') {
+                // Fermer crop modal
+                const cropModal = document.getElementById('cropModal');
+                if (cropModal && cropModal.classList.contains('show')) {
+                    closeCropModal();
+                    return;
+                }
+                // Fermer event crop modal
+                const eventCropModal = document.getElementById('eventCropModal');
+                if (eventCropModal && eventCropModal.classList.contains('show')) {
+                    closeEventCropModal();
+                    return;
+                }
+                // Fermer camera
+                const cameraModal = document.getElementById('cameraModal');
+                if (cameraModal && cameraModal.classList.contains('show')) {
+                    closeCamera();
+                    return;
+                }
+                // Fermer image modal
+                const imageModal = document.getElementById('imageModal');
+                if (imageModal && imageModal.classList.contains('show')) {
+                    closeImageModal();
+                    return;
+                }
+            }
+        });
+        
+        // Démarrer l'auto-refresh quand le dashboard est affiché
+        const _origShowDashboard = showDashboard;
+        showDashboard = function() {
+            _origShowDashboard();
+            startAutoRefresh();
+        };
         
         initTheme();
         checkSession();
