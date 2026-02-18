@@ -843,8 +843,20 @@ async function initCommunity() {
         window.userLikes = userLikes;
         window.likeCounts = likeCounts;
         
+        // Masquer les articles épinglés pour les visiteurs qui les ont déjà vus
+        const filteredData = data.filter(item => {
+            if (item.pinned) {
+                const seenKey = `pinned_seen_${item.id}`;
+                if (localStorage.getItem(seenKey)) {
+                    return false; // Déjà vu, on ne l'affiche pas
+                }
+                localStorage.setItem(seenKey, 'true'); // Marquer comme vu
+            }
+            return true;
+        });
+
         // Afficher les infos
-        contentEl.innerHTML = data.map(item => {
+        contentEl.innerHTML = filteredData.map(item => {
             const commentCount = commentCounts[item.id] || 0;
             return `
             <div class="community-item ${item.pinned ? 'pinned' : ''}" data-id="${item.id}">
