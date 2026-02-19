@@ -610,12 +610,12 @@ body {
     border-radius: 14px;
     transition: all 0.3s ease;
     background: rgba(99, 102, 241, 0.2);
-    /* On applique l'ombre ici pour qu'elle englobe l'icône */
-    filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.6));
+    /* L'ombre reste cohérente avec le fond indigo */
+    filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.4));
 }
 
 .news-item-icon .material-icons {
-    color: #dfdfdf;
+    color: #dfdfdf; /* Harmonisé avec tes tuiles */
     font-size: 1.6rem;
 }
 
@@ -623,12 +623,11 @@ body {
 [data-theme="light"] .news-item-icon {
     background: rgba(79, 70, 229, 0.1); 
     border: 1px solid rgba(79, 70, 229, 0.1);
-    /* On retire l'ombre portée en mode clair pour plus de sobriété */
     filter: none;
 }
 
 [data-theme="light"] .news-item-icon .material-icons {
-    color: #4f46e5; /* Indigo foncé */
+    color: #4f46e5; /* On garde l'indigo ici pour le contraste sur fond clair */
     font-size: 1.6rem;
 }
 
