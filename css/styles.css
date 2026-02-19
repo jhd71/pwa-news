@@ -599,7 +599,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* Conteneur de l'icône dans le carrousel */
+/* Style par défaut (Mode Sombre) */
 .news-item-icon {
     width: 48px;
     height: 48px;
@@ -609,23 +609,26 @@ body {
     justify-content: center;
     border-radius: 14px;
     transition: all 0.3s ease;
-	background: rgba(99, 102, 241, 0.2);
-	color: #c7d2fe;
-	filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.6));
+    background: rgba(99, 102, 241, 0.2);
+    /* On applique l'ombre ici pour qu'elle englobe l'icône */
+    filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.6));
 }
 
-/* --- ADAPTATION AUX THÈMES --- */
+.news-item-icon .material-icons {
+    color: #c7d2fe; /* Indigo clair lumineux */
+    font-size: 1.6rem;
+}
 
-/* Mode Clair (sur fond blanc/gris très clair) */
+/* --- ADAPTATION MODE CLAIR --- */
 [data-theme="light"] .news-item-icon {
-    /* Fond bleu indigo très doux */
     background: rgba(79, 70, 229, 0.1); 
     border: 1px solid rgba(79, 70, 229, 0.1);
+    /* On retire l'ombre portée en mode clair pour plus de sobriété */
+    filter: none;
 }
 
 [data-theme="light"] .news-item-icon .material-icons {
-    /* Icône indigo foncé pour un contraste maximal */
-    color: #4f46e5; 
+    color: #4f46e5; /* Indigo foncé */
     font-size: 1.6rem;
 }
 
