@@ -785,22 +785,35 @@ async function initCommunity() {
             return;
         }
         
-        // *** COMPTEUR DE VUES AU CHARGEMENT ***
-        // Compter une vue pour chaque info affichée (1 fois par jour par info)
+        // *** COMPTEUR DE VUES AU CHARGEMENT (vérification serveur) ***
         const today = new Date().toISOString().split('T')[0];
+        const fingerprint = getUserFingerprint();
+        
         for (const item of data) {
-            const viewedKey = `submission_viewed_${item.id}_${today}`;
-            if (!localStorage.getItem(viewedKey)) {
-                try {
+            try {
+                // Vérifier CÔTÉ SERVEUR si ce fingerprint a déjà vu cet article aujourd'hui
+                const { data: existingView } = await supabaseClient
+                    .from('submission_view_logs')
+                    .select('id')
+                    .eq('submission_id', item.id)
+                    .eq('fingerprint', fingerprint)
+                    .eq('view_date', today)
+                    .maybeSingle();
+                
+                if (!existingView) {
+                    // Pas encore vu → incrémenter
                     const { error: viewError } = await supabaseClient.rpc('increment_submission_views', { submission_id: item.id });
                     if (!viewError) {
-                        localStorage.setItem(viewedKey, 'true');
-                        item.views = (item.views || 0) + 1; // Mettre à jour localement pour l'affichage
-                        console.log(`👁️ Vue comptée pour info #${item.id}`);
+                        // Enregistrer la vue côté serveur
+                        await supabaseClient
+                            .from('submission_view_logs')
+                            .insert({ submission_id: item.id, fingerprint: fingerprint, view_date: today });
+                        item.views = (item.views || 0) + 1;
+                        console.log(`👁️ Vue comptée pour info #${item.id} (vérifié serveur)`);
                     }
-                } catch (e) {
-                    console.log('⚠️ Erreur compteur vue:', e);
                 }
+            } catch (e) {
+                console.log('⚠️ Erreur compteur vue:', e);
             }
         }
         

@@ -4473,6 +4473,10 @@
             try {
                 const { error } = await supabaseClient.rpc('reset_all_submission_views');
                 if (error) throw error;
+                
+                // Aussi vider les logs de vues serveur
+                await supabaseClient.from('submission_view_logs').delete().neq('id', 0);
+                
                 showToast('✅ Vues des infos remises à 0');
                 showSubmissionViewsStats();
             } catch (err) {
@@ -4491,6 +4495,9 @@
                 const { error } = await supabaseClient.rpc('reset_all_visits');
                 
                 if (error) throw error;
+                
+                // Aussi vider les logs visiteurs serveur
+                await supabaseClient.from('visitor_logs').delete().neq('id', 0);
                 
                 showToast('Toutes les statistiques de visites ont été supprimées');
                 
@@ -4775,6 +4782,10 @@
             try {
                 const { error } = await supabaseClient.rpc('reset_single_submission_view', { submission_id: id });
                 if (error) throw error;
+                
+                // Aussi vider les logs de vues serveur pour cet article
+                await supabaseClient.from('submission_view_logs').delete().eq('submission_id', id);
+                
                 showToast('Vue remise à 0');
                 showSubmissionViewsStats();
             } catch (err) {
