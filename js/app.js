@@ -433,13 +433,18 @@ function showNewsError(message) {
 
 function getSourceIcon(source) {
     const icons = {
-        'Le JSL': '📰',
-        'Montceau News': '🏙️',
-        'Creusot Infos': '🏭',
-        "L'Informateur": '📋',
-        'France Bleu': '🎙️'
+        'Le JSL': 'newspaper',
+        'Montceau News': 'location_city',
+        'Creusot Infos': 'factory',
+        "L'Informateur": 'article',
+        'France Bleu': 'mic'
     };
-    return icons[source] || '📰';
+    
+    // On récupère le nom de l'icône ou 'newspaper' par défaut
+    const iconName = icons[source] || 'newspaper';
+    
+    // On retourne le HTML complet de l'icône Material
+    return `<span class="material-icons">${iconName}</span>`;
 }
 
 function formatDate(dateString) {
