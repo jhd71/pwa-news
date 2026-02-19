@@ -7,7 +7,6 @@
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<!-- Cropper.js pour le recadrage -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
@@ -126,12 +125,9 @@
             z-index: 100;
         }
         
-        .admin-title { display: flex; align-items: center; gap: 0.75rem; }
-        .admin-title-text { display: flex; flex-direction: column; }
-        .admin-title-main { font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 900; letter-spacing: -0.5px; }
-        .admin-title-main .amp { color: #f59e0b; font-weight: 400; font-style: italic; }
-        .admin-title-sub { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.5px; }
-        .admin-header-actions { display: flex; align-items: center; gap: 0.5rem; }
+        .admin-title { display: flex; align-items: center; gap: 0.75rem; font-size: 1.25rem; font-weight: 700; }
+        .admin-title span { font-size: 1.5rem; }
+        .admin-header-actions { display: flex; align-items: center; gap: 0.75rem; }
         
         .home-btn {
             display: flex;
@@ -179,16 +175,8 @@
             border-radius: 12px;
             padding: 1rem;
             text-align: center;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            cursor: default;
         }
         
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-        }
-        
-        .stat-icon { font-size: 1.25rem; margin-bottom: 0.35rem; }
         .stat-value { font-size: 1.75rem; font-weight: 700; color: var(--primary-light); }
         .stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem; }
         .stat-card.unread .stat-value { color: var(--warning); }
@@ -201,11 +189,7 @@
             padding: 0 1rem;
             border-bottom: 1px solid var(--glass-border);
             overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
         }
-        
-        .tabs::-webkit-scrollbar { display: none; }
         
         .tab {
             padding: 0.875rem 1rem;
@@ -1231,14 +1215,11 @@
         
         /* Responsive général admin */
         @media (max-width: 600px) {
-            .admin-header { flex-direction: column; gap: 0.75rem; text-align: center; }
-            .admin-title { justify-content: center; }
-            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
-            .stat-card { padding: 0.75rem 0.5rem; }
-            .stat-value { font-size: 1.35rem; }
-            .stat-icon { font-size: 1rem; }
+            .admin-header { flex-direction: column; gap: 1rem; text-align: center; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+            .stat-card { padding: 0.75rem; }
+            .stat-value { font-size: 1.5rem; }
             .publish-form { padding: 0 0.5rem; }
-            .tab { padding: 0.75rem 0.65rem; font-size: 0.7rem; }
         }
 		
 		/* === COMMENTAIRES === */
@@ -1571,59 +1552,176 @@
 			display: flex;
 		}
 
-        /* === BARRE DE RECHERCHE === */
-        .search-bar {
+        /* === ONGLET SPORT === */
+        .sport-section { max-width: 700px; }
+        
+        .sport-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .sport-card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.65rem 1rem;
+        }
+        
+        .sport-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        
+        .sport-form-grid .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .sport-form-grid label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .sport-form-grid input,
+        .sport-form-grid select {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
             border-radius: 10px;
-            margin-bottom: 1rem;
-            transition: border-color 0.3s ease;
-        }
-        .search-bar:focus-within { border-color: var(--primary); }
-        .search-bar .material-icons { color: var(--text-muted); font-size: 1.1rem; }
-        .search-input {
-            flex: 1;
-            background: none;
-            border: none;
             color: var(--text-primary);
             font-size: 0.9rem;
             font-family: inherit;
-            outline: none;
+            transition: all 0.2s;
         }
-        .search-input::placeholder { color: var(--text-muted); }
-        .search-count { font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; }
-
-        /* === HORODATAGE === */
-        .last-updated {
+        
+        .sport-form-grid input:focus,
+        .sport-form-grid select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+        
+        .sport-checkbox-row {
             display: flex;
             align-items: center;
-            gap: 0.35rem;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .sport-checkbox-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+        
+        .sport-form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+        
+        .sport-form-row .sport-form-group {
+            flex: 1;
+            min-width: 60px;
+        }
+        
+        .sport-form-row label {
+            display: block;
             font-size: 0.7rem;
+            font-weight: 600;
             color: var(--text-muted);
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.3rem;
+            text-transform: uppercase;
         }
-        .last-updated .material-icons { font-size: 0.85rem; }
-        .last-updated.refreshing .material-icons { animation: spin 1s linear infinite; }
-
-        /* === PULSE INDICATOR === */
-        .auto-refresh-dot {
-            width: 6px;
-            height: 6px;
-            background: var(--success);
-            border-radius: 50%;
-            display: inline-block;
-            margin-left: 0.35rem;
-            animation: pulse 2s ease infinite;
+        
+        .sport-form-row select {
+            width: 100%;
+            padding: 0.55rem 0.4rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            font-family: inherit;
         }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+        
+        .sport-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
         }
-
+        
+        .sport-btn {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .sport-btn:hover { transform: translateY(-1px); }
+        
+        .sport-btn-save {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+        
+        .sport-btn-scraper {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+        }
+        
+        .sport-status-bar {
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .sport-status-bar.success { display: flex; background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .sport-status-bar.error { display: flex; background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .sport-status-bar.info { display: flex; background: rgba(99, 102, 241, 0.15); color: var(--primary-light); border: 1px solid rgba(99, 102, 241, 0.3); }
+        
+        .sport-last-update {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 0.5rem;
+        }
+        
+        [data-theme="light"] .sport-form-grid input,
+        [data-theme="light"] .sport-form-grid select,
+        [data-theme="light"] .sport-form-row select {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: #e2e8f0;
+        }
+        
+        @media (max-width: 480px) {
+            .sport-form-grid { grid-template-columns: 1fr; }
+            .sport-form-row select { font-size: 0.75rem; padding: 0.5rem 0.3rem; }
+            .sport-actions { flex-direction: column; }
+            .sport-btn { justify-content: center; }
+        }
     </style>
 </head>
 <body>
@@ -1647,12 +1745,7 @@
     <!-- DASHBOARD -->
     <div class="dashboard" id="dashboard">
         <header class="admin-header">
-            <div class="admin-title">
-                <div class="admin-title-text">
-                    <div class="admin-title-main">Actu <span class="amp">&</span> Média — Admin</div>
-                    <div class="admin-title-sub" id="adminDateTime"></div>
-                </div>
-            </div>
+            <div class="admin-title"><span>📊</span> Administration</div>
             <div class="admin-header-actions">
 			<button onclick="toggleTheme()" class="home-btn" title="Changer le thème"><span class="material-icons" id="themeIcon">light_mode</span></button>
 			<a href="index.html" class="home-btn" title="Accueil"><span class="material-icons">home</span></a>
@@ -1661,12 +1754,12 @@
         </header>
         
         <div class="stats-grid">
-            <div class="stat-card"><div class="stat-icon">📬</div><div class="stat-value" id="statTotalMessages">-</div><div class="stat-label">Messages</div></div>
-            <div class="stat-card unread"><div class="stat-icon">🔔</div><div class="stat-value" id="statUnreadMessages">-</div><div class="stat-label">Non lus</div></div>
-            <div class="stat-card unread"><div class="stat-icon">📰</div><div class="stat-value" id="statPendingPropositions">-</div><div class="stat-label">Propositions</div></div>
-            <div class="stat-card unread"><div class="stat-icon">💬</div><div class="stat-value" id="statPendingComments">-</div><div class="stat-label">Commentaires</div></div>
-            <div class="stat-card unread"><div class="stat-icon">📅</div><div class="stat-value" id="statPendingEvents">-</div><div class="stat-label">Événements</div></div>
-            <div class="stat-card success"><div class="stat-icon">✅</div><div class="stat-value" id="statPublished">-</div><div class="stat-label">Publiées</div></div>
+            <div class="stat-card"><div class="stat-value" id="statTotalMessages">-</div><div class="stat-label">Messages</div></div>
+            <div class="stat-card unread"><div class="stat-value" id="statUnreadMessages">-</div><div class="stat-label">Non lus</div></div>
+            <div class="stat-card unread"><div class="stat-value" id="statPendingPropositions">-</div><div class="stat-label">Propositions</div></div>
+            <div class="stat-card unread"><div class="stat-value" id="statPendingComments">-</div><div class="stat-label">Commentaires</div></div>
+            <div class="stat-card unread"><div class="stat-value" id="statPendingEvents">-</div><div class="stat-label">Événements</div></div>
+            <div class="stat-card success"><div class="stat-value" id="statPublished">-</div><div class="stat-label">Publiées</div></div>
         </div>
         
         <div class="tabs">
@@ -1678,6 +1771,7 @@
             <button class="tab" data-tab="published">✅ Publiées</button>
             <button class="tab" data-tab="notifications">🔔 Notifications</button>
             <button class="tab" data-tab="stats">📊 Statistiques</button>
+            <button class="tab" data-tab="sport">⚽ Sport</button>
         </div>
         
         <!-- PUBLIER -->
@@ -1760,25 +1854,13 @@
         
         <!-- MESSAGES -->
         <div class="tab-content" id="tabMessages">
-            <div class="last-updated" id="messagesUpdated"><span class="material-icons">schedule</span> <span>—</span></div>
             <button class="refresh-btn" onclick="loadMessages()"><span class="material-icons">refresh</span> Actualiser</button>
-            <div class="search-bar">
-                <span class="material-icons">search</span>
-                <input type="text" class="search-input" id="searchMessages" placeholder="Rechercher un message..." oninput="filterMessages()">
-                <span class="search-count" id="searchMessagesCount"></span>
-            </div>
             <div class="messages-list" id="messagesList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
         </div>
         
         <!-- PROPOSITIONS -->
         <div class="tab-content" id="tabPropositions">
-            <div class="last-updated" id="propositionsUpdated"><span class="material-icons">schedule</span> <span>—</span></div>
             <button class="refresh-btn" onclick="loadPropositions()"><span class="material-icons">refresh</span> Actualiser</button>
-            <div class="search-bar">
-                <span class="material-icons">search</span>
-                <input type="text" class="search-input" id="searchPropositions" placeholder="Rechercher une proposition..." oninput="filterPropositions()">
-                <span class="search-count" id="searchPropositionsCount"></span>
-            </div>
             <div class="messages-list" id="propositionsList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
         </div>
         
@@ -2013,13 +2095,7 @@
 		
         <!-- PUBLIÉES -->
         <div class="tab-content" id="tabPublished">
-            <div class="last-updated" id="publishedUpdated"><span class="material-icons">schedule</span> <span>—</span></div>
             <button class="refresh-btn" onclick="loadPublishedArticles()"><span class="material-icons">refresh</span> Actualiser</button>
-            <div class="search-bar">
-                <span class="material-icons">search</span>
-                <input type="text" class="search-input" id="searchPublished" placeholder="Rechercher une publication..." oninput="filterPublished()">
-                <span class="search-count" id="searchPublishedCount"></span>
-            </div>
             <div class="messages-list" id="publishedList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
         </div>
         
@@ -2187,6 +2263,169 @@
                 <div id="notifResult" style="margin-top:1rem;padding:1rem;border-radius:10px;text-align:center;display:none;"></div>
             </div>
         </div>
+        
+        <!-- SPORT -->
+        <div class="tab-content" id="tabSport">
+            <div class="sport-section">
+                <h2 style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+                    <span class="material-icons" style="color:var(--success);">sports_soccer</span> FC Montceau Bourgogne
+                </h2>
+                
+                <!-- Actions -->
+                <div class="sport-actions">
+                    <button class="sport-btn sport-btn-scraper" onclick="sportRunScraper()">
+                        <span class="material-icons" style="font-size:1rem;">sync</span>
+                        Scraper auto
+                    </button>
+                    <button class="sport-btn sport-btn-save" onclick="sportSaveData()">
+                        <span class="material-icons" style="font-size:1rem;">save</span>
+                        Sauvegarder
+                    </button>
+                </div>
+                
+                <!-- Status bars -->
+                <div class="sport-status-bar" id="sportScraperStatus">
+                    <span class="material-icons" style="font-size:1rem;animation:spin 1s linear infinite;">sync</span>
+                    Scraping en cours...
+                </div>
+                <div class="sport-status-bar" id="sportStatusBar"></div>
+                
+                <!-- DERNIER MATCH -->
+                <div class="sport-card">
+                    <div class="sport-card-title">📊 Dernier match joué</div>
+                    <div class="sport-form-grid">
+                        <div>
+                            <label>Date du match</label>
+                            <input type="date" id="sportLastMatchDate">
+                        </div>
+                        <div>
+                            <label>Journée</label>
+                            <input type="text" id="sportLastMatchDay" placeholder="Journée 10">
+                        </div>
+                        <div>
+                            <label>Équipe domicile</label>
+                            <input type="text" id="sportLastHomeTeam" placeholder="FC Montceau">
+                        </div>
+                        <div>
+                            <label>Score domicile</label>
+                            <input type="number" id="sportLastHomeScore" min="0" max="20">
+                        </div>
+                        <div>
+                            <label>Équipe extérieur</label>
+                            <input type="text" id="sportLastAwayTeam" placeholder="Adversaire">
+                        </div>
+                        <div>
+                            <label>Score extérieur</label>
+                            <input type="number" id="sportLastAwayScore" min="0" max="20">
+                        </div>
+                        <div class="full-width">
+                            <div class="sport-checkbox-row">
+                                <input type="checkbox" id="sportLastIsHome" checked>
+                                <label for="sportLastIsHome" style="margin:0;text-transform:none;font-size:0.85rem;">FCMB joue à domicile</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PROCHAIN MATCH -->
+                <div class="sport-card">
+                    <div class="sport-card-title">📅 Prochain match</div>
+                    <div class="sport-form-grid">
+                        <div>
+                            <label>Date du match</label>
+                            <input type="date" id="sportNextMatchDate">
+                        </div>
+                        <div>
+                            <label>Heure</label>
+                            <input type="time" id="sportNextMatchTime" value="18:00">
+                        </div>
+                        <div>
+                            <label>Journée</label>
+                            <input type="text" id="sportNextMatchDay" placeholder="Journée 11">
+                        </div>
+                        <div>
+                            <label>Adversaire</label>
+                            <input type="text" id="sportNextAwayTeam" placeholder="Nom de l'adversaire">
+                        </div>
+                        <div class="full-width">
+                            <div class="sport-checkbox-row">
+                                <input type="checkbox" id="sportNextIsHome" checked>
+                                <label for="sportNextIsHome" style="margin:0;text-transform:none;font-size:0.85rem;">FCMB joue à domicile</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CLASSEMENT -->
+                <div class="sport-card">
+                    <div class="sport-card-title">🏆 Classement</div>
+                    <div class="sport-form-grid">
+                        <div>
+                            <label>Position</label>
+                            <input type="number" id="sportStandingPosition" min="1" max="20">
+                        </div>
+                        <div>
+                            <label>Points</label>
+                            <input type="number" id="sportStandingPoints" min="0">
+                        </div>
+                        <div>
+                            <label>Matchs joués</label>
+                            <input type="number" id="sportStandingPlayed" min="0">
+                        </div>
+                        <div>
+                            <label>Victoires</label>
+                            <input type="number" id="sportStandingWon" min="0">
+                        </div>
+                        <div>
+                            <label>Nuls</label>
+                            <input type="number" id="sportStandingDrawn" min="0">
+                        </div>
+                        <div>
+                            <label>Défaites</label>
+                            <input type="number" id="sportStandingLost" min="0">
+                        </div>
+                        <div>
+                            <label>Buts pour</label>
+                            <input type="number" id="sportStandingGoalsFor" min="0">
+                        </div>
+                        <div>
+                            <label>Buts contre</label>
+                            <input type="number" id="sportStandingGoalsAgainst" min="0">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FORME -->
+                <div class="sport-card">
+                    <div class="sport-card-title">📈 Forme (5 derniers matchs)</div>
+                    <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.75rem;">Du plus ancien au plus récent. V = Victoire, N = Nul, D = Défaite</p>
+                    <div class="sport-form-row">
+                        <div class="sport-form-group">
+                            <label>Match 1</label>
+                            <select id="sportForm1"><option value="V">V</option><option value="N">N</option><option value="D">D</option></select>
+                        </div>
+                        <div class="sport-form-group">
+                            <label>Match 2</label>
+                            <select id="sportForm2"><option value="V">V</option><option value="N">N</option><option value="D">D</option></select>
+                        </div>
+                        <div class="sport-form-group">
+                            <label>Match 3</label>
+                            <select id="sportForm3"><option value="V">V</option><option value="N">N</option><option value="D">D</option></select>
+                        </div>
+                        <div class="sport-form-group">
+                            <label>Match 4</label>
+                            <select id="sportForm4"><option value="V">V</option><option value="N">N</option><option value="D">D</option></select>
+                        </div>
+                        <div class="sport-form-group">
+                            <label>Match 5</label>
+                            <select id="sportForm5"><option value="V">V</option><option value="N">N</option><option value="D">D</option></select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sport-last-update" id="sportLastUpdate"></div>
+            </div>
+        </div>
     </div>
     
     <div class="toast" id="toast"><span class="toast-icon">✅</span><span class="toast-text">Message</span></div>
@@ -2351,6 +2590,7 @@
             loadPendingComments();
             loadEventComments();
             loadPendingEvents();
+            sportLoadData();
         }
         
         // === TABS ===
@@ -3274,6 +3514,159 @@
             document.getElementById('approvedCommentsList').style.display = tab === 'approved' ? 'block' : 'none';
         }
         
+		// ============================================
+        // COMMENTAIRES D'ÉVÉNEMENTS
+        // ============================================
+        
+        async function loadEventComments() {
+            const pendingContainer = document.getElementById('pendingEventCommentsList');
+            const approvedContainer = document.getElementById('approvedEventCommentsList');
+            
+            pendingContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
+            approvedContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
+            
+            try {
+                // Charger les commentaires en attente
+                const { data: pending, error: errPending } = await supabaseClient
+                    .from('event_comments')
+                    .select('*')
+                    .eq('status', 'pending')
+                    .order('created_at', { ascending: false });
+                
+                if (errPending) throw errPending;
+                
+                // Charger les commentaires approuvés
+                const { data: approved, error: errApproved } = await supabaseClient
+                    .from('event_comments')
+                    .select('*')
+                    .eq('status', 'approved')
+                    .order('created_at', { ascending: false });
+                
+                if (errApproved) throw errApproved;
+                
+                // Charger les titres des événements
+                const eventIds = [...new Set([...pending, ...approved].map(c => c.event_id))];
+                let eventTitles = {};
+                
+                if (eventIds.length > 0) {
+                    const { data: eventsData } = await supabaseClient
+                        .from('events')
+                        .select('id, title')
+                        .in('id', eventIds);
+                    
+                    if (eventsData) {
+                        eventsData.forEach(e => eventTitles[e.id] = e.title);
+                    }
+                }
+                
+                // Mettre à jour les compteurs
+                document.getElementById('badgeEventComments').textContent = pending.length;
+                document.getElementById('badgeEventComments').style.display = pending.length > 0 ? 'inline-flex' : 'none';
+                document.getElementById('countPendingEventComments').textContent = pending.length;
+                document.getElementById('countApprovedEventComments').textContent = approved.length;
+                
+                // Mettre à jour badge principal
+                const totalPending = pending.length + (parseInt(document.getElementById('countPending')?.textContent) || 0);
+                document.getElementById('badgeComments').textContent = totalPending;
+                document.getElementById('badgeComments').style.display = totalPending > 0 ? 'inline-flex' : 'none';
+                
+                // Afficher les commentaires en attente
+                if (pending.length === 0) {
+                    pendingContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💬</div><p>Aucun commentaire en attente</p></div>';
+                } else {
+                    pendingContainer.innerHTML = pending.map(c => renderEventCommentCard(c, eventTitles, 'pending')).join('');
+                }
+                
+                // Afficher les commentaires approuvés
+                if (approved.length === 0) {
+                    approvedContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">✅</div><p>Aucun commentaire approuvé</p></div>';
+                } else {
+                    approvedContainer.innerHTML = approved.map(c => renderEventCommentCard(c, eventTitles, 'approved')).join('');
+                }
+                
+                console.log('📅 Commentaires événements chargés:', pending.length, 'en attente,', approved.length, 'approuvés');
+                
+                // Notification toast si commentaires en attente
+                if (pending.length > 0) {
+                    showToast(`💬 ${pending.length} commentaire${pending.length > 1 ? 's' : ''} d'événement${pending.length > 1 ? 's' : ''} à modérer`);
+                }
+                
+            } catch (error) {
+                console.error('Erreur chargement commentaires événements:', error);
+                pendingContainer.innerHTML = '<div class="empty-state"><p>❌ Erreur de chargement</p></div>';
+            }
+        }
+        
+        function renderEventCommentCard(comment, eventTitles, status) {
+            const eventTitle = eventTitles[comment.event_id] || 'Événement #' + comment.event_id;
+            const date = new Date(comment.created_at);
+            const dateStr = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+            
+            return `
+                <div class="comment-card ${status}" style="border-left:3px solid #60a5fa;">
+                    <div class="comment-news-ref" style="color:#60a5fa;">
+                        <span class="material-icons" style="font-size:1rem;">event</span>
+                        ${escapeHtml(eventTitle.substring(0, 50))}${eventTitle.length > 50 ? '...' : ''}
+                    </div>
+                    <div class="comment-author">👤 ${escapeHtml(comment.author_name)}</div>
+                    <div class="comment-content">${escapeHtml(comment.content)}</div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+                        <span class="comment-date">${dateStr}</span>
+                        <div class="message-actions">
+                            ${status === 'pending' ? `<button class="action-btn mark-read" onclick="approveEventComment(${comment.id})"><span class="material-icons">check</span>Approuver</button>` : ''}
+                            <button class="action-btn delete" onclick="deleteEventComment(${comment.id})"><span class="material-icons">delete</span>Suppr</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function showEventCommentTab(tab) {
+            document.getElementById('tabPendingEventComments').classList.toggle('active', tab === 'pending');
+            document.getElementById('tabApprovedEventComments').classList.toggle('active', tab === 'approved');
+            document.getElementById('pendingEventCommentsList').style.display = tab === 'pending' ? 'block' : 'none';
+            document.getElementById('approvedEventCommentsList').style.display = tab === 'approved' ? 'block' : 'none';
+        }
+        
+        async function approveEventComment(id) {
+            try {
+                const { error } = await supabaseClient
+                    .from('event_comments')
+                    .update({ status: 'approved' })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                showToast('Commentaire approuvé ✅');
+                loadEventComments();
+            } catch (error) {
+                console.error('Erreur approbation:', error);
+                showToast('Erreur: ' + error.message, true);
+            }
+        }
+        
+        async function deleteEventComment(id) {
+            if (!confirm('Supprimer ce commentaire ?')) return;
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('event_comments')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) throw error;
+                showToast('Commentaire supprimé 🗑️');
+                loadEventComments();
+            } catch (error) {
+                console.error('Erreur suppression:', error);
+                showToast('Erreur: ' + error.message, true);
+            }
+        }
+        
+        // Fonction pour charger tous les commentaires
+        async function loadAllComments() {
+            await loadPendingComments();
+            await loadEventComments();
+        }
 		
         async function approveComment(id) {
             try {
@@ -4373,160 +4766,186 @@
             updateThemeIcon(savedTheme);
         }
         
-        // === DATE/HEURE HEADER ===
-        function updateAdminDateTime() {
-            const el = document.getElementById('adminDateTime');
-            if (!el) return;
-            const now = new Date();
-            const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-            const mois = ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
-            const h = now.getHours().toString().padStart(2,'0');
-            const m = now.getMinutes().toString().padStart(2,'0');
-            el.textContent = `${jours[now.getDay()]} ${now.getDate()} ${mois[now.getMonth()]} · ${h}h${m}`;
-        }
-        updateAdminDateTime();
-        setInterval(updateAdminDateTime, 30000);
+        // === ONGLET SPORT - FC MONTCEAU ===
+        let sportDataId = null;
         
-        // === HORODATAGE "Dernière MàJ" ===
-        function setLastUpdated(elementId) {
-            const el = document.getElementById(elementId);
-            if (!el) return;
-            const now = new Date();
-            const h = now.getHours().toString().padStart(2,'0');
-            const m = now.getMinutes().toString().padStart(2,'0');
-            el.innerHTML = `<span class="material-icons">schedule</span> <span>MàJ à ${h}h${m}</span> <span class="auto-refresh-dot"></span>`;
-        }
-        
-        // Patcher les fonctions de chargement pour ajouter l'horodatage
-        const _origLoadMessages = typeof loadMessages === 'function' ? loadMessages : null;
-        const _origLoadPropositions = typeof loadPropositions === 'function' ? loadPropositions : null;
-        const _origLoadPublished = typeof loadPublishedArticles === 'function' ? loadPublishedArticles : null;
-        
-        // On patche via un observer sur les listes pour détecter quand elles sont mises à jour
-        const listObserver = new MutationObserver(function(mutations) {
-            mutations.forEach(function(m) {
-                if (m.target.id === 'messagesList') setLastUpdated('messagesUpdated');
-                if (m.target.id === 'propositionsList') setLastUpdated('propositionsUpdated');
-                if (m.target.id === 'publishedList') setLastUpdated('publishedUpdated');
-            });
-        });
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            ['messagesList','propositionsList','publishedList'].forEach(function(id) {
-                const el = document.getElementById(id);
-                if (el) listObserver.observe(el, { childList: true });
-            });
-        });
-        
-        // === RECHERCHE / FILTRE ===
-        function filterList(inputId, listId, countId) {
-            const query = document.getElementById(inputId).value.toLowerCase().trim();
-            const list = document.getElementById(listId);
-            const countEl = document.getElementById(countId);
-            if (!list) return;
-            
-            const cards = list.querySelectorAll('.message-card, .article-card, .comment-card');
-            let visible = 0;
-            let total = cards.length;
-            
-            cards.forEach(function(card) {
-                const text = card.textContent.toLowerCase();
-                const match = !query || text.includes(query);
-                card.style.display = match ? '' : 'none';
-                if (match) visible++;
-            });
-            
-            if (countEl) {
-                countEl.textContent = query ? `${visible}/${total}` : '';
-            }
-        }
-        
-        function filterMessages() { filterList('searchMessages', 'messagesList', 'searchMessagesCount'); }
-        function filterPropositions() { filterList('searchPropositions', 'propositionsList', 'searchPropositionsCount'); }
-        function filterPublished() { filterList('searchPublished', 'publishedList', 'searchPublishedCount'); }
-        
-        // === AUTO-REFRESH BADGES (toutes les 2 min) ===
-        let autoRefreshInterval = null;
-        
-        function startAutoRefresh() {
-            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-            autoRefreshInterval = setInterval(function() {
-                if (!supabaseClient) return;
-                // Rafraîchir silencieusement les compteurs
-                refreshBadges();
-            }, 120000); // 2 minutes
-        }
-        
-        async function refreshBadges() {
+        async function sportLoadData() {
             try {
-                // Messages non lus
-                const { count: unread } = await supabaseClient
-                    .from('contact_messages')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('is_read', false);
-                const unreadEl = document.getElementById('statUnreadMessages');
-                if (unreadEl && unread !== null) unreadEl.textContent = unread;
-                
-                // Propositions en attente
-                const { count: pending } = await supabaseClient
-                    .from('news_submissions')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('status', 'pending');
-                const pendingEl = document.getElementById('statPendingPropositions');
-                if (pendingEl && pending !== null) pendingEl.textContent = pending;
-                
-                // Badges sur les onglets
-                const badgeMsg = document.getElementById('badgeMessages');
-                if (badgeMsg && unread > 0) { badgeMsg.textContent = unread; badgeMsg.style.display = 'inline-flex'; }
-                else if (badgeMsg) badgeMsg.style.display = 'none';
-                
-                const badgeProp = document.getElementById('badgePropositions');
-                if (badgeProp && pending > 0) { badgeProp.textContent = pending; badgeProp.style.display = 'inline-flex'; }
-                else if (badgeProp) badgeProp.style.display = 'none';
-                
+                const { data, error } = await supabaseClient
+                    .from('sport_data')
+                    .select('*')
+                    .order('updated_at', { ascending: false })
+                    .limit(1)
+                    .single();
+
+                if (error || !data) {
+                    sportShowStatus('Aucune donnée sport existante. Remplissez le formulaire.', 'info');
+                    return;
+                }
+
+                sportDataId = data.id;
+
+                // Dernier match
+                if (data.last_match_date) document.getElementById('sportLastMatchDate').value = data.last_match_date;
+                if (data.last_match_matchday) document.getElementById('sportLastMatchDay').value = data.last_match_matchday;
+                if (data.last_match_home_team) document.getElementById('sportLastHomeTeam').value = data.last_match_home_team;
+                if (data.last_match_away_team) document.getElementById('sportLastAwayTeam').value = data.last_match_away_team;
+                if (data.last_match_home_score !== null) document.getElementById('sportLastHomeScore').value = data.last_match_home_score;
+                if (data.last_match_away_score !== null) document.getElementById('sportLastAwayScore').value = data.last_match_away_score;
+                document.getElementById('sportLastIsHome').checked = data.last_match_is_home !== false;
+
+                // Prochain match
+                if (data.next_match_date) document.getElementById('sportNextMatchDate').value = data.next_match_date;
+                if (data.next_match_time) document.getElementById('sportNextMatchTime').value = data.next_match_time;
+                if (data.next_match_matchday) document.getElementById('sportNextMatchDay').value = data.next_match_matchday;
+                if (data.next_match_is_home) {
+                    document.getElementById('sportNextAwayTeam').value = data.next_match_away_team || '';
+                } else {
+                    document.getElementById('sportNextAwayTeam').value = data.next_match_home_team || '';
+                }
+                document.getElementById('sportNextIsHome').checked = data.next_match_is_home !== false;
+
+                // Classement
+                if (data.standing_position) document.getElementById('sportStandingPosition').value = data.standing_position;
+                if (data.standing_points !== null) document.getElementById('sportStandingPoints').value = data.standing_points;
+                if (data.standing_played !== null) document.getElementById('sportStandingPlayed').value = data.standing_played;
+                if (data.standing_won !== null) document.getElementById('sportStandingWon').value = data.standing_won;
+                if (data.standing_drawn !== null) document.getElementById('sportStandingDrawn').value = data.standing_drawn;
+                if (data.standing_lost !== null) document.getElementById('sportStandingLost').value = data.standing_lost;
+                if (data.standing_goals_for !== null) document.getElementById('sportStandingGoalsFor').value = data.standing_goals_for;
+                if (data.standing_goals_against !== null) document.getElementById('sportStandingGoalsAgainst').value = data.standing_goals_against;
+
+                // Forme
+                if (data.form) {
+                    const formArr = data.form.split(',').map(f => f.trim());
+                    for (let i = 0; i < 5; i++) {
+                        const sel = document.getElementById('sportForm' + (i + 1));
+                        if (sel && formArr[i]) sel.value = formArr[i];
+                    }
+                }
+
+                // Date mise à jour
+                if (data.updated_at) {
+                    const d = new Date(data.updated_at);
+                    document.getElementById('sportLastUpdate').textContent = 'Dernière mise à jour : ' + d.toLocaleString('fr-FR');
+                }
+
+                sportShowStatus('✅ Données sport chargées', 'success');
+
             } catch (err) {
-                // Silencieux - pas de toast pour l'auto-refresh
-                console.log('Auto-refresh badges:', err.message);
+                console.error('Sport - Erreur chargement:', err);
+                sportShowStatus('Erreur de chargement sport: ' + err.message, 'error');
             }
         }
-        
-        // === RACCOURCIS CLAVIER ===
-        document.addEventListener('keydown', function(e) {
-            // Échap → Fermer les modales
-            if (e.key === 'Escape') {
-                // Fermer crop modal
-                const cropModal = document.getElementById('cropModal');
-                if (cropModal && cropModal.classList.contains('show')) {
-                    closeCropModal();
-                    return;
+
+        async function sportSaveData() {
+            try {
+                const isHome = document.getElementById('sportNextIsHome').checked;
+                const adversaire = document.getElementById('sportNextAwayTeam').value.trim();
+
+                const payload = {
+                    // Dernier match
+                    last_match_date: document.getElementById('sportLastMatchDate').value || null,
+                    last_match_time: '18:00',
+                    last_match_matchday: document.getElementById('sportLastMatchDay').value.trim() || null,
+                    last_match_home_team: document.getElementById('sportLastHomeTeam').value.trim() || null,
+                    last_match_away_team: document.getElementById('sportLastAwayTeam').value.trim() || null,
+                    last_match_home_score: parseInt(document.getElementById('sportLastHomeScore').value) || 0,
+                    last_match_away_score: parseInt(document.getElementById('sportLastAwayScore').value) || 0,
+                    last_match_is_home: document.getElementById('sportLastIsHome').checked,
+
+                    // Prochain match
+                    next_match_date: document.getElementById('sportNextMatchDate').value || null,
+                    next_match_time: document.getElementById('sportNextMatchTime').value || '18:00',
+                    next_match_matchday: document.getElementById('sportNextMatchDay').value.trim() || null,
+                    next_match_home_team: isHome ? 'FC Montceau' : adversaire,
+                    next_match_away_team: isHome ? adversaire : 'FC Montceau',
+                    next_match_is_home: isHome,
+
+                    // Classement
+                    standing_position: parseInt(document.getElementById('sportStandingPosition').value) || null,
+                    standing_points: parseInt(document.getElementById('sportStandingPoints').value) || 0,
+                    standing_played: parseInt(document.getElementById('sportStandingPlayed').value) || 0,
+                    standing_won: parseInt(document.getElementById('sportStandingWon').value) || 0,
+                    standing_drawn: parseInt(document.getElementById('sportStandingDrawn').value) || 0,
+                    standing_lost: parseInt(document.getElementById('sportStandingLost').value) || 0,
+                    standing_goals_for: parseInt(document.getElementById('sportStandingGoalsFor').value) || 0,
+                    standing_goals_against: parseInt(document.getElementById('sportStandingGoalsAgainst').value) || 0,
+
+                    // Forme
+                    form: [
+                        document.getElementById('sportForm1').value,
+                        document.getElementById('sportForm2').value,
+                        document.getElementById('sportForm3').value,
+                        document.getElementById('sportForm4').value,
+                        document.getElementById('sportForm5').value
+                    ].join(','),
+
+                    updated_at: new Date().toISOString(),
+                    updated_by: 'admin'
+                };
+
+                let result;
+                if (sportDataId) {
+                    result = await supabaseClient
+                        .from('sport_data')
+                        .update(payload)
+                        .eq('id', sportDataId);
+                } else {
+                    result = await supabaseClient
+                        .from('sport_data')
+                        .insert(payload)
+                        .select()
+                        .single();
+                    if (result.data) sportDataId = result.data.id;
                 }
-                // Fermer event crop modal
-                const eventCropModal = document.getElementById('eventCropModal');
-                if (eventCropModal && eventCropModal.classList.contains('show')) {
-                    closeEventCropModal();
-                    return;
-                }
-                // Fermer camera
-                const cameraModal = document.getElementById('cameraModal');
-                if (cameraModal && cameraModal.classList.contains('show')) {
-                    closeCamera();
-                    return;
-                }
-                // Fermer image modal
-                const imageModal = document.getElementById('imageModal');
-                if (imageModal && imageModal.classList.contains('show')) {
-                    closeImageModal();
-                    return;
-                }
+
+                if (result.error) throw result.error;
+
+                sportShowStatus('✅ Données sport sauvegardées !', 'success');
+                document.getElementById('sportLastUpdate').textContent = 'Dernière mise à jour : ' + new Date().toLocaleString('fr-FR');
+                showToast('Sport sauvegardé ✅');
+
+            } catch (err) {
+                console.error('Sport - Erreur sauvegarde:', err);
+                sportShowStatus('❌ Erreur: ' + err.message, 'error');
             }
-        });
-        
-        // Démarrer l'auto-refresh quand le dashboard est affiché
-        const _origShowDashboard = showDashboard;
-        showDashboard = function() {
-            _origShowDashboard();
-            startAutoRefresh();
-        };
+        }
+
+        async function sportRunScraper() {
+            const statusEl = document.getElementById('sportScraperStatus');
+            statusEl.style.display = 'flex';
+            statusEl.className = 'sport-status-bar info';
+            statusEl.innerHTML = '<span class="material-icons" style="font-size:1rem;animation:spin 1s linear infinite;">sync</span> Scraping en cours...';
+
+            try {
+                const response = await fetch('/api/updateSport');
+                const result = await response.json();
+
+                if (result.success) {
+                    statusEl.className = 'sport-status-bar success';
+                    const logsHtml = result.logs ? result.logs.map(l => '<div>' + l + '</div>').join('') : '';
+                    statusEl.innerHTML = '<div><strong>✅ Scraping terminé !</strong></div>' + logsHtml;
+                    // Recharger les données
+                    setTimeout(sportLoadData, 1000);
+                } else {
+                    throw new Error(result.error || 'Erreur inconnue');
+                }
+            } catch (err) {
+                statusEl.className = 'sport-status-bar error';
+                statusEl.innerHTML = '❌ Erreur scraper: ' + err.message;
+            }
+        }
+
+        function sportShowStatus(message, type) {
+            const bar = document.getElementById('sportStatusBar');
+            bar.className = 'sport-status-bar ' + type;
+            bar.textContent = message;
+            bar.style.display = 'flex';
+            if (type === 'success') {
+                setTimeout(() => { bar.style.display = 'none'; }, 4000);
+            }
+        }
         
         initTheme();
         checkSession();
