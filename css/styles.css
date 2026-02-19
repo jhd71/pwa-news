@@ -780,8 +780,23 @@ h2, h3 {
 }
 
 .tile-icon {
-    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px; /* Définit une largeur fixe pour l'alignement */
     flex-shrink: 0;
+}
+
+.tile-icon .material-icons {
+    font-size: 1.5rem; /* Taille légèrement plus grande pour la lisibilité */
+    color: rgba(255, 255, 255, 0.9); /* Couleur blanche douce */
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+/* Effet au survol de la tuile */
+.tile:hover .material-icons {
+    transform: scale(1.1);
+    color: #fff; /* Éclaircit l'icône au survol */
 }
 
 .tile-text {
