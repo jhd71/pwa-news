@@ -149,7 +149,7 @@ body {
     text-transform: uppercase;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.4);
-    -webkit-text-fill-color: rgba(255, 255, 255, 0.4);
+    -webkit-text-fill-color: #767eee;
     margin-top: 1px;
 }
 
@@ -210,7 +210,7 @@ body {
 
 .date-bar-saint {
     font-style: italic;
-    opacity: 0.85;
+    font-size: 0.8rem;
 }
 
 @media (max-width: 480px) {
@@ -273,7 +273,7 @@ body {
 
 [data-theme="light"] .header-subtitle {
     color: rgba(30, 41, 59, 0.4);
-    -webkit-text-fill-color: rgba(30, 41, 59, 0.4);
+    -webkit-text-fill-color: #000000;
 }
 
 /* ============================================
