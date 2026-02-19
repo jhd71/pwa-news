@@ -780,24 +780,8 @@ h2, h3 {
 }
 
 .tile-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: rgba(99, 102, 241, 0.18);
-    color: #818cf8;
-    font-size: 20px;
+    font-size: 1.25rem;
     flex-shrink: 0;
-    box-shadow: 0 0 8px rgba(99, 102, 241, 0.25);
-    transition: all 0.3s ease;
-}
-
-.tile:hover .tile-icon {
-    background: rgba(99, 102, 241, 0.28);
-    box-shadow: 0 0 12px rgba(99, 102, 241, 0.45);
-    transform: scale(1.05);
 }
 
 .tile-text {
