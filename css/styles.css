@@ -507,6 +507,14 @@ body {
     border: 1px solid var(--border-color);
 }
 
+/* Pour les icônes générées en JS dans le carrousel */
+.source-icon .material-icons {
+    font-size: 1.2rem; /* À ajuster selon tes besoins */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .news-ticker-header {
     display: flex;
     align-items: center;
