@@ -599,17 +599,39 @@ body {
     transform: translateY(-2px);
 }
 
-/* Icône source (emoji) */
+/* Icône source (Material Icon) */
 .news-item-icon {
-    font-size: 1.8rem;
     flex-shrink: 0;
     width: 48px;
     height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(99, 102, 241, 0.08);
     border-radius: 14px;
+    /* On garde ta structure mais on prépare la transition */
+    transition: all 0.3s ease;
+}
+
+/* --- MODE CLAIR --- */
+[data-theme="light"] .news-item-icon {
+    background: rgba(99, 102, 241, 0.12); /* Bleu un peu plus prononcé */
+    border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+[data-theme="light"] .news-item-icon .material-icons {
+    color: #4f46e5; /* Un indigo riche et lisible */
+    font-size: 1.6rem;
+}
+
+/* --- MODE SOMBRE --- */
+[data-theme="dark"] .news-item-icon {
+    background: rgba(165, 180, 252, 0.15); /* Bleu plus clair pour le contraste sombre */
+}
+
+[data-theme="dark"] .news-item-icon .material-icons {
+    color: #818cf8; /* Un indigo pastel qui "pop" sur le gris foncé */
+    font-size: 1.6rem;
+    filter: drop-shadow(0 0 4px rgba(99, 102, 241, 0.4)); /* Effet néon discret */
 }
 
 /* Contenu de l'article */
