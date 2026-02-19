@@ -1171,13 +1171,93 @@ async function submitComment(event, newsId) {
 // ============================================
 // GESTION DES LIKES
 // ============================================
-function getUserFingerprint() {
-    let fp = localStorage.getItem('user_fingerprint');
-    if (!fp) {
-        fp = 'fp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem('user_fingerprint', fp);
+
+// Fingerprint navigateur déterministe (survit au nettoyage localStorage)
+function generateBrowserFingerprint() {
+    try {
+        const components = [];
+        
+        // 1. Canvas fingerprint (unique par GPU/navigateur)
+        const canvas = document.createElement('canvas');
+        canvas.width = 200;
+        canvas.height = 50;
+        const ctx = canvas.getContext('2d');
+        ctx.textBaseline = 'top';
+        ctx.font = '14px Arial';
+        ctx.fillStyle = '#f60';
+        ctx.fillRect(100, 1, 62, 20);
+        ctx.fillStyle = '#069';
+        ctx.fillText('ActuMedia.fp', 2, 15);
+        ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+        ctx.fillText('ActuMedia.fp', 4, 17);
+        components.push(canvas.toDataURL());
+        
+        // 2. Infos écran
+        components.push(screen.width + 'x' + screen.height);
+        components.push(screen.colorDepth);
+        components.push(window.devicePixelRatio || 1);
+        
+        // 3. Timezone
+        components.push(Intl.DateTimeFormat().resolvedOptions().timeZone);
+        components.push(new Date().getTimezoneOffset());
+        
+        // 4. Langue et plateforme
+        components.push(navigator.language);
+        components.push(navigator.platform);
+        components.push(navigator.hardwareConcurrency || 'unknown');
+        
+        // 5. Touch
+        components.push(navigator.maxTouchPoints || 0);
+        
+        // Générer un hash déterministe
+        const raw = components.join('|||');
+        let hash = 0;
+        for (let i = 0; i < raw.length; i++) {
+            const char = raw.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;
+        }
+        
+        return 'bfp_' + Math.abs(hash).toString(36);
+    } catch (e) {
+        console.log('⚠️ Fingerprint canvas impossible, fallback');
+        return null;
     }
+}
+
+function getUserFingerprint() {
+    // 1. Essayer le cookie (survit au nettoyage localStorage)
+    const cookieFp = getCookie('user_fp');
+    if (cookieFp) {
+        localStorage.setItem('user_fingerprint', cookieFp);
+        return cookieFp;
+    }
+    
+    // 2. Essayer localStorage
+    let fp = localStorage.getItem('user_fingerprint');
+    
+    // 3. Si pas de fingerprint ou ancien format → en générer un nouveau
+    if (!fp || fp.startsWith('fp_')) {
+        const browserFp = generateBrowserFingerprint();
+        fp = browserFp || ('fp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
+    }
+    
+    // Sauvegarder partout
+    localStorage.setItem('user_fingerprint', fp);
+    setCookie('user_fp', fp, 365);
+    
     return fp;
+}
+
+// Utilitaires cookies
+function setCookie(name, value, days) {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = name + '=' + encodeURIComponent(value) + ';expires=' + expires + ';path=/;SameSite=Lax';
+}
+
+function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
 }
 
 async function toggleLike(newsId, btn) {
@@ -1185,14 +1265,21 @@ async function toggleLike(newsId, btn) {
     if (!supabaseClient) return;
     
     const userFingerprint = getUserFingerprint();
-    const isLiked = btn.classList.contains('liked');
     const countEl = document.getElementById(`like-count-${newsId}`);
     const icon = btn.querySelector('.material-icons');
     let currentCount = parseInt(countEl.textContent) || 0;
     
     try {
-        if (isLiked) {
-            // Retirer le like
+        // Vérifier côté SERVEUR si ce fingerprint a déjà liké
+        const { data: existingLike } = await supabaseClient
+            .from('news_likes')
+            .select('id')
+            .eq('news_id', newsId)
+            .eq('user_fingerprint', userFingerprint)
+            .maybeSingle();
+        
+        if (existingLike) {
+            // Le like existe → le retirer
             const { error } = await supabaseClient
                 .from('news_likes')
                 .delete()
@@ -1204,12 +1291,10 @@ async function toggleLike(newsId, btn) {
             btn.classList.remove('liked');
             icon.textContent = 'favorite_border';
             countEl.textContent = Math.max(0, currentCount - 1);
-            
-            // Mettre à jour le tableau local
-            window.userLikes = window.userLikes.filter(id => id !== newsId);
+            window.userLikes = (window.userLikes || []).filter(id => id !== newsId);
             
         } else {
-            // Ajouter le like
+            // Pas de like → en ajouter un
             const { error } = await supabaseClient
                 .from('news_likes')
                 .insert([{
@@ -1222,13 +1307,10 @@ async function toggleLike(newsId, btn) {
             btn.classList.add('liked');
             icon.textContent = 'favorite';
             countEl.textContent = currentCount + 1;
-            
-            // Mettre à jour le tableau local
-            window.userLikes.push(newsId);
+            (window.userLikes || []).push(newsId);
         }
     } catch (error) {
         console.error('Erreur like:', error);
-        // En cas d'erreur (ex: déjà liké), on ne fait rien
     }
 }
 
@@ -1835,30 +1917,36 @@ window.openImageModal = openImageModal;
 window.closeImageModal = closeImageModal;
 
 // ============================================
-// COMPTEUR DE VISITES
+// COMPTEUR DE VISITES (vérification serveur)
 // ============================================
 async function recordVisit() {
     try {
         const supabase = getSupabaseClient();
         if (!supabase) return;
         
-        // Clé unique par jour pour ce visiteur
+        const fingerprint = getUserFingerprint();
         const today = new Date().toISOString().split('T')[0];
-        const visitorKey = `visitor_${today}`;
         
-        // Vérifier si c'est un nouveau visiteur aujourd'hui
-        const isNewVisitor = !localStorage.getItem(visitorKey);
+        // Vérifier CÔTÉ SERVEUR si ce fingerprint a déjà visité aujourd'hui
+        const { data: existing } = await supabase
+            .from('visitor_logs')
+            .select('id')
+            .eq('fingerprint', fingerprint)
+            .eq('visit_date', today)
+            .maybeSingle();
         
-        // Enregistrer la visite
+        const isNewVisitor = !existing;
+        
         const { error } = await supabase.rpc('record_visit', { is_new_visitor: isNewVisitor });
         
         if (!error) {
-            // Marquer comme déjà visité aujourd'hui
             if (isNewVisitor) {
-                localStorage.setItem(visitorKey, 'true');
-                console.log('👤 Nouveau visiteur enregistré');
+                await supabase
+                    .from('visitor_logs')
+                    .insert({ fingerprint: fingerprint, visit_date: today });
+                console.log('👤 Nouveau visiteur enregistré (vérifié serveur)');
             } else {
-                console.log('📄 Page vue enregistrée');
+                console.log('📄 Page vue enregistrée (visiteur déjà connu)');
             }
         }
     } catch (err) {
