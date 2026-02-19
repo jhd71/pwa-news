@@ -526,13 +526,15 @@ body {
     font-size: 1.1rem;
 }
 
-.pulse {
-    animation: pulse 2s ease infinite;
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+.pulse {
+    display: inline-block; /* Indispensable pour que le scale fonctionne */
+    animation: pulse 2s ease-in-out infinite;
 }
 
 .news-ticker-container {
