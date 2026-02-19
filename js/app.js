@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initServiceWorker();
     initInstallPrompt();
     initExtraTiles();
+    initToggleSections();
     initPushNotifications();
     initAgenda();
     initSport();
@@ -967,14 +968,11 @@ function getCommunityIcon(type) {
         'evenement': '🎪',
         'sport': '⚽',
         'culture': '🎭',
-        'economie': '🏪',
-        'solidarite': '🤝',
-        'travaux': '🚧',
-        'environnement': '🌿',
-        'education': '🎓',
-        'pratique': 'ℹ️',
-        'insolite': '😮',
-        'photo': '📸'
+        'economie': '💼',
+        'pratique': '💡',
+        'insolite': '🤔',
+        'photo': '📸',
+        'autre': '📋'
     };
     return icons[type] || '📰';
 }
@@ -1352,6 +1350,57 @@ function initExtraTiles() {
 
 // Exposer la fonction globalement
 window.toggleExtraTiles = toggleExtraTiles;
+
+// === TOGGLE GÉNÉRIQUE POUR TOUTES LES SECTIONS ===
+function toggleSection(extraId, btnId, iconId, textId, openLabel, closeLabel, storageKey) {
+    const extra = document.getElementById(extraId);
+    const btn = document.getElementById(btnId);
+    const icon = document.getElementById(iconId);
+    const text = document.getElementById(textId);
+    
+    if (!extra || !btn) return;
+    
+    const isExpanded = extra.classList.contains('show');
+    
+    if (isExpanded) {
+        extra.classList.remove('show');
+        btn.classList.remove('expanded');
+        icon.textContent = 'expand_more';
+        text.textContent = openLabel;
+        localStorage.setItem(storageKey, 'false');
+    } else {
+        extra.classList.add('show');
+        btn.classList.add('expanded');
+        icon.textContent = 'expand_less';
+        text.textContent = closeLabel;
+        localStorage.setItem(storageKey, 'true');
+    }
+}
+
+// Restaurer l'état des sections au chargement
+function initToggleSections() {
+    const sections = [
+        { storageKey: 'mediaRegionalExpanded', extraId: 'mediaRegionalExtra', btnId: 'mediaRegionalBtn', iconId: 'mediaRegionalIcon', textId: 'mediaRegionalText', closeLabel: 'Moins de médias' },
+        { storageKey: 'mediaNationalExpanded', extraId: 'mediaNationalExtra', btnId: 'mediaNationalBtn', iconId: 'mediaNationalIcon', textId: 'mediaNationalText', closeLabel: 'Moins de médias' }
+    ];
+    
+    sections.forEach(function(s) {
+        if (localStorage.getItem(s.storageKey) === 'true') {
+            const extra = document.getElementById(s.extraId);
+            const btn = document.getElementById(s.btnId);
+            const icon = document.getElementById(s.iconId);
+            const text = document.getElementById(s.textId);
+            if (extra && btn) {
+                extra.classList.add('show');
+                btn.classList.add('expanded');
+                icon.textContent = 'expand_less';
+                text.textContent = s.closeLabel;
+            }
+        }
+    });
+}
+
+window.toggleSection = toggleSection;
 
 // ============================================
 // NOTIFICATIONS PUSH
@@ -1760,12 +1809,12 @@ function formatAgendaTime(timeStr) {
 }
 
 function getAgendaCategoryIcon(category) {
-    const icons = { 'sport': '⚽', 'concert': '🎵', 'spectacle': '🎭', 'expo': '🖼️', 'marche': '🛒', 'brocante': '📦', 'fete': '🎉', 'repas': '🍽️', 'atelier': '🎨', 'enfants': '👨‍👩‍👧', 'nature': '🥾', 'solidarite': '🤝', 'culture': '🎭' };
+    const icons = { 'sport': '⚽', 'culture': '🎭', 'marche': '🛒', 'brocante': '🏷️', 'concert': '🎵', 'fete': '🎉' };
     return icons[category] || '📅';
 }
 
 function getAgendaCategoryLabel(category) {
-    const labels = { 'sport': 'Sport', 'concert': 'Concert', 'spectacle': 'Spectacle', 'expo': 'Expo', 'marche': 'Marché', 'brocante': 'Brocante', 'fete': 'Fête', 'repas': 'Repas', 'atelier': 'Atelier', 'enfants': 'Famille', 'nature': 'Rando', 'solidarite': 'Solidarité', 'culture': 'Culture' };
+    const labels = { 'sport': 'Sport', 'culture': 'Culture', 'marche': 'Marché', 'brocante': 'Brocante', 'concert': 'Concert', 'fete': 'Fête' };
     return labels[category] || 'Événement';
 }
 

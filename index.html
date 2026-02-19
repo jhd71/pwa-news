@@ -200,7 +200,6 @@
          ============================================ -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&display=swap" rel="stylesheet">
     
     <!-- ============================================
          CSS
@@ -243,8 +242,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 			</a>
             </div>
             <div class="header-title">
-                <h1>Actu <span class="header-amp">&</span> Média</h1>
-                <div class="header-subtitle">Montceau-les-Mines</div>
+                <h1>Actu & Média</h1>
             </div>
             <div class="header-right-btns">
                 <button class="theme-toggle" id="themeToggle" aria-label="Changer de thème">
@@ -275,13 +273,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
         </a>
     </header>
-
-    <!-- Barre Date & Saint du jour -->
-    <div class="date-bar" id="dateBar">
-        <span class="date-bar-day" id="dateBarDay"></span>
-        <span class="date-bar-separator">·</span>
-        <span class="date-bar-saint" id="dateBarSaint"></span>
-    </div>
 
     <!-- Panel Liens Rapides (gauche) -->
     <div class="quick-links-overlay" id="quickLinksOverlay"></div>
@@ -475,14 +466,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </div>
                     <span class="material-icons arrow" id="notifArrow">notifications_none</span>
                 </button>
-                <button class="support-action" onclick="resetAndReload()">
-                    <div class="support-action-icon update">🔄</div>
-                    <div class="support-action-text">
-                        <div class="support-action-name">Mettre à jour l'application</div>
-                        <div class="support-action-desc">Vider le cache et redémarrer</div>
-                    </div>
-                    <span class="material-icons arrow">refresh</span>
-                </button>
             </div>
             
             <!-- Admin link (discret) -->
@@ -558,7 +541,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </a>
             <a href="https://linformateurdebourgogne.com/" target="_blank" rel="noopener" class="tile glass">
                 <div class="tile-icon">📋</div>
-                <div class="tile-text"><div class="tile-name">L'Informateur</div><div class="tile-subtitle">de Bourgogne</div></div>
+                <div class="tile-text"><div class="tile-name">L'Informateur</div><div class="tile-subtitle">Bourgogne</div></div>
             </a>
         </div>
         
@@ -571,10 +554,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <a href="https://www.lejsl.com/edition-macon" target="_blank" rel="noopener" class="tile glass">
                 <div class="tile-icon">🍇</div>
                 <div class="tile-text"><div class="tile-name">Le JSL</div><div class="tile-subtitle">Mâcon</div></div>
-            </a>
-            <a href="https://www.francebleu.fr/bourgogne-franche-comte/saone-et-loire-71/actu" target="_blank" rel="noopener" class="tile glass">
-                <div class="tile-icon">🎙️</div>
-                <div class="tile-text"><div class="tile-name">France Bleu</div><div class="tile-subtitle">Saône-et-Loire</div></div>
             </a>
             <a href="https://www.lejsl.com/edition-autun" target="_blank" rel="noopener" class="tile glass">
                 <div class="tile-icon">🏛️</div>
@@ -596,19 +575,91 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             Médias régionaux
         </h2>
         <div class="tiles-grid">
-            <a href="https://actu.fr/bourgogne-franche-comte/dijon_21231" target="_blank" rel="noopener" class="tile glass">
-                <div class="tile-icon">🦉</div>
-                <div class="tile-text"><div class="tile-name">Actu.fr</div><div class="tile-subtitle">Dijon</div></div>
+            <a href="https://www.francebleu.fr/bourgogne-franche-comte/saone-et-loire-71/actu" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🎙️</div>
+                <div class="tile-text"><div class="tile-name">France Bleu</div><div class="tile-subtitle">Saône-et-Loire</div></div>
             </a>
             <a href="https://france3-regions.franceinfo.fr/bourgogne-franche-comte/saone-et-loire" target="_blank" rel="noopener" class="tile glass">
                 <div class="tile-icon">📺</div>
                 <div class="tile-text"><div class="tile-name">France 3</div><div class="tile-subtitle">Bourgogne</div></div>
+            </a>
+            <a href="https://actu.fr/bourgogne-franche-comte/dijon_21231" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🦉</div>
+                <div class="tile-text"><div class="tile-name">Actu.fr</div><div class="tile-subtitle">Dijon</div></div>
             </a>
             <a href="https://www.bfmtv.com/dijon/" target="_blank" rel="noopener" class="tile glass">
                 <div class="tile-icon">🔴</div>
                 <div class="tile-text"><div class="tile-name">BFM Dijon</div><div class="tile-subtitle">Bourgogne</div></div>
             </a>
         </div>
+
+        <!-- Médias régionaux supplémentaires -->
+        <div class="tiles-grid tiles-extra" id="mediaRegionalExtra">
+            <a href="https://www.bienpublic.com/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">📰</div>
+                <div class="tile-text"><div class="tile-name">Le Bien Public</div><div class="tile-subtitle">Dijon</div></div>
+            </a>
+            <a href="https://www.lyonmag.com/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🦁</div>
+                <div class="tile-text"><div class="tile-name">Lyon Mag</div><div class="tile-subtitle">Lyon</div></div>
+            </a>
+        </div>
+
+        <button class="tiles-toggle" onclick="toggleSection('mediaRegionalExtra','mediaRegionalBtn','mediaRegionalIcon','mediaRegionalText','Plus de médias','Moins de médias','mediaRegionalExpanded')" id="mediaRegionalBtn">
+            <span class="material-icons" id="mediaRegionalIcon">expand_more</span>
+            <span id="mediaRegionalText">Plus de médias</span>
+        </button>
+    </section>
+
+    <!-- Tuiles Médias nationaux -->
+    <section class="tiles-section">
+        <h2 class="section-title">
+            <span class="material-icons">public</span>
+            Médias nationaux
+        </h2>
+        <div class="tiles-grid">
+            <a href="https://www.francetvinfo.fr/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">📡</div>
+                <div class="tile-text"><div class="tile-name">France Info</div><div class="tile-subtitle">Info en continu</div></div>
+            </a>
+            <a href="https://www.bfmtv.com/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🔴</div>
+                <div class="tile-text"><div class="tile-name">BFM TV</div><div class="tile-subtitle">Info en continu</div></div>
+            </a>
+            <a href="https://www.lemonde.fr/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🌍</div>
+                <div class="tile-text"><div class="tile-name">Le Monde</div><div class="tile-subtitle">Quotidien</div></div>
+            </a>
+            <a href="https://www.20minutes.fr/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">⏱️</div>
+                <div class="tile-text"><div class="tile-name">20 Minutes</div><div class="tile-subtitle">Gratuit</div></div>
+            </a>
+        </div>
+
+        <!-- Médias nationaux supplémentaires -->
+        <div class="tiles-grid tiles-extra" id="mediaNationalExtra">
+            <a href="https://www.lefigaro.fr/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">📜</div>
+                <div class="tile-text"><div class="tile-name">Le Figaro</div><div class="tile-subtitle">Quotidien</div></div>
+            </a>
+            <a href="https://www.leparisien.fr/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🗼</div>
+                <div class="tile-text"><div class="tile-name">Le Parisien</div><div class="tile-subtitle">Quotidien</div></div>
+            </a>
+            <a href="https://www.cnews.fr/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">📺</div>
+                <div class="tile-text"><div class="tile-name">CNews</div><div class="tile-subtitle">Info en continu</div></div>
+            </a>
+            <a href="https://www.ouest-france.fr/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🌊</div>
+                <div class="tile-text"><div class="tile-name">Ouest-France</div><div class="tile-subtitle">Premier quotidien</div></div>
+            </a>
+        </div>
+
+        <button class="tiles-toggle" onclick="toggleSection('mediaNationalExtra','mediaNationalBtn','mediaNationalIcon','mediaNationalText','Plus de médias','Moins de médias','mediaNationalExpanded')" id="mediaNationalBtn">
+            <span class="material-icons" id="mediaNationalIcon">expand_more</span>
+            <span id="mediaNationalText">Plus de médias</span>
+        </button>
     </section>
 
 <!-- Agenda Local -->
@@ -635,34 +686,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
     </section>
 
-<!-- Widget Cinéma -->
-    <section class="cinema-section glass">
-        <div class="cinema-section-title">🎬 Cinémas</div>
-        <div class="cinema-header">
-            <div class="cinema-tabs">
-                <button class="cinema-tab active" id="tabCapitole" onclick="switchCinema('capitole')">
-                    <span class="material-icons">movie</span>
-                    Le Capitole
-                </button>
-                <button class="cinema-tab" id="tabMagic" onclick="switchCinema('magic')">
-                    <span class="material-icons">movie</span>
-                    Magic
-                </button>
-            </div>
-            <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" rel="noopener" class="cinema-link" id="cinemaLink">
-                Voir tout
-                <span class="material-icons">arrow_forward</span>
-            </a>
-        </div>
-        <div class="cinema-subtitle" id="cinemaSubtitle">Montceau-les-Mines • <span class="cinema-today">Aujourd'hui</span></div>
-        <div class="cinema-content" id="cinemaContent">
-            <div class="cinema-loading">
-                <span class="material-icons spinning">theaters</span>
-                <span>Chargement du programme...</span>
-            </div>
-        </div>
-    </section>
-	
     <!-- Section Sport - FC Montceau Bourgogne -->
     <section class="sport-section glass" id="sportSection">
         <div class="sport-header">
@@ -766,7 +789,35 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 Voir sur SportCorico
             </a>
         </div>
-    </div>	  
+    </div>
+	
+    <!-- Widget Cinéma -->
+    <section class="cinema-section glass">
+        <div class="cinema-section-title">🎬 Cinémas</div>
+        <div class="cinema-header">
+            <div class="cinema-tabs">
+                <button class="cinema-tab active" id="tabCapitole" onclick="switchCinema('capitole')">
+                    <span class="material-icons">movie</span>
+                    Le Capitole
+                </button>
+                <button class="cinema-tab" id="tabMagic" onclick="switchCinema('magic')">
+                    <span class="material-icons">movie</span>
+                    Magic
+                </button>
+            </div>
+            <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" rel="noopener" class="cinema-link" id="cinemaLink">
+                Voir tout
+                <span class="material-icons">arrow_forward</span>
+            </a>
+        </div>
+        <div class="cinema-subtitle" id="cinemaSubtitle">Montceau-les-Mines • <span class="cinema-today">Aujourd'hui</span></div>
+        <div class="cinema-content" id="cinemaContent">
+            <div class="cinema-loading">
+                <span class="material-icons spinning">theaters</span>
+                <span>Chargement du programme...</span>
+            </div>
+        </div>
+    </section>
 
     <!-- Section Infos de la communauté -->
     <section class="community-section glass" id="communitySection">
@@ -796,16 +847,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- Section SEO -->
     <section class="seo-section glass">
         <h2>Actu & Média : L'information locale de Montceau-les-Mines</h2>
-        <p>Bienvenue sur <strong>Actu & Média</strong>, votre source d'actualités locales de 
-        <strong>Montceau-les-Mines</strong>, du Creusot et de la Saône-et-Loire (71).</p>
-        <p>Retrouvez chaque jour les dernières infos de votre région, la météo locale, 
-        le programme du cinéma Le Capitole et du Magic, les résultats du FC Montceau 
-        et l'agenda des événements.</p>
-        <p>Ce site est <strong>100% gratuit, sans publicité</strong> et créé bénévolement 
-        pour la communauté de Montceau-les-Mines et ses environs : Blanzy, Saint-Vallier, 
-        Sanvignes, etc.</p>
-        <p><strong>Montceau-les-Mines aujourd'hui :</strong> suivez l'actu en temps réel, 
-        consultez les événements locaux et restez connecté à votre ville !</p>
+        <p>Bienvenue sur Actu & Média, votre source d'<strong>actualités locales de Montceau-les-Mines</strong>, 
+        du Creusot et de la Saône-et-Loire (71). Retrouvez chaque jour les dernières infos de votre région, 
+        la météo locale, le programme du cinéma Le Capitole et bien plus.</p>
+        <p>Notre <strong>site d'information local</strong> est 100% gratuit, sans publicité et créé bénévolement 
+        pour la communauté de Montceau-les-Mines et ses environs : Blanzy, Saint-Vallier, Sanvignes, etc.</p>
+        <p><strong>Montceau-les-Mines aujourd'hui :</strong> suivez l'actu en temps réel, consultez les événements locaux et restez connecté à votre ville !</p>
     </section>
 
     <!-- Modal TV en direct -->
@@ -1100,7 +1147,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             M'offrir un petit café aide à faire vivre le projet !
         </p>
         
-        <a href="https://www.paypal.com/paypalme/actuetmedia" target="_blank" rel="noopener" class="donation-popup-btn heartbeat" onclick="closeDonationPopup(true)">
+        <a href="https://www.paypal.com/paypalme/actuetmedia" target="_blank" rel="noopener" class="donation-popup-btn heartbeat" onclick="closeDonationPopup()">
             <svg class="pulse-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-right:8px;">
                 <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.946 5.438-3.158 7.12-6.591 7.12h-1.2l-.58 3.684zm9.602-12.872c-.172-.943-.75-2.028-2.612-2.028H8.16L6.59 16.438h3.38c1.644 0 3.036-.575 3.903-2.035.534-.9.993-2.316 1.307-4.16.146-.86.257-1.46.298-1.778z"/>
             </svg>
@@ -1144,18 +1191,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             }
         }
         
-        window.closeDonationPopup = function(permanent = false) {
+        window.closeDonationPopup = function(later = false) {
             const popup = document.getElementById('donationPopup');
             if (popup) {
                 popup.classList.remove('show');
             }
             
-            // Toujours sauvegarder le timestamp (7 jours avant réaffichage)
-            localStorage.setItem('donation_popup_last', Date.now().toString());
-            
-            // Si clic sur le lien PayPal → ne plus jamais montrer
-            if (permanent) {
-                localStorage.setItem('donation_popup_dismissed', 'permanent');
+            if (later) {
+                localStorage.setItem('donation_popup_last', Date.now().toString());
             }
         };
         
@@ -1163,74 +1206,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         setTimeout(showDonationPopup, POPUP_DELAY);
     })();
     </script>
-	
-	<script>
-    // === MISE À JOUR / RESET CACHE ===
-    async function resetAndReload() {
-        const confirmed = confirm(
-            '🔄 Mettre à jour Actu & Média ?\n\n' +
-            'Cette action va :\n' +
-            '• Vider le cache de l\'application\n' +
-            '• Supprimer les données temporaires\n' +
-            '• Redémarrer avec la dernière version\n\n' +
-            'Vos préférences (thème, notifications) seront conservées.'
-        );
-        
-        if (!confirmed) return;
-        
-        try {
-            // 1. Sauvegarder les préférences importantes
-            const preserved = {};
-            const keysToKeep = [
-                'theme', 'push_subscription', 'adminHubAuth', 
-                'adminNewsAuth', 'adminNewsKey', 'admin_theme',
-                'donation_popup_last', 'donation_popup_dismissed',
-                'font_size', 'notif_permission'
-            ];
-            keysToKeep.forEach(function(key) {
-                const val = localStorage.getItem(key);
-                if (val !== null) preserved[key] = val;
-            });
-            
-            // 2. Désenregistrer tous les Service Workers
-            if ('serviceWorker' in navigator) {
-                const registrations = await navigator.serviceWorker.getRegistrations();
-                for (const registration of registrations) {
-                    await registration.unregister();
-                }
-                console.log('✅ Service Workers supprimés');
-            }
-            
-            // 3. Vider tous les caches
-            if ('caches' in window) {
-                const cacheNames = await caches.keys();
-                for (const name of cacheNames) {
-                    await caches.delete(name);
-                }
-                console.log('✅ Caches vidés:', cacheNames.length);
-            }
-            
-            // 4. Vider le localStorage (sauf préférences)
-            localStorage.clear();
-            
-            // 5. Restaurer les préférences
-            Object.keys(preserved).forEach(function(key) {
-                localStorage.setItem(key, preserved[key]);
-            });
-            
-            console.log('✅ Préférences restaurées');
-            
-            // 6. Recharger sans cache
-            window.location.reload(true);
-            
-        } catch (error) {
-            console.error('Erreur lors de la mise à jour:', error);
-            // En cas d'erreur, forcer quand même le rechargement
-            window.location.reload(true);
-        }
-    }
-    </script>
-	
 	<!-- Bouton retour en haut -->
 <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Retour en haut">
     <span class="material-icons">keyboard_arrow_up</span>
