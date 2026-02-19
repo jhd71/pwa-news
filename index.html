@@ -475,6 +475,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </div>
                     <span class="material-icons arrow" id="notifArrow">notifications_none</span>
                 </button>
+                <button class="support-action" onclick="resetAndReload()">
+                    <div class="support-action-icon update">🔄</div>
+                    <div class="support-action-text">
+                        <div class="support-action-name">Mettre à jour l'application</div>
+                        <div class="support-action-desc">Vider le cache et redémarrer</div>
+                    </div>
+                    <span class="material-icons arrow">refresh</span>
+                </button>
             </div>
             
             <!-- Admin link (discret) -->
@@ -1155,6 +1163,74 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         setTimeout(showDonationPopup, POPUP_DELAY);
     })();
     </script>
+	
+	<script>
+    // === MISE À JOUR / RESET CACHE ===
+    async function resetAndReload() {
+        const confirmed = confirm(
+            '🔄 Mettre à jour Actu & Média ?\n\n' +
+            'Cette action va :\n' +
+            '• Vider le cache de l\'application\n' +
+            '• Supprimer les données temporaires\n' +
+            '• Redémarrer avec la dernière version\n\n' +
+            'Vos préférences (thème, notifications) seront conservées.'
+        );
+        
+        if (!confirmed) return;
+        
+        try {
+            // 1. Sauvegarder les préférences importantes
+            const preserved = {};
+            const keysToKeep = [
+                'theme', 'push_subscription', 'adminHubAuth', 
+                'adminNewsAuth', 'adminNewsKey', 'admin_theme',
+                'donation_popup_last', 'donation_popup_dismissed',
+                'font_size', 'notif_permission'
+            ];
+            keysToKeep.forEach(function(key) {
+                const val = localStorage.getItem(key);
+                if (val !== null) preserved[key] = val;
+            });
+            
+            // 2. Désenregistrer tous les Service Workers
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (const registration of registrations) {
+                    await registration.unregister();
+                }
+                console.log('✅ Service Workers supprimés');
+            }
+            
+            // 3. Vider tous les caches
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                for (const name of cacheNames) {
+                    await caches.delete(name);
+                }
+                console.log('✅ Caches vidés:', cacheNames.length);
+            }
+            
+            // 4. Vider le localStorage (sauf préférences)
+            localStorage.clear();
+            
+            // 5. Restaurer les préférences
+            Object.keys(preserved).forEach(function(key) {
+                localStorage.setItem(key, preserved[key]);
+            });
+            
+            console.log('✅ Préférences restaurées');
+            
+            // 6. Recharger sans cache
+            window.location.reload(true);
+            
+        } catch (error) {
+            console.error('Erreur lors de la mise à jour:', error);
+            // En cas d'erreur, forcer quand même le rechargement
+            window.location.reload(true);
+        }
+    }
+    </script>
+	
 	<!-- Bouton retour en haut -->
 <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Retour en haut">
     <span class="material-icons">keyboard_arrow_up</span>
