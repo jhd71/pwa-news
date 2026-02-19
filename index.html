@@ -1,2183 +1,1295 @@
-// ============================================
-// ACTU & MÉDIA - Application JavaScript v2
-// ============================================
-
-// === CACHE LOCAL CINÉMA ===
-const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
-
-function getCachedData(key) {
-    try {
-        const cached = localStorage.getItem(key);
-        if (!cached) return null;
-        
-        const { data, timestamp } = JSON.parse(cached);
-        if (Date.now() - timestamp > CACHE_DURATION) {
-            localStorage.removeItem(key);
-            return null;
-        }
-        return data;
-    } catch (e) {
-        return null;
-    }
-}
-
-function setCachedData(key, data) {
-    try {
-        localStorage.setItem(key, JSON.stringify({
-            data: data,
-            timestamp: Date.now()
-        }));
-    } catch (e) {
-        console.log('Cache storage failed');
-    }
-}
-
-// Configuration
-const CONFIG = {
-    news: {
-        apiUrl: '/api/getNews',
-        refreshInterval: 10 * 60 * 1000
-    },
-    cinema: {
-        capitole: {
-            dataUrl: 'https://raw.githubusercontent.com/jhd71/scraper-cinema/main/data/cinema.json',
-            nom: 'Le Capitole',
-            ville: 'Montceau-les-Mines',
-            siteUrl: 'https://www.cinemacapitole-montceau.fr/horaires/'
-        },
-        magic: {
-            dataUrl: 'https://raw.githubusercontent.com/jhd71/scraper-cinema-magic/main/data/cinema-magic.json',
-            nom: 'Magic',
-            ville: 'Le Creusot',
-            siteUrl: 'https://www.cinemamagic-creusot.fr/horaires/'
-        }
-    },
-    supabase: {
-        url: 'https://ekjgfiyhkythqcnmhzea.supabase.co',
-        key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4'
-    }
-};
-
-// Instance unique Supabase (évite les multiples instances)
-let supabaseClient = null;
-
-function getSupabaseClient() {
-    if (!supabaseClient && typeof window.supabase !== 'undefined') {
-        supabaseClient = window.supabase.createClient(CONFIG.supabase.url, CONFIG.supabase.key);
-        console.log('✅ Supabase initialisé (instance unique)');
-    }
-    return supabaseClient;
-}
-
-// Exposer globalement pour les autres scripts
-window.getSupabaseClient = getSupabaseClient;
-
-// État de l'application
-let newsCurrentSlide = 0;
-let newsSlides = [];
-let newsAutoPlayInterval = null;
-let deferredPrompt = null;
-
-// ============================================
-// INITIALISATION
-// ============================================
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 Actu & Média - Initialisation');
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     
-    initTheme();
-    initWeather();
-    initNews();
-    initCinema();
-    initCommunity();
-    initServiceWorker();
-    initInstallPrompt();
-    initExtraTiles();
-    initToggleSections();
-    initPushNotifications();
-    initAgenda();
-    initSport();
-    initFontSizeSelector();
-    initDateBar();
-    recordVisit();
-});
-
-// ============================================
-// MÉTÉO (Open-Meteo - sans clé API) - J+2
-// ============================================
-async function initWeather() {
-    try {
-        const latitude = 46.6667;
-        const longitude = 4.3667;
-
-        const response = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&daily=temperature_2m_max,weathercode&timezone=Europe/Paris`
-        );
-
-        if (!response.ok) throw new Error('Erreur météo');
-
-        const data = await response.json();
-
-        // Aujourd'hui (J+0)
-        const tempToday = Math.round(data.current_weather.temperature);
+<!-- ============================================
+         SCRIPT FACEBOOK IN-APP BROWSER BLOCKER
+         Doit rester en PREMIER pour bloquer le contenu
+         ============================================ -->
+    <style>
+        html.fb-block, body.fb-block {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            min-height: 100vh;
+            overflow: hidden;
+            background: #1a1a2e !important;
+            font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        }
+        .fb-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 100%);
+        }
+        .fb-logo {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .fb-wrapper h2 {
+			font-size: 1.8rem;
+			margin: 0 0 0.5rem 0;
+			color: #ffffff;
+			font-weight: 700;
+			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+		}
+		.fb-wrapper p {
+			color: #ffffff;
+			margin: 5px 0;
+			font-size: 1.1rem;
+			text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+		}
+        .fb-arrow {
+            font-size: 2.5rem;
+            margin-top: 1.5rem;
+            animation: arrowMove 1.2s ease-in-out infinite;
+        }
+        @keyframes arrowMove {
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(-8px); opacity: 1; }
+        }
+        .fb-box {
+			margin-top: 1.5rem;
+			padding: 1.25rem 1.5rem;
+			background: rgba(99, 102, 241, 0.35);
+			border: 2px solid rgba(99, 102, 241, 0.7);
+			border-radius: 16px;
+			max-width: 300px;
+			font-size: 1.1rem;
+			line-height: 1.7;
+			color: #ffffff;
+			text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+		}
+        .fb-box strong {
+            color: #a5b4fc;
+            font-weight: 600;
+        }
+        .fb-icon {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.3);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 700;
+            margin: 0 2px;
+        }
+        .fb-footer {
+			margin-top: 2rem;
+			font-size: 0.95rem;
+			color: #ffffff;
+			text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+		}
+        .fb-footer span {
+            font-size: 1.25rem;
+            vertical-align: middle;
+        }
+    </style>
+    <script>
+    (function() {
+        var ua = navigator.userAgent || "";
+        // Détection Facebook, Instagram, Messenger, TikTok
+        var isInAppBrowser = ua.includes("FBAN") || ua.includes("FBAV") || ua.includes("Instagram") || ua.includes("Messenger") || ua.includes("BytedanceWebview");
+        var isIOS = /iPhone|iPad|iPod/i.test(ua);
         
-        const icon0 = document.getElementById('weatherIcon0');
-        const temp0 = document.getElementById('weatherTemp0');
-        if (icon0) icon0.innerHTML = getWeatherIcon(data.current_weather.weathercode, 'small');
-        if (temp0) temp0.textContent = `${tempToday}°`;
-
-        // Demain (J+1)
-        if (data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length > 1) {
-            const tempJ1 = Math.round(data.daily.temperature_2m_max[1]);
+        if (!isInAppBrowser) return;
+        
+        document.documentElement.classList.add("fb-block");
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            document.body.classList.add("fb-block");
             
-            const icon1 = document.getElementById('weatherIcon1');
-            const temp1 = document.getElementById('weatherTemp1');
-            if (icon1) icon1.innerHTML = getWeatherIcon(data.daily.weathercode[1], 'small');
-            if (temp1) temp1.textContent = `${tempJ1}°`;
-        }
-
-        // Après-demain (J+2)
-        if (data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length > 2) {
-            const tempJ2 = Math.round(data.daily.temperature_2m_max[2]);
-            const dayNameJ2 = getDayName(2);
+            var message = isIOS
+                ? '<div class="fb-logo">📱</div>' +
+                  '<h2>iPhone / iPad</h2>' +
+                  '<p>Ce site fonctionne mieux dans Safari</p>' +
+                  '<div class="fb-arrow">⬆️</div>' +
+                  '<div class="fb-box">' +
+                  '1. Appuyez sur <strong>Partager</strong> <span class="fb-icon">↑</span><br><br>' +
+                  '2. Puis sur<br>' +
+                  '<strong>« Ouvrir dans Safari »</strong>' +
+                  '</div>'
+                : '<div class="fb-logo">📱</div>' +
+                  '<h2>Android</h2>' +
+                  '<p>Ce site fonctionne mieux dans Chrome</p>' +
+                  '<div class="fb-arrow">⬆️</div>' +
+                  '<div class="fb-box">' +
+                  '1. Appuyez sur <span class="fb-icon">⋮</span> (en haut à droite)<br><br>' +
+                  '2. Puis sur<br>' +
+                  '<strong>« Ouvrir dans le navigateur »</strong>' +
+                  '</div>';
             
-            const label2 = document.getElementById('weatherLabel2');
-            const icon2 = document.getElementById('weatherIcon2');
-            const temp2 = document.getElementById('weatherTemp2');
-            if (label2) label2.textContent = dayNameJ2;
-            if (icon2) icon2.innerHTML = getWeatherIcon(data.daily.weathercode[2], 'small');
-            if (temp2) temp2.textContent = `${tempJ2}°`;
-        }
-
-        console.log('🌤️ Météo chargée (J+0, J+1, J+2)');
-
-    } catch (error) {
-        console.error('❌ Erreur météo:', error);
-    }
-}
-
-function getDayName(daysFromNow) {
-    const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-    const date = new Date();
-    date.setDate(date.getDate() + daysFromNow);
-    return days[date.getDay()];
-}
-
-function getWeatherEmoji(code) {
-    // Retourne emoji pour compatibilité (utilisé dans textContent)
-    if (code === 0) return '☀️';
-    if ([1, 2, 3].includes(code)) return '⛅';
-    if ([45, 48].includes(code)) return '🌫️';
-    if ([51, 53, 55, 61, 63, 65].includes(code)) return '🌧️';
-    if ([66, 67].includes(code)) return '🌧️';
-    if ([71, 73, 75, 77].includes(code)) return '❄️';
-    if ([80, 81, 82].includes(code)) return '🌦️';
-    if ([95, 96, 99].includes(code)) return '⛈️';
-    return '🌤️';
-}
-
-// Icône météo moderne v2 (avec nuages sombres pour pluie/orage)
-// URL de base des icônes Meteocons (animées, gratuites, licence MIT)
-const METEOCONS_BASE = 'https://basmilius.github.io/weather-icons/production/fill/all/';
-const ICON_SIZES = { small: 32, medium: 48, large: 72, xlarge: 120 };
-
-function getWeatherIcon(code, size = 'medium') {
-    const px = ICON_SIZES[size] || 48;
-    const name = getMeteoconName(code);
-    return `<img src="${METEOCONS_BASE}${name}.svg" width="${px}" height="${px}" alt="météo" style="display:block;">`;
-}
-
-function getMeteoconName(code) {
-    const hour = new Date().getHours();
-    const isDay = hour >= 7 && hour < 20;
-    const daySuffix = isDay ? 'day' : 'night';
-    
-    if (code === 0) return isDay ? 'clear-day' : 'clear-night';
-    if (code === 1) return `partly-cloudy-${daySuffix}`;
-    if (code === 2) return `overcast-${daySuffix}`;
-    if (code === 3) return 'overcast';
-    if ([45, 48].includes(code)) return 'fog';
-    if ([51, 53, 55].includes(code)) return 'drizzle';
-    if ([61, 80].includes(code)) return `partly-cloudy-${daySuffix}-rain`;
-    if ([63, 81].includes(code)) return 'rain';
-    if ([65, 66, 67, 82].includes(code)) return 'rain';
-    if ([71, 73, 75, 77, 85, 86].includes(code)) return 'snow';
-    if (code === 95) return 'thunderstorms-rain';
-    if ([96, 99].includes(code)) return 'thunderstorms';
-    return `partly-cloudy-${daySuffix}`;
-}
-
-
-// ============================================
-// THÈME (Multi-thèmes)
-// ============================================
-const THEMES = ['dark', 'light'];
-
-const THEME_ICONS = {
-    'dark': 'dark_mode',
-    'light': 'light_mode'
-};
-
-function initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    applyTheme(savedTheme);
-    
-    // Bouton toggle header (cycle tous les thèmes)
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            const current = document.documentElement.getAttribute('data-theme') || 'dark';
-            const currentIndex = THEMES.indexOf(current);
-            const nextIndex = (currentIndex + 1) % THEMES.length;
-            const newTheme = THEMES[nextIndex];
-            applyTheme(newTheme);
-            localStorage.setItem('theme', newTheme);
+            document.body.innerHTML = '<div class="fb-wrapper">' +
+                message +
+                '<p class="fb-footer">' +
+                '<span>👍</span> Le site s\'ouvrira ensuite normalement' +
+                '</p>' +
+                '</div>';
         });
-    }
+    })();
+    </script>
     
-    // Sélecteur de thèmes (dans panel support)
-    document.querySelectorAll('.theme-option').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const theme = btn.getAttribute('data-theme');
-            applyTheme(theme);
-            localStorage.setItem('theme', theme);
-        });
-    });
-}
+    <!-- ============================================
+         SEO - Meta Tags de base
+         ============================================ -->
+    <title>Actu & Média - Actualités Montceau-les-Mines | Info locale Saône-et-Loire</title>
+    <meta name="description" content="Actualités locales de Montceau-les-Mines, Le Creusot et Saône-et-Loire. Infos en temps réel, météo, cinéma Le Capitole, radios locales. 100% gratuit, sans pub.">
+    <meta name="keywords" content="Montceau-les-Mines, actualités, info locale, Saône-et-Loire, Le Creusot, Blanzy, météo, cinéma, Bourgogne, 71, news">
+    <meta name="author" content="Actu & Média">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://actuetmedia.fr/">
+    
+    <!-- ============================================
+         Open Graph (Facebook, LinkedIn, etc.)
+         ============================================ -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://actuetmedia.fr/">
+    <meta property="og:title" content="Actu & Média - Actualités Montceau-les-Mines">
+    <meta property="og:description" content="Votre portail d'informations locales pour Montceau-les-Mines et sa région. Actualités, météo, cinéma, radios. 100% gratuit !">
+    <meta property="og:image" content="https://actuetmedia.fr/images/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:site_name" content="Actu & Média">
+    
+    <!-- ============================================
+         Twitter Card
+         ============================================ -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://actuetmedia.fr/">
+    <meta name="twitter:title" content="Actu & Média - Actualités Montceau-les-Mines">
+    <meta name="twitter:description" content="Votre portail d'informations locales pour Montceau-les-Mines et sa région. 100% gratuit !">
+    <meta name="twitter:image" content="https://actuetmedia.fr/images/og-image.png">
+    
+    <!-- ============================================
+         PWA - Progressive Web App
+         ============================================ -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Actu & Média">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="images/favicon-180.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="images/favicon-180.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <!-- ============================================
+         Preconnect - Performance
+         ============================================ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    
+    <!-- ============================================
+         Fonts & Icons
+         ============================================ -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- ============================================
+         CSS
+         ============================================ -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/weather-widget.css">
+    <link rel="stylesheet" href="css/quick-links.css">
+    <link rel="stylesheet" href="css/support.css">
+	<link rel="stylesheet" href="css/mini-radio.css">
+    
+    <!-- ============================================
+         Google Verification & Analytics
+         ============================================ -->
+    <meta name="google-site-verification" content="74sCYbSwcWjU7BQ8Mxhboe9IiRzajIbyy6C1hyuAr3U">
+    
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-N8FTF9GC');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
 
-function applyTheme(theme) {
-    // "dark" = pas d'attribut (utilise :root)
-    if (theme === 'dark') {
-        document.documentElement.removeAttribute('data-theme');
-    } else {
-        document.documentElement.setAttribute('data-theme', theme);
-    }
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N8FTF9GC"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
     
-    // Mettre à jour l'icône du toggle header
-    const themeIcon = document.getElementById('themeIcon');
-    if (themeIcon) {
-        themeIcon.textContent = THEME_ICONS[theme] || 'dark_mode';
-    }
-    
-    // Mettre à jour le bouton actif dans le sélecteur
-    document.querySelectorAll('.theme-option').forEach(btn => {
-        const btnTheme = btn.getAttribute('data-theme');
-        btn.classList.toggle('active', btnTheme === theme);
-    });
-}
+    <!-- Header -->
+    <header class="header glass">
+        <div class="header-top">
+            <div class="header-left-btns">
+                <button class="header-btn" id="quickLinksBtn" aria-label="Menu liens rapides">
+                    <span class="material-icons">menu</span>
+                </button>
+                <a href="radio.html" class="header-btn" aria-label="Écouter la radio">
+				<span class="material-icons">radio</span>
+			</a>
+            </div>
+            <div class="header-title">
+                <h1>Actu & Média</h1>
+            </div>
+            <div class="header-right-btns">
+                <button class="theme-toggle" id="themeToggle" aria-label="Changer de thème">
+                    <span class="material-icons" id="themeIcon">light_mode</span>
+                </button>
+                <button class="header-btn support" id="supportBtn" aria-label="À propos et soutien">
+                    <span class="material-icons">favorite</span>
+                </button>
+            </div>
+        </div>
+        <a href="meteo.html" class="weather-widget" id="weatherBar" title="Voir la météo détaillée">
+            <div class="weather-day today">
+                <span class="weather-day-label">Auj.</span>
+                <span class="weather-day-icon" id="weatherIcon0"></span>
+                <span class="weather-day-temp" id="weatherTemp0">--°</span>
+            </div>
+            <div class="weather-separator"></div>
+            <div class="weather-day">
+                <span class="weather-day-label" id="weatherLabel1">Dem.</span>
+                <span class="weather-day-icon" id="weatherIcon1"></span>
+                <span class="weather-day-temp" id="weatherTemp1">--°</span>
+            </div>
+            <div class="weather-separator"></div>
+            <div class="weather-day">
+                <span class="weather-day-label" id="weatherLabel2">--</span>
+                <span class="weather-day-icon" id="weatherIcon2"></span>
+                <span class="weather-day-temp" id="weatherTemp2">--°</span>
+            </div>
+        </a>
+    </header>
 
-// ============================================
-// NEWS SWIPER
-// ============================================
-async function initNews() {
-    const container = document.getElementById('newsTicker');
-    
-    try {
-        const response = await fetch(CONFIG.news.apiUrl);
-        if (!response.ok) throw new Error('Erreur API');
-        
-        const articles = await response.json();
-        
-        if (articles && articles.length > 0) {
-            newsSlides = articles;
-            renderNewsSlider(articles);
-            initNewsNavigation();
-            startNewsAutoPlay();
-            console.log(`📰 ${articles.length} articles chargés`);
-        } else {
-            showNewsError('Aucune actualité disponible');
-        }
-    } catch (error) {
-        console.error('❌ Erreur news:', error);
-        showNewsError('Impossible de charger les actualités');
-    }
-}
+    <!-- Panel Liens Rapides (gauche) -->
+    <div class="quick-links-overlay" id="quickLinksOverlay"></div>
+    <aside class="quick-links-panel" id="quickLinksPanel">
+        <div class="quick-links-header">
+            <div class="quick-links-title">
+                <span class="material-icons">link</span>
+                Liens rapides
+            </div>
+            <button class="quick-links-close" id="quickLinksClose" aria-label="Fermer">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="quick-links-content">
+            <!-- Section Urgences -->
+            <div class="quick-links-section">
+                <div class="quick-links-section-title">Urgences</div>
+                <button class="quick-link-item" onclick="showEmergencyNumbers()">
+                    <div class="quick-link-icon emergency">🚨</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">Numéros d'urgence</div>
+                        <div class="quick-link-desc">15, 17, 18, 112...</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </button>
+            </div>
+            
+            <!-- Section Services locaux -->
+            <div class="quick-links-section">
+                <div class="quick-links-section-title">Services locaux</div>
+                <a href="https://www.montceaulesmines.fr/" target="_blank" rel="noopener" class="quick-link-item">
+                    <div class="quick-link-icon local">🏛️</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">Mairie de Montceau</div>
+                        <div class="quick-link-desc">Site officiel</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </a>
+                <a href="https://www.creusot-montceau.org/" target="_blank" rel="noopener" class="quick-link-item">
+                    <div class="quick-link-icon local">🏢</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">CUCM</div>
+                        <div class="quick-link-desc">Communauté urbaine</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </a>
+                <a href="https://www.ch-montceau71.fr/" target="_blank" rel="noopener" class="quick-link-item">
+                    <div class="quick-link-icon local">🏥</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">Hôpital</div>
+                        <div class="quick-link-desc">Centre hospitalier</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </a>
+            </div>
+            
+			<!-- Section Loisirs -->
+            <div class="quick-links-section">
+                <div class="quick-links-section-title">Loisirs</div>
+                <a href="https://brocabrac.fr/71/montceau-les-mines/" target="_blank" rel="noopener" class="quick-link-item">
+                    <div class="quick-link-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);">🛍️</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">Brocantes</div>
+                        <div class="quick-link-desc">Vide-greniers (40km)</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </a>
+                <button class="quick-link-item" onclick="showTVModal()">
+                    <div class="quick-link-icon tv">📺</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">TV en direct</div>
+                        <div class="quick-link-desc">Chaînes d'info</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </button>
+                <a href="https://rmcsport.bfmtv.com/cyclisme/" target="_blank" rel="noopener" class="quick-link-item">
+                    <div class="quick-link-icon sports">🚴</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">Cyclisme</div>
+                        <div class="quick-link-desc">RMC Sport · Résultats</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </a>
+            </div>
+		
+            <!-- Section Transport -->
+            <div class="quick-links-section">
+                <div class="quick-links-section-title">Transport & Routes</div>
+                <a href="https://www.inforoute71.fr/" target="_blank" rel="noopener" class="quick-link-item">
+                    <div class="quick-link-icon transport">🚗</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">Info Routes 71</div>
+                        <div class="quick-link-desc">Trafic en temps réel</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </a>
+                <a href="https://www.ter.sncf.com/bourgogne-franche-comte" target="_blank" rel="noopener" class="quick-link-item">
+                    <div class="quick-link-icon transport">🚆</div>
+                    <div class="quick-link-text">
+                        <div class="quick-link-name">TER SNCF</div>
+                        <div class="quick-link-desc">Horaires Bourgogne</div>
+                    </div>
+                    <span class="material-icons quick-link-arrow">chevron_right</span>
+                </a>
+            </div>
+        </div>
+    </aside>
 
-function renderNewsSlider(articles) {
-    const container = document.getElementById('newsTicker');
-    const dotsContainer = document.getElementById('tickerDots');
-    
-    container.innerHTML = `
-        <div class="news-slides" id="newsSlides">
-            ${articles.map((article, index) => `
-                <div class="news-slide">
-                    <a href="${article.link}" target="_blank" rel="noopener" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
-                        <div class="news-item-icon">${getSourceIcon(article.source)}</div>
-                        <div class="news-item-content">
-                            <div class="news-item-title">${article.title}</div>
-                            <div class="news-item-meta">
-                                <span class="news-item-date">${formatDate(article.date)}</span>
-                                <span class="news-item-read">Lire la suite sur ${article.source} →</span>
-                            </div>
-                        </div>
-                    </a>
+    <!-- Panel Support (droite) -->
+    <div class="support-overlay" id="supportOverlay"></div>
+    <aside class="support-panel" id="supportPanel">
+        <div class="support-header">
+            <div class="support-title">
+                <span class="material-icons">info</span>
+                À propos
+            </div>
+            <button class="support-close" id="supportClose" aria-label="Fermer">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="support-content">
+            <!-- Section À propos -->
+            <div class="support-about">
+                <div class="support-logo">📰</div>
+                <div class="support-name">Actu & Média</div>
+                <div class="support-desc">
+                    Votre portail d'informations locales pour Montceau-les-Mines et sa région.
+                    Actualités, météo, cinéma et liens utiles.
                 </div>
-            `).join('')}
+            </div>            
+			
+            <!-- Bouton PayPal -->
+            <div class="donation-section">
+    <a href="https://www.paypal.com/paypalme/actuetmedia" target="_blank" rel="noopener" class="donation-btn heartbeat">
+        <svg class="pulse-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.946 5.438-3.158 7.12-6.591 7.12h-1.2l-.58 3.684zm9.602-12.872c-.172-.943-.75-2.028-2.612-2.028H8.16L6.59 16.438h3.38c1.644 0 3.036-.575 3.903-2.035.534-.9.993-2.316 1.307-4.16.146-.86.257-1.46.298-1.778z"/>
+        </svg>
+        Soutenir avec PayPal
+    </a>
+    <p class="donation-note">Un geste simple pour faire vivre Actu & Média ☕</p>
+		</div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="support-actions">
+                <a href="contact.html" class="support-action">
+                    <div class="support-action-icon email">📧</div>
+                    <div class="support-action-text">
+                        <div class="support-action-name">Nous contacter</div>
+                        <div class="support-action-desc">Formulaire de contact</div>
+                    </div>
+                    <span class="material-icons arrow">chevron_right</span>
+                </a>
+                <a href="proposer.html" class="support-action">
+                    <div class="support-action-icon propose">📰</div>
+                    <div class="support-action-text">
+                        <div class="support-action-name">Proposer une actualité</div>
+                        <div class="support-action-desc">Partager une info locale</div>
+                    </div>
+                    <span class="material-icons arrow">chevron_right</span>
+                </a>
+                <a href="radio.html" class="support-action" onclick="closeSupportWidget();" style="text-decoration: none; color: inherit;">
+					<div class="support-action-icon radio">📻</div>
+					<div class="support-action-text">
+						<div class="support-action-name">Écouter la radio</div>
+                        <div class="support-action-desc">Radios locales et nationales</div>
+                    </div>
+                    <span class="material-icons arrow">chevron_right</span>
+                </a>
+                <a href="https://www.swisstransfer.com/fr-fr" target="_blank" rel="noopener" class="support-action">
+                    <div class="support-action-icon upload">📤</div>
+                    <div class="support-action-text">
+                        <div class="support-action-name">SwissTransfer</div>
+                        <div class="support-action-desc">Envoyer des fichiers volumineux</div>
+                    </div>
+                    <span class="material-icons arrow">chevron_right</span>
+                </a>           
+                <button class="support-action" onclick="shareWebsite()">
+                    <div class="support-action-icon share">🔗</div>
+                    <div class="support-action-text">
+                        <div class="support-action-name">Partager le site</div>
+                        <div class="support-action-desc">Faire connaître Actu & Média</div>
+                    </div>
+                    <span class="material-icons arrow">share</span>
+                </button>
+                <button class="support-action" id="notifSubscribeBtn" onclick="togglePushSubscription()">
+                    <div class="support-action-icon notif" id="notifIcon">🔔</div>
+                    <div class="support-action-text">
+                        <div class="support-action-name" id="notifTitle">Activer les notifications</div>
+                        <div class="support-action-desc" id="notifDesc">Recevoir les alertes infos</div>
+                    </div>
+                    <span class="material-icons arrow" id="notifArrow">notifications_none</span>
+                </button>
+                <button class="support-action" onclick="resetAndReload()">
+                    <div class="support-action-icon update">🔄</div>
+                    <div class="support-action-text">
+                        <div class="support-action-name">Mettre à jour l'application</div>
+                        <div class="support-action-desc">Vider le cache et redémarrer</div>
+                    </div>
+                    <span class="material-icons arrow">refresh</span>
+                </button>
+            </div>
+            
+            <!-- Admin link (discret) -->
+            <div id="adminSection" class="admin-section" style="display: none;">
+                <a href="admin.html" class="admin-link">
+                    <span class="material-icons">admin_panel_settings</span>
+                    Administration
+                    <span class="admin-badge" id="adminBadge" style="display: none;">0</span>
+                </a>
+            </div>
         </div>
-    `;
-    
-    dotsContainer.innerHTML = articles.map((_, index) => 
-        `<div class="ticker-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>`
-    ).join('');
-    
-    dotsContainer.querySelectorAll('.ticker-dot').forEach(dot => {
-        dot.addEventListener('click', () => {
-            goToNewsSlide(parseInt(dot.dataset.index));
-        });
-    });
-}
+		<!-- Sélecteur taille de texte -->
+            <div class="font-size-selector">
+                <span class="font-size-selector-label">Taille :</span>
+                <button class="font-size-btn active" data-size="normal">A</button>
+                <button class="font-size-btn" data-size="medium">A+</button>
+            </div>
+        <div class="support-footer">
+            <div class="support-social">
+                <a href="https://www.facebook.com/actuetmedia.fr/" target="_blank" rel="noopener" class="support-social-link facebook" title="Facebook">
+                    <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                </a>
+                <a href="/cdn-cgi/l/email-protection#583b37362c393b2c18393b2c2d3d2c353d3c3139763e2a" class="support-social-link email" title="Contact">
+                    <span class="material-icons">email</span>
+                </a>
+            </div>
+            <div class="support-copyright">© 2026 Actu & Média</div>
+            <div class="support-version">Version 3.0 • Fait avec ❤️ à Montceau</div>
+        </div>
+    </aside>
 
-function initNewsNavigation() {
-    const prevBtn = document.getElementById('tickerPrev');
-    const nextBtn = document.getElementById('tickerNext');
-    
-    prevBtn.addEventListener('click', () => {
-        goToNewsSlide(newsCurrentSlide - 1);
-        resetNewsAutoPlay();
-    });
-    
-    nextBtn.addEventListener('click', () => {
-        goToNewsSlide(newsCurrentSlide + 1);
-        resetNewsAutoPlay();
-    });
-    
-    // Swipe touch
-    const container = document.getElementById('newsTicker');
-    let touchStartX = 0;
-    let touchEndX = 0;
-    
-    container.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-    
-    container.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        const diff = touchStartX - touchEndX;
-        if (Math.abs(diff) > 50) {
-            if (diff > 0) {
-                goToNewsSlide(newsCurrentSlide + 1);
-            } else {
-                goToNewsSlide(newsCurrentSlide - 1);
-            }
-            resetNewsAutoPlay();
-        }
-    }, { passive: true });
-}
+    <!-- News Ticker / Swiper -->
+    <section class="news-ticker-section glass">
+        <div class="news-ticker-header">
+            <span class="material-icons pulse">fiber_new</span>
+            <span>Infos en direct</span>
+        </div>
+        <div class="news-ticker-container" id="newsTicker">
+            <div class="news-ticker-loading">
+                <span class="material-icons spinning">sync</span>
+                Chargement des actualités...
+            </div>
+        </div>
+        <div class="news-ticker-nav">
+            <button class="ticker-nav-btn" id="tickerPrev" aria-label="Article précédent">
+                <span class="material-icons">chevron_left</span>
+            </button>
+            <div class="ticker-dots" id="tickerDots"></div>
+            <button class="ticker-nav-btn" id="tickerNext" aria-label="Article suivant">
+                <span class="material-icons">chevron_right</span>
+            </button>
+        </div>
+    </section>
 
-function goToNewsSlide(index, smooth = true) {
-    const slides = document.getElementById('newsSlides');
-    const dots = document.querySelectorAll('.ticker-dot');
-    
-    if (!slides || !newsSlides.length) return;
-    
-    // Calculer le nouvel index
-    let newIndex = index;
-    let needsInstantJump = false;
-    
-    if (index < 0) {
-        newIndex = newsSlides.length - 1;
-        needsInstantJump = true;
-    } else if (index >= newsSlides.length) {
-        newIndex = 0;
-        needsInstantJump = true;
-    }
-    
-    // Si on boucle (fin → début ou début → fin), désactiver la transition
-    if (needsInstantJump && smooth) {
-        slides.style.transition = 'none';
-        slides.style.transform = `translateX(-${newIndex * 100}%)`;
+    <!-- Tuiles Sites Locaux -->
+    <section class="tiles-section">
+        <h2 class="section-title">
+            <span class="material-icons">language</span>
+            Sites d'actualités locales
+        </h2>
+        <div class="tiles-grid">
+            <a href="https://www.lejsl.com/edition-montceau-les-mines" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">📰</div>
+                <div class="tile-text"><div class="tile-name">Le JSL</div><div class="tile-subtitle">Montceau</div></div>
+            </a>
+            <a href="https://montceau-news.com/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🏙️</div>
+                <div class="tile-text"><div class="tile-name">Montceau News</div><div class="tile-subtitle">Local</div></div>
+            </a>
+            <a href="https://www.creusot-infos.com" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🏭</div>
+                <div class="tile-text"><div class="tile-name">Creusot Infos</div><div class="tile-subtitle">Bassin minier</div></div>
+            </a>
+            <a href="https://linformateurdebourgogne.com/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">📋</div>
+                <div class="tile-text"><div class="tile-name">L'Informateur</div><div class="tile-subtitle">Bourgogne</div></div>
+            </a>
+        </div>
         
-        // Forcer le reflow puis réactiver la transition
-        slides.offsetHeight;
-        setTimeout(() => {
-            slides.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        }, 50);
-    } else {
-        slides.style.transform = `translateX(-${newIndex * 100}%)`;
-    }
-    
-    newsCurrentSlide = newIndex;
-    
-    dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === newIndex);
-    });
-}
-
-function startNewsAutoPlay() {
-    // S'assurer qu'il n'y a pas déjà un intervalle actif
-    if (newsAutoPlayInterval) {
-        clearInterval(newsAutoPlayInterval);
-    }
-    
-    newsAutoPlayInterval = setInterval(() => {
-        goToNewsSlide(newsCurrentSlide + 1);
-    }, 6000); // 6 secondes entre chaque slide
-}
-
-function resetNewsAutoPlay() {
-    if (newsAutoPlayInterval) {
-        clearInterval(newsAutoPlayInterval);
-        newsAutoPlayInterval = null;
-    }
-    startNewsAutoPlay();
-}
-
-function showNewsError(message) {
-    const container = document.getElementById('newsTicker');
-    container.innerHTML = `
-        <div class="news-ticker-loading">
-            <span class="material-icons">error_outline</span>
-            ${message}
+        <!-- Villes supplémentaires (masquées par défaut) -->
+        <div class="tiles-grid tiles-extra" id="tilesExtra">
+            <a href="https://www.lejsl.com/edition-chalon-sur-saone" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🍷</div>
+                <div class="tile-text"><div class="tile-name">Le JSL</div><div class="tile-subtitle">Chalon-sur-Saône</div></div>
+            </a>
+            <a href="https://www.lejsl.com/edition-macon" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🍇</div>
+                <div class="tile-text"><div class="tile-name">Le JSL</div><div class="tile-subtitle">Mâcon</div></div>
+            </a>
+            <a href="https://www.lejsl.com/edition-autun" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🏛️</div>
+                <div class="tile-text"><div class="tile-name">Le JSL</div><div class="tile-subtitle">Autun</div></div>
+            </a>
         </div>
-    `;
-}
+        
+        <!-- Bouton toggle -->
+        <button class="tiles-toggle" id="tilesToggle" onclick="toggleExtraTiles()">
+            <span class="material-icons" id="tilesToggleIcon">expand_more</span>
+            <span id="tilesToggleText">Plus de villes</span>
+        </button>
+    </section>
 
-function getSourceIcon(source) {
-    const icons = {
-        'Le JSL': '📰',
-        'Montceau News': '🏙️',
-        'Creusot Infos': '🏭',
-        "L'Informateur": '📋',
-        'France Bleu': '🎙️'
-    };
-    return icons[source] || '📰';
-}
+    <!-- Tuiles Médias régionaux -->
+    <section class="tiles-section">
+        <h2 class="section-title">
+            <span class="material-icons">tv</span>
+            Médias régionaux
+        </h2>
+        <div class="tiles-grid">
+            <a href="https://www.francebleu.fr/bourgogne-franche-comte/saone-et-loire-71/actu" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🎙️</div>
+                <div class="tile-text"><div class="tile-name">France Bleu</div><div class="tile-subtitle">Saône-et-Loire</div></div>
+            </a>
+            <a href="https://france3-regions.franceinfo.fr/bourgogne-franche-comte/saone-et-loire" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">📺</div>
+                <div class="tile-text"><div class="tile-name">France 3</div><div class="tile-subtitle">Bourgogne</div></div>
+            </a>
+            <a href="https://actu.fr/bourgogne-franche-comte/dijon_21231" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🦉</div>
+                <div class="tile-text"><div class="tile-name">Actu.fr</div><div class="tile-subtitle">Dijon</div></div>
+            </a>
+            <a href="https://www.bfmtv.com/dijon/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🔴</div>
+                <div class="tile-text"><div class="tile-name">BFM Dijon</div><div class="tile-subtitle">Bourgogne</div></div>
+            </a>
+        </div>
 
-function formatDate(dateString) {
-    if (!dateString) return '';
-    
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-    
-    if (diffMins < 60) {
-        return `Il y a ${diffMins} min`;
-    } else if (diffHours < 24) {
-        return `Il y a ${diffHours}h`;
-    } else if (diffDays < 7) {
-        return `Il y a ${diffDays}j`;
-    } else {
-        return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-    }
-}
+        <!-- Médias régionaux supplémentaires -->
+        <div class="tiles-grid tiles-extra" id="mediaRegionalExtra">
+            <a href="https://www.bienpublic.com/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">📰</div>
+                <div class="tile-text"><div class="tile-name">Le Bien Public</div><div class="tile-subtitle">Dijon</div></div>
+            </a>
+            <a href="https://www.lyonmag.com/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🦁</div>
+                <div class="tile-text"><div class="tile-name">Lyon Mag</div><div class="tile-subtitle">Lyon</div></div>
+            </a>
+        </div>
 
-// ============================================
-// CINÉMA
-// ============================================
-// Variable pour stocker le cinéma actif
-let currentCinema = 'capitole';
+        <button class="tiles-toggle" onclick="toggleSection('mediaRegionalExtra','mediaRegionalBtn','mediaRegionalIcon','mediaRegionalText','Plus de médias','Moins de médias','mediaRegionalExpanded')" id="mediaRegionalBtn">
+            <span class="material-icons" id="mediaRegionalIcon">expand_more</span>
+            <span id="mediaRegionalText">Plus de médias</span>
+        </button>
+    </section>
 
-async function initCinema() {
-    await loadCinema(currentCinema);
-}
+    <!-- Tuiles Médias nationaux -->
+    <section class="tiles-section">
+        <h2 class="section-title">
+            <span class="material-icons">public</span>
+            Médias nationaux
+        </h2>
+        <div class="tiles-grid">
+            <a href="https://www.francetvinfo.fr/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">📡</div>
+                <div class="tile-text"><div class="tile-name">France Info</div><div class="tile-subtitle">Info en continu</div></div>
+            </a>
+            <a href="https://www.bfmtv.com/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🔴</div>
+                <div class="tile-text"><div class="tile-name">BFM TV</div><div class="tile-subtitle">Info en continu</div></div>
+            </a>
+            <a href="https://www.lemonde.fr/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🌍</div>
+                <div class="tile-text"><div class="tile-name">Le Monde</div><div class="tile-subtitle">Quotidien</div></div>
+            </a>
+            <a href="https://www.20minutes.fr/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">⏱️</div>
+                <div class="tile-text"><div class="tile-name">20 Minutes</div><div class="tile-subtitle">Gratuit</div></div>
+            </a>
+        </div>
 
-async function loadCinema(cinemaKey) {
-    const container = document.getElementById('cinemaContent');
-    const config = CONFIG.cinema[cinemaKey];
-    
-    if (!config) {
-        console.error('Cinéma inconnu:', cinemaKey);
-        return;
-    }
-    
-    // Clé de cache
-    const cacheKey = `cinema_${cinemaKey}`;
-    
-    // Afficher le cache immédiatement si disponible (pas de flash)
-    const cachedFilms = getCachedData(cacheKey);
-    if (cachedFilms && cachedFilms.length > 0) {
-        renderCinema(cachedFilms, cinemaKey);
-    } else {
-        // Afficher le loading seulement si pas de cache
-        container.innerHTML = `
+        <!-- Médias nationaux supplémentaires -->
+        <div class="tiles-grid tiles-extra" id="mediaNationalExtra">
+            <a href="https://www.lefigaro.fr/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">📜</div>
+                <div class="tile-text"><div class="tile-name">Le Figaro</div><div class="tile-subtitle">Quotidien</div></div>
+            </a>
+            <a href="https://www.leparisien.fr/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🗼</div>
+                <div class="tile-text"><div class="tile-name">Le Parisien</div><div class="tile-subtitle">Quotidien</div></div>
+            </a>
+            <a href="https://www.cnews.fr/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">📺</div>
+                <div class="tile-text"><div class="tile-name">CNews</div><div class="tile-subtitle">Info en continu</div></div>
+            </a>
+            <a href="https://www.ouest-france.fr/" target="_blank" rel="noopener" class="tile glass">
+                <div class="tile-icon">🌊</div>
+                <div class="tile-text"><div class="tile-name">Ouest-France</div><div class="tile-subtitle">Premier quotidien</div></div>
+            </a>
+        </div>
+
+        <button class="tiles-toggle" onclick="toggleSection('mediaNationalExtra','mediaNationalBtn','mediaNationalIcon','mediaNationalText','Plus de médias','Moins de médias','mediaNationalExpanded')" id="mediaNationalBtn">
+            <span class="material-icons" id="mediaNationalIcon">expand_more</span>
+            <span id="mediaNationalText">Plus de médias</span>
+        </button>
+    </section>
+
+<!-- Agenda Local -->
+    <section class="agenda-section glass">
+        <div class="agenda-header">
+            <div class="agenda-title">
+                <span class="material-icons">event</span>
+                <span>Agenda local</span>
+            </div>
+            <a href="agenda.html" class="agenda-link">
+                Voir tout
+                <span class="material-icons">arrow_forward</span>
+            </a>
+        </div>
+        <div class="agenda-content" id="agendaContent">
+            <div class="agenda-loading">
+                <span class="material-icons spinning">sync</span>
+                Chargement des événements...
+            </div>
+        </div>
+        <div class="agenda-empty" id="agendaEmpty" style="display: none;">
+            <div class="agenda-empty-icon">📅</div>
+            <div class="agenda-empty-text">Aucun événement prévu</div>
+        </div>
+    </section>
+
+    <!-- Section Sport - FC Montceau Bourgogne -->
+    <section class="sport-section glass" id="sportSection">
+        <div class="sport-header">
+            <div class="sport-title">
+                <span class="sport-title-icon">⚽</span>
+                <span>FC Montceau</span>
+                <span class="sport-badge">R1 Herbelin</span>
+            </div>
+            <a href="https://www.sportcorico.com/clubs/fc-montceau-bourgogne/montceau-fc-bourgogn" target="_blank" rel="noopener" class="sport-link">
+                Détails
+                <span class="material-icons">arrow_forward</span>
+            </a>
+        </div>
+        <div class="sport-loading" id="sportLoading">
+            <span class="material-icons spinning">sync</span>
+            Chargement...
+        </div>
+        <div id="sportContent" style="display: none;">
+            <div class="sport-matches">
+                <div class="sport-match-card" id="sportLastMatch">
+                    <div class="sport-result-indicator" id="sportResultIndicator">
+                        <span class="sport-result-letter" id="sportResultLetter"></span>
+                    </div>
+                    <div class="sport-match-label sport-match-label-result">📊 Dernier match</div>
+                    <div class="sport-match-date" id="sportLastDate"></div>
+                    <div class="sport-match-teams">
+                        <div class="sport-team-row">
+                            <span class="sport-team-name" id="sportLastHome"></span>
+                            <span class="sport-team-score" id="sportLastHomeScore"></span>
+                        </div>
+                        <div class="sport-team-row">
+                            <span class="sport-team-name" id="sportLastAway"></span>
+                            <span class="sport-team-score" id="sportLastAwayScore"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sport-match-card" id="sportNextMatch">
+                    <div class="sport-match-label sport-match-label-next">📅 <span id="sportNextLabel">Prochain match</span></div>
+                    <div class="sport-match-date" id="sportNextDate"></div>
+                    <div class="sport-match-teams">
+                        <div class="sport-team-row"><span class="sport-team-name" id="sportNextHome"></span></div>
+                        <div class="sport-match-vs">VS</div>
+                        <div class="sport-team-row"><span class="sport-team-name" id="sportNextAway"></span></div>
+                    </div>
+                    <div class="sport-match-time" id="sportNextTime"></div>
+                </div>
+            </div>
+            <div class="sport-standing-row" id="sportStanding">
+                <div class="sport-position" id="sportPosition"></div>
+                <div class="sport-standing-info">
+                    <div class="sport-standing-title">Classement</div>
+                    <div class="sport-standing-stats" id="sportStats"></div>
+                </div>
+                <div class="sport-form" id="sportForm"></div>
+            </div>
+            <button class="sport-classement-btn" id="sportClassementBtn" onclick="showStandingsModal()">
+                <span class="material-icons">leaderboard</span>
+                Voir le classement complet
+            </button>
+            <div class="sport-teams-row">
+                <a href="https://www.sportcorico.com/clubs/elan-chalon" target="_blank" rel="noopener" class="sport-team-pill">
+                    <span class="sport-team-pill-icon">🏀</span>
+                    <div class="sport-team-pill-text"><span class="sport-team-pill-name">ELAN Chalon</span><span class="sport-team-pill-league">Pro A · Basket</span></div>
+                </a>
+                <a href="https://www.sportcorico.com/clubs/rc-montceau-bourgogne" target="_blank" rel="noopener" class="sport-team-pill">
+                    <span class="sport-team-pill-icon">🏉</span>
+                    <div class="sport-team-pill-text"><span class="sport-team-pill-name">RC Montceau</span><span class="sport-team-pill-league">Fédérale · Rugby</span></div>
+                </a>
+                <a href="https://www.ligue1.fr/" target="_blank" rel="noopener" class="sport-team-pill">
+                    <span class="sport-team-pill-icon">⚽</span>
+                    <div class="sport-team-pill-text"><span class="sport-team-pill-name">Ligue 1</span><span class="sport-team-pill-league">Championnat de France</span></div>
+                </a>
+                <a href="https://www.lfp.fr/ligue-2" target="_blank" rel="noopener" class="sport-team-pill">
+                    <span class="sport-team-pill-icon">⚽</span>
+                    <div class="sport-team-pill-text"><span class="sport-team-pill-name">Ligue 2</span><span class="sport-team-pill-league">Championnat de France</span></div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Classement R1 Herbelin -->
+    <div class="standings-modal-overlay" id="standingsModalOverlay" onclick="closeStandingsModal()"></div>
+    <div class="standings-modal" id="standingsModal">
+        <div class="standings-modal-header">
+            <div class="standings-modal-title">
+                <span class="material-icons">emoji_events</span>
+                R1 Herbelin · Poule A
+            </div>
+            <button class="standings-modal-close" onclick="closeStandingsModal()">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="standings-modal-body" id="standingsModalBody">
+            <div class="standings-loading">
+                <span class="material-icons spinning">sync</span> Chargement...
+            </div>
+        </div>
+        <div class="standings-modal-footer">
+            <a href="https://www.sportcorico.com/championnat/bourgogne-franche-comte-regional-1-herbelin-3/phase-unique/poule-a" target="_blank" rel="noopener" class="standings-source-link">
+                <span class="material-icons">open_in_new</span>
+                Voir sur SportCorico
+            </a>
+        </div>
+    </div>
+	
+    <!-- Widget Cinéma -->
+    <section class="cinema-section glass">
+        <div class="cinema-section-title">🎬 Cinémas</div>
+        <div class="cinema-header">
+            <div class="cinema-tabs">
+                <button class="cinema-tab active" id="tabCapitole" onclick="switchCinema('capitole')">
+                    <span class="material-icons">movie</span>
+                    Le Capitole
+                </button>
+                <button class="cinema-tab" id="tabMagic" onclick="switchCinema('magic')">
+                    <span class="material-icons">movie</span>
+                    Magic
+                </button>
+            </div>
+            <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" rel="noopener" class="cinema-link" id="cinemaLink">
+                Voir tout
+                <span class="material-icons">arrow_forward</span>
+            </a>
+        </div>
+        <div class="cinema-subtitle" id="cinemaSubtitle">Montceau-les-Mines • <span class="cinema-today">Aujourd'hui</span></div>
+        <div class="cinema-content" id="cinemaContent">
             <div class="cinema-loading">
                 <span class="material-icons spinning">theaters</span>
                 <span>Chargement du programme...</span>
             </div>
-        `;
-    }
-    
-    try {
-        const response = await fetch(config.dataUrl + '?t=' + Date.now(), {
-            cache: 'no-store'
-        });
-        
-        if (!response.ok) throw new Error('Erreur cinéma');
-        
-        const data = await response.json();
-        
-        if (data.films && data.films.length > 0) {
-            // Sauvegarder en cache
-            setCachedData(cacheKey, data.films);
-            
-            // Mettre à jour l'affichage si différent du cache
-            if (!cachedFilms || JSON.stringify(data.films) !== JSON.stringify(cachedFilms)) {
-                renderCinema(data.films, cinemaKey);
-            }
-            console.log(`🎬 ${data.films.length} films chargés pour ${config.nom}`);
-        } else {
-            if (!cachedFilms) {
-                showCinemaFallback(cinemaKey);
-            }
-        }
-    } catch (error) {
-        console.error(`❌ Erreur cinéma ${config.nom}:`, error);
-        if (!cachedFilms) {
-            showCinemaFallback(cinemaKey);
-        }
-    }
-}
-
-function switchCinema(cinemaKey) {
-    currentCinema = cinemaKey;
-    const config = CONFIG.cinema[cinemaKey];
-    
-    // Mettre à jour les onglets
-    document.getElementById('tabCapitole').classList.toggle('active', cinemaKey === 'capitole');
-    document.getElementById('tabMagic').classList.toggle('active', cinemaKey === 'magic');
-    
-    // Mettre à jour le lien "Voir tout"
-    document.getElementById('cinemaLink').href = config.siteUrl;
-    
-    // Mettre à jour le sous-titre (ville + aujourd'hui)
-    document.getElementById('cinemaSubtitle').innerHTML = config.ville + ' • <span class="cinema-today">Aujourd\'hui</span>';
-    
-    // Charger les films
-    loadCinema(cinemaKey);
-}
-
-function renderCinema(films, cinemaKey = 'capitole') {
-    const container = document.getElementById('cinemaContent');
-    const config = CONFIG.cinema[cinemaKey];
-    const hasMore = films.length > 4;
-    
-    container.innerHTML = `
-        <div class="cinema-films">
-            ${films.map((film, index) => `
-                <a href="${film.lien || config.siteUrl}" 
-                   target="_blank" 
-                   class="cinema-film fade-in" 
-                   style="animation-delay: ${index * 0.05}s">
-                    <div class="cinema-film-info">
-                        <div class="cinema-film-title">${film.titre}</div>
-                        <div class="cinema-film-meta">
-                            <span>🎭 ${film.genre || 'Film'}</span>
-                        </div>
-                        <div class="cinema-film-meta">
-                            <span>⏱️ ${film.duree || 'N/A'}</span>
-                        </div>
-                        <div class="cinema-film-times">
-                            ${(film.horaires || []).slice(0, 5).map(time => 
-                                `<span class="cinema-time">${time}</span>`
-                            ).join('')}
-                        </div>
-                    </div>
-                    ${film.affiche ? `
-                        <div class="cinema-film-poster">
-                            <img src="${film.affiche}" alt="${film.titre}" loading="lazy">
-                        </div>
-                    ` : ''}
-                </a>
-            `).join('')}
         </div>
-        ${hasMore ? `
-            <div class="cinema-scroll-hint">
-                <span class="material-icons">swipe</span>
-                Scroll pour voir plus
-            </div>
-        ` : ''}
-    `;
-}
+    </section>
 
-function showCinemaFallback(cinemaKey = 'capitole') {
-    const container = document.getElementById('cinemaContent');
-    const config = CONFIG.cinema[cinemaKey];
-    
-    container.innerHTML = `
-        <div style="text-align: center; padding: 1.5rem;">
-            <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🎬</div>
-            <div style="font-weight: 600; margin-bottom: 0.5rem;">${config.nom}</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
-                ${config.ville}
+    <!-- Section Infos de la communauté -->
+    <section class="community-section glass" id="communitySection">
+        <div class="community-header">
+            <div class="community-title">
+                <span class="material-icons">campaign</span>
+                <span>Infos de la communauté</span>
             </div>
-            <a href="${config.siteUrl}" 
-               target="_blank"
-               style="display: inline-flex; align-items: center; gap: 0.5rem; 
-                      padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-                      color: white; border-radius: 50px; text-decoration: none; font-weight: 600;">
-                <span class="material-icons" style="font-size: 1.25rem;">movie</span>
-                Voir le programme
-            </a>
+            <button class="community-propose-btn" onclick="window.location.href='proposer.html'">
+                <span class="material-icons">add</span>
+                Proposer
+            </button>
         </div>
-    `;
-}
-
-// ============================================
-// INSTALLATION PWA
-// ============================================
-function initInstallPrompt() {
-    const installPrompt = document.getElementById('installPrompt');
-    const installBtn = document.getElementById('installBtn');
-    const dismissBtn = document.getElementById('dismissBtn');
-    const iosModal = document.getElementById('iosInstallModal');
-    const iosCloseBtn = document.getElementById('iosCloseBtn');
-    
-    // Vérifier si déjà installé
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        console.log('📱 App déjà installée');
-        return;
-    }
-    
-    // Vérifier si déjà refusé récemment
-    const dismissed = localStorage.getItem('installDismissed');
-    if (dismissed) {
-        const dismissedTime = parseInt(dismissed);
-        const daysPassed = (Date.now() - dismissedTime) / (1000 * 60 * 60 * 24);
-        if (daysPassed < 7) {
-            console.log('📱 Installation refusée il y a moins de 7 jours');
-            return;
-        }
-    }
-    
-    // Détecter iOS
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    const isInStandaloneMode = window.navigator.standalone === true;
-    
-    if (isIOS && !isInStandaloneMode) {
-        // iOS - Afficher après 3 secondes
-        setTimeout(() => {
-            if (installPrompt) {
-                installPrompt.classList.add('show');
-            }
-        }, 3000);
-        
-        if (installBtn) {
-            installBtn.addEventListener('click', () => {
-                installPrompt.classList.remove('show');
-                if (iosModal) {
-                    iosModal.classList.add('show');
-                }
-            });
-        }
-        
-        if (iosCloseBtn) {
-            iosCloseBtn.addEventListener('click', () => {
-                iosModal.classList.remove('show');
-            });
-        }
-        
-        if (iosModal) {
-            iosModal.addEventListener('click', (e) => {
-                if (e.target === iosModal) {
-                    iosModal.classList.remove('show');
-                }
-            });
-        }
-    } else {
-        // Android / Chrome - Écouter l'événement beforeinstallprompt
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            console.log('📱 Installation disponible');
-            
-            setTimeout(() => {
-                if (installPrompt) {
-                    installPrompt.classList.add('show');
-                }
-            }, 3000);
-        });
-        
-        if (installBtn) {
-            installBtn.addEventListener('click', async () => {
-                if (!deferredPrompt) return;
-                
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                
-                console.log(`📱 Installation: ${outcome}`);
-                deferredPrompt = null;
-                installPrompt.classList.remove('show');
-            });
-        }
-    }
-    
-    // Bouton ignorer
-    if (dismissBtn) {
-        dismissBtn.addEventListener('click', () => {
-            installPrompt.classList.remove('show');
-            localStorage.setItem('installDismissed', Date.now().toString());
-        });
-    }
-    
-    // Écouter l'installation réussie
-    window.addEventListener('appinstalled', () => {
-        console.log('✅ App installée !');
-        if (installPrompt) {
-            installPrompt.classList.remove('show');
-        }
-        deferredPrompt = null;
-    });
-}
-
-// ============================================
-// SERVICE WORKER
-// ============================================
-function initServiceWorker() {
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('✅ Service Worker enregistré'))
-            .catch(err => console.error('❌ SW Error:', err));
-    }
-}
-
-// ============================================
-// INFOS COMMUNAUTÉ (Supabase)
-// ============================================
-async function initCommunity() {
-    const contentEl = document.getElementById('communityContent');
-    const emptyEl = document.getElementById('communityEmpty');
-    const sectionEl = document.getElementById('communitySection');
-    
-    // Vérifier que les éléments existent
-    if (!contentEl || !emptyEl) {
-        console.log('⚠️ Section communauté non trouvée');
-        return;
-    }
-    
-    try {
-        // Vérifier que Supabase est chargé
-        if (typeof window.supabase === 'undefined') {
-            console.log('⚠️ Supabase non chargé, section communauté masquée');
-            if (sectionEl) sectionEl.style.display = 'none';
-            return;
-        }
-        
-        // Utiliser l'instance unique Supabase
-        const supabaseClient = getSupabaseClient();
-        if (!supabaseClient) {
-            console.log('⚠️ Supabase non disponible');
-            return;
-        }
-        
-        // Charger les propositions approuvées
-        const { data, error } = await supabaseClient
-            .from('news_submissions')
-            .select('*')
-            .eq('status', 'approved')
-            .order('pinned', { ascending: false })
-            .order('created_at', { ascending: false })
-            .limit(3);
-        
-        if (error) throw error;
-        
-        // Si aucune donnée
-        if (!data || data.length === 0) {
-            contentEl.style.display = 'none';
-            emptyEl.style.display = 'block';
-            console.log('📭 Aucune info communauté');
-            return;
-        }
-        
-        // *** COMPTEUR DE VUES AU CHARGEMENT ***
-        // Compter une vue pour chaque info affichée (1 fois par jour par info)
-        const today = new Date().toISOString().split('T')[0];
-        for (const item of data) {
-            const viewedKey = `submission_viewed_${item.id}_${today}`;
-            if (!localStorage.getItem(viewedKey)) {
-                try {
-                    const { error: viewError } = await supabaseClient.rpc('increment_submission_views', { submission_id: item.id });
-                    if (!viewError) {
-                        localStorage.setItem(viewedKey, 'true');
-                        item.views = (item.views || 0) + 1; // Mettre à jour localement pour l'affichage
-                        console.log(`👁️ Vue comptée pour info #${item.id}`);
-                    }
-                } catch (e) {
-                    console.log('⚠️ Erreur compteur vue:', e);
-                }
-            }
-        }
-        
-        // Charger le nombre de commentaires pour chaque actualité
-        const newsIds = data.map(item => item.id);
-        let commentCounts = {};
-        let likeCounts = {};
-        let userLikes = [];
-        const userFingerprint = getUserFingerprint();
-        
-        try {
-            const { data: comments } = await supabaseClient
-                .from('news_comments')
-                .select('news_id')
-                .eq('status', 'approved')
-                .in('news_id', newsIds);
-            
-            if (comments) {
-                comments.forEach(c => {
-                    commentCounts[c.news_id] = (commentCounts[c.news_id] || 0) + 1;
-                });
-            }
-        } catch (e) {
-            console.log('⚠️ Erreur chargement compteurs commentaires:', e);
-        }
-        
-        // Charger les likes
-        try {
-            const { data: likes } = await supabaseClient
-                .from('news_likes')
-                .select('news_id, user_fingerprint')
-                .in('news_id', newsIds);
-            
-            if (likes) {
-                likes.forEach(l => {
-                    likeCounts[l.news_id] = (likeCounts[l.news_id] || 0) + 1;
-                    if (l.user_fingerprint === userFingerprint) {
-                        userLikes.push(l.news_id);
-                    }
-                });
-            }
-        } catch (e) {
-            console.log('⚠️ Erreur chargement likes:', e);
-        }
-        
-        // Stocker les likes de l'utilisateur pour référence
-        window.userLikes = userLikes;
-        window.likeCounts = likeCounts;
-        
-        // Masquer les articles épinglés pour les visiteurs qui les ont déjà vus
-        const filteredData = data.filter(item => {
-            if (item.pinned) {
-                const seenKey = `pinned_seen_${item.id}`;
-                if (localStorage.getItem(seenKey)) {
-                    return false; // Déjà vu, on ne l'affiche pas
-                }
-                localStorage.setItem(seenKey, 'true'); // Marquer comme vu
-            }
-            return true;
-        });
-
-        // Afficher les infos
-        contentEl.innerHTML = filteredData.map(item => {
-            const commentCount = commentCounts[item.id] || 0;
-            return `
-            <div class="community-item ${item.pinned ? 'pinned' : ''}" data-id="${item.id}">
-                ${item.pinned ? '<div class="community-pinned-badge"><span class="material-icons">push_pin</span> Épinglé</div>' : ''}
-                <!-- HEADER : Emoji + Auteur + Date -->
-                <div class="community-item-header">
-                    <span class="community-item-icon">${getCommunityIcon(item.type)}</span>
-                    <span class="community-item-author">${escapeHtml(item.author || 'Actu & Média')}</span>
-                    <span class="community-item-separator">·</span>
-                    <span class="community-item-date">${formatCommunityDate(item.created_at)}</span>
-                </div>
-                
-                <div class="community-item-content">
-                    <div class="community-item-title">${escapeHtml(item.title)}</div>
-                    ${item.image_url ? `<div class="community-image-wrapper"><div class="community-image-inner" onclick="event.stopPropagation(); openImageModal('${item.image_url}', '${(item.source_name || '').replace(/'/g, "\\'")}')"><img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image"><div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>${item.source_name ? `<div class="community-image-credit">📷 ${escapeHtml(item.source_name)}</div>` : ''}</div></div>` : ''}
-                    <div class="community-item-desc" id="desc-${item.id}">${linkifyContent(item.content)}</div>
-                    <button class="see-more-btn" id="see-more-${item.id}" onclick="event.stopPropagation(); toggleSeeMore(${item.id})">
-                        <span>Voir plus</span>
-                        <span class="material-icons">expand_more</span>
-                    </button>
-                    ${item.link ? `<a href="${item.link}" target="_blank" class="community-item-link" onclick="event.stopPropagation()"><span class="material-icons">link</span>Voir le lien</a>` : ''}
-                    
-                    <!-- FOOTER : Lieu + Vues -->
-                    <div class="community-item-footer">
-                        <div class="community-item-location">
-                            <span class="material-icons">place</span>
-                            <span>${escapeHtml(item.location || 'Montceau-les-Mines')}</span>
-                        </div>
-                        <div class="community-item-views">
-                            <span class="material-icons">visibility</span>
-                            <span>${item.views || 0}</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Actions (Like + Commenter sur même ligne) -->
-                    <div class="community-item-actions" onclick="event.stopPropagation()">
-                        <button class="like-btn ${userLikes.includes(item.id) ? 'liked' : ''}" id="like-btn-${item.id}" onclick="toggleLike(${item.id}, this)">
-                            <span class="material-icons">${userLikes.includes(item.id) ? 'favorite' : 'favorite_border'}</span>
-                            <span class="like-count" id="like-count-${item.id}">${likeCounts[item.id] || 0}</span>
-                        </button>
-                        <button class="comments-toggle-btn" onclick="toggleComments(${item.id}, this)">
-                            <span class="material-icons">chat_bubble_outline</span>
-                            <span>${commentCount > 0 ? commentCount + ' commentaire' + (commentCount > 1 ? 's' : '') : 'Commenter'}</span>
-                        </button>
-                    </div>
-                    
-                    <!-- Section Commentaires déroulante -->
-                    <div class="community-comments-section" onclick="event.stopPropagation()">
-                        <div class="comments-container" id="comments-${item.id}">
-                            <div class="comments-list" id="comments-list-${item.id}">
-                                <div class="comments-empty">
-                                    <div class="comments-empty-icon">💬</div>
-                                    Chargement...
-                                </div>
-                            </div>
-                            <form class="comment-form" onsubmit="submitComment(event, ${item.id})">
-                                <div class="comment-form-row">
-                                    <input type="text" class="comment-input" id="comment-author-${item.id}" placeholder="Votre pseudo" maxlength="50" required>
-                                </div>
-                                <textarea class="comment-input comment-textarea" id="comment-content-${item.id}" placeholder="Votre commentaire..." maxlength="500" required></textarea>
-                                <button type="submit" class="comment-submit-btn">
-                                    <span class="material-icons">send</span>
-                                    Envoyer
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+        <div class="community-content" id="communityContent">
+            <div class="community-loading">
+                <span class="material-icons spinning">hourglass_empty</span>
+                <span>Chargement...</span>
             </div>
-        `}).join('');
-        
-        // Ajouter le bouton "Voir toutes les infos"
-        contentEl.innerHTML += `
-            <a href="infos.html" class="community-voir-tout">
-                <span class="material-icons">article</span>
-                <span>Voir toutes les infos</span>
-            </a>
-        `;
-        
-        emptyEl.style.display = 'none';
-        console.log(`📢 ${data.length} infos communauté chargées (accueil)`);
-        
-        // Détecter les textes tronqués et afficher le bouton "Voir plus"
-        setTimeout(() => {
-            data.forEach(item => {
-                const descEl = document.getElementById(`desc-${item.id}`);
-                const btnEl = document.getElementById(`see-more-${item.id}`);
-                if (descEl && btnEl) {
-                    if (descEl.scrollHeight > descEl.clientHeight + 10) {
-                        descEl.classList.add('truncated');
-                        btnEl.classList.add('visible');
-                    }
-                }
-            });
-        }, 100);
-        
-    } catch (error) {
-        console.error('❌ Erreur communauté:', error);
-        contentEl.innerHTML = '';
-        emptyEl.style.display = 'block';
-    }
-}
+        </div>
+        <div class="community-empty" id="communityEmpty" style="display: none;">
+            <div class="community-empty-icon">📭</div>
+            <p>Aucune info pour le moment</p>
+            <p class="community-empty-sub">Soyez le premier à partager une actualité locale !</p>
+        </div>
+    </section>
 
-function getCommunityIcon(type) {
-    const icons = {
-        'actualite': '📰',
-        'evenement': '🎪',
-        'sport': '⚽',
-        'culture': '🎭',
-        'economie': '💼',
-        'pratique': '💡',
-        'insolite': '🤔',
-        'photo': '📸',
-        'autre': '📋'
-    };
-    return icons[type] || '📰';
-}
+    <!-- Section SEO -->
+    <section class="seo-section glass">
+        <h2>Actu & Média : L'information locale de Montceau-les-Mines</h2>
+        <p>Bienvenue sur Actu & Média, votre source d'<strong>actualités locales de Montceau-les-Mines</strong>, 
+        du Creusot et de la Saône-et-Loire (71). Retrouvez chaque jour les dernières infos de votre région, 
+        la météo locale, le programme du cinéma Le Capitole et bien plus.</p>
+        <p>Notre <strong>site d'information local</strong> est 100% gratuit, sans publicité et créé bénévolement 
+        pour la communauté de Montceau-les-Mines et ses environs : Blanzy, Saint-Vallier, Sanvignes, etc.</p>
+        <p><strong>Montceau-les-Mines aujourd'hui :</strong> suivez l'actu en temps réel, consultez les événements locaux et restez connecté à votre ville !</p>
+    </section>
 
-function formatCommunityDate(dateStr) {
-    const date = new Date(dateStr);
-    const now = new Date();
-    const diff = now - date;
-    
-    // Moins d'une heure
-    if (diff < 3600000) {
-        const mins = Math.floor(diff / 60000);
-        return `Il y a ${mins} min`;
-    }
-    
-    // Moins d'un jour
-    if (diff < 86400000) {
-        const hours = Math.floor(diff / 3600000);
-        return `Il y a ${hours}h`;
-    }
-    
-    // Moins d'une semaine
-    if (diff < 604800000) {
-        const days = Math.floor(diff / 86400000);
-        return `Il y a ${days} jour${days > 1 ? 's' : ''}`;
-    }
-    
-    // Plus d'une semaine
-    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-}
-
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-// Convertir les URLs en liens cliquables (après escapeHtml)
-function linkifyContent(text) {
-    if (!text) return '';
-    // D'abord échapper le HTML
-    let safe = escapeHtml(text);
-    // Puis convertir les URLs en liens cliquables
-    const urlRegex = /(https?:\/\/[^\s<]+)/g;
-    return safe.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" class="community-link">$1</a>');
-}
-
-// ============================================
-// GESTION DES COMMENTAIRES
-// ============================================
-async function toggleComments(newsId, btn) {
-    const container = document.getElementById(`comments-${newsId}`);
-    const isOpen = container.classList.contains('open');
-    
-    if (isOpen) {
-        container.classList.remove('open');
-        btn.classList.remove('open');
-    } else {
-        container.classList.add('open');
-        btn.classList.add('open');
-        loadComments(newsId);
-    }
-}
-
-async function loadComments(newsId) {
-    const listEl = document.getElementById(`comments-list-${newsId}`);
-    
-    try {
-        const supabaseClient = getSupabaseClient();
-        if (!supabaseClient) return;
-        
-        const { data, error } = await supabaseClient
-            .from('news_comments')
-            .select('*')
-            .eq('news_id', newsId)
-            .eq('status', 'approved')
-            .order('created_at', { ascending: false })
-            .limit(10);
-        
-        if (error) throw error;
-        
-        if (!data || data.length === 0) {
-            listEl.innerHTML = `
-                <div class="comments-empty">
-                    <div class="comments-empty-icon">💬</div>
-                    Aucun commentaire pour le moment.<br>Soyez le premier !
-                </div>
-            `;
-            return;
-        }
-        
-        listEl.innerHTML = data.map(comment => `
-            <div class="comment-item">
-                <div class="comment-item-header">
-                    <span class="comment-item-author">👤 ${escapeHtml(comment.author)}</span>
-                    <span class="comment-item-date">${formatCommunityDate(comment.created_at)}</span>
-                </div>
-                <div class="comment-item-content">${escapeHtml(comment.content)}</div>
-            </div>
-        `).join('');
-        
-    } catch (error) {
-        console.error('Erreur chargement commentaires:', error);
-        listEl.innerHTML = `
-            <div class="comments-empty">
-                <div class="comments-empty-icon">❌</div>
-                Erreur de chargement
-            </div>
-        `;
-    }
-}
-
-async function submitComment(event, newsId) {
-    event.preventDefault();
-    
-    const authorInput = document.getElementById(`comment-author-${newsId}`);
-    const contentInput = document.getElementById(`comment-content-${newsId}`);
-    const form = event.target;
-    const submitBtn = form.querySelector('.comment-submit-btn');
-    
-    const author = authorInput.value.trim();
-    const content = contentInput.value.trim();
-    
-    if (!author || !content) return;
-    
-    // Désactiver le bouton
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span class="material-icons">hourglass_empty</span> Envoi...';
-    
-    try {
-        const supabaseClient = getSupabaseClient();
-        if (!supabaseClient) throw new Error('Supabase non disponible');
-        
-        const { error } = await supabaseClient
-            .from('news_comments')
-            .insert([{
-                news_id: newsId,
-                author: author,
-                content: content,
-                status: 'pending'
-            }]);
-        
-        if (error) throw error;
-        
-        // Envoyer notification email
-        try {
-            await fetch('/api/sendEmail', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    type: 'commentaire',
-                    author: author,
-                    content: content,
-                    newsTitle: document.querySelector(`#comments-${newsId}`)?.closest('.community-item')?.querySelector('.community-item-title')?.textContent || 'Actualité'
-                })
-            });
-        } catch (e) {
-            console.log('Email notification non envoyée:', e);
-        }
-        
-        // Afficher message de succès
-        form.innerHTML = `
-            <div class="comment-success">
-                ✅ Merci ! Votre commentaire sera visible après validation.
-            </div>
-        `;
-        
-        // Restaurer le formulaire après 5 secondes
-        setTimeout(() => {
-            form.innerHTML = `
-                <div class="comment-form-row">
-                    <input type="text" class="comment-input" id="comment-author-${newsId}" placeholder="Votre pseudo" maxlength="50" required>
-                </div>
-                <textarea class="comment-input comment-textarea" id="comment-content-${newsId}" placeholder="Votre commentaire..." maxlength="500" required></textarea>
-                <button type="submit" class="comment-submit-btn">
-                    <span class="material-icons">send</span>
-                    Envoyer
-                </button>
-            `;
-        }, 5000);
-        
-    } catch (error) {
-        console.error('Erreur envoi commentaire:', error);
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span class="material-icons">send</span> Envoyer';
-        alert('Erreur lors de l\'envoi. Réessayez.');
-    }
-}
-
-// ============================================
-// GESTION DES LIKES
-// ============================================
-function getUserFingerprint() {
-    let fp = localStorage.getItem('user_fingerprint');
-    if (!fp) {
-        fp = 'fp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem('user_fingerprint', fp);
-    }
-    return fp;
-}
-
-async function toggleLike(newsId, btn) {
-    const supabaseClient = getSupabaseClient();
-    if (!supabaseClient) return;
-    
-    const userFingerprint = getUserFingerprint();
-    const isLiked = btn.classList.contains('liked');
-    const countEl = document.getElementById(`like-count-${newsId}`);
-    const icon = btn.querySelector('.material-icons');
-    let currentCount = parseInt(countEl.textContent) || 0;
-    
-    try {
-        if (isLiked) {
-            // Retirer le like
-            const { error } = await supabaseClient
-                .from('news_likes')
-                .delete()
-                .eq('news_id', newsId)
-                .eq('user_fingerprint', userFingerprint);
-            
-            if (error) throw error;
-            
-            btn.classList.remove('liked');
-            icon.textContent = 'favorite_border';
-            countEl.textContent = Math.max(0, currentCount - 1);
-            
-            // Mettre à jour le tableau local
-            window.userLikes = window.userLikes.filter(id => id !== newsId);
-            
-        } else {
-            // Ajouter le like
-            const { error } = await supabaseClient
-                .from('news_likes')
-                .insert([{
-                    news_id: newsId,
-                    user_fingerprint: userFingerprint
-                }]);
-            
-            if (error) throw error;
-            
-            btn.classList.add('liked');
-            icon.textContent = 'favorite';
-            countEl.textContent = currentCount + 1;
-            
-            // Mettre à jour le tableau local
-            window.userLikes.push(newsId);
-        }
-    } catch (error) {
-        console.error('Erreur like:', error);
-        // En cas d'erreur (ex: déjà liké), on ne fait rien
-    }
-}
-
-function toggleSeeMore(newsId) {
-    const descEl = document.getElementById(`desc-${newsId}`);
-    const btnEl = document.getElementById(`see-more-${newsId}`);
-    
-    if (!descEl || !btnEl) return;
-    
-    const isExpanded = descEl.classList.contains('expanded');
-    
-    if (isExpanded) {
-        // Réduire
-        descEl.classList.remove('expanded');
-        btnEl.classList.remove('expanded');
-        btnEl.querySelector('span:first-child').textContent = 'Voir plus';
-    } else {
-        // Déplier
-        descEl.classList.add('expanded');
-        btnEl.classList.add('expanded');
-        btnEl.querySelector('span:first-child').textContent = 'Voir moins';
-    }
-}
-
-// Fonction pour ouvrir une image en grand
-function openImageModal(imageUrl, sourceName = '') {
-    // Créer le modal s'il n'existe pas
-    let modal = document.getElementById('imageModal');
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'imageModal';
-        modal.className = 'image-modal';
-        modal.innerHTML = `
-            <div class="image-modal-backdrop" onclick="closeImageModal()"></div>
-            <div class="image-modal-content">
-                <button class="image-modal-close" onclick="closeImageModal()">
+    <!-- Modal TV en direct -->
+    <div class="tv-modal" id="tvModal">
+        <div class="tv-modal-content">
+            <div class="tv-modal-header">
+                <h3>📺 TV en direct</h3>
+                <button class="tv-modal-close" onclick="closeTVModal()" aria-label="Fermer">
                     <span class="material-icons">close</span>
                 </button>
-                <img id="modalImage" src="" alt="Image">
-                <div id="modalImageCredit" class="image-modal-credit"></div>
             </div>
-        `;
-        document.body.appendChild(modal);
-    }
-    
-    document.getElementById('modalImage').src = imageUrl;
-    
-    // Afficher le crédit si disponible
-    const creditEl = document.getElementById('modalImageCredit');
-    if (sourceName && sourceName.trim() !== '') {
-        creditEl.textContent = '📷 ' + sourceName;
-        creditEl.style.display = 'block';
-    } else {
-        creditEl.style.display = 'none';
-    }
-    
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeImageModal() {
-    const modal = document.getElementById('imageModal');
-    if (modal) {
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
-    }
-}
-
-// ============================================
-// RAFRAÎCHISSEMENT PÉRIODIQUE
-// ============================================
-setInterval(() => {
-    console.log('🔄 Rafraîchissement des actualités...');
-    initNews();
-}, CONFIG.news.refreshInterval);
-
-// ============================================
-// TOGGLE VILLES SUPPLÉMENTAIRES
-// ============================================
-function toggleExtraTiles() {
-    const tilesExtra = document.getElementById('tilesExtra');
-    const toggleBtn = document.getElementById('tilesToggle');
-    const toggleIcon = document.getElementById('tilesToggleIcon');
-    const toggleText = document.getElementById('tilesToggleText');
-    
-    if (!tilesExtra || !toggleBtn) return;
-    
-    const isExpanded = tilesExtra.classList.contains('show');
-    
-    if (isExpanded) {
-        // Fermer
-        tilesExtra.classList.remove('show');
-        toggleBtn.classList.remove('expanded');
-        toggleIcon.textContent = 'expand_more';
-        toggleText.textContent = 'Plus de villes';
-        localStorage.setItem('tilesExpanded', 'false');
-    } else {
-        // Ouvrir
-        tilesExtra.classList.add('show');
-        toggleBtn.classList.add('expanded');
-        toggleIcon.textContent = 'expand_less';
-        toggleText.textContent = 'Moins de villes';
-        localStorage.setItem('tilesExpanded', 'true');
-    }
-}
-
-// Restaurer l'état au chargement
-function initExtraTiles() {
-    const saved = localStorage.getItem('tilesExpanded');
-    if (saved === 'true') {
-        const tilesExtra = document.getElementById('tilesExtra');
-        const toggleBtn = document.getElementById('tilesToggle');
-        const toggleIcon = document.getElementById('tilesToggleIcon');
-        const toggleText = document.getElementById('tilesToggleText');
-        
-        if (tilesExtra && toggleBtn) {
-            tilesExtra.classList.add('show');
-            toggleBtn.classList.add('expanded');
-            toggleIcon.textContent = 'expand_less';
-            toggleText.textContent = 'Moins de villes';
-        }
-    }
-}
-
-// Exposer la fonction globalement
-window.toggleExtraTiles = toggleExtraTiles;
-
-// === TOGGLE GÉNÉRIQUE POUR TOUTES LES SECTIONS ===
-function toggleSection(extraId, btnId, iconId, textId, openLabel, closeLabel, storageKey) {
-    const extra = document.getElementById(extraId);
-    const btn = document.getElementById(btnId);
-    const icon = document.getElementById(iconId);
-    const text = document.getElementById(textId);
-    
-    if (!extra || !btn) return;
-    
-    const isExpanded = extra.classList.contains('show');
-    
-    if (isExpanded) {
-        extra.classList.remove('show');
-        btn.classList.remove('expanded');
-        icon.textContent = 'expand_more';
-        text.textContent = openLabel;
-        localStorage.setItem(storageKey, 'false');
-    } else {
-        extra.classList.add('show');
-        btn.classList.add('expanded');
-        icon.textContent = 'expand_less';
-        text.textContent = closeLabel;
-        localStorage.setItem(storageKey, 'true');
-    }
-}
-
-// Restaurer l'état des sections au chargement
-function initToggleSections() {
-    const sections = [
-        { storageKey: 'mediaRegionalExpanded', extraId: 'mediaRegionalExtra', btnId: 'mediaRegionalBtn', iconId: 'mediaRegionalIcon', textId: 'mediaRegionalText', closeLabel: 'Moins de médias' },
-        { storageKey: 'mediaNationalExpanded', extraId: 'mediaNationalExtra', btnId: 'mediaNationalBtn', iconId: 'mediaNationalIcon', textId: 'mediaNationalText', closeLabel: 'Moins de médias' }
-    ];
-    
-    sections.forEach(function(s) {
-        if (localStorage.getItem(s.storageKey) === 'true') {
-            const extra = document.getElementById(s.extraId);
-            const btn = document.getElementById(s.btnId);
-            const icon = document.getElementById(s.iconId);
-            const text = document.getElementById(s.textId);
-            if (extra && btn) {
-                extra.classList.add('show');
-                btn.classList.add('expanded');
-                icon.textContent = 'expand_less';
-                text.textContent = s.closeLabel;
-            }
-        }
-    });
-}
-
-window.toggleSection = toggleSection;
-
-// ============================================
-// NOTIFICATIONS PUSH
-// ============================================
-
-let pushSubscription = null;
-
-// Initialiser les notifications au chargement
-async function initPushNotifications() {
-    // Vérifier si les notifications sont supportées
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        console.log('❌ Push non supporté');
-        return;
-    }
-
-    try {
-        const registration = await navigator.serviceWorker.ready;
-        const subscription = await registration.pushManager.getSubscription();
-
-        if (subscription) {
-            // Déjà abonné - stocker l'abonnement
-            pushSubscription = subscription;
-            console.log('✅ Déjà abonné aux notifications');
-            updateNotifButton(true);
-        } else {
-            // Pas encore abonné
-            pushSubscription = null;
-            updateNotifButton(false);
-            
-            // Si permission déjà accordée mais pas d'abonnement → créer l'abonnement
-            if (Notification.permission === 'granted') {
-                console.log('🔄 Permission accordée, création de l\'abonnement...');
-                setTimeout(() => {
-                    subscribeToPush();
-                }, 2000);
-            } 
-            // Si permission pas encore demandée → afficher le popup
-            else if (Notification.permission === 'default') {
-                const notifDismissed = localStorage.getItem('notifPromptDismissed');
-                const lastDismiss = notifDismissed ? parseInt(notifDismissed) : 0;
-                const daysSinceDismiss = (Date.now() - lastDismiss) / (1000 * 60 * 60 * 24);
-                
-                if (!notifDismissed || daysSinceDismiss > 7) {
-                    setTimeout(() => {
-                        showNotifPrompt();
-                    }, 5000);
-                }
-            }
-            // Si permission refusée → ne rien faire
-            else {
-                console.log('❌ Notifications refusées par l\'utilisateur');
-            }
-        }
-    } catch (error) {
-        console.error('❌ Erreur init push:', error);
-    }
-}
-
-// Afficher le popup de notification
-function showNotifPrompt() {
-    const prompt = document.getElementById('notifPrompt');
-    if (prompt && Notification.permission === 'default') {
-        prompt.classList.add('show');
-    }
-}
-
-// Fermer le popup
-function closeNotifPrompt(saveDismiss = false) {
-    const prompt = document.getElementById('notifPrompt');
-    if (prompt) {
-        prompt.classList.remove('show');
-        if (saveDismiss) {
-            localStorage.setItem('notifPromptDismissed', Date.now().toString());
-        }
-    }
-}
-
-// Accepter les notifications depuis le popup
-async function acceptNotifPrompt() {
-    closeNotifPrompt(false);
-    await subscribeToPush();
-}
-
-// Mettre à jour l'apparence du bouton
-function updateNotifButton(isSubscribed) {
-    const btn = document.getElementById('notifSubscribeBtn');
-    const icon = document.getElementById('notifIcon');
-    const title = document.getElementById('notifTitle');
-    const desc = document.getElementById('notifDesc');
-    const arrow = document.getElementById('notifArrow');
-
-    if (!btn) return;
-
-    if (isSubscribed) {
-        btn.classList.add('subscribed');
-        icon.textContent = '🔔';
-        icon.classList.add('subscribed');
-        title.textContent = 'Notifications activées';
-        desc.textContent = 'Cliquez pour désactiver';
-        arrow.textContent = 'notifications_active';
-    } else {
-        btn.classList.remove('subscribed');
-        icon.textContent = '🔕';
-        icon.classList.remove('subscribed');
-        title.textContent = 'Activer les notifications';
-        desc.textContent = 'Recevoir les alertes infos';
-        arrow.textContent = 'notifications_none';
-    }
-}
-
-// Toggle abonnement
-async function togglePushSubscription() {
-    const btn = document.getElementById('notifSubscribeBtn');
-    if (!btn) return;
-
-    btn.classList.add('loading');
-
-    try {
-        if (pushSubscription) {
-            // Se désabonner
-            await unsubscribeFromPush();
-        } else {
-            // S'abonner
-            await subscribeToPush();
-        }
-    } catch (error) {
-        console.error('❌ Erreur toggle push:', error);
-        alert('Erreur : ' + error.message);
-    } finally {
-        btn.classList.remove('loading');
-    }
-}
-
-// S'abonner aux notifications
-async function subscribeToPush() {
-    // Demander la permission
-    const permission = await Notification.requestPermission();
-
-    if (permission !== 'granted') {
-        alert('Vous devez autoriser les notifications pour recevoir les alertes.');
-        return;
-    }
-
-    // Récupérer la clé publique VAPID
-    const response = await fetch('/api/subscribe');
-    const { publicKey } = await response.json();
-
-    if (!publicKey) {
-        throw new Error('Clé VAPID non disponible');
-    }
-
-    // Convertir la clé
-    const applicationServerKey = urlBase64ToUint8Array(publicKey);
-
-    // S'abonner
-    const registration = await navigator.serviceWorker.ready;
-    pushSubscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: applicationServerKey
-    });
-
-    // Envoyer l'abonnement au serveur
-    const subscribeResponse = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(pushSubscription.toJSON())
-    });
-
-    if (!subscribeResponse.ok) {
-        throw new Error('Erreur lors de l\'enregistrement');
-    }
-
-    updateNotifButton(true);
-    console.log('✅ Abonné aux notifications');
-
-    // Notification de confirmation
-    showToast('🔔 Notifications activées !', 'Vous recevrez les alertes infos.');
-}
-
-// Se désabonner
-async function unsubscribeFromPush() {
-    if (!pushSubscription) return;
-
-    // Supprimer côté serveur
-    await fetch('/api/subscribe', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ endpoint: pushSubscription.endpoint })
-    });
-
-    // Supprimer côté client
-    await pushSubscription.unsubscribe();
-    pushSubscription = null;
-
-    updateNotifButton(false);
-    console.log('✅ Désabonné des notifications');
-
-    showToast('🔕 Notifications désactivées', 'Vous ne recevrez plus les alertes.');
-}
-
-// Convertir clé VAPID base64 en Uint8Array
-function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
-        .replace(/-/g, '+')
-        .replace(/_/g, '/');
-
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-
-    for (let i = 0; i < rawData.length; ++i) {
-        outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
-}
-
-// Toast de confirmation
-function showToast(title, message) {
-    // Utiliser le toast existant ou en créer un simple
-    const existingToast = document.querySelector('.notification-toast');
-    if (existingToast) {
-        existingToast.querySelector('.notification-toast-title').textContent = title;
-        existingToast.querySelector('.notification-toast-text').textContent = message;
-        existingToast.classList.add('show');
-        setTimeout(() => existingToast.classList.remove('show'), 3000);
-    } else {
-        alert(title + '\n' + message);
-    }
-}
-
-// ============================================
-// SÉLECTEUR TAILLE DE TEXTE
-// ============================================
-function initFontSizeSelector() {
-    const buttons = document.querySelectorAll('.font-size-btn');
-    
-    if (buttons.length === 0) return;
-    
-    // Charger la préférence sauvegardée
-    const savedSize = localStorage.getItem('fontSize') || 'normal';
-    document.documentElement.setAttribute('data-font-size', savedSize);
-    
-    // Mettre à jour le bouton actif
-    buttons.forEach(btn => {
-        if (btn.dataset.size === savedSize) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
-    });
-    
-    // Ajouter les événements de clic
-    buttons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const size = btn.dataset.size;
-            
-            // Appliquer la taille
-            document.documentElement.setAttribute('data-font-size', size);
-            
-            // Sauvegarder la préférence
-            localStorage.setItem('fontSize', size);
-            
-            // Mettre à jour les boutons actifs
-            buttons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            console.log('📏 Taille de texte:', size);
-        });
-    });
-    
-    console.log('✅ Sélecteur taille de texte initialisé');
-}
-
-// ============================================
-// AGENDA HOMEPAGE
-// ============================================
-async function initAgenda() {
-    const contentEl = document.getElementById('agendaContent');
-    const emptyEl = document.getElementById('agendaEmpty');
-    
-    if (!contentEl) return;
-    
-    try {
-        const supabase = getSupabaseClient();
-        if (!supabase) return;
-        
-        const today = new Date();
-		const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-        const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-        
-        // 1. Charger les événements NON récurrents à venir
-        const { data: regularEvents, error: err1 } = await supabase
-            .from('events')
-            .select('*')
-            .eq('status', 'approved')
-            .eq('is_recurring', false)
-            .gte('event_date', todayStr)
-            .order('event_date', { ascending: true })
-            .limit(5);
-        
-        // 2. Charger les événements RÉCURRENTS (UNE SEULE FOIS chacun)
-        const { data: recurringEvents, error: err2 } = await supabase
-            .from('events')
-            .select('*')
-            .eq('status', 'approved')
-            .eq('is_recurring', true);
-        
-        if (err1) console.error('Erreur events réguliers:', err1);
-        if (err2) console.error('Erreur events récurrents:', err2);
-        
-        // 3. Préparer les événements récurrents avec leur label
-        const processedRecurring = (recurringEvents || []).map(event => {
-            const days = event.recurrence_days ? event.recurrence_days.split(',').map(d => dayNames[parseInt(d)]) : [];
-            return {
-                ...event,
-                _recurrenceLabel: `Tous les ${days.join(', ')}`,
-                _sortOrder: 0 // Les récurrents en premier
-            };
-        });
-        
-        // 4. Préparer les événements réguliers
-        const processedRegular = (regularEvents || []).map(event => ({
-            ...event,
-            _sortOrder: 1
-        }));
-        
-        // 5. Combiner : récurrents d'abord, puis par date (limité à 3 pour l'accueil)
-        const allEvents = [...processedRecurring, ...processedRegular].slice(0, 3);
-        
-        if (!allEvents || allEvents.length === 0) {
-            contentEl.innerHTML = '';
-            if (emptyEl) emptyEl.style.display = 'block';
-            return;
-        }
-        
-        if (emptyEl) emptyEl.style.display = 'none';
-        
-        contentEl.innerHTML = allEvents.map(event => {
-            // Pour les récurrents : afficher le label au lieu de la date
-            if (event.is_recurring) {
-                return `
-                    <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
-                        <div class="agenda-item-date recurring">
-                            <span class="material-icons agenda-item-day">sync</span>
-                            <span class="agenda-item-month">HEBDO</span>
-                        </div>
-                        <div class="agenda-item-content">
-                            <div class="agenda-item-title">${escapeHtml(event.title)}</div>
-                            <div class="agenda-item-info">
-                                <span class="agenda-info-highlight"><span class="material-icons">event_repeat</span>${event._recurrenceLabel}</span>
-                                ${event.event_time ? `<span><span class="material-icons">schedule</span>${formatAgendaTime(event.event_time)}</span>` : ''}
-                            </div>
-                            <div class="agenda-item-info">
-                                ${event.location ? `<span><span class="material-icons">place</span>${escapeHtml(event.location)}</span>` : ''}
-                                <span class="agenda-views"><span class="material-icons">visibility</span>${event.views || 0}</span>
-                            </div>
-                            <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
-                        </div>
-                    </a>
-                `;
-            }
-            
-            // Pour les événements uniques : afficher la date
-            const date = new Date(event.event_date + 'T12:00:00');
-			const day = date.getDate();
-			const month = date.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '').toUpperCase();
-            
-            return `
-                <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
-                    <div class="agenda-item-date">
-                        <span class="agenda-item-day">${day}</span>
-                        <span class="agenda-item-month">${month}</span>
-                    </div>
-                    <div class="agenda-item-content">
-                        <div class="agenda-item-title">${escapeHtml(event.title)}</div>
-                        <div class="agenda-item-info">
-                            ${event.event_time ? `<span><span class="material-icons">schedule</span>${formatAgendaTime(event.event_time)}</span>` : ''}
-                            ${event.location ? `<span><span class="material-icons">place</span>${escapeHtml(event.location)}</span>` : ''}
-                            <span class="agenda-views"><span class="material-icons">visibility</span>${event.views || 0}</span>
-                        </div>
-                        <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
+            <div class="tv-modal-list">
+                <a href="https://www.francebleu.fr/tv/direct/bourgogne" target="_blank" rel="noopener" class="tv-item">
+                    <span class="tv-icon">🔵</span>
+                    <div class="tv-info">
+                        <strong>France 3 Bourgogne</strong>
+                        <span>Info régionale</span>
                     </div>
                 </a>
-            `;
-        }).join('');
-        
-        // Ajouter le bouton "Voir tout l'agenda" en bas
-        contentEl.innerHTML += `
-            <a href="agenda.html" class="agenda-voir-tout">
-                <span>Voir tout l'agenda</span>
-                <span class="material-icons">calendar_month</span>
-            </a>
-        `;
-        
-        console.log(`📅 ${allEvents.length} événements agenda chargés`);
-        
-    } catch (error) {
-        console.error('❌ Erreur initAgenda:', error);
-    }
-}
+                <a href="https://www.francetvinfo.fr/en-direct/tv.html" target="_blank" rel="noopener" class="tv-item">
+                    <span class="tv-icon">📺</span>
+                    <div class="tv-info">
+                        <strong>France Info</strong>
+                        <span>Info en continu</span>
+                    </div>
+                </a>
+                <a href="https://www.bfmtv.com/en-direct" target="_blank" rel="noopener" class="tv-item">
+                    <span class="tv-icon">🔴</span>
+                    <div class="tv-info">
+                        <strong>BFM TV</strong>
+                        <span>Info en continu</span>
+                    </div>
+                </a>
+                <a href="https://www.cnews.fr/le-direct" target="_blank" rel="noopener" class="tv-item">
+                    <span class="tv-icon">🟠</span>
+                    <div class="tv-info">
+                        <strong>CNews</strong>
+                        <span>Info en continu</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
 
-function formatAgendaTime(timeStr) {
-    if (!timeStr) return '';
-    const [h, m] = timeStr.split(':');
-    return `${h}h${m !== '00' ? m : ''}`;
-}
+    <!-- Footer -->
+    <footer class="footer glass">
+        <p>© 2026 Actu & Média - Montceau-les-Mines</p>
+        <p class="footer-sub">Fait avec ❤️ par ActuetMedia</p>
+        <div class="footer-links">
+            <a href="mentions-legales.html">Mentions légales</a>
+            <span class="footer-separator">•</span>
+            <a href="confidentialite.html">Confidentialité</a>
+        </div>
+    </footer>
 
-function getAgendaCategoryIcon(category) {
-    const icons = { 'sport': '⚽', 'culture': '🎭', 'marche': '🛒', 'brocante': '🏷️', 'concert': '🎵', 'fete': '🎉' };
-    return icons[category] || '📅';
-}
+    <!-- Popup Installation PWA -->
+    <div class="install-prompt" id="installPrompt">
+        <div class="install-prompt-content">
+            <div class="install-prompt-icon">📱</div>
+            <div class="install-prompt-text">
+                <div class="install-prompt-title">Installer Actu & Média</div>
+                <div class="install-prompt-desc">Accédez rapidement aux actus locales depuis votre écran d'accueil</div>
+            </div>
+            <div class="install-prompt-actions">
+                <button class="install-btn install-btn-secondary" id="dismissBtn">Plus tard</button>
+                <button class="install-btn install-btn-primary" id="installBtn">Installer</button>
+            </div>
+        </div>
+    </div>
 
-function getAgendaCategoryLabel(category) {
-    const labels = { 'sport': 'Sport', 'culture': 'Culture', 'marche': 'Marché', 'brocante': 'Brocante', 'concert': 'Concert', 'fete': 'Fête' };
-    return labels[category] || 'Événement';
-}
+    <!-- Modal Instructions iOS -->
+    <div class="ios-install-modal" id="iosInstallModal">
+        <div class="ios-install-content">
+            <h3>📱 Installer sur iPhone/iPad</h3>
+            <div class="ios-install-step">
+                <div class="ios-install-step-num">1</div>
+                <div class="ios-install-step-text">
+                    Appuyez sur <strong>Partager</strong> 
+                    <span style="font-size: 1.2rem;">⬆️</span>
+                </div>
+            </div>
+            <div class="ios-install-step">
+                <div class="ios-install-step-num">2</div>
+                <div class="ios-install-step-text">
+                    Faites défiler et appuyez sur <strong>"Sur l'écran d'accueil"</strong>
+                </div>
+            </div>
+            <div class="ios-install-step">
+                <div class="ios-install-step-num">3</div>
+                <div class="ios-install-step-text">
+                    Appuyez sur <strong>Ajouter</strong>
+                </div>
+            </div>
+            <button class="ios-install-close" id="iosCloseBtn">Compris !</button>
+        </div>
+    </div>
 
-window.togglePushSubscription = togglePushSubscription;
-window.showNotifPrompt = showNotifPrompt;
-window.closeNotifPrompt = closeNotifPrompt;
-window.acceptNotifPrompt = acceptNotifPrompt;
-window.toggleSeeMore = toggleSeeMore;
-window.toggleComments = toggleComments;
-window.submitComment = submitComment;
-window.toggleLike = toggleLike;
-window.openImageModal = openImageModal;
-window.closeImageModal = closeImageModal;
-
-// ============================================
-// COMPTEUR DE VISITES
-// ============================================
-async function recordVisit() {
-    try {
-        const supabase = getSupabaseClient();
-        if (!supabase) return;
-        
-        // Clé unique par jour pour ce visiteur
-        const today = new Date().toISOString().split('T')[0];
-        const visitorKey = `visitor_${today}`;
-        
-        // Vérifier si c'est un nouveau visiteur aujourd'hui
-        const isNewVisitor = !localStorage.getItem(visitorKey);
-        
-        // Enregistrer la visite
-        const { error } = await supabase.rpc('record_visit', { is_new_visitor: isNewVisitor });
-        
-        if (!error) {
-            // Marquer comme déjà visité aujourd'hui
-            if (isNewVisitor) {
-                localStorage.setItem(visitorKey, 'true');
-                console.log('👤 Nouveau visiteur enregistré');
-            } else {
-                console.log('📄 Page vue enregistrée');
-            }
-        }
-    } catch (err) {
-        console.error('Erreur compteur visites:', err);
-    }
-}
-
-// ============================================
-// BARRE DATE & SAINT DU JOUR
-// ============================================
-function initDateBar() {
-    const dayEl = document.getElementById('dateBarDay');
-    const saintEl = document.getElementById('dateBarSaint');
-    if (!dayEl || !saintEl) return;
-
-    // Saints du jour (index 0 = 1er janvier)
-    const saints = [
-        // Janvier
-        "Marie","Basile","Geneviève","Odilon","Édouard","Melchior","Raymond","Lucien","Alix","Guillaume",
-        "Paulin","Tatiana","Yvette","Nina","Rémi","Marcel","Roseline","Prisca","Marius","Sébastien",
-        "Agnès","Vincent","Barnard","François de Sales","Conv. de Paul","Paule","Angèle","Thomas d'Aquin","Gildas","Martine","Marcelle",
-        // Février
-        "Ella","Présentation","Blaise","Véronique","Agathe","Gaston","Eugénie","Jacqueline","Apolline","Arnaud",
-        "N-D de Lourdes","Félix","Béatrice","Valentin","Claude","Julienne","Alexis","Bernadette","Gabin","Aimée",
-        "Damien","Isabelle","Lazare","Modeste","Roméo","Nestor","Honorine","Romain",
-        // Mars
-        "Aubin","Charles le Bon","Guénolé","Casimir","Olive","Colette","Félicité","Jean de Dieu","Françoise","Vivien",
-        "Rosine","Justine","Rodrigue","Mathilde","Louise","Bénédicte","Patrick","Cyrille","Joseph","Herbert",
-        "Clémence","Léa","Victorien","Cath. de Suède","Humbert","Larissa","Habib","Gontran","Gwladys","Amédée","Benjamin",
-        // Avril
-        "Hugues","Sandrine","Richard","Isidore","Irène","Marcellin","J-B de la Salle","Julie","Gautier","Fulbert",
-        "Stanislas","Jules","Ida","Maxime","Paterne","Benoît-Joseph","Anicet","Parfait","Emma","Odette",
-        "Anselme","Alexandre","Georges","Fidèle","Marc","Alida","Zita","Valérie","Cath. de Sienne","Robert",
-        // Mai
-        "Jérémie","Boris","Philippe","Sylvain","Judith","Prudence","Gisèle","Désiré","Pacôme","Solange",
-        "Estelle","Achille","Rolande","Matthias","Denise","Honoré","Pascal","Éric","Yves","Bernardin",
-        "Constantin","Émile","Didier","Donatien","Sophie","Bérenger","Augustin","Germain","Aymar","Ferdinand","Visit. de Marie",
-        // Juin
-        "Justin","Blandine","Kévin","Clotilde","Igor","Norbert","Gilbert","Médard","Diane","Landry",
-        "Barnabé","Guy","Antoine de Padoue","Élisée","Germaine","J-F Régis","Hervé","Léonce","Romuald","Silvère",
-        "Rodolphe","Alban","Audrey","Jean-Baptiste","Prosper","Anthelme","Fernand","Irénée","Pierre et Paul","Martial",
-        // Juillet
-        "Thierry","Martinien","Thomas","Florent","Antoine","Mariette","Raoul","Thibaut","Amandine","Ulrich",
-        "Benoît","Olivier","Henri et Joël","Fête nationale","Donald","N-D du Carmel","Charlotte","Frédéric","Arsène","Marina",
-        "Victor","Marie-Madeleine","Brigitte","Christine","Jacques","Anne et Joachim","Nathalie","Samson","Marthe","Juliette","Ignace de Loyola",
-        // Août
-        "Alphonse","Julien Eymard","Lydie","Jean-M Vianney","Abel","Transfiguration","Gaëtan","Dominique","Amour","Laurent",
-        "Claire","Clarisse","Hippolyte","Evrard","Assomption","Armel","Hyacinthe","Hélène","Jean Eudes","Bernard",
-        "Christophe","Fabrice","Rose de Lima","Barthélemy","Louis","Natacha","Monique","Augustin","Sabine","Fiacre","Aristide",
-        // Septembre
-        "Gilles","Ingrid","Grégoire","Rosalie","Raïssa","Bertrand","Reine","Nativité","Alain","Inès",
-        "Adelphe","Apollinaire","Aimé","Materne","Roland","Édith","Renaud","Nadège","Émilie","Davy",
-        "Matthieu","Maurice","Constance","Thècle","Hermann","Côme et Damien","Vinc. de Paul","Venceslas","Michel","Jérôme",
-        // Octobre
-        "Thérèse","Léger","Gérard","François d'Assise","Fleur","Bruno","Serge","Pélagie","Denis","Ghislain",
-        "Firmin","Wilfrid","Géraud","Juste","Thérèse d'Avila","Edwige","Baudouin","Luc","René","Adeline",
-        "Céline","Élodie","Jean de Capistran","Florentin","Crépin","Dimitri","Émeline","Simon et Jude","Narcisse","Bienvenu","Quentin",
-        // Novembre
-        "Toussaint","Défunts","Hubert","Charles","Sylvie","Bertille","Carine","Geoffrey","Théodore","Léon",
-        "Martin","Christian","Brice","Sidoine","Albert","Marguerite","Élisabeth","Aude","Tanguy","Edmond",
-        "Présent. de Marie","Cécile","Clément","Flora","Catherine","Delphine","Sévrin","Jacq. de la Marche","Saturnin","André",
-        // Décembre
-        "Florence","Viviane","François Xavier","Barbara","Gérald","Nicolas","Ambroise","Immac. Conception","Pierre Fourier","Romaric",
-        "Daniel","Jeanne de Chantal","Lucie","Odile","Ninon","Alice","Gaël","Gatien","Urbain","Abraham",
-        "Pierre Canisius","Françoise-Xavière","Armand","Adèle","Noël","Étienne","Jean","Innocents","David","Roger","Sylvestre"
-    ];
-
-    function updateDateBar() {
-        const now = new Date();
-        const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-        const mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-        
-        const heure = now.getHours().toString().padStart(2, '0');
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        const jour = jours[now.getDay()];
-        const numero = now.getDate();
-        const nomMois = mois[now.getMonth()];
-        
-        dayEl.textContent = `${jour} ${numero} ${nomMois} · ${heure}h${minutes}`;
-        
-        // Saint du jour
-        const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000) - 1;
-        const saint = saints[dayOfYear] || '';
-        if (saint) {
-            saintEl.textContent = `Bonne fête aux ${saint} !`;
-        }
-    }
-
-    updateDateBar();
-    setInterval(updateDateBar, 30000); // Mise à jour toutes les 30 secondes
-}
-
-// ============================================
-// SECTION SPORT - FC MONTCEAU BOURGOGNE
-// ============================================
-
-function initSport() {
-    loadSportData();
-}
-
-async function loadSportData() {
-    const loading = document.getElementById('sportLoading');
-    const content = document.getElementById('sportContent');
+    <!-- ============================================
+         SCRIPTS
+         ============================================ -->
     
-    if (!loading || !content) return;
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Application Scripts -->
+    <script src="js/app.js"></script>
+	<script src="js/mini-radio.js"></script>
+    <script src="js/quick-links.js"></script>
+    <script src="js/support.js"></script>
+    <script src="js/ios-fixes.js"></script>
+    <script src="js/ios-install.js"></script>
+    
+    <!-- Notification toast pour admin -->
+    <div class="notification-toast" id="adminNotification">
+        <span class="notification-toast-icon">📬</span>
+        <div class="notification-toast-content">
+            <div class="notification-toast-title">Nouveaux messages !</div>
+            <div class="notification-toast-text" id="notificationText">Vous avez des messages non lus</div>
+        </div>
+        <button class="notification-toast-close" onclick="closeAdminNotification()" aria-label="Fermer">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    
+    <!-- Script Admin Notifications -->
+    <script>
+        const ADMIN_SESSION_KEY = 'admin_session';
+        
+        async function checkAdminNotifications() {
+            const session = JSON.parse(localStorage.getItem(ADMIN_SESSION_KEY));
+            
+            if (!session || !session.logged || session.expires < Date.now()) {
+                return;
+            }
+            
+            const adminSection = document.getElementById('adminSection');
+            if (adminSection) {
+                adminSection.style.display = 'block';
+            }
+            
+            try {
+                const supabaseClient = window.getSupabaseClient ? window.getSupabaseClient() : null;
+                if (!supabaseClient) return;
+                
+                const { data: contactData } = await supabaseClient
+                    .from('contact_messages')
+                    .select('id', { count: 'exact' })
+                    .eq('is_read', false);
+                
+                const { data: newsData } = await supabaseClient
+                    .from('news_submissions')
+                    .select('id', { count: 'exact' })
+                    .eq('status', 'pending');
+                
+                const { data: commentsData } = await supabaseClient
+                    .from('news_comments')
+                    .select('id', { count: 'exact' })
+                    .eq('status', 'pending');
+                
+                // Vérifier les événements en attente
+                const { data: eventsData } = await supabaseClient
+                    .from('events')
+                    .select('id', { count: 'exact' })
+                    .eq('status', 'pending');
+                
+                // Vérifier les commentaires d'événements en attente
+                const { data: eventCommentsData } = await supabaseClient
+                    .from('event_comments')
+                    .select('id', { count: 'exact' })
+                    .eq('status', 'pending');
+                
+                const unreadContacts = contactData ? contactData.length : 0;
+                const pendingNews = newsData ? newsData.length : 0;
+                const pendingComments = commentsData ? commentsData.length : 0;
+                const pendingEvents = eventsData ? eventsData.length : 0;
+                const pendingEventComments = eventCommentsData ? eventCommentsData.length : 0;
+                const totalUnread = unreadContacts + pendingNews + pendingComments + pendingEvents + pendingEventComments;
+                
+                const adminBadge = document.getElementById('adminBadge');
+                if (adminBadge) {
+                    if (totalUnread > 0) {
+                        adminBadge.textContent = totalUnread;
+                        adminBadge.style.display = 'flex';
+                    } else {
+                        adminBadge.style.display = 'none';
+                    }
+                }
+                
+                // Vérifier si le nombre a augmenté depuis la dernière vérification
+                const lastTotal = parseInt(localStorage.getItem('admin_last_total') || '0');
+                
+                // Afficher notification si nouveau contenu détecté
+                if (totalUnread > 0 && totalUnread > lastTotal) {
+                    showAdminNotification(unreadContacts, pendingNews, pendingComments, pendingEvents, pendingEventComments);
+                }
+                
+                // Sauvegarder le total actuel
+                localStorage.setItem('admin_last_total', totalUnread.toString());
+                
+                console.log(`📬 Admin: ${unreadContacts} messages, ${pendingNews} propositions, ${pendingComments} commentaires communauté, ${pendingEvents} événements, ${pendingEventComments} commentaires événements`);
+                
+            } catch (error) {
+                console.error('Erreur vérification admin:', error);
+            }
+        }
+        
+        function showAdminNotification(contacts, news, comments, events, eventComments = 0) {
+            const notification = document.getElementById('adminNotification');
+            const text = document.getElementById('notificationText');
+            
+            let parts = [];
+            if (contacts > 0) {
+                parts.push(`${contacts} message${contacts > 1 ? 's' : ''}`);
+            }
+            if (news > 0) {
+                parts.push(`${news} proposition${news > 1 ? 's' : ''}`);
+            }
+            if (comments > 0) {
+                parts.push(`${comments} commentaire${comments > 1 ? 's' : ''} communauté`);
+            }
+            if (eventComments > 0) {
+                parts.push(`${eventComments} commentaire${eventComments > 1 ? 's' : ''} événement`);
+            }
+            if (events > 0) {
+                parts.push(`${events} événement${events > 1 ? 's' : ''}`);
+            }
+            
+            let message = parts.join(', ');
+            if (parts.length > 1) {
+                const lastComma = message.lastIndexOf(', ');
+                message = message.substring(0, lastComma) + ' et ' + message.substring(lastComma + 2);
+            }
+            
+            text.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 60000);
+            
+            notification.onclick = (e) => {
+                if (!e.target.closest('.notification-toast-close')) {
+                    window.location.href = 'admin.html';
+                }
+            };
+        }
+        
+		// Vérification automatique toutes les 2 minutes
+        setInterval(() => {
+            if (localStorage.getItem('admin_session')) {
+                checkAdminNotifications();
+                console.log('🔄 Vérification automatique admin...');
+            }
+        }, 2 * 60 * 1000);
+		
+        function closeAdminNotification() {
+            document.getElementById('adminNotification').classList.remove('show');
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(checkAdminNotifications, 2000);
+        });
+    </script>
+	<!-- Popup Notifications -->
+<div class="notif-prompt" id="notifPrompt">
+    <div class="notif-prompt-content">
+        <button class="notif-prompt-close" onclick="closeNotifPrompt(true)">&times;</button>
+        <div class="notif-prompt-icon">🔔</div>
+        <div class="notif-prompt-title">Restez informé !</div>
+        <div class="notif-prompt-text">Recevez les alertes infos importantes de Montceau et sa région directement sur votre appareil.</div>
+        <div class="notif-prompt-actions">
+            <button class="notif-prompt-btn primary" onclick="acceptNotifPrompt()">Activer</button>
+            <button class="notif-prompt-btn secondary" onclick="closeNotifPrompt(true)">Plus tard</button>
+        </div>
+    </div>
+</div>
+<!-- Popup Don -->
+    <div class="donation-popup" id="donationPopup">
+    <button class="donation-popup-close" onclick="closeDonationPopup(false)" aria-label="Fermer">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    
+    <div class="donation-popup-content">
+        <div class="donation-icon-wrapper">
+            <span class="donation-emoji">☕</span>
+        </div>
+        
+        <h3 class="donation-popup-title">Vous aimez Actu & Média ?</h3>
+        
+        <p class="donation-popup-text">
+            Ce site est <strong>100% gratuit et sans pub</strong>.<br>
+            M'offrir un petit café aide à faire vivre le projet !
+        </p>
+        
+        <a href="https://www.paypal.com/paypalme/actuetmedia" target="_blank" rel="noopener" class="donation-popup-btn heartbeat" onclick="closeDonationPopup(true)">
+            <svg class="pulse-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-right:8px;">
+                <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.946 5.438-3.158 7.12-6.591 7.12h-1.2l-.58 3.684zm9.602-12.872c-.172-.943-.75-2.028-2.612-2.028H8.16L6.59 16.438h3.38c1.644 0 3.036-.575 3.903-2.035.534-.9.993-2.316 1.307-4.16.146-.86.257-1.46.298-1.778z"/>
+            </svg>
+            Soutenir avec PayPal
+        </a>
+        
+        <button class="donation-popup-later" onclick="closeDonationPopup(false)">
+            Peut-être plus tard
+        </button>
+    </div>
+</div>
 
-    try {
-        const supabaseClient = getSupabaseClient();
-        if (!supabaseClient) {
-            loading.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.8rem;">Données sport indisponibles</span>';
+    <script>
+    // === POPUP DON ===
+    (function() {
+        const POPUP_DELAY = 60000; // 60 secondes après chargement
+        const POPUP_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 jours entre chaque affichage
+        
+        function shouldShowPopup() {
+            const lastShown = localStorage.getItem('donation_popup_last');
+            const dismissed = localStorage.getItem('donation_popup_dismissed');
+            
+            // Si l'utilisateur a cliqué "Plus tard", attendre 7 jours
+            if (lastShown) {
+                const elapsed = Date.now() - parseInt(lastShown);
+                if (elapsed < POPUP_INTERVAL) return false;
+            }
+            
+            // Si déjà donné ou fermé définitivement
+            if (dismissed === 'permanent') return false;
+            
+            return true;
+        }
+        
+        function showDonationPopup() {
+            if (!shouldShowPopup()) return;
+            
+            const popup = document.getElementById('donationPopup');
+            if (popup) {
+                popup.classList.add('show');
+            }
+        }
+        
+        window.closeDonationPopup = function(permanent = false) {
+            const popup = document.getElementById('donationPopup');
+            if (popup) {
+                popup.classList.remove('show');
+            }
+            
+            // Toujours sauvegarder le timestamp (7 jours avant réaffichage)
+            localStorage.setItem('donation_popup_last', Date.now().toString());
+            
+            // Si clic sur le lien PayPal → ne plus jamais montrer
+            if (permanent) {
+                localStorage.setItem('donation_popup_dismissed', 'permanent');
+            }
+        };
+        
+        // Afficher après 60 secondes
+        setTimeout(showDonationPopup, POPUP_DELAY);
+    })();
+    </script>
+    <script>
+    // === MISE À JOUR / RESET CACHE ===
+    async function resetAndReload() {
+        if (!confirm('Mettre à jour l\'application ?\n\nCela va :\n• Vider le cache (pages, images, scripts)\n• Supprimer le Service Worker\n• Recharger avec la dernière version\n\nVos préférences (thème, notifications) seront conservées.')) {
             return;
         }
 
-        const { data, error } = await supabaseClient
-            .from('sport_data')
-            .select('*')
-            .order('updated_at', { ascending: false })
-            .limit(1)
-            .single();
+        try {
+            // Sauvegarder les préférences importantes
+            const keysToKeep = ['theme', 'push_subscription', 'adminHubAuth', 'adminSportAuth', 
+                'donation_popup_last', 'donation_popup_dismissed', 'font_size', 'notif_permission',
+                'tilesExpanded', 'mediaRegionalExpanded', 'mediaNationalExpanded'];
+            const saved = {};
+            keysToKeep.forEach(key => {
+                const val = localStorage.getItem(key);
+                if (val !== null) saved[key] = val;
+            });
 
-        if (error || !data) {
-            console.warn('Sport: pas de données', error);
-            loading.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.8rem;">Données sport indisponibles</span>';
-            return;
-        }
-
-        // === DERNIER MATCH ===
-        const lastDate = document.getElementById('sportLastDate');
-        const lastHome = document.getElementById('sportLastHome');
-        const lastAway = document.getElementById('sportLastAway');
-        const lastHomeScore = document.getElementById('sportLastHomeScore');
-        const lastAwayScore = document.getElementById('sportLastAwayScore');
-        const resultIndicator = document.getElementById('sportResultIndicator');
-        const resultLetter = document.getElementById('sportResultLetter');
-
-        if (data.last_match_date) {
-            const matchDate = new Date(data.last_match_date + 'T00:00:00');
-            lastDate.textContent = (data.last_match_matchday || '') + ' · ' + matchDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-            
-            lastHome.textContent = data.last_match_home_team;
-            lastAway.textContent = data.last_match_away_team;
-            lastHomeScore.textContent = data.last_match_home_score;
-            lastAwayScore.textContent = data.last_match_away_score;
-
-            if (data.last_match_is_home) {
-                lastHome.classList.add('is-fcmb');
-            } else {
-                lastAway.classList.add('is-fcmb');
+            // Supprimer tous les Service Workers
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (const reg of registrations) {
+                    await reg.unregister();
+                }
             }
 
-            const fcmbScore = data.last_match_is_home ? data.last_match_home_score : data.last_match_away_score;
-            const oppScore = data.last_match_is_home ? data.last_match_away_score : data.last_match_home_score;
-            
-            if (fcmbScore > oppScore) {
-                resultIndicator.classList.add('win');
-                resultLetter.textContent = 'V';
-            } else if (fcmbScore < oppScore) {
-                resultIndicator.classList.add('loss');
-                resultLetter.textContent = 'D';
-            } else {
-                resultIndicator.classList.add('draw');
-                resultLetter.textContent = 'N';
+            // Supprimer tous les caches
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                for (const name of cacheNames) {
+                    await caches.delete(name);
+                }
             }
+
+            // Nettoyer localStorage sauf préférences
+            localStorage.clear();
+
+            // Restaurer les préférences
+            Object.keys(saved).forEach(key => {
+                localStorage.setItem(key, saved[key]);
+            });
+
+            // Recharger
+            window.location.reload(true);
+        } catch (err) {
+            alert('Erreur lors de la mise à jour : ' + err.message + '\n\nEssayez de recharger manuellement.');
         }
-
-        // === PROCHAIN MATCH ===
-        const nextDate = document.getElementById('sportNextDate');
-        const nextHome = document.getElementById('sportNextHome');
-        const nextAway = document.getElementById('sportNextAway');
-        const nextTime = document.getElementById('sportNextTime');
-        const nextLabel = document.getElementById('sportNextLabel');
-
-        if (data.next_match_date) {
-            const nDate = new Date(data.next_match_date + 'T00:00:00');
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const matchDay = new Date(nDate);
-            matchDay.setHours(0, 0, 0, 0);
-            
-            const isToday = matchDay.getTime() === today.getTime();
-            const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const isTomorrow = matchDay.getTime() === tomorrow.getTime();
-
-            let dateStr = (data.next_match_matchday || '') + ' · ';
-            if (isToday) {
-                dateStr += '<span class="sport-today-badge">Aujourd\'hui !</span>';
-                nextLabel.innerHTML = '🔴 Ce soir !';
-            } else if (isTomorrow) {
-                dateStr += '<span class="sport-today-badge">Demain</span>';
-            } else {
-                dateStr += nDate.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
-            }
-            nextDate.innerHTML = dateStr;
-
-            nextHome.textContent = data.next_match_home_team;
-            nextAway.textContent = data.next_match_away_team;
-            nextTime.textContent = data.next_match_time || '';
-
-            if (data.next_match_is_home) {
-                nextHome.classList.add('is-fcmb');
-            } else {
-                nextAway.classList.add('is-fcmb');
-            }
-        }
-
-        // === CLASSEMENT ===
-        const posEl = document.getElementById('sportPosition');
-        const statsEl = document.getElementById('sportStats');
-
-        if (data.standing_position) {
-            posEl.textContent = data.standing_position + (data.standing_position === 1 ? 'er' : 'e');
-            posEl.classList.add(data.standing_position <= 3 ? 'top3' : 'mid');
-
-            const diff = data.standing_goals_for - data.standing_goals_against;
-            const diffStr = diff > 0 ? '+' + diff : diff.toString();
-            statsEl.innerHTML = '<strong>' + data.standing_points + ' pts</strong> · ' + data.standing_played + 'J · ' + data.standing_won + 'V ' + data.standing_drawn + 'N ' + data.standing_lost + 'D · ' + diffStr;
-        }
-
-        // === FORME ===
-        const formEl = document.getElementById('sportForm');
-        if (data.form) {
-            const formArr = data.form.split(',');
-            formEl.innerHTML = formArr.map(function(f) {
-                const letter = f.trim();
-                let cls = '';
-                if (letter === 'V') cls = 'win';
-                else if (letter === 'N') cls = 'draw';
-                else if (letter === 'D') cls = 'loss';
-                return '<div class="sport-form-dot ' + cls + '">' + letter + '</div>';
-            }).join('');
-        }
-
-        // === CLASSEMENT COMPLET ===
-        if (data.standings_json && data.standings_json.length > 0) {
-            window._standingsData = data.standings_json;
-        }
-
-        loading.style.display = 'none';
-        content.style.display = 'block';
-
-        console.log('⚽ Sport: données chargées');
-
-    } catch (err) {
-        console.error('Sport: erreur chargement', err);
-        loading.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.8rem;">Erreur de chargement</span>';
     }
-}
+    </script>
+	<!-- Bouton retour en haut -->
+<button class="scroll-top-btn" id="scrollTopBtn" aria-label="Retour en haut">
+    <span class="material-icons">keyboard_arrow_up</span>
+</button>
 
-// ============================================
-// MODAL CLASSEMENT R1 HERBELIN
-// ============================================
-function showStandingsModal() {
-    var overlay = document.getElementById('standingsModalOverlay');
-    var modal = document.getElementById('standingsModal');
-    var body = document.getElementById('standingsModalBody');
-    if (!overlay || !modal || !body) return;
-
-    overlay.classList.add('active');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-
-    var standings = window._standingsData;
-    if (!standings || standings.length === 0) {
-        body.innerHTML = '<div class="standings-loading" style="flex-direction: column; gap: 0.8rem; padding: 2rem 1rem;">' +
-            '<span class="material-icons" style="font-size: 2rem; color: #fbbf24;">emoji_events</span>' +
-            '<div style="text-align: center; font-size: 0.8rem; color: var(--text-secondary);">Le classement complet sera disponible<br>après la prochaine mise à jour du scraper.</div>' +
-            '<a href="https://www.sportcorico.com/championnat/bourgogne-franche-comte-regional-1-herbelin-3/phase-unique/poule-a" target="_blank" rel="noopener" style="color: #818cf8; font-size: 0.75rem; text-decoration: none;">Voir sur SportCorico →</a>' +
-            '</div>';
-        return;
-    }
-
-    // Trier par position
-    standings.sort(function(a, b) { return a.position - b.position; });
-    var totalTeams = standings.length;
-
-    var html = '<table class="standings-table">';
-    html += '<thead><tr><th>#</th><th>Équipe</th><th>Pts</th><th>J</th><th>V</th><th>N</th><th>D</th><th>BP</th><th>BC</th><th>Diff</th></tr></thead>';
-    html += '<tbody>';
-
-    standings.forEach(function(team) {
-        var isMontceau = team.team.toLowerCase().includes('montceau');
-        var isTop3 = team.position <= 3;
-        var isBottom3 = team.position > totalTeams - 3;
-        var posClass = isTop3 ? 'top3' : (isBottom3 ? 'bottom3' : '');
-        var diff = team.diff || (team.goalsFor - team.goalsAgainst);
-        var diffStr = diff > 0 ? '+' + diff : diff.toString();
-        var diffClass = diff > 0 ? 'standings-diff-pos' : (diff < 0 ? 'standings-diff-neg' : '');
-
-        // Raccourcir les noms longs
-        var displayName = team.team
-            .replace(/\s*\d+$/, '')
-            .replace('A.S.A.', 'ASA')
-            .replace('JURA DOLOIS FOOTBALL', 'Jura Dolois')
-            .replace('FAUVERNEY ROUVRES', 'Fauverney R.');
-
-        // Capitaliser proprement
-        displayName = displayName.split(' ').map(function(w) {
-            if (w.length <= 2) return w;
-            return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
-        }).join(' ');
-
-        html += '<tr class="' + (isMontceau ? 'is-montceau' : '') + '">';
-        html += '<td><span class="standings-pos ' + posClass + '">' + team.position + '</span></td>';
-        html += '<td>' + displayName + '</td>';
-        html += '<td class="standings-pts">' + team.points + '</td>';
-        html += '<td>' + team.played + '</td>';
-        html += '<td>' + team.won + '</td>';
-        html += '<td>' + team.drawn + '</td>';
-        html += '<td>' + team.lost + '</td>';
-        html += '<td>' + team.goalsFor + '</td>';
-        html += '<td>' + team.goalsAgainst + '</td>';
-        html += '<td class="' + diffClass + '">' + diffStr + '</td>';
-        html += '</tr>';
+<script>
+// Bouton retour en haut
+(function() {
+    const btn = document.getElementById('scrollTopBtn');
+    if (!btn) return;
+    
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 600) {
+            btn.classList.add('visible');
+        } else {
+            btn.classList.remove('visible');
+        }
     });
-
-    html += '</tbody></table>';
-    body.innerHTML = html;
-}
-
-function closeStandingsModal() {
-    var overlay = document.getElementById('standingsModalOverlay');
-    var modal = document.getElementById('standingsModal');
-    if (overlay) overlay.classList.remove('active');
-    if (modal) modal.classList.remove('active');
-    document.body.style.overflow = '';
-}
+    
+    btn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+})();
+</script>
+</body>
+</html>
