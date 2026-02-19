@@ -523,7 +523,7 @@ body {
 
 .news-ticker-header .material-icons {
     color: var(--danger);
-    font-size: 2rem;
+    font-size: 1.1rem;
 }
 
 @keyframes pulse {
