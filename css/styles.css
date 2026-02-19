@@ -786,10 +786,18 @@ h2, h3 {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: rgba(79, 70, 229, 0.12);
-    color: #6366f1;
+    background: rgba(99, 102, 241, 0.18);
+    color: #818cf8;
     font-size: 20px;
     flex-shrink: 0;
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.25);
+    transition: all 0.3s ease;
+}
+
+.tile:hover .tile-icon {
+    background: rgba(99, 102, 241, 0.28);
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.45);
+    transform: scale(1.05);
 }
 
 .tile-text {
