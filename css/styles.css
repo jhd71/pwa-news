@@ -599,39 +599,45 @@ body {
     transform: translateY(-2px);
 }
 
-/* Icône source (Material Icon) */
+/* Conteneur de l'icône dans le carrousel */
 .news-item-icon {
-    flex-shrink: 0;
     width: 48px;
     height: 48px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 14px;
-    /* On garde ta structure mais on prépare la transition */
     transition: all 0.3s ease;
 }
 
-/* --- MODE CLAIR --- */
+/* --- ADAPTATION AUX THÈMES --- */
+
+/* Mode Clair (sur fond blanc/gris très clair) */
 [data-theme="light"] .news-item-icon {
-    background: rgba(99, 102, 241, 0.12); /* Bleu un peu plus prononcé */
-    border: 1px solid rgba(99, 102, 241, 0.1);
+    /* Fond bleu indigo très doux */
+    background: rgba(79, 70, 229, 0.1); 
+    border: 1px solid rgba(79, 70, 229, 0.1);
 }
 
 [data-theme="light"] .news-item-icon .material-icons {
-    color: #4f46e5; /* Un indigo riche et lisible */
+    /* Icône indigo foncé pour un contraste maximal */
+    color: #4f46e5; 
     font-size: 1.6rem;
 }
 
-/* --- MODE SOMBRE --- */
+/* Mode Sombre (sur fond anthracite) */
 [data-theme="dark"] .news-item-icon {
-    background: rgba(165, 180, 252, 0.15); /* Bleu plus clair pour le contraste sombre */
+    /* Fond un peu plus présent pour détacher l'icône */
+    background: rgba(99, 102, 241, 0.2);
 }
 
 [data-theme="dark"] .news-item-icon .material-icons {
-    color: #818cf8; /* Un indigo pastel qui "pop" sur le gris foncé */
+    /* Icône bleu clair vibrant pour "popper" du fond sombre */
+    color: #818cf8; 
     font-size: 1.6rem;
-    filter: drop-shadow(0 0 4px rgba(99, 102, 241, 0.4)); /* Effet néon discret */
+    /* Micro-lueur pour l'aspect premium */
+    filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.5));
 }
 
 /* Contenu de l'article */
