@@ -1698,9 +1698,31 @@
             display: none;
         }
         
-        .sport-status-bar.success { display: flex; background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
-        .sport-status-bar.error { display: flex; background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
-        .sport-status-bar.info { display: flex; background: rgba(99, 102, 241, 0.15); color: var(--primary-light); border: 1px solid rgba(99, 102, 241, 0.3); }
+        .sport-status-bar.success { display: block; background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .sport-status-bar.error { display: block; background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .sport-status-bar.info { display: flex; align-items: center; gap: 0.5rem; background: rgba(99, 102, 241, 0.15); color: var(--primary-light); border: 1px solid rgba(99, 102, 241, 0.3); }
+        
+        .sport-scraper-logs {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .sport-scraper-log {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.5rem 0.65rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        
+        @media (max-width: 480px) {
+            .sport-scraper-logs {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
         
         .sport-last-update {
             font-size: 0.75rem;
@@ -4924,7 +4946,7 @@
 
                 if (result.success) {
                     statusEl.className = 'sport-status-bar success';
-                    const logsHtml = result.logs ? result.logs.map(l => '<div>' + l + '</div>').join('') : '';
+                    const logsHtml = result.logs ? '<div class="sport-scraper-logs">' + result.logs.map(l => '<div class="sport-scraper-log">' + l + '</div>').join('') + '</div>' : '';
                     statusEl.innerHTML = '<div><strong>✅ Scraping terminé !</strong></div>' + logsHtml;
                     // Recharger les données
                     setTimeout(sportLoadData, 1000);
