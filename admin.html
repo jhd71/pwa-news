@@ -4462,7 +4462,7 @@
                     .gt('views', 0);
                 
                 if (error) throw error;
-                showToast('✅ Vues des événements remises à 0');
+                showToast('Vues des événements remises à 0');
                 showEventViewsStats();
             } catch (err) {
                 console.error('Erreur reset vues événements:', err);
@@ -4488,7 +4488,7 @@
                     await supabaseClient.from('submission_view_logs').delete().gt('id', 0);
                 } catch (e) { console.log('Info: nettoyage logs vues optionnel:', e); }
                 
-                showToast('✅ Vues des infos remises à 0');
+                showToast('Vues des infos remises à 0');
                 showSubmissionViewsStats();
             } catch (err) {
                 console.error('Erreur reset vues infos:', err);
@@ -4900,7 +4900,7 @@
                     .gt('id', 0);
                 
                 if (error) throw error;
-                showToast('✅ Tous les likes ont été supprimés');
+                showToast('Tous les likes ont été supprimés');
                 showLikesStats();
             } catch (err) {
                 console.error('Erreur reset likes:', err);
