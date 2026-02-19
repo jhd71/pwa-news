@@ -526,7 +526,7 @@ body {
     font-size: 1.5rem;
     /* Ajouts pour un alignement parfait */
     vertical-align: middle;
-    margin-bottom: 3px; /* Ajuste à 1px ou 2px selon tes préférences */
+    margin-bottom: 2px; /* Ajuste à 1px ou 2px selon tes préférences */
 }
 
 @keyframes pulse {
