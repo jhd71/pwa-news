@@ -786,8 +786,7 @@ h2, h3 {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.05);
-    color: inherit;
+    background: rgba(79, 70, 229, 0.08);
     color: #4f46e5;
     font-size: 20px;
     flex-shrink: 0;
