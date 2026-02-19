@@ -4456,7 +4456,11 @@
             if (!confirm('⚠️ Remettre TOUTES les vues des événements à 0 ?')) return;
             
             try {
-                const { error } = await supabaseClient.rpc('reset_all_event_views');
+                const { error } = await supabaseClient
+                    .from('events')
+                    .update({ views: 0 })
+                    .gt('views', 0);
+                
                 if (error) throw error;
                 showToast('✅ Vues des événements remises à 0');
                 showEventViewsStats();
@@ -4471,11 +4475,18 @@
             if (!confirm('⚠️ Remettre TOUTES les vues des infos communauté à 0 ?')) return;
             
             try {
-                const { error } = await supabaseClient.rpc('reset_all_submission_views');
+                // Mettre toutes les vues à 0 directement (sans RPC)
+                const { error } = await supabaseClient
+                    .from('news_submissions')
+                    .update({ views: 0 })
+                    .gt('views', 0);
+                
                 if (error) throw error;
                 
-                // Aussi vider les logs de vues serveur
-                await supabaseClient.from('submission_view_logs').delete().neq('id', 0);
+                // Aussi vider les logs de vues serveur (non-bloquant)
+                try {
+                    await supabaseClient.from('submission_view_logs').delete().gt('id', 0);
+                } catch (e) { console.log('Info: nettoyage logs vues optionnel:', e); }
                 
                 showToast('✅ Vues des infos remises à 0');
                 showSubmissionViewsStats();
@@ -4492,12 +4503,18 @@
             if (!confirm('Êtes-vous VRAIMENT sûr ? Toutes les données historiques seront perdues !')) return;
             
             try {
-                const { error } = await supabaseClient.rpc('reset_all_visits');
+                // Supprimer toutes les entrées de daily_visits directement
+                const { error } = await supabaseClient
+                    .from('daily_visits')
+                    .delete()
+                    .gt('id', 0);
                 
                 if (error) throw error;
                 
-                // Aussi vider les logs visiteurs serveur
-                await supabaseClient.from('visitor_logs').delete().neq('id', 0);
+                // Aussi vider les logs visiteurs serveur (non-bloquant)
+                try {
+                    await supabaseClient.from('visitor_logs').delete().gt('id', 0);
+                } catch (e) { console.log('Info: nettoyage logs visiteurs optionnel:', e); }
                 
                 showToast('Toutes les statistiques de visites ont été supprimées');
                 
@@ -4783,8 +4800,10 @@
                 const { error } = await supabaseClient.rpc('reset_single_submission_view', { submission_id: id });
                 if (error) throw error;
                 
-                // Aussi vider les logs de vues serveur pour cet article
-                await supabaseClient.from('submission_view_logs').delete().eq('submission_id', id);
+                // Aussi vider les logs de vues serveur pour cet article (non-bloquant)
+                try {
+                    await supabaseClient.from('submission_view_logs').delete().eq('submission_id', id);
+                } catch (e) { console.log('Info: nettoyage log vue optionnel:', e); }
                 
                 showToast('Vue remise à 0');
                 showSubmissionViewsStats();
@@ -4878,7 +4897,7 @@
                 const { error } = await supabaseClient
                     .from('news_likes')
                     .delete()
-                    .neq('id', 0);
+                    .gt('id', 0);
                 
                 if (error) throw error;
                 showToast('✅ Tous les likes ont été supprimés');
