@@ -524,6 +524,11 @@ body {
 .news-ticker-header .material-icons {
     color: var(--danger);
     font-size: 1.1rem;
+    /* Optimise le rendu des icônes fines sur mobile */
+    -webkit-font-smoothing: antialiased;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
 }
 
 @keyframes pulse {
