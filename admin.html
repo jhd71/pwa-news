@@ -2227,10 +2227,29 @@
                     <div id="submissionViewsStats" style="margin-top:0.5rem;display:none;overflow:hidden;"></div>
                 </div>
                 
+                <!-- Section Likes Communauté -->
+                <div style="background:var(--bg-card);border:1px solid var(--glass-border);border-radius:12px;padding:1rem;overflow:hidden;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                        <h4 style="margin:0;color:#f472b6;">❤️ Likes des infos</h4>
+                        <span style="font-size:0.7rem;color:var(--text-muted);background:rgba(244,114,182,0.1);padding:0.25rem 0.5rem;border-radius:6px;">Table : news_likes</span>
+                    </div>
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">
+                        <button onclick="resetAllLikes()" class="action-btn" style="background:var(--warning);border-color:var(--warning);font-size:0.75rem;padding:0.5rem 0.75rem;">
+                            <span class="material-icons" style="font-size:1rem;">restart_alt</span>
+                            Reset tout
+                        </button>
+                        <button onclick="showLikesStats()" class="action-btn approve" style="font-size:0.75rem;padding:0.5rem 0.75rem;">
+                            <span class="material-icons" style="font-size:1rem;">favorite</span>
+                            Voir les stats
+                        </button>
+                    </div>
+                    <div id="likesStats" style="margin-top:0.5rem;display:none;overflow:hidden;"></div>
+                </div>
+                
                 <!-- Aide -->
                 <div style="background:rgba(99,102,241,0.1);border:1px solid var(--primary);border-radius:12px;padding:1rem;">
                     <p style="font-size:0.8rem;color:var(--text-secondary);">
-                        <strong>💡 Info :</strong> Les vues sont comptées 1x/jour/utilisateur.
+                        <strong>💡 Info :</strong> Les vues sont comptées 1x/jour/utilisateur. Les likes sont limités à 1 par utilisateur et par article (vérification serveur).
                     </p>
                 </div>
             </div>
@@ -4758,6 +4777,120 @@
                 if (error) throw error;
                 showToast('Vue remise à 0');
                 showSubmissionViewsStats();
+            } catch (err) {
+                showToast('Erreur: ' + err.message, true);
+            }
+        }
+        
+        // ============================================
+        // STATISTIQUES LIKES
+        // ============================================
+        
+        // Afficher les stats des likes par article
+        async function showLikesStats() {
+            const container = document.getElementById('likesStats');
+            container.style.display = 'block';
+            container.innerHTML = '<p style="color:var(--text-muted);">Chargement...</p>';
+            
+            try {
+                // Récupérer tous les likes
+                const { data: likes, error: likesError } = await supabaseClient
+                    .from('news_likes')
+                    .select('news_id, user_fingerprint');
+                
+                if (likesError) throw likesError;
+                
+                if (!likes || likes.length === 0) {
+                    container.innerHTML = '<p style="color:var(--text-muted);">Aucun like enregistré</p>';
+                    return;
+                }
+                
+                // Compter les likes par article
+                const likesPerArticle = {};
+                likes.forEach(l => {
+                    likesPerArticle[l.news_id] = (likesPerArticle[l.news_id] || 0) + 1;
+                });
+                
+                // Récupérer les titres des articles
+                const newsIds = Object.keys(likesPerArticle).map(Number);
+                const { data: articles, error: articlesError } = await supabaseClient
+                    .from('news_submissions')
+                    .select('id, title')
+                    .in('id', newsIds);
+                
+                if (articlesError) throw articlesError;
+                
+                // Créer un map id → titre
+                const titleMap = {};
+                if (articles) {
+                    articles.forEach(a => { titleMap[a.id] = a.title; });
+                }
+                
+                // Trier par nombre de likes décroissant
+                const sorted = newsIds
+                    .map(id => ({ id, title: titleMap[id] || `Article #${id}`, likes: likesPerArticle[id] }))
+                    .sort((a, b) => b.likes - a.likes);
+                
+                const totalLikes = likes.length;
+                
+                container.innerHTML = `
+                    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.5rem;margin-bottom:0.75rem;">
+                        <div style="background:rgba(244,114,182,0.1);border-radius:8px;padding:0.5rem;text-align:center;">
+                            <div style="font-size:1.2rem;font-weight:700;color:#f472b6;">${totalLikes}</div>
+                            <div style="font-size:0.65rem;color:var(--text-muted);">Total likes</div>
+                        </div>
+                        <div style="background:rgba(168,85,247,0.1);border-radius:8px;padding:0.5rem;text-align:center;">
+                            <div style="font-size:1.2rem;font-weight:700;color:#a855f7;">${sorted.length}</div>
+                            <div style="font-size:0.65rem;color:var(--text-muted);">Articles likés</div>
+                        </div>
+                    </div>
+                    <div style="max-height:250px;overflow-y:auto;overflow-x:hidden;">
+                        ${sorted.map(e => `
+                            <div style="display:flex;align-items:center;padding:0.4rem 0;border-bottom:1px solid var(--glass-border);gap:0.5rem;overflow:hidden;">
+                                <span style="font-size:0.75rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:calc(100% - 100px);">${escapeHtml(e.title)}</span>
+                                <span style="font-weight:600;color:#f472b6;flex-shrink:0;min-width:20px;text-align:right;">❤️ ${e.likes}</span>
+                                <button onclick="resetSingleArticleLikes(${e.id})" style="padding:0.2rem 0.4rem;background:var(--danger);border:none;border-radius:4px;color:white;font-size:0.65rem;cursor:pointer;flex-shrink:0;">Reset</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } catch (err) {
+                container.innerHTML = '<p style="color:var(--danger);">Erreur: ' + err.message + '</p>';
+            }
+        }
+        
+        // Reset tous les likes
+        async function resetAllLikes() {
+            if (!confirm('⚠️ Supprimer TOUS les likes de toutes les infos communauté ?\n\nCette action est IRRÉVERSIBLE !')) return;
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('news_likes')
+                    .delete()
+                    .neq('id', 0);
+                
+                if (error) throw error;
+                showToast('✅ Tous les likes ont été supprimés');
+                showLikesStats();
+            } catch (err) {
+                console.error('Erreur reset likes:', err);
+                showToast('❌ Erreur: ' + err.message, true);
+            }
+        }
+        
+        // Reset les likes d'un seul article
+        async function resetSingleArticleLikes(newsId) {
+            if (!confirm('Supprimer tous les likes de cet article ?')) return;
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('news_likes')
+                    .delete()
+                    .eq('news_id', newsId);
+                
+                if (error) throw error;
+                showToast('❤️ Likes de l\'article supprimés');
+                showLikesStats();
             } catch (err) {
                 showToast('Erreur: ' + err.message, true);
             }
