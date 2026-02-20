@@ -1073,27 +1073,28 @@ h2, h3 {
 }
 
 .cinema-film-poster {
-    width: 55px;
-    height: 80px;
+    width: 80px;
+    height: 115px;
     flex-shrink: 0;
-    border-radius: 6px;
+    border-radius: 8px;
     overflow: hidden;
     background: var(--bg-tertiary);
 }
 
-/* Affiche plus grande sur PC */
+/* Affiche plus grande sur tablette */
 @media (min-width: 768px) {
     .cinema-film-poster {
-        width: 75px;
-        height: 110px;
+        width: 100px;
+        height: 145px;
         border-radius: 8px;
     }
 }
 
+/* Affiche encore plus grande sur PC */
 @media (min-width: 1024px) {
     .cinema-film-poster {
-        width: 90px;
-        height: 130px;
+        width: 120px;
+        height: 175px;
     }
 }
 
