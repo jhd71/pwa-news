@@ -47,7 +47,7 @@
 }
 
 .weather-day.today .weather-day-label {
-    color: var(--primary-light);
+    color: #e5a134;
 }
 
 /* Conteneur icône */
@@ -91,7 +91,7 @@
 }
 
 [data-theme="light"] .weather-day.today .weather-day-label {
-    color: #6366f1;
+    color: #5b5ce5;
 }
 
 [data-theme="light"] .weather-day-temp {
