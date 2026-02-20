@@ -556,11 +556,11 @@ function switchCinema(cinemaKey) {
 function renderCinema(films, cinemaKey = 'capitole') {
     const container = document.getElementById('cinemaContent');
     const config = CONFIG.cinema[cinemaKey];
-    const hasMore = films.length > 4;
+    const visibleCount = 2; // Films visibles sans cliquer
     
     container.innerHTML = `
         <div class="cinema-films">
-            ${films.map((film, index) => `
+            ${films.slice(0, visibleCount).map((film, index) => `
                 <a href="${film.lien || config.siteUrl}" 
                    target="_blank" 
                    class="cinema-film fade-in" 
@@ -587,13 +587,75 @@ function renderCinema(films, cinemaKey = 'capitole') {
                 </a>
             `).join('')}
         </div>
-        ${hasMore ? `
-            <div class="cinema-scroll-hint">
-                <span class="material-icons">swipe</span>
-                Scroll pour voir plus
+        ${films.length > visibleCount ? `
+            <div class="cinema-films cinema-films-extra" id="cinemaFilmsExtra">
+                ${films.slice(visibleCount).map((film, index) => `
+                    <a href="${film.lien || config.siteUrl}" 
+                       target="_blank" 
+                       class="cinema-film fade-in">
+                        <div class="cinema-film-info">
+                            <div class="cinema-film-title">${film.titre}</div>
+                            <div class="cinema-film-meta">
+                                <span>🎭 ${film.genre || 'Film'}</span>
+                            </div>
+                            <div class="cinema-film-meta">
+                                <span>⏱️ ${film.duree || 'N/A'}</span>
+                            </div>
+                            <div class="cinema-film-times">
+                                ${(film.horaires || []).slice(0, 5).map(time => 
+                                    `<span class="cinema-time">${time}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                        ${film.affiche ? `
+                            <div class="cinema-film-poster">
+                                <img src="${film.affiche}" alt="${film.titre}" loading="lazy">
+                            </div>
+                        ` : ''}
+                    </a>
+                `).join('')}
             </div>
+            <button class="cinema-toggle-btn" id="cinemaToggleBtn" onclick="toggleCinemaFilms()">
+                <span class="material-icons" id="cinemaToggleIcon">expand_more</span>
+                <span id="cinemaToggleText">Voir les ${films.length - visibleCount} autres films</span>
+            </button>
         ` : ''}
     `;
+    
+    // Restaurer l'état si déjà ouvert
+    if (localStorage.getItem('cinemaExpanded') === 'true') {
+        const extra = document.getElementById('cinemaFilmsExtra');
+        const icon = document.getElementById('cinemaToggleIcon');
+        const text = document.getElementById('cinemaToggleText');
+        if (extra) {
+            extra.classList.add('expanded');
+            if (icon) icon.textContent = 'expand_less';
+            if (text) text.textContent = 'Moins de films';
+        }
+    }
+}
+
+function toggleCinemaFilms() {
+    const extra = document.getElementById('cinemaFilmsExtra');
+    const icon = document.getElementById('cinemaToggleIcon');
+    const text = document.getElementById('cinemaToggleText');
+    if (!extra) return;
+    
+    const isExpanded = extra.classList.contains('expanded');
+    
+    if (isExpanded) {
+        extra.classList.remove('expanded');
+        icon.textContent = 'expand_more';
+        // Recalculer le texte avec le nombre de films cachés
+        const count = extra.querySelectorAll('.cinema-film').length;
+        text.textContent = `Voir les ${count} autres films`;
+        localStorage.removeItem('cinemaExpanded');
+    } else {
+        extra.classList.add('expanded');
+        icon.textContent = 'expand_less';
+        text.textContent = 'Moins de films';
+        localStorage.setItem('cinemaExpanded', 'true');
+    }
 }
 
 function showCinemaFallback(cinemaKey = 'capitole') {
@@ -1926,6 +1988,7 @@ window.toggleSeeMore = toggleSeeMore;
 window.toggleComments = toggleComments;
 window.submitComment = submitComment;
 window.toggleLike = toggleLike;
+window.toggleCinemaFilms = toggleCinemaFilms;
 window.openImageModal = openImageModal;
 window.closeImageModal = closeImageModal;
 

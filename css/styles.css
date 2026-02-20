@@ -967,18 +967,18 @@ h2, h3 {
 
 .cinema-content {
     position: relative;
-    min-height: 280px;
+    min-height: 100px;
 }
 
 @media (min-width: 768px) {
     .cinema-content {
-        min-height: 350px;
+        min-height: 120px;
     }
 }
 
 @media (min-width: 1024px) {
     .cinema-content {
-        min-height: 420px;
+        min-height: 150px;
     }
 }
 
@@ -997,44 +997,54 @@ h2, h3 {
     color: var(--danger);
 }
 
-/* Films avec scroll limité */
+/* Films - liste sans scroll */
 .cinema-films {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    max-height: 300px;
-    overflow-y: auto;
-    padding-right: 0.5rem;
-    scroll-behavior: smooth;
 }
 
-.cinema-films::-webkit-scrollbar {
-    width: 4px;
+/* Films supplémentaires cachés par défaut */
+.cinema-films-extra {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
+    margin-top: 0;
 }
 
-.cinema-films::-webkit-scrollbar-track {
-    background: var(--bg-elevated);
-    border-radius: 10px;
+.cinema-films-extra.expanded {
+    max-height: 2000px;
+    opacity: 1;
+    margin-top: 0.75rem;
 }
 
-.cinema-films::-webkit-scrollbar-thumb {
-    background: var(--primary);
-    border-radius: 10px;
-}
-
-.cinema-scroll-hint {
+/* Bouton toggle programmation */
+.cinema-toggle-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
+    width: 100%;
+    padding: 0.6rem;
     margin-top: 0.75rem;
-    font-size: 0.75rem;
-    animation: bounce 2s ease infinite;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px dashed rgba(99, 102, 241, 0.3);
+    border-radius: 10px;
+    color: var(--primary-light, #818cf8);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
+.cinema-toggle-btn:hover {
+    background: rgba(99, 102, 241, 0.2);
+}
+
+.cinema-toggle-btn .material-icons {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
 }
 
 .cinema-film {
@@ -2619,10 +2629,6 @@ p,
         margin-right: auto;
     }
     
-    .cinema-films {
-        max-height: 350px;
-    }
-    
     .community-item-image {
         max-height: 220px;
     }
@@ -2675,10 +2681,6 @@ p,
         max-width: 1200px;
         margin-left: auto;
         margin-right: auto;
-    }
-    
-    .cinema-films {
-        max-height: 400px;
     }
     
     .news-ticker-section {
