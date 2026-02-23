@@ -92,12 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initServiceWorker();
     initInstallPrompt();
     initExtraTiles();
-    initToggleSections();
     initPushNotifications();
     initAgenda();
     initSport();
     initFontSizeSelector();
-    initDateBar();
     recordVisit();
 });
 
@@ -301,13 +299,7 @@ function renderNewsSlider(articles) {
             ${articles.map((article, index) => `
                 <div class="news-slide">
                     <a href="${article.link}" target="_blank" rel="noopener" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
-                        ${article.image ? `
-                            <div class="news-item-thumb">
-                                <img src="${article.image}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='${getSourceIcon(article.source)}';;this.parentElement.className='news-item-icon'">
-                            </div>
-                        ` : `
-                            <div class="news-item-icon">${getSourceIcon(article.source)}</div>
-                        `}
+                        <div class="news-item-icon">${getSourceIcon(article.source)}</div>
                         <div class="news-item-content">
                             <div class="news-item-title">${article.title}</div>
                             <div class="news-item-meta">
@@ -336,37 +328,47 @@ function initNewsNavigation() {
     const prevBtn = document.getElementById('tickerPrev');
     const nextBtn = document.getElementById('tickerNext');
     
-    prevBtn.addEventListener('click', () => {
+    // Éviter les listeners en double (appelé à chaque refresh)
+    const newPrev = prevBtn.cloneNode(true);
+    const newNext = nextBtn.cloneNode(true);
+    prevBtn.parentNode.replaceChild(newPrev, prevBtn);
+    nextBtn.parentNode.replaceChild(newNext, nextBtn);
+    
+    newPrev.addEventListener('click', () => {
         goToNewsSlide(newsCurrentSlide - 1);
         resetNewsAutoPlay();
     });
     
-    nextBtn.addEventListener('click', () => {
+    newNext.addEventListener('click', () => {
         goToNewsSlide(newsCurrentSlide + 1);
         resetNewsAutoPlay();
     });
     
-    // Swipe touch
+    // Swipe touch (utiliser un flag pour éviter les listeners en double)
     const container = document.getElementById('newsTicker');
-    let touchStartX = 0;
-    let touchEndX = 0;
-    
-    container.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-    
-    container.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        const diff = touchStartX - touchEndX;
-        if (Math.abs(diff) > 50) {
-            if (diff > 0) {
-                goToNewsSlide(newsCurrentSlide + 1);
-            } else {
-                goToNewsSlide(newsCurrentSlide - 1);
+    if (!container._touchInitialized) {
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        container.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        container.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    goToNewsSlide(newsCurrentSlide + 1);
+                } else {
+                    goToNewsSlide(newsCurrentSlide - 1);
+                }
+                resetNewsAutoPlay();
             }
-            resetNewsAutoPlay();
-        }
-    }, { passive: true });
+        }, { passive: true });
+        
+        container._touchInitialized = true;
+    }
 }
 
 function goToNewsSlide(index, smooth = true) {
@@ -439,18 +441,13 @@ function showNewsError(message) {
 
 function getSourceIcon(source) {
     const icons = {
-        'Le JSL': 'newspaper',
-        'Montceau News': 'location_city',
-        'Creusot Infos': 'factory',
-        "L'Informateur": 'article',
-        'France Bleu': 'mic'
+        'Le JSL': '📰',
+        'Montceau News': '🏙️',
+        'Creusot Infos': '🏭',
+        "L'Informateur": '📋',
+        'France Bleu': '🎙️'
     };
-    
-    // On récupère le nom de l'icône ou 'newspaper' par défaut
-    const iconName = icons[source] || 'newspaper';
-    
-    // On retourne le HTML complet de l'icône Material
-    return `<span class="material-icons">${iconName}</span>`;
+    return icons[source] || '📰';
 }
 
 function formatDate(dateString) {
@@ -479,7 +476,6 @@ function formatDate(dateString) {
 // ============================================
 // Variable pour stocker le cinéma actif
 let currentCinema = 'capitole';
-let currentFilms = [];
 
 async function initCinema() {
     await loadCinema(currentCinema);
@@ -563,170 +559,44 @@ function switchCinema(cinemaKey) {
 function renderCinema(films, cinemaKey = 'capitole') {
     const container = document.getElementById('cinemaContent');
     const config = CONFIG.cinema[cinemaKey];
-    const visibleCount = 2; // Films visibles sans cliquer
-    
-    // Stocker les films pour le modal
-    currentFilms = films;
-    
-    // Fonction helper pour générer le HTML d'un film
-    function filmCardHTML(film, index) {
-        return `
-            <div class="cinema-film fade-in" 
-                 onclick="openFilmModal(${index})"
-                 style="cursor:pointer">
-                <div class="cinema-film-info">
-                    <div class="cinema-film-title">${film.titre}</div>
-                    <div class="cinema-film-meta">
-                        <span>🎭 ${film.genre || 'Film'}</span>
-                    </div>
-                    <div class="cinema-film-meta">
-                        <span>⏱️ ${film.duree || 'N/A'}</span>
-                    </div>
-                    <div class="cinema-film-times">
-                        ${(film.horaires || []).slice(0, 5).map(time => 
-                            `<span class="cinema-time">${time}</span>`
-                        ).join('')}
-                    </div>
-                </div>
-                ${film.affiche ? `
-                    <div class="cinema-film-poster">
-                        <img src="${film.affiche}" alt="${film.titre}" loading="lazy">
-                    </div>
-                ` : ''}
-            </div>`;
-    }
+    const hasMore = films.length > 4;
     
     container.innerHTML = `
         <div class="cinema-films">
-            ${films.slice(0, visibleCount).map((film, index) => filmCardHTML(film, index)).join('')}
+            ${films.map((film, index) => `
+                <a href="${film.lien || config.siteUrl}" 
+                   target="_blank" 
+                   class="cinema-film fade-in" 
+                   style="animation-delay: ${index * 0.05}s">
+                    <div class="cinema-film-info">
+                        <div class="cinema-film-title">${film.titre}</div>
+                        <div class="cinema-film-meta">
+                            <span>🎭 ${film.genre || 'Film'}</span>
+                        </div>
+                        <div class="cinema-film-meta">
+                            <span>⏱️ ${film.duree || 'N/A'}</span>
+                        </div>
+                        <div class="cinema-film-times">
+                            ${(film.horaires || []).slice(0, 5).map(time => 
+                                `<span class="cinema-time">${time}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    ${film.affiche ? `
+                        <div class="cinema-film-poster">
+                            <img src="${film.affiche}" alt="${film.titre}" loading="lazy">
+                        </div>
+                    ` : ''}
+                </a>
+            `).join('')}
         </div>
-        ${films.length > visibleCount ? `
-            <div class="cinema-films cinema-films-extra" id="cinemaFilmsExtra">
-                ${films.slice(visibleCount).map((film, index) => filmCardHTML(film, index + visibleCount)).join('')}
+        ${hasMore ? `
+            <div class="cinema-scroll-hint">
+                <span class="material-icons">swipe</span>
+                Scroll pour voir plus
             </div>
-            <button class="cinema-toggle-btn" id="cinemaToggleBtn" onclick="toggleCinemaFilms()">
-                <span class="material-icons" id="cinemaToggleIcon">expand_more</span>
-                <span id="cinemaToggleText">Voir les ${films.length - visibleCount} autres films</span>
-            </button>
         ` : ''}
     `;
-    
-    // Restaurer l'état si déjà ouvert
-    if (localStorage.getItem('cinemaExpanded') === 'true') {
-        const extra = document.getElementById('cinemaFilmsExtra');
-        const icon = document.getElementById('cinemaToggleIcon');
-        const text = document.getElementById('cinemaToggleText');
-        if (extra) {
-            extra.classList.add('expanded');
-            if (icon) icon.textContent = 'expand_less';
-            if (text) text.textContent = 'Moins de films';
-        }
-    }
-}
-
-// ============================================
-// MODAL CINÉMA - Détails film + Bande-annonce
-// ============================================
-
-function openFilmModal(index) {
-    const film = currentFilms[index];
-    if (!film) return;
-    
-    const config = CONFIG.cinema[currentCinema];
-    
-    // Construire l'URL YouTube pour la bande-annonce
-    const youtubeSearchQuery = encodeURIComponent(film.titre + ' bande annonce officielle VF');
-    const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${youtubeSearchQuery}`;
-    
-    // Créer le modal s'il n'existe pas
-    let modal = document.getElementById('filmModal');
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'filmModal';
-        modal.className = 'film-modal';
-        document.body.appendChild(modal);
-    }
-    
-    modal.innerHTML = `
-        <div class="film-modal-backdrop" onclick="closeFilmModal()"></div>
-        <div class="film-modal-content">
-            <button class="film-modal-close" onclick="closeFilmModal()">
-                <span class="material-icons">close</span>
-            </button>
-            
-            <div class="film-modal-header">
-                ${film.affiche ? `
-                    <div class="film-modal-poster">
-                        <img src="${film.affiche}" alt="${film.titre}">
-                    </div>
-                ` : ''}
-                <div class="film-modal-info">
-                    <h2 class="film-modal-title">${film.titre}</h2>
-                    <div class="film-modal-details">
-                        <span class="film-modal-badge">🎭 ${film.genre || 'Film'}</span>
-                        ${film.duree ? `<span class="film-modal-badge">⏱️ ${film.duree}</span>` : ''}
-                    </div>
-                    <div class="film-modal-cinema">
-                        📍 ${config.nom} - ${config.ville}
-                    </div>
-                </div>
-            </div>
-            
-            <div class="film-modal-section">
-                <div class="film-modal-section-title">🕐 Séances aujourd'hui</div>
-                <div class="film-modal-times">
-                    ${(film.horaires || []).map(time => 
-                        `<span class="film-modal-time">${time}</span>`
-                    ).join('')}
-                </div>
-            </div>
-            
-            <div class="film-modal-actions">
-                <a href="${youtubeSearchUrl}" target="_blank" class="film-modal-btn film-modal-btn-trailer">
-                    <span class="material-icons">play_circle</span>
-                    Bande-annonce
-                </a>
-                <a href="${film.lien || config.siteUrl}" target="_blank" class="film-modal-btn film-modal-btn-site">
-                    <span class="material-icons">confirmation_number</span>
-                    Réserver
-                </a>
-            </div>
-        </div>
-    `;
-    
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeFilmModal() {
-    const modal = document.getElementById('filmModal');
-    if (modal) {
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
-    }
-}
-
-function toggleCinemaFilms() {
-    const extra = document.getElementById('cinemaFilmsExtra');
-    const icon = document.getElementById('cinemaToggleIcon');
-    const text = document.getElementById('cinemaToggleText');
-    if (!extra) return;
-    
-    const isExpanded = extra.classList.contains('expanded');
-    
-    if (isExpanded) {
-        extra.classList.remove('expanded');
-        icon.textContent = 'expand_more';
-        // Recalculer le texte avec le nombre de films cachés
-        const count = extra.querySelectorAll('.cinema-film').length;
-        text.textContent = `Voir les ${count} autres films`;
-        localStorage.removeItem('cinemaExpanded');
-    } else {
-        extra.classList.add('expanded');
-        icon.textContent = 'expand_less';
-        text.textContent = 'Moins de films';
-        localStorage.setItem('cinemaExpanded', 'true');
-    }
 }
 
 function showCinemaFallback(cinemaKey = 'capitole') {
@@ -918,35 +788,22 @@ async function initCommunity() {
             return;
         }
         
-        // *** COMPTEUR DE VUES AU CHARGEMENT (vérification serveur) ***
+        // *** COMPTEUR DE VUES AU CHARGEMENT ***
+        // Compter une vue pour chaque info affichée (1 fois par jour par info)
         const today = new Date().toISOString().split('T')[0];
-        const fingerprint = getUserFingerprint();
-        
         for (const item of data) {
-            try {
-                // Vérifier CÔTÉ SERVEUR si ce fingerprint a déjà vu cet article aujourd'hui
-                const { data: existingView } = await supabaseClient
-                    .from('submission_view_logs')
-                    .select('id')
-                    .eq('submission_id', item.id)
-                    .eq('fingerprint', fingerprint)
-                    .eq('view_date', today)
-                    .maybeSingle();
-                
-                if (!existingView) {
-                    // Pas encore vu → incrémenter
+            const viewedKey = `submission_viewed_${item.id}_${today}`;
+            if (!localStorage.getItem(viewedKey)) {
+                try {
                     const { error: viewError } = await supabaseClient.rpc('increment_submission_views', { submission_id: item.id });
                     if (!viewError) {
-                        // Enregistrer la vue côté serveur
-                        await supabaseClient
-                            .from('submission_view_logs')
-                            .insert({ submission_id: item.id, fingerprint: fingerprint, view_date: today });
-                        item.views = (item.views || 0) + 1;
-                        console.log(`👁️ Vue comptée pour info #${item.id} (vérifié serveur)`);
+                        localStorage.setItem(viewedKey, 'true');
+                        item.views = (item.views || 0) + 1; // Mettre à jour localement pour l'affichage
+                        console.log(`👁️ Vue comptée pour info #${item.id}`);
                     }
+                } catch (e) {
+                    console.log('⚠️ Erreur compteur vue:', e);
                 }
-            } catch (e) {
-                console.log('⚠️ Erreur compteur vue:', e);
             }
         }
         
@@ -996,20 +853,8 @@ async function initCommunity() {
         window.userLikes = userLikes;
         window.likeCounts = likeCounts;
         
-        // Masquer les articles épinglés pour les visiteurs qui les ont déjà vus
-        const filteredData = data.filter(item => {
-            if (item.pinned) {
-                const seenKey = `pinned_seen_${item.id}`;
-                if (localStorage.getItem(seenKey)) {
-                    return false; // Déjà vu, on ne l'affiche pas
-                }
-                localStorage.setItem(seenKey, 'true'); // Marquer comme vu
-            }
-            return true;
-        });
-
         // Afficher les infos
-        contentEl.innerHTML = filteredData.map(item => {
+        contentEl.innerHTML = data.map(item => {
             const commentCount = commentCounts[item.id] || 0;
             return `
             <div class="community-item ${item.pinned ? 'pinned' : ''}" data-id="${item.id}">
@@ -1024,7 +869,7 @@ async function initCommunity() {
                 
                 <div class="community-item-content">
                     <div class="community-item-title">${escapeHtml(item.title)}</div>
-                    ${item.image_url ? `<div class="community-image-wrapper"><div class="community-image-inner" onclick="event.stopPropagation(); openImageModal('${item.image_url}', '${(item.source_name || '').replace(/'/g, "\\'")}')"><img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image"><div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>${item.source_name ? `<div class="community-image-credit">📷 ${escapeHtml(item.source_name)}</div>` : ''}</div></div>` : ''}
+                    ${item.image_url ? `<div class="community-image-wrapper"><div class="community-image-inner" onclick="event.stopPropagation(); openImageModal('${item.image_url.replace(/'/g, "\\'")}', '${(item.source_name || '').replace(/'/g, "\\'")}')"><img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image" onerror="this.parentElement.parentElement.style.display='none'"><div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>${item.source_name ? `<div class="community-image-credit">📷 ${escapeHtml(item.source_name)}</div>` : ''}</div></div>` : ''}
                     <div class="community-item-desc" id="desc-${item.id}">${linkifyContent(item.content)}</div>
                     <button class="see-more-btn" id="see-more-${item.id}" onclick="event.stopPropagation(); toggleSeeMore(${item.id})">
                         <span>Voir plus</span>
@@ -1317,93 +1162,13 @@ async function submitComment(event, newsId) {
 // ============================================
 // GESTION DES LIKES
 // ============================================
-
-// Fingerprint navigateur déterministe (survit au nettoyage localStorage)
-function generateBrowserFingerprint() {
-    try {
-        const components = [];
-        
-        // 1. Canvas fingerprint (unique par GPU/navigateur)
-        const canvas = document.createElement('canvas');
-        canvas.width = 200;
-        canvas.height = 50;
-        const ctx = canvas.getContext('2d');
-        ctx.textBaseline = 'top';
-        ctx.font = '14px Arial';
-        ctx.fillStyle = '#f60';
-        ctx.fillRect(100, 1, 62, 20);
-        ctx.fillStyle = '#069';
-        ctx.fillText('ActuMedia.fp', 2, 15);
-        ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
-        ctx.fillText('ActuMedia.fp', 4, 17);
-        components.push(canvas.toDataURL());
-        
-        // 2. Infos écran
-        components.push(screen.width + 'x' + screen.height);
-        components.push(screen.colorDepth);
-        components.push(window.devicePixelRatio || 1);
-        
-        // 3. Timezone
-        components.push(Intl.DateTimeFormat().resolvedOptions().timeZone);
-        components.push(new Date().getTimezoneOffset());
-        
-        // 4. Langue et plateforme
-        components.push(navigator.language);
-        components.push(navigator.platform);
-        components.push(navigator.hardwareConcurrency || 'unknown');
-        
-        // 5. Touch
-        components.push(navigator.maxTouchPoints || 0);
-        
-        // Générer un hash déterministe
-        const raw = components.join('|||');
-        let hash = 0;
-        for (let i = 0; i < raw.length; i++) {
-            const char = raw.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash;
-        }
-        
-        return 'bfp_' + Math.abs(hash).toString(36);
-    } catch (e) {
-        console.log('⚠️ Fingerprint canvas impossible, fallback');
-        return null;
-    }
-}
-
 function getUserFingerprint() {
-    // 1. Essayer le cookie (survit au nettoyage localStorage)
-    const cookieFp = getCookie('user_fp');
-    if (cookieFp) {
-        localStorage.setItem('user_fingerprint', cookieFp);
-        return cookieFp;
-    }
-    
-    // 2. Essayer localStorage
     let fp = localStorage.getItem('user_fingerprint');
-    
-    // 3. Si pas de fingerprint ou ancien format → en générer un nouveau
-    if (!fp || fp.startsWith('fp_')) {
-        const browserFp = generateBrowserFingerprint();
-        fp = browserFp || ('fp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
+    if (!fp) {
+        fp = 'fp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('user_fingerprint', fp);
     }
-    
-    // Sauvegarder partout
-    localStorage.setItem('user_fingerprint', fp);
-    setCookie('user_fp', fp, 365);
-    
     return fp;
-}
-
-// Utilitaires cookies
-function setCookie(name, value, days) {
-    const expires = new Date(Date.now() + days * 864e5).toUTCString();
-    document.cookie = name + '=' + encodeURIComponent(value) + ';expires=' + expires + ';path=/;SameSite=Lax';
-}
-
-function getCookie(name) {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    return match ? decodeURIComponent(match[2]) : null;
 }
 
 async function toggleLike(newsId, btn) {
@@ -1411,21 +1176,14 @@ async function toggleLike(newsId, btn) {
     if (!supabaseClient) return;
     
     const userFingerprint = getUserFingerprint();
+    const isLiked = btn.classList.contains('liked');
     const countEl = document.getElementById(`like-count-${newsId}`);
     const icon = btn.querySelector('.material-icons');
     let currentCount = parseInt(countEl.textContent) || 0;
     
     try {
-        // Vérifier côté SERVEUR si ce fingerprint a déjà liké
-        const { data: existingLike } = await supabaseClient
-            .from('news_likes')
-            .select('id')
-            .eq('news_id', newsId)
-            .eq('user_fingerprint', userFingerprint)
-            .maybeSingle();
-        
-        if (existingLike) {
-            // Le like existe → le retirer
+        if (isLiked) {
+            // Retirer le like
             const { error } = await supabaseClient
                 .from('news_likes')
                 .delete()
@@ -1437,10 +1195,12 @@ async function toggleLike(newsId, btn) {
             btn.classList.remove('liked');
             icon.textContent = 'favorite_border';
             countEl.textContent = Math.max(0, currentCount - 1);
-            window.userLikes = (window.userLikes || []).filter(id => id !== newsId);
+            
+            // Mettre à jour le tableau local
+            window.userLikes = window.userLikes.filter(id => id !== newsId);
             
         } else {
-            // Pas de like → en ajouter un
+            // Ajouter le like
             const { error } = await supabaseClient
                 .from('news_likes')
                 .insert([{
@@ -1453,10 +1213,13 @@ async function toggleLike(newsId, btn) {
             btn.classList.add('liked');
             icon.textContent = 'favorite';
             countEl.textContent = currentCount + 1;
-            (window.userLikes || []).push(newsId);
+            
+            // Mettre à jour le tableau local
+            window.userLikes.push(newsId);
         }
     } catch (error) {
         console.error('Erreur like:', error);
+        // En cas d'erreur (ex: déjà liké), on ne fait rien
     }
 }
 
@@ -1583,57 +1346,6 @@ function initExtraTiles() {
 
 // Exposer la fonction globalement
 window.toggleExtraTiles = toggleExtraTiles;
-
-// === TOGGLE GÉNÉRIQUE POUR TOUTES LES SECTIONS ===
-function toggleSection(extraId, btnId, iconId, textId, openLabel, closeLabel, storageKey) {
-    const extra = document.getElementById(extraId);
-    const btn = document.getElementById(btnId);
-    const icon = document.getElementById(iconId);
-    const text = document.getElementById(textId);
-    
-    if (!extra || !btn) return;
-    
-    const isExpanded = extra.classList.contains('show');
-    
-    if (isExpanded) {
-        extra.classList.remove('show');
-        btn.classList.remove('expanded');
-        icon.textContent = 'expand_more';
-        text.textContent = openLabel;
-        localStorage.setItem(storageKey, 'false');
-    } else {
-        extra.classList.add('show');
-        btn.classList.add('expanded');
-        icon.textContent = 'expand_less';
-        text.textContent = closeLabel;
-        localStorage.setItem(storageKey, 'true');
-    }
-}
-
-// Restaurer l'état des sections au chargement
-function initToggleSections() {
-    const sections = [
-        { storageKey: 'mediaRegionalExpanded', extraId: 'mediaRegionalExtra', btnId: 'mediaRegionalBtn', iconId: 'mediaRegionalIcon', textId: 'mediaRegionalText', closeLabel: 'Moins de médias' },
-        { storageKey: 'mediaNationalExpanded', extraId: 'mediaNationalExtra', btnId: 'mediaNationalBtn', iconId: 'mediaNationalIcon', textId: 'mediaNationalText', closeLabel: 'Moins de médias' }
-    ];
-    
-    sections.forEach(function(s) {
-        if (localStorage.getItem(s.storageKey) === 'true') {
-            const extra = document.getElementById(s.extraId);
-            const btn = document.getElementById(s.btnId);
-            const icon = document.getElementById(s.iconId);
-            const text = document.getElementById(s.textId);
-            if (extra && btn) {
-                extra.classList.add('show');
-                btn.classList.add('expanded');
-                icon.textContent = 'expand_less';
-                text.textContent = s.closeLabel;
-            }
-        }
-    });
-}
-
-window.toggleSection = toggleSection;
 
 // ============================================
 // NOTIFICATIONS PUSH
@@ -2059,135 +1771,40 @@ window.toggleSeeMore = toggleSeeMore;
 window.toggleComments = toggleComments;
 window.submitComment = submitComment;
 window.toggleLike = toggleLike;
-window.toggleCinemaFilms = toggleCinemaFilms;
-window.openFilmModal = openFilmModal;
-window.closeFilmModal = closeFilmModal;
 window.openImageModal = openImageModal;
 window.closeImageModal = closeImageModal;
 
 // ============================================
-// COMPTEUR DE VISITES (vérification serveur)
+// COMPTEUR DE VISITES
 // ============================================
 async function recordVisit() {
     try {
         const supabase = getSupabaseClient();
         if (!supabase) return;
         
-        const fingerprint = getUserFingerprint();
+        // Clé unique par jour pour ce visiteur
         const today = new Date().toISOString().split('T')[0];
+        const visitorKey = `visitor_${today}`;
         
-        // Vérifier CÔTÉ SERVEUR si ce fingerprint a déjà visité aujourd'hui
-        const { data: existing } = await supabase
-            .from('visitor_logs')
-            .select('id')
-            .eq('fingerprint', fingerprint)
-            .eq('visit_date', today)
-            .maybeSingle();
+        // Vérifier si c'est un nouveau visiteur aujourd'hui
+        const isNewVisitor = !localStorage.getItem(visitorKey);
         
-        const isNewVisitor = !existing;
-        
+        // Enregistrer la visite
         const { error } = await supabase.rpc('record_visit', { is_new_visitor: isNewVisitor });
         
         if (!error) {
+            // Marquer comme déjà visité aujourd'hui
             if (isNewVisitor) {
-                await supabase
-                    .from('visitor_logs')
-                    .insert({ fingerprint: fingerprint, visit_date: today });
-                console.log('👤 Nouveau visiteur enregistré (vérifié serveur)');
+                localStorage.setItem(visitorKey, 'true');
+                console.log('👤 Nouveau visiteur enregistré');
             } else {
-                console.log('📄 Page vue enregistrée (visiteur déjà connu)');
+                console.log('📄 Page vue enregistrée');
             }
         }
     } catch (err) {
         console.error('Erreur compteur visites:', err);
     }
 }
-
-// ============================================
-// BARRE DATE & SAINT DU JOUR
-// ============================================
-function initDateBar() {
-    const dayEl = document.getElementById('dateBarDay');
-    const saintEl = document.getElementById('dateBarSaint');
-    if (!dayEl || !saintEl) return;
-
-    // Saints du jour (index 0 = 1er janvier)
-    const saints = [
-        // Janvier
-        "Marie","Basile","Geneviève","Odilon","Édouard","Melchior","Raymond","Lucien","Alix","Guillaume",
-        "Paulin","Tatiana","Yvette","Nina","Rémi","Marcel","Roseline","Prisca","Marius","Sébastien",
-        "Agnès","Vincent","Barnard","François de Sales","Conv. de Paul","Paule","Angèle","Thomas d'Aquin","Gildas","Martine","Marcelle",
-        // Février
-        "Ella","Présentation","Blaise","Véronique","Agathe","Gaston","Eugénie","Jacqueline","Apolline","Arnaud",
-        "N-D de Lourdes","Félix","Béatrice","Valentin","Claude","Julienne","Alexis","Bernadette","Gabin","Aimée",
-        "Damien","Isabelle","Lazare","Modeste","Roméo","Nestor","Honorine","Romain",
-        // Mars
-        "Aubin","Charles le Bon","Guénolé","Casimir","Olive","Colette","Félicité","Jean de Dieu","Françoise","Vivien",
-        "Rosine","Justine","Rodrigue","Mathilde","Louise","Bénédicte","Patrick","Cyrille","Joseph","Herbert",
-        "Clémence","Léa","Victorien","Cath. de Suède","Humbert","Larissa","Habib","Gontran","Gwladys","Amédée","Benjamin",
-        // Avril
-        "Hugues","Sandrine","Richard","Isidore","Irène","Marcellin","J-B de la Salle","Julie","Gautier","Fulbert",
-        "Stanislas","Jules","Ida","Maxime","Paterne","Benoît-Joseph","Anicet","Parfait","Emma","Odette",
-        "Anselme","Alexandre","Georges","Fidèle","Marc","Alida","Zita","Valérie","Cath. de Sienne","Robert",
-        // Mai
-        "Jérémie","Boris","Philippe","Sylvain","Judith","Prudence","Gisèle","Désiré","Pacôme","Solange",
-        "Estelle","Achille","Rolande","Matthias","Denise","Honoré","Pascal","Éric","Yves","Bernardin",
-        "Constantin","Émile","Didier","Donatien","Sophie","Bérenger","Augustin","Germain","Aymar","Ferdinand","Visit. de Marie",
-        // Juin
-        "Justin","Blandine","Kévin","Clotilde","Igor","Norbert","Gilbert","Médard","Diane","Landry",
-        "Barnabé","Guy","Antoine de Padoue","Élisée","Germaine","J-F Régis","Hervé","Léonce","Romuald","Silvère",
-        "Rodolphe","Alban","Audrey","Jean-Baptiste","Prosper","Anthelme","Fernand","Irénée","Pierre et Paul","Martial",
-        // Juillet
-        "Thierry","Martinien","Thomas","Florent","Antoine","Mariette","Raoul","Thibaut","Amandine","Ulrich",
-        "Benoît","Olivier","Henri et Joël","Fête nationale","Donald","N-D du Carmel","Charlotte","Frédéric","Arsène","Marina",
-        "Victor","Marie-Madeleine","Brigitte","Christine","Jacques","Anne et Joachim","Nathalie","Samson","Marthe","Juliette","Ignace de Loyola",
-        // Août
-        "Alphonse","Julien Eymard","Lydie","Jean-M Vianney","Abel","Transfiguration","Gaëtan","Dominique","Amour","Laurent",
-        "Claire","Clarisse","Hippolyte","Evrard","Assomption","Armel","Hyacinthe","Hélène","Jean Eudes","Bernard",
-        "Christophe","Fabrice","Rose de Lima","Barthélemy","Louis","Natacha","Monique","Augustin","Sabine","Fiacre","Aristide",
-        // Septembre
-        "Gilles","Ingrid","Grégoire","Rosalie","Raïssa","Bertrand","Reine","Nativité","Alain","Inès",
-        "Adelphe","Apollinaire","Aimé","Materne","Roland","Édith","Renaud","Nadège","Émilie","Davy",
-        "Matthieu","Maurice","Constance","Thècle","Hermann","Côme et Damien","Vinc. de Paul","Venceslas","Michel","Jérôme",
-        // Octobre
-        "Thérèse","Léger","Gérard","François d'Assise","Fleur","Bruno","Serge","Pélagie","Denis","Ghislain",
-        "Firmin","Wilfrid","Géraud","Juste","Thérèse d'Avila","Edwige","Baudouin","Luc","René","Adeline",
-        "Céline","Élodie","Jean de Capistran","Florentin","Crépin","Dimitri","Émeline","Simon et Jude","Narcisse","Bienvenu","Quentin",
-        // Novembre
-        "Toussaint","Défunts","Hubert","Charles","Sylvie","Bertille","Carine","Geoffrey","Théodore","Léon",
-        "Martin","Christian","Brice","Sidoine","Albert","Marguerite","Élisabeth","Aude","Tanguy","Edmond",
-        "Présent. de Marie","Cécile","Clément","Flora","Catherine","Delphine","Sévrin","Jacq. de la Marche","Saturnin","André",
-        // Décembre
-        "Florence","Viviane","François Xavier","Barbara","Gérald","Nicolas","Ambroise","Immac. Conception","Pierre Fourier","Romaric",
-        "Daniel","Jeanne de Chantal","Lucie","Odile","Ninon","Alice","Gaël","Gatien","Urbain","Abraham",
-        "Pierre Canisius","Françoise-Xavière","Armand","Adèle","Noël","Étienne","Jean","Innocents","David","Roger","Sylvestre"
-    ];
-
-    function updateDateBar() {
-        const now = new Date();
-        const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-        const mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-        
-        const heure = now.getHours().toString().padStart(2, '0');
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        const jour = jours[now.getDay()];
-        const numero = now.getDate();
-        const nomMois = mois[now.getMonth()];
-        
-        dayEl.textContent = `${jour} ${numero} ${nomMois} · ${heure}h${minutes}`;
-        
-        // Saint du jour
-        const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000) - 1;
-        const saint = saints[dayOfYear] || '';
-        if (saint) {
-            saintEl.textContent = `Bonne fête aux ${saint} !`;
-        }
-    }
-
-    updateDateBar();
-    setInterval(updateDateBar, 30000); // Mise à jour toutes les 30 secondes
-}
-
 // ============================================
 // SECTION SPORT - FC MONTCEAU BOURGOGNE
 // ============================================
