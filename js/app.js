@@ -473,6 +473,7 @@ function formatDate(dateString) {
 // ============================================
 // Variable pour stocker le cinéma actif
 let currentCinema = 'capitole';
+let currentFilms = [];
 
 async function initCinema() {
     await loadCinema(currentCinema);
@@ -558,62 +559,44 @@ function renderCinema(films, cinemaKey = 'capitole') {
     const config = CONFIG.cinema[cinemaKey];
     const visibleCount = 2; // Films visibles sans cliquer
     
+    // Stocker les films pour le modal
+    currentFilms = films;
+    
+    // Fonction helper pour générer le HTML d'un film
+    function filmCardHTML(film, index) {
+        return `
+            <div class="cinema-film fade-in" 
+                 onclick="openFilmModal(${index})"
+                 style="cursor:pointer">
+                <div class="cinema-film-info">
+                    <div class="cinema-film-title">${film.titre}</div>
+                    <div class="cinema-film-meta">
+                        <span>🎭 ${film.genre || 'Film'}</span>
+                    </div>
+                    <div class="cinema-film-meta">
+                        <span>⏱️ ${film.duree || 'N/A'}</span>
+                    </div>
+                    <div class="cinema-film-times">
+                        ${(film.horaires || []).slice(0, 5).map(time => 
+                            `<span class="cinema-time">${time}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+                ${film.affiche ? `
+                    <div class="cinema-film-poster">
+                        <img src="${film.affiche}" alt="${film.titre}" loading="lazy">
+                    </div>
+                ` : ''}
+            </div>`;
+    }
+    
     container.innerHTML = `
         <div class="cinema-films">
-            ${films.slice(0, visibleCount).map((film, index) => `
-                <a href="${film.lien || config.siteUrl}" 
-                   target="_blank" 
-                   class="cinema-film fade-in" 
-                   style="animation-delay: ${index * 0.05}s">
-                    <div class="cinema-film-info">
-                        <div class="cinema-film-title">${film.titre}</div>
-                        <div class="cinema-film-meta">
-                            <span>🎭 ${film.genre || 'Film'}</span>
-                        </div>
-                        <div class="cinema-film-meta">
-                            <span>⏱️ ${film.duree || 'N/A'}</span>
-                        </div>
-                        <div class="cinema-film-times">
-                            ${(film.horaires || []).slice(0, 5).map(time => 
-                                `<span class="cinema-time">${time}</span>`
-                            ).join('')}
-                        </div>
-                    </div>
-                    ${film.affiche ? `
-                        <div class="cinema-film-poster">
-                            <img src="${film.affiche}" alt="${film.titre}" loading="lazy">
-                        </div>
-                    ` : ''}
-                </a>
-            `).join('')}
+            ${films.slice(0, visibleCount).map((film, index) => filmCardHTML(film, index)).join('')}
         </div>
         ${films.length > visibleCount ? `
             <div class="cinema-films cinema-films-extra" id="cinemaFilmsExtra">
-                ${films.slice(visibleCount).map((film, index) => `
-                    <a href="${film.lien || config.siteUrl}" 
-                       target="_blank" 
-                       class="cinema-film fade-in">
-                        <div class="cinema-film-info">
-                            <div class="cinema-film-title">${film.titre}</div>
-                            <div class="cinema-film-meta">
-                                <span>🎭 ${film.genre || 'Film'}</span>
-                            </div>
-                            <div class="cinema-film-meta">
-                                <span>⏱️ ${film.duree || 'N/A'}</span>
-                            </div>
-                            <div class="cinema-film-times">
-                                ${(film.horaires || []).slice(0, 5).map(time => 
-                                    `<span class="cinema-time">${time}</span>`
-                                ).join('')}
-                            </div>
-                        </div>
-                        ${film.affiche ? `
-                            <div class="cinema-film-poster">
-                                <img src="${film.affiche}" alt="${film.titre}" loading="lazy">
-                            </div>
-                        ` : ''}
-                    </a>
-                `).join('')}
+                ${films.slice(visibleCount).map((film, index) => filmCardHTML(film, index + visibleCount)).join('')}
             </div>
             <button class="cinema-toggle-btn" id="cinemaToggleBtn" onclick="toggleCinemaFilms()">
                 <span class="material-icons" id="cinemaToggleIcon">expand_more</span>
@@ -632,6 +615,88 @@ function renderCinema(films, cinemaKey = 'capitole') {
             if (icon) icon.textContent = 'expand_less';
             if (text) text.textContent = 'Moins de films';
         }
+    }
+}
+
+// ============================================
+// MODAL CINÉMA - Détails film + Bande-annonce
+// ============================================
+
+function openFilmModal(index) {
+    const film = currentFilms[index];
+    if (!film) return;
+    
+    const config = CONFIG.cinema[currentCinema];
+    
+    // Construire l'URL YouTube pour la bande-annonce
+    const youtubeSearchQuery = encodeURIComponent(film.titre + ' bande annonce officielle VF');
+    const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${youtubeSearchQuery}`;
+    
+    // Créer le modal s'il n'existe pas
+    let modal = document.getElementById('filmModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'filmModal';
+        modal.className = 'film-modal';
+        document.body.appendChild(modal);
+    }
+    
+    modal.innerHTML = `
+        <div class="film-modal-backdrop" onclick="closeFilmModal()"></div>
+        <div class="film-modal-content">
+            <button class="film-modal-close" onclick="closeFilmModal()">
+                <span class="material-icons">close</span>
+            </button>
+            
+            <div class="film-modal-header">
+                ${film.affiche ? `
+                    <div class="film-modal-poster">
+                        <img src="${film.affiche}" alt="${film.titre}">
+                    </div>
+                ` : ''}
+                <div class="film-modal-info">
+                    <h2 class="film-modal-title">${film.titre}</h2>
+                    <div class="film-modal-details">
+                        <span class="film-modal-badge">🎭 ${film.genre || 'Film'}</span>
+                        ${film.duree ? `<span class="film-modal-badge">⏱️ ${film.duree}</span>` : ''}
+                    </div>
+                    <div class="film-modal-cinema">
+                        📍 ${config.nom} - ${config.ville}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="film-modal-section">
+                <div class="film-modal-section-title">🕐 Séances aujourd'hui</div>
+                <div class="film-modal-times">
+                    ${(film.horaires || []).map(time => 
+                        `<span class="film-modal-time">${time}</span>`
+                    ).join('')}
+                </div>
+            </div>
+            
+            <div class="film-modal-actions">
+                <a href="${youtubeSearchUrl}" target="_blank" class="film-modal-btn film-modal-btn-trailer">
+                    <span class="material-icons">play_circle</span>
+                    Bande-annonce
+                </a>
+                <a href="${film.lien || config.siteUrl}" target="_blank" class="film-modal-btn film-modal-btn-site">
+                    <span class="material-icons">confirmation_number</span>
+                    Réserver
+                </a>
+            </div>
+        </div>
+    `;
+    
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeFilmModal() {
+    const modal = document.getElementById('filmModal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
     }
 }
 
@@ -1989,6 +2054,8 @@ window.toggleComments = toggleComments;
 window.submitComment = submitComment;
 window.toggleLike = toggleLike;
 window.toggleCinemaFilms = toggleCinemaFilms;
+window.openFilmModal = openFilmModal;
+window.closeFilmModal = closeFilmModal;
 window.openImageModal = openImageModal;
 window.closeImageModal = closeImageModal;
 
