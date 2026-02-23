@@ -299,7 +299,6 @@ function renderNewsSlider(articles) {
             ${articles.map((article, index) => `
                 <div class="news-slide">
                     <a href="${article.link}" target="_blank" rel="noopener" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
-                        <div class="news-item-icon">${getSourceIcon(article.source)}</div>
                         <div class="news-item-content">
                             <div class="news-item-title">${article.title}</div>
                             <div class="news-item-meta">
@@ -437,18 +436,6 @@ function showNewsError(message) {
             ${message}
         </div>
     `;
-}
-
-function getSourceIcon(source) {
-    const colors = {
-        'Le JSL': { letter: 'J', bg: 'rgba(59,130,246,0.15)', color: '#3b82f6' },
-        'Montceau News': { letter: 'M', bg: 'rgba(168,85,247,0.15)', color: '#a855f7' },
-        'Creusot Infos': { letter: 'C', bg: 'rgba(34,197,94,0.15)', color: '#22c55e' },
-        "L'Informateur": { letter: 'I', bg: 'rgba(249,115,22,0.15)', color: '#f97316' },
-        'France Bleu': { letter: 'F', bg: 'rgba(37,99,235,0.15)', color: '#2563eb' }
-    };
-    const src = colors[source] || { letter: source.charAt(0).toUpperCase(), bg: 'rgba(99,102,241,0.15)', color: '#6366f1' };
-    return `<span style="font-weight:800;font-size:1.3rem;color:${src.color};background:${src.bg};width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:12px;">${src.letter}</span>`;
 }
 
 function formatDate(dateString) {
