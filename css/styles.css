@@ -1283,7 +1283,8 @@ h2, h3 {
     position: absolute;
     top: 0.6rem;
     right: 0.6rem;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
     width: 36px;
@@ -1305,6 +1306,7 @@ h2, h3 {
     display: flex;
     gap: 1rem;
     margin-bottom: 1rem;
+    padding-right: 2rem;
 }
 
 .film-modal-poster {
