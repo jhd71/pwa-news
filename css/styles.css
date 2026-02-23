@@ -631,6 +631,23 @@ body {
     font-size: 1.6rem;
 }
 
+/* Miniature image article */
+.news-item-thumb {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(99, 102, 241, 0.15);
+}
+
+.news-item-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
 /* Contenu de l'article */
 .news-item-content {
     display: flex;
@@ -1229,6 +1246,221 @@ h2, h3 {
     margin-bottom: 12px;
     padding-left: 0.75rem;
     border-left: 3px solid var(--primary);
+}
+
+/* ============================================
+   MODAL CINÉMA - Bande-annonce
+   ============================================ */
+.film-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+
+.film-modal.show {
+    display: flex;
+}
+
+.film-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.film-modal-content {
+    position: relative;
+    width: 92%;
+    max-width: 420px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.2rem;
+    animation: filmModalIn 0.3s ease;
+}
+
+@keyframes filmModalIn {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.film-modal-close {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: background 0.2s;
+}
+
+.film-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.film-modal-header {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.film-modal-poster {
+    flex-shrink: 0;
+    width: 120px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.film-modal-poster img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.film-modal-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 0.3rem;
+}
+
+.film-modal-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+    margin: 0;
+}
+
+.film-modal-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.film-modal-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.5rem;
+    background: rgba(99, 102, 241, 0.15);
+    border-radius: 6px;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+.film-modal-cinema {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: auto;
+}
+
+.film-modal-section {
+    margin-bottom: 1rem;
+}
+
+.film-modal-section-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.film-modal-times {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.film-modal-time {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.7rem;
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary-light);
+    min-width: 50px;
+}
+
+.film-modal-actions {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.film-modal-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.film-modal-btn .material-icons {
+    font-size: 1.2rem;
+}
+
+.film-modal-btn-trailer {
+    background: #ff0000;
+    color: white;
+}
+
+.film-modal-btn-trailer:hover {
+    background: #cc0000;
+    transform: translateY(-1px);
+}
+
+.film-modal-btn-site {
+    background: var(--primary);
+    color: white;
+}
+
+.film-modal-btn-site:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+/* Thème clair */
+[data-theme="light"] .film-modal-badge {
+    background: rgba(79, 70, 229, 0.1);
+}
+
+[data-theme="light"] .film-modal-time {
+    background: rgba(79, 70, 229, 0.1);
+    border-color: rgba(79, 70, 229, 0.2);
+    color: var(--primary);
 }
 
 /* ============================================
