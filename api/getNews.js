@@ -25,17 +25,48 @@ export default async function handler(req, res) {
     }
     
     try {
-        const parser = new Parser();
+        const parser = new Parser({
+            customFields: {
+                item: [
+                    ['media:content', 'mediaContent', { keepArray: false }],
+                    ['media:thumbnail', 'mediaThumbnail', { keepArray: false }],
+                    ['enclosure', 'enclosure', { keepArray: false }]
+                ]
+            }
+        });
         
-        // Flux RSS
+        // Flux RSS - max plus élevé pour avoir du choix après dédoublonnage
         const feeds = [
-            { name: 'Montceau News', url: 'https://montceau-news.com/rss', max: 3 },
-            { name: "L'Informateur", url: 'http://www.linformateurdebourgogne.com/feed/', max: 2 },
-            { name: 'Le JSL', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 3 },
-            { name: 'Creusot Infos', url: 'https://raw.githubusercontent.com/jhd71/scraper-creusot/main/data/articles.json', max: 2, type: 'json' },
+            { name: 'Montceau News', url: 'https://montceau-news.com/rss', max: 4 },
+            { name: "L'Informateur", url: 'http://www.linformateurdebourgogne.com/feed/', max: 3 },
+            { name: 'Le JSL', url: 'https://www.lejsl.com/edition-montceau-les-mines/rss', max: 4 },
+            { name: 'Creusot Infos', url: 'https://raw.githubusercontent.com/jhd71/scraper-creusot/main/data/articles.json', max: 3, type: 'json' },
         ];
 
-        // Récupérer les articles (titre + lien uniquement, pas d'images)
+        // Fonction pour extraire l'image d'un article RSS
+        function extractImage(item) {
+            // 1. media:content
+            if (item.mediaContent && item.mediaContent.$ && item.mediaContent.$.url) {
+                return item.mediaContent.$.url;
+            }
+            // 2. media:thumbnail
+            if (item.mediaThumbnail && item.mediaThumbnail.$ && item.mediaThumbnail.$.url) {
+                return item.mediaThumbnail.$.url;
+            }
+            // 3. enclosure (type image)
+            if (item.enclosure && item.enclosure.url && item.enclosure.type && item.enclosure.type.startsWith('image')) {
+                return item.enclosure.url;
+            }
+            // 4. Chercher une image dans le contenu HTML
+            const content = item['content:encoded'] || item.content || item.summary || '';
+            const imgMatch = content.match(/<img[^>]+src=["']([^"']+)["']/i);
+            if (imgMatch && imgMatch[1]) {
+                return imgMatch[1];
+            }
+            return '';
+        }
+
+        // Récupérer les articles
         const fetchPromises = feeds.map(feed => {
             return new Promise(async (resolve) => {
                 try {
@@ -62,6 +93,7 @@ export default async function handler(req, res) {
                         const articles = json.slice(0, feed.max).map(item => ({
                             title: item.title,
                             link: item.link,
+                            image: item.image || '',
                             date: item.date,
                             source: item.source || feed.name
                         }));
@@ -75,6 +107,7 @@ export default async function handler(req, res) {
                         const articles = feedData.items.slice(0, feed.max).map(item => ({
                             title: item.title,
                             link: item.link,
+                            image: extractImage(item),
                             date: item.pubDate || item.isoDate,
                             source: feed.name
                         }));
@@ -114,11 +147,20 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: "Aucun article récupéré" });
         }
         
-        // Trier par date
-        const sortedArticles = allArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
+        // Dédoublonner par titre (certains articles apparaissent dans plusieurs flux)
+        const seen = new Set();
+        const uniqueArticles = allArticles.filter(article => {
+            const key = article.title.toLowerCase().trim();
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
         
-        // Limiter à 10 articles
-        const finalArticles = sortedArticles.slice(0, 10);
+        // Trier par date
+        const sortedArticles = uniqueArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        // Limiter à 12 articles
+        const finalArticles = sortedArticles.slice(0, 12);
 
         // Mettre à jour le cache
         cachedArticles = finalArticles;

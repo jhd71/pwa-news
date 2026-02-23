@@ -301,7 +301,13 @@ function renderNewsSlider(articles) {
             ${articles.map((article, index) => `
                 <div class="news-slide">
                     <a href="${article.link}" target="_blank" rel="noopener" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
-                        <div class="news-item-icon">${getSourceIcon(article.source)}</div>
+                        ${article.image ? `
+                            <div class="news-item-thumb">
+                                <img src="${article.image}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='${getSourceIcon(article.source)}';;this.parentElement.className='news-item-icon'">
+                            </div>
+                        ` : `
+                            <div class="news-item-icon">${getSourceIcon(article.source)}</div>
+                        `}
                         <div class="news-item-content">
                             <div class="news-item-title">${article.title}</div>
                             <div class="news-item-meta">
