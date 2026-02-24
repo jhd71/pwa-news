@@ -1179,7 +1179,17 @@ h2, h3 {
     border: 1px solid rgba(99, 102, 241, 0.3);
     border-radius: 10px;
     font-size: 0.75rem;
+    color: var(--text-secondary);
     animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; transform: translateY(-8px); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .cinema-tip .material-icons:first-child {
@@ -1242,15 +1252,6 @@ h2, h3 {
     .cinema-tip-close .material-icons {
         font-size: 14px;
     }
-}
-
-@keyframes fadeOut {
-    to { opacity: 0; transform: translateY(-8px); }
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-8px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 
 /* Onglets Cinéma */
