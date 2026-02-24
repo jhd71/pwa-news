@@ -1207,6 +1207,43 @@ h2, h3 {
     font-size: 16px;
 }
 
+/* === Cinema tip - Tablette === */
+@media (min-width: 768px) {
+    .cinema-tip {
+        padding: 10px 16px;
+        font-size: 0.8rem;
+        gap: 10px;
+        border-radius: 12px;
+    }
+    .cinema-tip .material-icons:first-child {
+        font-size: 20px;
+    }
+}
+
+/* === Cinema tip - PC === */
+@media (min-width: 1024px) {
+    .cinema-tip {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+        margin-bottom: 16px;
+    }
+}
+
+/* === Cinema tip - Petit mobile === */
+@media (max-width: 380px) {
+    .cinema-tip {
+        padding: 6px 8px;
+        font-size: 0.7rem;
+        gap: 6px;
+    }
+    .cinema-tip .material-icons:first-child {
+        font-size: 16px;
+    }
+    .cinema-tip-close .material-icons {
+        font-size: 14px;
+    }
+}
+
 @keyframes fadeOut {
     to { opacity: 0; transform: translateY(-8px); }
 }
