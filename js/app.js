@@ -691,7 +691,7 @@ function openFilmModal(index) {
                     <span class="material-icons">play_circle</span>
                     Bande-annonce
                 </a>
-                <a href="${film.lien || config.siteUrl}" target="_blank" class="film-modal-btn film-modal-btn-site">
+                <a href="${(film.lien || config.siteUrl) + '?date=' + new Date().toISOString().split('T')[0]}" target="_blank" class="film-modal-btn film-modal-btn-site">
                     <span class="material-icons">confirmation_number</span>
                     Réserver
                 </a>
