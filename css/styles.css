@@ -1138,6 +1138,85 @@ h2, h3 {
     font-weight: 600;
 }
 
+/* === Icône Play sur affiche === */
+.cinema-film-poster {
+    position: relative;
+}
+
+.cinema-play-badge {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    width: 28px;
+    height: 28px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
+}
+
+.cinema-play-badge .material-icons {
+    font-size: 18px;
+    color: white;
+}
+
+.cinema-film:hover .cinema-play-badge {
+    background: rgba(239, 68, 68, 0.85);
+    transform: scale(1.1);
+}
+
+/* === Bandeau astuce cinéma === */
+.cinema-tip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 10px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    animation: fadeIn 0.5s ease;
+}
+
+.cinema-tip .material-icons:first-child {
+    font-size: 18px;
+    color: #818cf8;
+    flex-shrink: 0;
+}
+
+.cinema-tip span:nth-child(2) {
+    flex: 1;
+}
+
+.cinema-tip-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.cinema-tip-close .material-icons {
+    font-size: 16px;
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; transform: translateY(-8px); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 /* Onglets Cinéma */
 .cinema-tabs {
     display: flex;

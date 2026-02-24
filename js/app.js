@@ -576,14 +576,29 @@ function renderCinema(films, cinemaKey = 'capitole') {
                     </div>
                 </div>
                 ${film.affiche ? `
-                    <div class="cinema-film-poster">
-                        <img src="${film.affiche}" alt="${film.titre}" loading="lazy">
-                    </div>
-                ` : ''}
+			<div class="cinema-film-poster">
+				<img src="${film.affiche}" alt="${film.titre}" loading="lazy">
+				<div class="cinema-play-badge">
+					<span class="material-icons">play_circle</span>
+				</div>
+			</div>
+		` : ''}
             </div>`;
     }
     
+    // Bandeau astuce (affiché une seule fois)
+    const showTip = !localStorage.getItem('cinemaTipDismissed');
+    
     container.innerHTML = `
+        ${showTip ? `
+            <div class="cinema-tip" id="cinemaTip">
+                <span class="material-icons">touch_app</span>
+                <span>Cliquez sur un film pour voir la bande-annonce et réserver</span>
+                <button class="cinema-tip-close" onclick="dismissCinemaTip()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+        ` : ''}
         <div class="cinema-films">
             ${films.slice(0, visibleCount).map((film, index) => filmCardHTML(film, index)).join('')}
         </div>
@@ -618,6 +633,9 @@ function renderCinema(films, cinemaKey = 'capitole') {
 function openFilmModal(index) {
     const film = currentFilms[index];
     if (!film) return;
+    
+    // Masquer le bandeau astuce au premier clic
+    dismissCinemaTip();
     
     const config = CONFIG.cinema[currentCinema];
     
@@ -691,6 +709,15 @@ function closeFilmModal() {
         modal.classList.remove('show');
         document.body.style.overflow = '';
     }
+}
+
+function dismissCinemaTip() {
+    const tip = document.getElementById('cinemaTip');
+    if (tip) {
+        tip.style.animation = 'fadeOut 0.3s ease forwards';
+        setTimeout(() => tip.remove(), 300);
+    }
+    localStorage.setItem('cinemaTipDismissed', 'true');
 }
 
 function toggleCinemaFilms() {
