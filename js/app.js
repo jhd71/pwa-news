@@ -2182,13 +2182,11 @@ function initDateBar() {
         const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
         const mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
         
-        const heure = now.getHours().toString().padStart(2, '0');
-        const minutes = now.getMinutes().toString().padStart(2, '0');
         const jour = jours[now.getDay()];
         const numero = now.getDate();
         const nomMois = mois[now.getMonth()];
         
-        dayEl.textContent = `${jour} ${numero} ${nomMois} · ${heure}h${minutes}`;
+        dayEl.textContent = `${jour} ${numero} ${nomMois}`;
         
         // Saint du jour
         const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000) - 1;
@@ -2199,7 +2197,13 @@ function initDateBar() {
     }
 
     updateDateBar();
-    setInterval(updateDateBar, 30000); // Mise à jour toutes les 30 secondes
+    // Mise à jour à minuit pour changer de jour
+    const now = new Date();
+    const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - now;
+    setTimeout(() => {
+        updateDateBar();
+        setInterval(updateDateBar, 86400000); // puis toutes les 24h
+    }, msUntilMidnight);
 }
 
 // ============================================
