@@ -2038,17 +2038,19 @@ h2, h3 {
 
 .community-image-zoom {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 8px;
+    right: 8px;
+    left: auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    gap: 0.3rem;
+    padding: 0.3rem 0.6rem;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    border-radius: 8px;
     color: white;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 500;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -2848,9 +2850,8 @@ p,
     
     .community-image-zoom {
         opacity: 1;
-        padding: 0.5rem;
-        font-size: 0.75rem;
-        background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+        padding: 0.25rem 0.5rem;
+        font-size: 0.7rem;
     }
     
     .community-image-zoom .material-icons {
