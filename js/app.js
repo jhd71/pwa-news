@@ -2437,3 +2437,8 @@ function closeStandingsModal() {
     if (modal) modal.classList.remove('active');
     document.body.style.overflow = '';
 }
+
+// === Couleurs des tuiles ===
+document.querySelectorAll('.tile[data-color]').forEach(tile => {
+    tile.style.setProperty('--tile-color', tile.dataset.color);
+});

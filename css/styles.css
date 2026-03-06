@@ -764,7 +764,7 @@ h2, h3 {
 .tile:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px var(--shadow-color);
-    background: var(--bg-elevated);
+    border-color: var(--tile-color, var(--border-color));
 }
 
 .tile:active {
@@ -775,23 +775,32 @@ h2, h3 {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px; /* Définit une largeur fixe pour l'alignement */
+    width: 36px;
+    height: 36px;
     flex-shrink: 0;
+    border-radius: 10px;
+    background: color-mix(in srgb, attr(data-color type(<color>), #6366f1) 15%, transparent);
+    transition: all 0.3s ease;
+}
+
+/* Cercle coloré via data-color du parent */
+.tile[data-color] .tile-icon {
+    background: color-mix(in srgb, var(--tile-color) 15%, transparent);
 }
 
 .tile-icon .material-icons {
-    font-size: 1.5rem;
-    /* On utilise currentColor pour que l'icône copie la couleur du texte parent */
-    color: currentColor; 
-    /* On baisse un peu l'opacité pour garder le côté doux du design */
-    opacity: 0.85;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    font-size: 1.25rem;
+    color: var(--tile-color, var(--text-secondary));
+    opacity: 1;
+    transition: transform 0.3s ease;
 }
 
-/* Au survol, on remet l'icône bien nette */
-.tile:hover .material-icons {
+.tile:hover .tile-icon {
     transform: scale(1.1);
-    opacity: 1;
+}
+
+.tile:hover .material-icons {
+    transform: scale(1.05);
 }
 
 .tile-text {
