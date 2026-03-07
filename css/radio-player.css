@@ -1866,7 +1866,7 @@ body.dark-theme .theme-toggle-btn {
     .radios-grid {
         grid-template-columns: repeat(4, 1fr);
         gap: 12px;
-        padding: 0 12px;
+        padding: 8px 12px;
         padding-bottom: 320px;
     }
     
