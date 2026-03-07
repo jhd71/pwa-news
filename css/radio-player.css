@@ -1899,20 +1899,6 @@ body.dark-theme .theme-toggle-btn {
         left: 6px;
     }
     
-	/* Badge auditeurs tablette */
-    .radio-card-listeners-badge {
-        bottom: 2px;
-        right: 3px;
-        font-size: 0.6rem !important;
-        padding: 2px 5px !important;
-        border-radius: 8px;
-        gap: 1px;
-    }
-    
-    .radio-card-listeners-badge .material-icons {
-        font-size: 10px;
-    }
-	
     /* Onglets */
     .tab-navigation {
         padding: 6px;
@@ -2581,6 +2567,22 @@ body.dark-theme .theme-toggle-btn {
 
 .radio-card-listeners-badge .material-icons {
     font-size: 12px;
+}
+
+/* Badge auditeurs tablette - DOIT être après les styles de base */
+@media (min-width: 600px) and (max-width: 767px) {
+    .radio-card-listeners-badge {
+        bottom: 2px;
+        right: 3px;
+        font-size: 0.6rem !important;
+        padding: 2px 5px !important;
+        border-radius: 8px;
+        gap: 1px;
+    }
+    
+    .radio-card-listeners-badge .material-icons {
+        font-size: 10px;
+    }
 }
 
 /* === ANIMATIONS === */
