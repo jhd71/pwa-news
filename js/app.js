@@ -301,13 +301,6 @@ function renderNewsSlider(articles) {
             ${articles.map((article, index) => `
                 <div class="news-slide">
                     <a href="${article.link}" target="_blank" rel="noopener" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
-                        ${article.image ? `
-                            <div class="news-item-thumb">
-                                <img src="${article.image}" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('news-thumb-error')">
-                            </div>
-                        ` : `
-                            <div class="news-item-icon">${getSourceIcon(article.source)}</div>
-                        `}
                         <div class="news-item-content">
                             <div class="news-item-title">${article.title}</div>
                             <div class="news-item-meta">
@@ -336,37 +329,47 @@ function initNewsNavigation() {
     const prevBtn = document.getElementById('tickerPrev');
     const nextBtn = document.getElementById('tickerNext');
     
-    prevBtn.addEventListener('click', () => {
+    // Éviter les listeners en double (appelé à chaque refresh)
+    const newPrev = prevBtn.cloneNode(true);
+    const newNext = nextBtn.cloneNode(true);
+    prevBtn.parentNode.replaceChild(newPrev, prevBtn);
+    nextBtn.parentNode.replaceChild(newNext, nextBtn);
+    
+    newPrev.addEventListener('click', () => {
         goToNewsSlide(newsCurrentSlide - 1);
         resetNewsAutoPlay();
     });
     
-    nextBtn.addEventListener('click', () => {
+    newNext.addEventListener('click', () => {
         goToNewsSlide(newsCurrentSlide + 1);
         resetNewsAutoPlay();
     });
     
-    // Swipe touch
+    // Swipe touch (flag pour éviter les listeners en double)
     const container = document.getElementById('newsTicker');
-    let touchStartX = 0;
-    let touchEndX = 0;
-    
-    container.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-    
-    container.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        const diff = touchStartX - touchEndX;
-        if (Math.abs(diff) > 50) {
-            if (diff > 0) {
-                goToNewsSlide(newsCurrentSlide + 1);
-            } else {
-                goToNewsSlide(newsCurrentSlide - 1);
+    if (!container._touchInitialized) {
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        container.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        container.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    goToNewsSlide(newsCurrentSlide + 1);
+                } else {
+                    goToNewsSlide(newsCurrentSlide - 1);
+                }
+                resetNewsAutoPlay();
             }
-            resetNewsAutoPlay();
-        }
-    }, { passive: true });
+        }, { passive: true });
+        
+        container._touchInitialized = true;
+    }
 }
 
 function goToNewsSlide(index, smooth = true) {
@@ -435,22 +438,6 @@ function showNewsError(message) {
             ${message}
         </div>
     `;
-}
-
-function getSourceIcon(source) {
-    const icons = {
-        'Le JSL': 'newspaper',
-        'Montceau News': 'location_city',
-        'Creusot Infos': 'factory',
-        "L'Informateur": 'article',
-        'France Bleu': 'mic'
-    };
-    
-    // On récupère le nom de l'icône ou 'newspaper' par défaut
-    const iconName = icons[source] || 'newspaper';
-    
-    // On retourne le HTML complet de l'icône Material
-    return `<span class="material-icons">${iconName}</span>`;
 }
 
 function formatDate(dateString) {
@@ -525,14 +512,16 @@ async function loadCinema(cinemaKey) {
             // Sauvegarder en cache
             setCachedData(cacheKey, data.films);
             
-            // Sauvegarder le dateLabel
+            // Sauvegarder le dateLabel du JSON
             if (data.dateLabel) {
                 cinemaDateLabels[cinemaKey] = data.dateLabel;
+            } else {
+                cinemaDateLabels[cinemaKey] = "Aujourd'hui";
             }
             
             // Mettre à jour le sous-titre avec la vraie date
             if (cinemaKey === currentCinema) {
-                const label = cinemaDateLabels[cinemaKey] || "Aujourd'hui";
+                const label = cinemaDateLabels[cinemaKey];
                 document.getElementById('cinemaSubtitle').innerHTML = config.ville + ' • <span class="cinema-today">' + label + '</span>';
             }
             
@@ -602,14 +591,29 @@ function renderCinema(films, cinemaKey = 'capitole') {
                     </div>
                 </div>
                 ${film.affiche ? `
-                    <div class="cinema-film-poster">
-                        <img src="${film.affiche}" alt="${film.titre}" loading="lazy">
-                    </div>
-                ` : ''}
+			<div class="cinema-film-poster">
+				<img src="${film.affiche}" alt="${film.titre}" loading="lazy">
+				<div class="cinema-play-badge">
+					<span class="material-icons">play_circle</span>
+				</div>
+			</div>
+		` : ''}
             </div>`;
     }
     
+    // Bandeau astuce (affiché une seule fois)
+    const showTip = !localStorage.getItem('cinemaTipDismissed');
+    
     container.innerHTML = `
+        ${showTip ? `
+            <div class="cinema-tip" id="cinemaTip">
+                <span class="material-icons">touch_app</span>
+                <span>Cliquez sur un film pour voir la bande-annonce et réserver</span>
+                <button class="cinema-tip-close" onclick="dismissCinemaTip()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+        ` : ''}
         <div class="cinema-films">
             ${films.slice(0, visibleCount).map((film, index) => filmCardHTML(film, index)).join('')}
         </div>
@@ -644,6 +648,9 @@ function renderCinema(films, cinemaKey = 'capitole') {
 function openFilmModal(index) {
     const film = currentFilms[index];
     if (!film) return;
+    
+    // Masquer le bandeau astuce au premier clic
+    dismissCinemaTip();
     
     const config = CONFIG.cinema[currentCinema];
     
@@ -699,7 +706,7 @@ function openFilmModal(index) {
                     <span class="material-icons">play_circle</span>
                     Bande-annonce
                 </a>
-                <a href="${film.lien || config.siteUrl}" target="_blank" class="film-modal-btn film-modal-btn-site">
+                <a href="${(film.lien || config.siteUrl) + '?date=' + new Date().toISOString().split('T')[0]}" target="_blank" class="film-modal-btn film-modal-btn-site">
                     <span class="material-icons">confirmation_number</span>
                     Réserver
                 </a>
@@ -717,6 +724,15 @@ function closeFilmModal() {
         modal.classList.remove('show');
         document.body.style.overflow = '';
     }
+}
+
+function dismissCinemaTip() {
+    const tip = document.getElementById('cinemaTip');
+    if (tip) {
+        tip.style.animation = 'fadeOut 0.3s ease forwards';
+        setTimeout(() => tip.remove(), 300);
+    }
+    localStorage.setItem('cinemaTipDismissed', 'true');
 }
 
 function toggleCinemaFilms() {
@@ -1037,7 +1053,7 @@ async function initCommunity() {
                 
                 <div class="community-item-content">
                     <div class="community-item-title">${escapeHtml(item.title)}</div>
-                    ${item.image_url ? `<div class="community-image-wrapper"><div class="community-image-inner" onclick="event.stopPropagation(); openImageModal('${item.image_url}', '${(item.source_name || '').replace(/'/g, "\\'")}')"><img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image"><div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>${item.source_name ? `<div class="community-image-credit">📷 ${escapeHtml(item.source_name)}</div>` : ''}</div></div>` : ''}
+                    ${item.image_url ? `<div class="community-image-wrapper"><div class="community-image-inner" onclick="event.stopPropagation(); openImageModal('${item.image_url.replace(/'/g, "\\'")}', '${(item.source_name || '').replace(/'/g, "\\'")}')"><img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image" onerror="this.parentElement.parentElement.style.display='none'"><div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>${item.source_name ? `<div class="community-image-credit">📷 ${escapeHtml(item.source_name)}</div>` : ''}</div></div>` : ''}
                     <div class="community-item-desc" id="desc-${item.id}">${linkifyContent(item.content)}</div>
                     <button class="see-more-btn" id="see-more-${item.id}" onclick="event.stopPropagation(); toggleSeeMore(${item.id})">
                         <span>Voir plus</span>
@@ -2181,13 +2197,11 @@ function initDateBar() {
         const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
         const mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
         
-        const heure = now.getHours().toString().padStart(2, '0');
-        const minutes = now.getMinutes().toString().padStart(2, '0');
         const jour = jours[now.getDay()];
         const numero = now.getDate();
         const nomMois = mois[now.getMonth()];
         
-        dayEl.textContent = `${jour} ${numero} ${nomMois} · ${heure}h${minutes}`;
+        dayEl.textContent = `${jour} ${numero} ${nomMois}`;
         
         // Saint du jour
         const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000) - 1;
@@ -2198,7 +2212,13 @@ function initDateBar() {
     }
 
     updateDateBar();
-    setInterval(updateDateBar, 30000); // Mise à jour toutes les 30 secondes
+    // Mise à jour à minuit pour changer de jour
+    const now = new Date();
+    const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - now;
+    setTimeout(() => {
+        updateDateBar();
+        setInterval(updateDateBar, 86400000); // puis toutes les 24h
+    }, msUntilMidnight);
 }
 
 // ============================================
@@ -2436,3 +2456,8 @@ function closeStandingsModal() {
     if (modal) modal.classList.remove('active');
     document.body.style.overflow = '';
 }
+
+// === Couleurs des tuiles ===
+document.querySelectorAll('.tile[data-color]').forEach(tile => {
+    tile.style.setProperty('--tile-color', tile.dataset.color);
+});
