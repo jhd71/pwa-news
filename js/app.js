@@ -303,7 +303,7 @@ function renderNewsSlider(articles) {
                     <a href="${article.link}" target="_blank" rel="noopener" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
                         ${article.image ? `
                             <div class="news-item-thumb">
-                                <img src="${article.image}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='${getSourceIcon(article.source)}';;this.parentElement.className='news-item-icon'">
+                                <img src="${article.image}" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('news-thumb-error')">
                             </div>
                         ` : `
                             <div class="news-item-icon">${getSourceIcon(article.source)}</div>
