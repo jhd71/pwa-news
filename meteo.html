@@ -27,6 +27,101 @@
                 padding-top: calc(0.6rem + env(safe-area-inset-top)) !important;
             }
         }
+
+        /* Météo heure par heure */
+        .meteo-hourly {
+            margin: 0 1rem 1.5rem;
+        }
+
+        .meteo-hourly-scroll {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding: 0.5rem 0;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            scroll-snap-type: x mandatory;
+        }
+
+        .meteo-hourly-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hourly-item {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.6rem 0.7rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            min-width: 68px;
+            scroll-snap-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .hourly-item.now {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .hourly-item.past {
+            opacity: 0.45;
+        }
+
+        .hourly-time {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .hourly-item.now .hourly-time {
+            color: var(--primary-light);
+        }
+
+        .hourly-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hourly-temp {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .hourly-precip {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            font-size: 0.65rem;
+            color: #60a5fa;
+        }
+
+        .hourly-wind {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+        }
+
+        .hourly-wind small {
+            font-size: 0.5rem;
+        }
+
+        /* Mode clair */
+        [data-theme="light"] .hourly-item {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        [data-theme="light"] .hourly-item.now {
+            background: rgba(79, 70, 229, 0.1);
+            border-color: rgba(79, 70, 229, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -112,6 +207,22 @@
             <div class="meteo-sun-info">
                 <span class="meteo-sun-label">Coucher</span>
                 <span class="meteo-sun-time" id="sunset">--:--</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Météo heure par heure -->
+    <section class="meteo-hourly">
+        <h2 class="meteo-section-title">
+            <div class="icon-box">
+                <span class="material-icons">schedule</span>
+            </div>
+            Aujourd'hui heure par heure
+        </h2>
+        <div class="meteo-hourly-scroll" id="hourlyScroll">
+            <div class="meteo-loading">
+                <span class="material-icons">sync</span>
+                Chargement...
             </div>
         </div>
     </section>
@@ -217,7 +328,7 @@
 
         async function loadWeatherData() {
             try {
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${METEO_CONFIG.latitude}&longitude=${METEO_CONFIG.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,surface_pressure,cloud_cover&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&timezone=${METEO_CONFIG.timezone}`;
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${METEO_CONFIG.latitude}&longitude=${METEO_CONFIG.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,surface_pressure,cloud_cover&hourly=temperature_2m,weather_code,precipitation_probability,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&timezone=${METEO_CONFIG.timezone}`;
                 
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('Erreur API');
@@ -225,6 +336,7 @@
                 const data = await response.json();
                 
                 updateCurrentWeather(data.current, data.daily);
+                updateHourly(data.hourly);
                 updateForecast(data.daily);
                 updateExtras(data.current, data.daily);
                 
@@ -271,6 +383,53 @@
             
             document.getElementById('sunFill').style.width = `${percentage}%`;
             document.getElementById('sunPosition').style.left = `${percentage}%`;
+        }
+
+        function updateHourly(hourly) {
+            const container = document.getElementById('hourlyScroll');
+            const now = new Date();
+            const currentHour = now.getHours();
+            const todayStr = now.toISOString().split('T')[0];
+            
+            let html = '';
+            let firstFutureIndex = -1;
+            
+            for (let i = 0; i < hourly.time.length; i++) {
+                const time = new Date(hourly.time[i]);
+                const timeStr = hourly.time[i].split('T')[0];
+                
+                // Seulement aujourd'hui
+                if (timeStr !== todayStr) continue;
+                
+                const hour = time.getHours();
+                const isNow = hour === currentHour;
+                const isPast = hour < currentHour;
+                
+                if (!isPast && firstFutureIndex === -1) firstFutureIndex = i;
+                
+                html += `
+                    <div class="hourly-item ${isNow ? 'now' : ''} ${isPast ? 'past' : ''}">
+                        <div class="hourly-time">${isNow ? 'Maint.' : hour + 'h'}</div>
+                        <div class="hourly-icon">${getWeatherIconV2(hourly.weather_code[i], 'small')}</div>
+                        <div class="hourly-temp">${Math.round(hourly.temperature_2m[i])}°</div>
+                        <div class="hourly-precip">
+                            <span class="material-icons" style="font-size:12px">water_drop</span>
+                            ${hourly.precipitation_probability[i] || 0}%
+                        </div>
+                        <div class="hourly-wind">${Math.round(hourly.wind_speed_10m[i])}<small>km/h</small></div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+            
+            // Scroll automatique vers l'heure actuelle
+            const nowEl = container.querySelector('.hourly-item.now');
+            if (nowEl) {
+                setTimeout(() => {
+                    nowEl.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                }, 300);
+            }
         }
 
         function updateForecast(daily) {
