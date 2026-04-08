@@ -123,31 +123,35 @@
             border-color: rgba(79, 70, 229, 0.3);
         }
 
-        /* Bouton heure par heure sur les jours */
+        /* Forecast item wrapper pour bouton heure par heure */
+        .meteo-forecast-item.has-hourly {
+            flex-wrap: wrap;
+        }
+
         .forecast-hourly-btn {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.3rem;
             width: 100%;
-            padding: 0.45rem;
-            margin-top: 0.4rem;
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 0.5rem;
+            margin-top: 0.6rem;
+            background: rgba(99, 102, 241, 0.15);
+            border: none;
             border-radius: 10px;
             color: var(--primary-light);
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
         .forecast-hourly-btn:hover {
-            background: rgba(99, 102, 241, 0.2);
+            background: rgba(99, 102, 241, 0.25);
         }
 
         .forecast-hourly-btn .material-icons {
-            font-size: 0.9rem;
+            font-size: 1rem;
             transition: transform 0.3s ease;
         }
 
@@ -156,13 +160,13 @@
         }
 
         [data-theme="light"] .forecast-hourly-btn {
-            background: rgba(79, 70, 229, 0.08);
-            border-color: rgba(79, 70, 229, 0.15);
+            background: rgba(79, 70, 229, 0.1);
             color: var(--primary);
         }
 
-        /* Conteneur dépliable des heures */
+        /* Conteneur dépliable */
         .forecast-hourly-detail {
+            width: 100%;
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s ease;
@@ -176,7 +180,7 @@
             display: flex;
             gap: 0.4rem;
             overflow-x: auto;
-            padding: 0.6rem 0 0.3rem;
+            padding: 0.6rem 0 0.2rem;
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
@@ -362,7 +366,7 @@
             timezone: 'Europe/Paris'
         };
 
-        let hourlyData = null; // Stockage global des données horaires
+        let hourlyData = null;
 
         // Thème
         const THEMES = ['dark', 'light'];
@@ -402,7 +406,7 @@
                 updateCurrentWeather(data.current, data.daily);
                 hourlyData = data.hourly;
                 updateHourly(data.hourly);
-                updateForecast(data.daily, data.hourly);
+                updateForecast(data.daily);
                 updateExtras(data.current, data.daily);
                 
                 console.log('🌤️ Météo chargée');
@@ -497,7 +501,7 @@
             }
         }
 
-        function updateForecast(daily, hourly) {
+        function updateForecast(daily) {
             const forecastList = document.getElementById('forecastList');
             const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
             
@@ -506,10 +510,10 @@
                 const date = new Date(daily.time[i]);
                 const dayName = i === 0 ? "Aujourd'hui" : days[date.getDay()];
                 const dateStr = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-                const dayStr = daily.time[i]; // format YYYY-MM-DD
+                const dayStr = daily.time[i];
                 
                 html += `
-                    <div class="meteo-forecast-item ${i === 0 ? 'today' : ''}">
+                    <div class="meteo-forecast-item ${i === 0 ? 'today' : ''} ${i > 0 ? 'has-hourly' : ''}">
                         <div class="forecast-day">
                             <span class="forecast-day-name">${dayName}</span>
                             <span class="forecast-day-date">${dateStr}</span>
@@ -604,7 +608,6 @@
         }
         
         function getMeteoconName(code, forceHour = null) {
-            // Détection jour/nuit
             const hour = forceHour !== null ? forceHour : new Date().getHours();
             const isDay = hour >= 7 && hour < 20;
             const daySuffix = isDay ? 'day' : 'night';
