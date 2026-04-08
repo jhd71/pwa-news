@@ -122,6 +122,68 @@
             background: rgba(79, 70, 229, 0.1);
             border-color: rgba(79, 70, 229, 0.3);
         }
+
+        /* Bouton heure par heure sur les jours */
+        .forecast-hourly-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            width: 100%;
+            padding: 0.45rem;
+            margin-top: 0.4rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 10px;
+            color: var(--primary-light);
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .forecast-hourly-btn:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .forecast-hourly-btn .material-icons {
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+        }
+
+        .forecast-hourly-btn.open .material-icons {
+            transform: rotate(180deg);
+        }
+
+        [data-theme="light"] .forecast-hourly-btn {
+            background: rgba(79, 70, 229, 0.08);
+            border-color: rgba(79, 70, 229, 0.15);
+            color: var(--primary);
+        }
+
+        /* Conteneur dépliable des heures */
+        .forecast-hourly-detail {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .forecast-hourly-detail.open {
+            max-height: 500px;
+        }
+
+        .forecast-hourly-scroll {
+            display: flex;
+            gap: 0.4rem;
+            overflow-x: auto;
+            padding: 0.6rem 0 0.3rem;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .forecast-hourly-scroll::-webkit-scrollbar {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -300,6 +362,8 @@
             timezone: 'Europe/Paris'
         };
 
+        let hourlyData = null; // Stockage global des données horaires
+
         // Thème
         const THEMES = ['dark', 'light'];
         const THEME_ICONS = { 'dark': 'dark_mode', 'light': 'light_mode' };
@@ -336,8 +400,9 @@
                 const data = await response.json();
                 
                 updateCurrentWeather(data.current, data.daily);
+                hourlyData = data.hourly;
                 updateHourly(data.hourly);
-                updateForecast(data.daily);
+                updateForecast(data.daily, data.hourly);
                 updateExtras(data.current, data.daily);
                 
                 console.log('🌤️ Météo chargée');
@@ -410,7 +475,7 @@
                 html += `
                     <div class="hourly-item ${isNow ? 'now' : ''} ${isPast ? 'past' : ''}">
                         <div class="hourly-time">${isNow ? 'Maint.' : hour + 'h'}</div>
-                        <div class="hourly-icon">${getWeatherIconV2(hourly.weather_code[i], 'small')}</div>
+                        <div class="hourly-icon">${getWeatherIconV2(hourly.weather_code[i], 'small', hour)}</div>
                         <div class="hourly-temp">${Math.round(hourly.temperature_2m[i])}°</div>
                         <div class="hourly-precip">
                             <span class="material-icons" style="font-size:12px">water_drop</span>
@@ -432,7 +497,7 @@
             }
         }
 
-        function updateForecast(daily) {
+        function updateForecast(daily, hourly) {
             const forecastList = document.getElementById('forecastList');
             const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
             
@@ -441,6 +506,7 @@
                 const date = new Date(daily.time[i]);
                 const dayName = i === 0 ? "Aujourd'hui" : days[date.getDay()];
                 const dateStr = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+                const dayStr = daily.time[i]; // format YYYY-MM-DD
                 
                 html += `
                     <div class="meteo-forecast-item ${i === 0 ? 'today' : ''}">
@@ -458,11 +524,61 @@
                             <span class="forecast-temp-max">${Math.round(daily.temperature_2m_max[i])}°</span>
                             <span class="forecast-temp-min">${Math.round(daily.temperature_2m_min[i])}°</span>
                         </div>
+                        ${i > 0 ? `
+                            <button class="forecast-hourly-btn" onclick="toggleDayHourly(this, '${dayStr}')">
+                                <span class="material-icons">expand_more</span>
+                                Heure par heure
+                            </button>
+                            <div class="forecast-hourly-detail" id="hourly-${dayStr}"></div>
+                        ` : ''}
                     </div>
                 `;
             }
             
             forecastList.innerHTML = html;
+        }
+
+        function toggleDayHourly(btn, dayStr) {
+            const container = document.getElementById('hourly-' + dayStr);
+            const isOpen = container.classList.contains('open');
+            
+            if (isOpen) {
+                container.classList.remove('open');
+                btn.classList.remove('open');
+                return;
+            }
+            
+            btn.classList.add('open');
+            
+            // Remplir les données si pas encore fait
+            if (!container.innerHTML) {
+                let html = '<div class="forecast-hourly-scroll">';
+                
+                for (let i = 0; i < hourlyData.time.length; i++) {
+                    const timeStr = hourlyData.time[i].split('T')[0];
+                    if (timeStr !== dayStr) continue;
+                    
+                    const hour = new Date(hourlyData.time[i]).getHours();
+                    
+                    html += `
+                        <div class="hourly-item">
+                            <div class="hourly-time">${hour}h</div>
+                            <div class="hourly-icon">${getWeatherIconV2(hourlyData.weather_code[i], 'small', hour)}</div>
+                            <div class="hourly-temp">${Math.round(hourlyData.temperature_2m[i])}°</div>
+                            <div class="hourly-precip">
+                                <span class="material-icons" style="font-size:12px">water_drop</span>
+                                ${hourlyData.precipitation_probability[i] || 0}%
+                            </div>
+                            <div class="hourly-wind">${Math.round(hourlyData.wind_speed_10m[i])}<small>km/h</small></div>
+                        </div>
+                    `;
+                }
+                
+                html += '</div>';
+                container.innerHTML = html;
+            }
+            
+            container.classList.add('open');
         }
 
         function updateExtras(current, daily) {
@@ -481,15 +597,15 @@
         // Tailles des icônes
         const ICON_SIZES = { small: 32, medium: 48, large: 72, xlarge: 120 };
         
-        function getWeatherIconV2(code, size = 'medium') {
+        function getWeatherIconV2(code, size = 'medium', forceHour = null) {
             const px = ICON_SIZES[size] || 48;
-            const name = getMeteoconName(code);
+            const name = getMeteoconName(code, forceHour);
             return `<img src="${METEOCONS_BASE}${name}.svg" width="${px}" height="${px}" alt="météo" style="display:block;">`;
         }
         
-        function getMeteoconName(code) {
-            // Détection jour/nuit (approximatif : 7h-20h = jour)
-            const hour = new Date().getHours();
+        function getMeteoconName(code, forceHour = null) {
+            // Détection jour/nuit
+            const hour = forceHour !== null ? forceHour : new Date().getHours();
             const isDay = hour >= 7 && hour < 20;
             const daySuffix = isDay ? 'day' : 'night';
             
