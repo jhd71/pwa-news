@@ -546,6 +546,10 @@
             const container = document.getElementById('hourly-' + dayStr);
             const isOpen = container.classList.contains('open');
             
+            // Fermer tous les autres jours ouverts
+            document.querySelectorAll('.forecast-hourly-detail.open').forEach(el => el.classList.remove('open'));
+            document.querySelectorAll('.forecast-hourly-btn.open').forEach(el => el.classList.remove('open'));
+            
             if (isOpen) {
                 container.classList.remove('open');
                 btn.classList.remove('open');
