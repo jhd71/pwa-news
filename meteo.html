@@ -163,6 +163,10 @@
             transform: rotate(180deg);
         }
 
+		.forecast-hourly-btn {
+            color: #ffffff;
+        }
+		
         [data-theme="light"] .forecast-hourly-btn {
             background: rgba(79, 70, 229, 0.1);
             color: var(--primary);
@@ -184,9 +188,8 @@
             display: flex;
             gap: 0.4rem;
             overflow-x: auto;
-            padding: 0.6rem 0 0.2rem;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            padding: 0.6rem 0 0.5rem;
+            scrollbar-width: thin;
         }
 
         .forecast-hourly-scroll::-webkit-scrollbar {
@@ -507,7 +510,7 @@
 
         function updateForecast(daily) {
             const forecastList = document.getElementById('forecastList');
-            const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+            const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
             
             let html = '';
             for (let i = 0; i < 7; i++) {

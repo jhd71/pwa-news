@@ -424,6 +424,10 @@
 
 .meteo-extra-icon .material-icons {
     font-size: 1.5rem;
+    color: #ffffff;
+}
+
+[data-theme="light"] .meteo-extra-icon .material-icons {
     color: var(--primary-light);
 }
 
