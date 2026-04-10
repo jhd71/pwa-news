@@ -177,7 +177,7 @@ function getWeatherEmoji(code) {
 
 // Icône météo moderne v2 (avec nuages sombres pour pluie/orage)
 // URL de base des icônes Meteocons (animées, gratuites, licence MIT)
-const METEOCONS_BASE = 'https://basmilius.github.io/weather-icons/production/fill/all/';
+const METEOCONS_BASE = 'https://cdn.jsdelivr.net/gh/basmilius/weather-icons@2.0.0/production/fill/all/';
 const ICON_SIZES = { small: 32, medium: 48, large: 72, xlarge: 120 };
 
 function getWeatherIcon(code, size = 'medium') {
