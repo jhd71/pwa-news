@@ -2397,6 +2397,132 @@ h2, h3 {
     to { opacity: 1; transform: translate(-50%, 0); }
 }
 
+/* ============================================
+   CARROUSEL IMAGES (multi-images)
+   ============================================ */
+.carousel {
+    position: relative;
+    margin: 0.75rem 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.carousel-slides {
+    position: relative;
+}
+
+.carousel-slide {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.carousel-slide.active {
+    display: flex;
+}
+
+.carousel-slide img {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 8px;
+    cursor: pointer;
+    object-fit: contain;
+}
+
+.carousel-slide .community-image-zoom,
+.carousel-slide .info-card-zoom {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.carousel-slide:hover .community-image-zoom,
+.carousel-slide:hover .info-card-zoom {
+    opacity: 1;
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.carousel-prev { left: 8px; }
+.carousel-next { right: 8px; }
+
+.carousel-arrow:hover {
+    background: rgba(0, 0, 0, 0.75);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding-top: 8px;
+}
+
+.carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.carousel-dot.active {
+    background: var(--primary, #6366f1);
+    transform: scale(1.3);
+}
+
+[data-theme="light"] .carousel-dot {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .carousel-dot.active {
+    background: var(--primary, #6366f1);
+}
+
+.carousel-counter {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 2;
+}
+
 .comments-container {
     display: none;
     margin-top: 0.75rem;

@@ -1053,7 +1053,7 @@ async function initCommunity() {
                 
                 <div class="community-item-content">
                     <div class="community-item-title">${escapeHtml(item.title)}</div>
-                    ${item.image_url ? `<div class="community-image-wrapper"><div class="community-image-inner" onclick="event.stopPropagation(); openImageModal('${item.image_url.replace(/'/g, "\\'")}', '${(item.source_name || '').replace(/'/g, "\\'")}')"><img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="community-item-image" onerror="this.parentElement.parentElement.style.display='none'"><div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>${item.source_name ? `<div class="community-image-credit">📷 ${escapeHtml(item.source_name)}</div>` : ''}</div></div>` : ''}
+                    ${renderCommunityImages(item)}
                     <div class="community-item-desc" id="desc-${item.id}">${linkifyContent(item.content)}</div>
                     <button class="see-more-btn" id="see-more-${item.id}" onclick="event.stopPropagation(); toggleSeeMore(${item.id})">
                         <span>Voir plus</span>
@@ -1198,6 +1198,80 @@ function showSimpleToast(message) {
     `;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 2500);
+}
+
+// ============================================
+// CARROUSEL IMAGES
+// ============================================
+function renderCommunityImages(item) {
+    const allImages = [];
+    if (item.image_url) allImages.push(item.image_url);
+    if (item.additional_images && item.additional_images.length > 0) {
+        allImages.push(...item.additional_images);
+    }
+    
+    if (allImages.length === 0) return '';
+    
+    const sourceName = (item.source_name || '').replace(/'/g, "\\'");
+    
+    // UNE seule image → affichage simple (comme avant)
+    if (allImages.length === 1) {
+        return `<div class="community-image-wrapper"><div class="community-image-inner" onclick="event.stopPropagation(); openImageModal('${allImages[0].replace(/'/g, "\\'")}', '${sourceName}')"><img src="${allImages[0]}" alt="${escapeHtml(item.title)}" class="community-item-image" onerror="this.parentElement.parentElement.style.display='none'"><div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>${item.source_name ? `<div class="community-image-credit">📷 ${escapeHtml(item.source_name)}</div>` : ''}</div></div>`;
+    }
+    
+    // PLUSIEURS images → carrousel
+    return `<div class="carousel" id="carousel-${item.id}">
+        <div class="carousel-slides">
+            ${allImages.map((img, i) => `
+                <div class="carousel-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
+                    <img src="${img}" alt="Image ${i + 1}" onclick="event.stopPropagation(); openImageModal('${img.replace(/'/g, "\\'")}', '${sourceName}')">
+                    <div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>
+                </div>
+            `).join('')}
+        </div>
+        <button class="carousel-arrow carousel-prev" onclick="event.stopPropagation(); carouselNav('${item.id}', -1)"><span class="material-icons">chevron_left</span></button>
+        <button class="carousel-arrow carousel-next" onclick="event.stopPropagation(); carouselNav('${item.id}', 1)"><span class="material-icons">chevron_right</span></button>
+        <div class="carousel-counter"><span id="carousel-counter-${item.id}">1</span>/${allImages.length}</div>
+        <div class="carousel-dots">
+            ${allImages.map((_, i) => `<span class="carousel-dot ${i === 0 ? 'active' : ''}" onclick="event.stopPropagation(); carouselGoTo('${item.id}', ${i})"></span>`).join('')}
+        </div>
+        ${item.source_name ? `<div style="text-align:center;margin-top:0.25rem;font-size:0.75rem;color:var(--text-muted);">📷 ${escapeHtml(item.source_name)}</div>` : ''}
+    </div>`;
+}
+
+function carouselNav(id, direction) {
+    const carousel = document.getElementById(`carousel-${id}`);
+    if (!carousel) return;
+    const slides = carousel.querySelectorAll('.carousel-slide');
+    const dots = carousel.querySelectorAll('.carousel-dot');
+    const current = carousel.querySelector('.carousel-slide.active');
+    let currentIndex = parseInt(current.dataset.index);
+    
+    let newIndex = currentIndex + direction;
+    if (newIndex < 0) newIndex = slides.length - 1;
+    if (newIndex >= slides.length) newIndex = 0;
+    
+    slides.forEach(s => s.classList.remove('active'));
+    dots.forEach(d => d.classList.remove('active'));
+    slides[newIndex].classList.add('active');
+    dots[newIndex].classList.add('active');
+    
+    const counter = document.getElementById(`carousel-counter-${id}`);
+    if (counter) counter.textContent = newIndex + 1;
+}
+
+function carouselGoTo(id, index) {
+    const carousel = document.getElementById(`carousel-${id}`);
+    if (!carousel) return;
+    carousel.querySelectorAll('.carousel-slide').forEach(s => s.classList.remove('active'));
+    carousel.querySelectorAll('.carousel-dot').forEach(d => d.classList.remove('active'));
+    const slides = carousel.querySelectorAll('.carousel-slide');
+    const dots = carousel.querySelectorAll('.carousel-dot');
+    if (slides[index]) slides[index].classList.add('active');
+    if (dots[index]) dots[index].classList.add('active');
+    
+    const counter = document.getElementById(`carousel-counter-${id}`);
+    if (counter) counter.textContent = index + 1;
 }
 
 function getCommunityIcon(type) {
