@@ -2558,7 +2558,6 @@ h2, h3 {
 .community-item-actions {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
     border-top: 1px solid var(--border-color);
