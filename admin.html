@@ -2533,6 +2533,79 @@
         <img id="modalImage" src="" alt="Image agrandie" onclick="event.stopPropagation()">
     </div>
     
+	<!-- Modal de modification d'une info publiée -->
+    <div class="edit-modal" id="editModal" onclick="closeEditModal()">
+        <div class="edit-modal-content" onclick="event.stopPropagation()">
+            <div class="edit-modal-header">
+                <h2><span class="material-icons">edit</span> Modifier l'info</h2>
+                <button class="edit-modal-close" onclick="closeEditModal()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            
+            <form id="editForm" class="edit-modal-body">
+                <input type="hidden" id="editId">
+                
+                <div class="edit-field">
+                    <label>Catégorie</label>
+                    <select id="editType" required>
+                        <option value="actualite">📰 Actualité</option>
+                        <option value="evenement">🎪 Événement</option>
+                        <option value="sport">⚽ Sport</option>
+                        <option value="culture">🎭 Culture</option>
+                        <option value="economie">💼 Économie</option>
+                        <option value="pratique">💡 Pratique</option>
+                        <option value="insolite">🤔 Insolite</option>
+                        <option value="photo">📸 Photo/Vidéo</option>
+                        <option value="autre">📋 Autre</option>
+                    </select>
+                </div>
+                
+                <div class="edit-field">
+                    <label>Titre *</label>
+                    <input type="text" id="editTitle" required maxlength="200">
+                </div>
+                
+                <div class="edit-field">
+                    <label>Contenu *</label>
+                    <textarea id="editContent" required rows="6" maxlength="3000"></textarea>
+                </div>
+                
+                <div class="edit-field">
+                    <label>Lieu</label>
+                    <input type="text" id="editLocation" placeholder="Montceau-les-Mines">
+                </div>
+                
+                <div class="edit-field">
+                    <label>URL de l'image</label>
+                    <input type="url" id="editImage" placeholder="https://...">
+                    <div id="editImagePreview" style="margin-top:0.5rem;"></div>
+                </div>
+                
+                <div class="edit-field">
+                    <label>Lien externe</label>
+                    <input type="url" id="editLink" placeholder="https://...">
+                </div>
+                
+                <div class="edit-field">
+                    <label>Auteur / Source</label>
+                    <input type="text" id="editAuthor" placeholder="Actu & Média">
+                </div>
+                
+                <div class="edit-modal-actions">
+                    <button type="button" class="edit-btn-cancel" onclick="closeEditModal()">
+                        <span class="material-icons">close</span>
+                        Annuler
+                    </button>
+                    <button type="submit" class="edit-btn-save">
+                        <span class="material-icons">save</span>
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+	
     <!-- Modal de recadrage ÉVÉNEMENTS -->
     <div class="crop-modal event-crop-modal" id="eventCropModal">
         <div class="crop-header">
@@ -3111,10 +3184,11 @@
                         ${prop.image_url ? `<div class="image-container" id="imgContainer_${prop.id}"><img src="${prop.image_url}" onclick="openImageModal('${prop.image_url}')" title="Cliquez pour agrandir"><div class="image-rotate-buttons"><button class="rotate-btn" onclick="rotateImage(${prop.id}, '${prop.image_url}', -90)"><span class="material-icons">rotate_left</span>Gauche</button><button class="rotate-btn" onclick="rotateImage(${prop.id}, '${prop.image_url}', 90)"><span class="material-icons">rotate_right</span>Droite</button></div></div>` : ''}
                         ${prop.link ? `<a href="${prop.link}" target="_blank" class="proposition-file"><span class="material-icons" style="font-size:1rem;">link</span> Voir le lien</a>` : ''}
                         <div class="message-actions" style="margin-top:1rem;">
-                            <button class="action-btn mark-read" onclick="updateStatus(${prop.id},'approved')"><span class="material-icons">check</span>Approuver</button>
-                            <button class="action-btn" style="background:rgba(245,158,11,0.2);color:#f59e0b;" onclick="updateStatus(${prop.id},'rejected')"><span class="material-icons">close</span>Refuser</button>
-                            <button class="action-btn delete" onclick="deleteProp(${prop.id})"><span class="material-icons">delete</span>Suppr</button>
-                        </div>
+                                <button class="action-btn ${a.pinned ? 'pinned' : ''}" style="background:${a.pinned ? 'rgba(245,158,11,0.3)' : 'rgba(99,102,241,0.2)'};color:${a.pinned ? '#f59e0b' : '#818cf8'};" onclick="togglePin(${a.id}, ${a.pinned ? 'true' : 'false'})"><span class="material-icons">${a.pinned ? 'push_pin' : 'push_pin'}</span>${a.pinned ? 'Désépingler' : 'Épingler'}</button>
+                                <button class="action-btn" style="background:rgba(16,185,129,0.2);color:#10b981;" onclick="openEditModal(${a.id})"><span class="material-icons">edit</span>Modifier</button>
+                                <button class="action-btn" style="background:rgba(245,158,11,0.2);color:#f59e0b;" onclick="updateStatus(${a.id},'pending')"><span class="material-icons">undo</span>Dépublier</button>
+                                <button class="action-btn delete" onclick="deleteProp(${a.id})"><span class="material-icons">delete</span>Suppr</button>
+                            </div>
                     </div>
                 `).join('');
             } catch (error) { container.innerHTML = '<div class="empty-state"><p>❌ Erreur</p></div>'; }
@@ -3316,6 +3390,124 @@
             } catch (error) { container.innerHTML = '<div class="empty-state"><p>❌ Erreur</p></div>'; }
         }
         
+		// ============================================
+        // MODIFICATION D'UNE INFO PUBLIÉE
+        // ============================================
+        async function openEditModal(id) {
+            try {
+                // Charger l'info depuis Supabase
+                const { data, error } = await supabaseClient
+                    .from('news_submissions')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+                
+                if (error) throw error;
+                if (!data) {
+                    showToast('❌ Info introuvable', true);
+                    return;
+                }
+                
+                // Pré-remplir le formulaire
+                document.getElementById('editId').value = data.id;
+                document.getElementById('editType').value = data.type || 'actualite';
+                document.getElementById('editTitle').value = data.title || '';
+                document.getElementById('editContent').value = data.content || '';
+                document.getElementById('editLocation').value = data.location || '';
+                document.getElementById('editImage').value = data.image_url || '';
+                document.getElementById('editLink').value = data.link || '';
+                document.getElementById('editAuthor').value = data.author || 'Actu & Média';
+                
+                // Aperçu image
+                updateEditImagePreview();
+                
+                // Afficher la modale
+                document.getElementById('editModal').classList.add('show');
+                document.body.style.overflow = 'hidden';
+            } catch (error) {
+                console.error('Erreur chargement info:', error);
+                showToast('❌ Erreur : ' + error.message, true);
+            }
+        }
+        
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+        
+        function updateEditImagePreview() {
+            const url = document.getElementById('editImage').value.trim();
+            const preview = document.getElementById('editImagePreview');
+            if (url) {
+                preview.innerHTML = `<img src="${url}" alt="Aperçu" onerror="this.style.display='none'">`;
+            } else {
+                preview.innerHTML = '';
+            }
+        }
+        
+        // Mise à jour de l'aperçu quand l'URL change
+        document.addEventListener('DOMContentLoaded', () => {
+            const editImage = document.getElementById('editImage');
+            if (editImage) {
+                editImage.addEventListener('input', updateEditImagePreview);
+            }
+            
+            // Gestion de la soumission du formulaire
+            const editForm = document.getElementById('editForm');
+            if (editForm) {
+                editForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const id = document.getElementById('editId').value;
+                    const saveBtn = editForm.querySelector('.edit-btn-save');
+                    
+                    const updateData = {
+                        type: document.getElementById('editType').value,
+                        title: document.getElementById('editTitle').value.trim(),
+                        content: document.getElementById('editContent').value.trim(),
+                        location: document.getElementById('editLocation').value.trim() || null,
+                        image_url: document.getElementById('editImage').value.trim() || null,
+                        link: document.getElementById('editLink').value.trim() || null,
+                        author: document.getElementById('editAuthor').value.trim() || 'Actu & Média'
+                    };
+                    
+                    if (!updateData.title || !updateData.content) {
+                        showToast('❌ Titre et contenu requis', true);
+                        return;
+                    }
+                    
+                    saveBtn.disabled = true;
+                    saveBtn.innerHTML = '<span class="material-icons">hourglass_empty</span> Enregistrement...';
+                    
+                    try {
+                        const { error } = await supabaseClient
+                            .from('news_submissions')
+                            .update(updateData)
+                            .eq('id', id);
+                        
+                        if (error) throw error;
+                        
+                        showToast('✅ Info modifiée avec succès !');
+                        closeEditModal();
+                        loadPublishedArticles();
+                    } catch (error) {
+                        console.error('Erreur modification:', error);
+                        showToast('❌ Erreur : ' + error.message, true);
+                    } finally {
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = '<span class="material-icons">save</span> Enregistrer';
+                    }
+                });
+            }
+        });
+        
+        // Fermer avec Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('editModal')?.classList.contains('show')) {
+                closeEditModal();
+            }
+        });
+		
 		// Épingler / Désépingler une info
         async function togglePin(id, currentlyPinned) {
             try {
