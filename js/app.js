@@ -1224,8 +1224,10 @@ function renderCommunityImages(item) {
         <div class="carousel-slides">
             ${allImages.map((img, i) => `
                 <div class="carousel-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
-                    <img src="${img}" alt="Image ${i + 1}" onclick="event.stopPropagation(); openImageModal('${img.replace(/'/g, "\\'")}', '${sourceName}')">
-                    <div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>
+                    <div class="carousel-slide-inner" onclick="event.stopPropagation(); openImageModal('${img.replace(/'/g, "\\'")}', '${sourceName}')">
+                        <img src="${img}" alt="Image ${i + 1}">
+                        <div class="carousel-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>
+                    </div>
                 </div>
             `).join('')}
         </div>

@@ -2404,7 +2404,6 @@ h2, h3 {
     position: relative;
     margin: 0.75rem 0;
     border-radius: 10px;
-    overflow: hidden;
 }
 
 .carousel-slides {
@@ -2415,26 +2414,31 @@ h2, h3 {
     display: none;
     justify-content: center;
     align-items: center;
-    position: relative;
 }
 
 .carousel-slide.active {
     display: flex;
 }
 
-.carousel-slide img {
+.carousel-slide-inner {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.carousel-slide-inner img {
     max-width: 100%;
     max-height: 300px;
     border-radius: 8px;
-    cursor: pointer;
     object-fit: contain;
+    display: block;
 }
 
-.carousel-slide .community-image-zoom,
-.carousel-slide .info-card-zoom {
+.carousel-zoom {
     position: absolute;
     bottom: 10px;
-    right: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     background: rgba(0,0,0,0.6);
     color: white;
     padding: 0.3rem 0.6rem;
@@ -2443,14 +2447,18 @@ h2, h3 {
     display: flex;
     align-items: center;
     gap: 0.3rem;
-    opacity: 0;
-    transition: opacity 0.2s;
     pointer-events: none;
 }
 
-.carousel-slide:hover .community-image-zoom,
-.carousel-slide:hover .info-card-zoom {
-    opacity: 1;
+/* PC : visible seulement au survol */
+@media (min-width: 769px) {
+    .carousel-zoom {
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+    .carousel-slide-inner:hover .carousel-zoom {
+        opacity: 1;
+    }
 }
 
 .carousel-arrow {
@@ -2484,7 +2492,7 @@ h2, h3 {
     display: flex;
     justify-content: center;
     gap: 6px;
-    padding-top: 8px;
+    padding: 10px 0 4px;
 }
 
 .carousel-dot {
