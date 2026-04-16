@@ -274,6 +274,108 @@
             opacity: 1;
         }
         
+		/* === CARROUSEL MULTI-IMAGES === */
+        .carousel {
+            position: relative;
+            margin: 0.75rem 0;
+            border-radius: 10px;
+        }
+        .carousel-slides { position: relative; }
+        .carousel-slide {
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .carousel-slide.active { display: flex; }
+        .carousel-slide-inner {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .carousel-slide-inner img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            object-fit: contain;
+            display: block;
+        }
+        .carousel-zoom {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            pointer-events: none;
+        }
+        @media (min-width: 769px) {
+            .carousel-zoom { opacity: 0; transition: opacity 0.2s; }
+            .carousel-slide-inner:hover .carousel-zoom { opacity: 1; }
+        }
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2;
+            transition: all 0.2s ease;
+            padding: 0;
+        }
+        .carousel-prev { left: 8px; }
+        .carousel-next { right: 8px; }
+        .carousel-arrow:hover {
+            background: rgba(0, 0, 0, 0.75);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 0 4px;
+        }
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        .carousel-dot.active {
+            background: var(--primary, #6366f1);
+            transform: scale(1.3);
+        }
+        [data-theme="light"] .carousel-dot { background: rgba(0, 0, 0, 0.2); }
+        [data-theme="light"] .carousel-dot.active { background: var(--primary, #6366f1); }
+        .carousel-counter {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+		
         .info-card-desc {
             font-size: 0.9rem;
             color: var(--text-secondary);
@@ -1035,18 +1137,7 @@
                     <div class="info-card-content">
                         <h3 class="info-card-title">${escapeHtml(item.title)}</h3>
                         
-                        ${item.image_url ? `
-					<div class="info-card-image-wrapper">
-						<div class="info-card-image-inner" onclick="openLightbox('${item.image_url}', '${(item.source_name || '').replace(/'/g, "\\'")}')">
-							<img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="info-card-image">
-							<div class="info-card-zoom">
-								<span class="material-icons">zoom_in</span>
-								Agrandir
-							</div>
-							${item.source_name ? `<div class="info-card-image-credit">📷 ${escapeHtml(item.source_name)}</div>` : ''}
-						</div>
-					</div>
-				` : ''}
+                        ${renderInfoImages(item)}
                         
                         <p class="info-card-desc" id="desc-${item.id}">${linkifyContent(item.content)}</p>
                         <button class="see-more-btn" id="see-more-${item.id}" onclick="toggleSeeMore(${item.id})">
@@ -1195,6 +1286,87 @@
             `;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 2500);
+        }
+		
+		// ============================================
+        // CARROUSEL MULTI-IMAGES
+        // ============================================
+        function renderInfoImages(item) {
+            const allImages = [];
+            if (item.image_url) allImages.push(item.image_url);
+            if (item.additional_images && item.additional_images.length > 0) {
+                allImages.push(...item.additional_images);
+            }
+            
+            if (allImages.length === 0) return '';
+            
+            const sourceName = (item.source_name || '').replace(/'/g, "\\'");
+            
+            // UNE seule image → affichage classique
+            if (allImages.length === 1) {
+                return `<div class="info-card-image-wrapper">
+                    <div class="info-card-image-inner" onclick="openLightbox('${allImages[0].replace(/'/g, "\\'")}', '${sourceName}')">
+                        <img src="${allImages[0]}" alt="${escapeHtml(item.title)}" class="info-card-image">
+                        <div class="info-card-zoom">
+                            <span class="material-icons">zoom_in</span>
+                            Agrandir
+                        </div>
+                        ${item.source_name ? `<div class="info-card-image-credit">📷 ${escapeHtml(item.source_name)}</div>` : ''}
+                    </div>
+                </div>`;
+            }
+            
+            // PLUSIEURS images → carrousel
+            return `<div class="carousel" id="carousel-${item.id}">
+                <div class="carousel-slides">
+                    ${allImages.map((img, i) => `
+                        <div class="carousel-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
+                            <div class="carousel-slide-inner" onclick="openLightbox('${img.replace(/'/g, "\\'")}', '${sourceName}')">
+                                <img src="${img}" alt="Image ${i + 1}">
+                                <div class="carousel-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <button class="carousel-arrow carousel-prev" onclick="carouselNav('${item.id}', -1)"><span class="material-icons">chevron_left</span></button>
+                <button class="carousel-arrow carousel-next" onclick="carouselNav('${item.id}', 1)"><span class="material-icons">chevron_right</span></button>
+                <div class="carousel-counter"><span id="carousel-counter-${item.id}">1</span>/${allImages.length}</div>
+                <div class="carousel-dots">
+                    ${allImages.map((_, i) => `<span class="carousel-dot ${i === 0 ? 'active' : ''}" onclick="carouselGoTo('${item.id}', ${i})"></span>`).join('')}
+                </div>
+                ${item.source_name ? `<div style="text-align:center;margin-top:0.25rem;font-size:0.75rem;color:var(--text-muted);">📷 ${escapeHtml(item.source_name)}</div>` : ''}
+            </div>`;
+        }
+        
+        function carouselNav(id, direction) {
+            const carousel = document.getElementById(`carousel-${id}`);
+            if (!carousel) return;
+            const slides = carousel.querySelectorAll('.carousel-slide');
+            const dots = carousel.querySelectorAll('.carousel-dot');
+            const current = carousel.querySelector('.carousel-slide.active');
+            let currentIndex = parseInt(current.dataset.index);
+            let newIndex = currentIndex + direction;
+            if (newIndex < 0) newIndex = slides.length - 1;
+            if (newIndex >= slides.length) newIndex = 0;
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            slides[newIndex].classList.add('active');
+            dots[newIndex].classList.add('active');
+            const counter = document.getElementById(`carousel-counter-${id}`);
+            if (counter) counter.textContent = newIndex + 1;
+        }
+        
+        function carouselGoTo(id, index) {
+            const carousel = document.getElementById(`carousel-${id}`);
+            if (!carousel) return;
+            carousel.querySelectorAll('.carousel-slide').forEach(s => s.classList.remove('active'));
+            carousel.querySelectorAll('.carousel-dot').forEach(d => d.classList.remove('active'));
+            const slides = carousel.querySelectorAll('.carousel-slide');
+            const dots = carousel.querySelectorAll('.carousel-dot');
+            if (slides[index]) slides[index].classList.add('active');
+            if (dots[index]) dots[index].classList.add('active');
+            const counter = document.getElementById(`carousel-counter-${id}`);
+            if (counter) counter.textContent = index + 1;
         }
 		
         function getUserFingerprint() {
