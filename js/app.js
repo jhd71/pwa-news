@@ -1083,6 +1083,10 @@ async function initCommunity() {
                             <span class="material-icons">chat_bubble_outline</span>
                             <span>${commentCount > 0 ? commentCount + ' commentaire' + (commentCount > 1 ? 's' : '') : 'Commenter'}</span>
                         </button>
+                        <button class="share-btn" onclick="shareInfo(${item.id}, ${JSON.stringify(item.title).replace(/"/g, '&quot;')})" title="Partager">
+                            <span class="material-icons">share</span>
+                            <span>Partager</span>
+                        </button>
                     </div>
                     
                     <!-- Section Commentaires déroulante -->
@@ -1140,6 +1144,60 @@ async function initCommunity() {
         contentEl.innerHTML = '';
         emptyEl.style.display = 'block';
     }
+}
+
+// ============================================
+// PARTAGER UNE INFO
+// ============================================
+async function shareInfo(id, title) {
+    const shareUrl = `https://actuetmedia.fr/infos.html#info-${id}`;
+    const shareData = {
+        title: title,
+        text: `${title} — Actu & Média Montceau`,
+        url: shareUrl
+    };
+
+    // API de partage native (mobile + navigateurs modernes)
+    if (navigator.share) {
+        try {
+            await navigator.share(shareData);
+            console.log('✅ Info partagée');
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                console.error('Erreur partage:', err);
+            }
+        }
+    } else {
+        // Fallback desktop : copier le lien dans le presse-papier
+        try {
+            await navigator.clipboard.writeText(shareUrl);
+            showSimpleToast('✅ Lien copié dans le presse-papier !');
+        } catch (err) {
+            prompt('Copiez ce lien pour partager :', shareUrl);
+        }
+    }
+}
+
+// Petit toast simple pour le fallback desktop
+function showSimpleToast(message) {
+    const toast = document.createElement('div');
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(16, 185, 129, 0.95);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        z-index: 9999;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        animation: slideInShareToast 0.3s ease;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2500);
 }
 
 function getCommunityIcon(type) {

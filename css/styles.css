@@ -2343,6 +2343,60 @@ h2, h3 {
     transform: rotate(180deg);
 }
 
+/* Bouton Partager */
+.share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.9rem;
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.share-btn:hover {
+    background: rgba(59, 130, 246, 0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.share-btn .material-icons {
+    font-size: 1.1rem;
+}
+
+[data-theme="light"] .share-btn {
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Variante pour .action-btn.share (utilisée dans infos.html) */
+.action-btn.share {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.action-btn.share:hover {
+    background: rgba(59, 130, 246, 0.25);
+}
+
+[data-theme="light"] .action-btn.share {
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+}
+
+@keyframes slideInShareToast {
+    from { opacity: 0; transform: translate(-50%, 20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+
 .comments-container {
     display: none;
     margin-top: 0.75rem;
