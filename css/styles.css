@@ -2558,9 +2558,25 @@ h2, h3 {
 .community-item-actions {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
     border-top: 1px solid var(--border-color);
+}
+
+/* Sur mobile : boutons plus compacts pour tenir sur une ligne */
+@media (max-width: 480px) {
+    .community-item-actions {
+        gap: 0.4rem;
+        padding: 0.75rem 0.6rem;
+    }
+    
+    .community-item-actions .like-btn,
+    .community-item-actions .comments-toggle-btn,
+    .community-item-actions .share-btn {
+        padding: 0.45rem 0.7rem;
+        font-size: 0.8rem;
+    }
 }
 
 .like-btn {
