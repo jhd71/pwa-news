@@ -324,6 +324,79 @@
             color: var(--text-muted);
         }
 
+/* Zone d'upload images supplémentaires */
+        .additional-upload-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-elevated);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        
+        .additional-upload-zone:hover,
+        .additional-upload-zone.dragover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+        
+        .additional-previews {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .additional-preview-card {
+            position: relative;
+            width: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        .additional-preview-card img {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .additional-preview-label {
+            padding: 0.25rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            background: var(--bg-elevated);
+        }
+        
+        .additional-remove-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        .additional-remove-btn .material-icons {
+            font-size: 0.9rem;
+        }
+		
         /* Status */
         .status-message {
             display: flex;
@@ -601,6 +674,18 @@
                     </div>
                 </div>
 
+				<!-- Images supplémentaires (upload) -->
+                <div class="form-group">
+                    <label class="form-label">Images supplémentaires (max 2)</label>
+                    <div class="additional-upload-zone" id="additionalUploadZone">
+                        <span class="material-icons" style="font-size:2.5rem;color:var(--text-muted);">cloud_upload</span>
+                        <p style="color:var(--text-secondary);margin:0.5rem 0 0.25rem;font-size:0.9rem;">Glissez vos images ici ou cliquez pour sélectionner</p>
+                        <p style="color:var(--text-muted);font-size:0.8rem;">JPG, PNG, WebP — 5 Mo max par image</p>
+                        <input type="file" id="additionalFileInput" multiple accept="image/jpeg,image/png,image/webp" style="display:none;">
+                    </div>
+                    <div class="additional-previews" id="additionalPreviews"></div>
+                </div>
+				
                 <!-- URL Source (caché) -->
                 <input type="hidden" id="newsSourceUrl">
 
@@ -842,6 +927,12 @@
         const clearBtn = document.getElementById('clearBtn');
         const publishBtn = document.getElementById('publishBtn');
         const publishStatus = document.getElementById('publishStatus');
+        
+        // Images supplémentaires
+        let uploadedAdditionalImages = [];
+        const additionalUploadZone = document.getElementById('additionalUploadZone');
+        const additionalFileInput = document.getElementById('additionalFileInput');
+        const additionalPreviews = document.getElementById('additionalPreviews');
 
         // Extraire les données de l'URL
         extractBtn.addEventListener('click', async () => {
@@ -979,8 +1070,153 @@
             extractStatus.classList.add('hidden');
             publishStatus.classList.add('hidden');
             document.getElementById('sendNotifCheckbox').checked = false;
+            // Réinitialiser les images supplémentaires
+            uploadedAdditionalImages = [];
+            additionalPreviews.innerHTML = '';
+            additionalUploadZone.style.display = 'flex';
+            resetAdditionalUploadZone();
         });
 
+// ============================================
+        // UPLOAD IMAGES SUPPLÉMENTAIRES
+        // ============================================
+        
+        // Clic sur la zone → ouvrir sélecteur de fichiers
+        additionalUploadZone.addEventListener('click', () => additionalFileInput.click());
+        
+        // Drag & Drop
+        additionalUploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            additionalUploadZone.classList.add('dragover');
+        });
+        additionalUploadZone.addEventListener('dragleave', () => {
+            additionalUploadZone.classList.remove('dragover');
+        });
+        additionalUploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            additionalUploadZone.classList.remove('dragover');
+            handleAdditionalFiles(e.dataTransfer.files);
+        });
+        
+        // Sélection fichiers
+        additionalFileInput.addEventListener('change', (e) => {
+            handleAdditionalFiles(e.target.files);
+            e.target.value = '';
+        });
+        
+        async function handleAdditionalFiles(files) {
+            const maxImages = 2;
+            const remaining = maxImages - uploadedAdditionalImages.length;
+            
+            if (remaining <= 0) {
+                showStatus(publishStatus, '⚠️ Maximum 2 images supplémentaires atteint', 'error');
+                setTimeout(() => publishStatus.classList.add('hidden'), 3000);
+                return;
+            }
+            
+            const toProcess = Array.from(files).slice(0, remaining);
+            
+            for (const file of toProcess) {
+                if (!file.type.startsWith('image/')) continue;
+                if (file.size > 5 * 1024 * 1024) {
+                    showStatus(publishStatus, '⚠️ Image trop lourde (max 5 Mo) : ' + file.name, 'error');
+                    continue;
+                }
+                
+                try {
+                    // Afficher le spinner dans la zone
+                    additionalUploadZone.innerHTML = '<div class="spinner"></div><p style="color:var(--text-secondary);margin-top:0.5rem;">Upload en cours...</p>';
+                    
+                    // Compresser l'image
+                    const compressed = await compressImageFile(file, 1200, 0.85);
+                    
+                    // Upload vers Supabase Storage
+                    const url = await uploadImageToStorage(compressed);
+                    
+                    uploadedAdditionalImages.push(url);
+                    renderAdditionalPreviews();
+                    
+                } catch (err) {
+                    console.error('Erreur upload:', err);
+                    showStatus(publishStatus, '❌ Erreur upload : ' + err.message, 'error');
+                }
+            }
+            
+            resetAdditionalUploadZone();
+        }
+        
+        function compressImageFile(file, maxWidth, quality) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let w = img.width, h = img.height;
+                        if (w > maxWidth) {
+                            h = Math.round(h * maxWidth / w);
+                            w = maxWidth;
+                        }
+                        canvas.width = w;
+                        canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        canvas.toBlob((blob) => {
+                            if (blob) resolve(blob);
+                            else reject(new Error('Compression échouée'));
+                        }, 'image/jpeg', quality);
+                    };
+                    img.onerror = () => reject(new Error('Image illisible'));
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => reject(new Error('Lecture fichier échouée'));
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        async function uploadImageToStorage(blob) {
+            const fileName = `community/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.jpg`;
+            const { error } = await supabaseClient.storage.from('images').upload(fileName, blob, {
+                contentType: 'image/jpeg',
+                cacheControl: '3600',
+                upsert: false
+            });
+            if (error) throw error;
+            return supabaseClient.storage.from('images').getPublicUrl(fileName).data.publicUrl;
+        }
+        
+        function renderAdditionalPreviews() {
+            additionalPreviews.innerHTML = uploadedAdditionalImages.map((url, i) => `
+                <div class="additional-preview-card">
+                    <img src="${url}" alt="Image ${i + 2}">
+                    <button type="button" class="additional-remove-btn" onclick="removeAdditionalImage(${i})">
+                        <span class="material-icons">close</span>
+                    </button>
+                    <div class="additional-preview-label">Image ${i + 2}</div>
+                </div>
+            `).join('');
+            
+            if (uploadedAdditionalImages.length >= 2) {
+                additionalUploadZone.style.display = 'none';
+            } else {
+                additionalUploadZone.style.display = 'flex';
+            }
+        }
+        
+        function removeAdditionalImage(index) {
+            uploadedAdditionalImages.splice(index, 1);
+            renderAdditionalPreviews();
+            additionalUploadZone.style.display = 'flex';
+            resetAdditionalUploadZone();
+        }
+        
+        function resetAdditionalUploadZone() {
+            additionalUploadZone.innerHTML = `
+                <span class="material-icons" style="font-size:2.5rem;color:var(--text-muted);">cloud_upload</span>
+                <p style="color:var(--text-secondary);margin:0.5rem 0 0.25rem;font-size:0.9rem;">Glissez vos images ici ou cliquez pour sélectionner</p>
+                <p style="color:var(--text-muted);font-size:0.8rem;">JPG, PNG, WebP — 5 Mo max par image</p>
+            `;
+        }
+		
         // Publier
         newsForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1010,12 +1246,22 @@
 			sourceNameValue = sourceNameValue.split('|')[0].split(' - ')[0].trim();
 		}
 
+		// Déterminer l'image principale et les supplémentaires
+		let mainImageUrl = newsImage.value || null;
+		let additionalImagesArr = [...uploadedAdditionalImages];
+		
+		// Si pas d'URL mais des uploads, le premier upload devient l'image principale
+		if (!mainImageUrl && additionalImagesArr.length > 0) {
+			mainImageUrl = additionalImagesArr.shift();
+		}
+
 		const insertData = {
 			type: newsType.value,
 			title: title,
 			content: finalContent,
 			location: newsLocation.value || null,
-			image_url: newsImage.value || null,
+			image_url: mainImageUrl,
+			additional_images: additionalImagesArr,
 			author: 'Actu & Média',
 			contact_email: 'admin@actuetmedia.fr',
 			source_name: sourceNameValue,
