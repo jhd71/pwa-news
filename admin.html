@@ -1123,6 +1123,210 @@
             background: rgba(255, 255, 255, 0.25);
         }
 
+/* === MODAL DE MODIFICATION === */
+        .edit-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+        
+        .edit-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .edit-modal-content {
+            background: var(--bg-secondary, #1a1a25);
+            border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+            border-radius: 16px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .edit-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color, rgba(255,255,255,0.1));
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .edit-modal-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            margin: 0;
+            color: var(--text-primary, #fff);
+        }
+        
+        .edit-modal-close {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            color: var(--text-primary, #fff);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .edit-modal-close:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .edit-modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .edit-field {
+            margin-bottom: 1.25rem;
+        }
+        
+        .edit-field label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-secondary, rgba(255,255,255,0.7));
+        }
+        
+        .edit-field input,
+        .edit-field select,
+        .edit-field textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-primary, rgba(0,0,0,0.3));
+            border: 1px solid var(--border-color, rgba(255,255,255,0.15));
+            border-radius: 8px;
+            color: var(--text-primary, #fff);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+        
+        .edit-field input:focus,
+        .edit-field select:focus,
+        .edit-field textarea:focus {
+            outline: none;
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+        
+        .edit-field textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+        
+        #editImagePreview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+        }
+        
+        .edit-modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color, rgba(255,255,255,0.1));
+            margin-top: 1rem;
+        }
+        
+        .edit-btn-cancel,
+        .edit-btn-save {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        
+        .edit-btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary, #fff);
+        }
+        
+        .edit-btn-cancel:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .edit-btn-save {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .edit-btn-save:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
+        }
+        
+        .edit-btn-save:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* Mobile */
+        @media (max-width: 600px) {
+            .edit-modal {
+                padding: 0.5rem;
+            }
+            
+            .edit-modal-content {
+                max-height: 95vh;
+            }
+            
+            .edit-modal-header {
+                padding: 1rem;
+            }
+            
+            .edit-modal-body {
+                padding: 1rem;
+            }
+            
+            .edit-modal-actions {
+                flex-direction: column-reverse;
+            }
+            
+            .edit-btn-cancel,
+            .edit-btn-save {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+		
         /* === MEDIA QUERIES === */
         
         /* Grand écran / PC (> 1024px) */
