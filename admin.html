@@ -3388,7 +3388,7 @@
                     const url = await uploadImage(compressed);
                     pubAdditionalImages.push(url);
                     renderPubAdditionalPreviews();
-                    showToast('✅ Image ajoutée !');
+                    showToast('Image ajoutée !');
                 } catch (err) {
                     console.error('Erreur upload:', err);
                     showToast('❌ Erreur : ' + err.message, true);
