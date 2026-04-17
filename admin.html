@@ -2146,6 +2146,23 @@
                             </div>
                         </div>
                     </div>
+					<div class="form-group">
+                        <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">collections</span> Images supplémentaires</label>
+                        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+                            <button type="button" class="photo-btn" onclick="document.getElementById('pubAdditionalFile').click()">
+                                <span class="material-icons">photo_library</span>
+                                <span>Galerie</span>
+                            </button>
+                            <button type="button" class="photo-btn" onclick="document.getElementById('pubAdditionalCamera').click()">
+                                <span class="material-icons">photo_camera</span>
+                                <span>Photo</span>
+                            </button>
+                        </div>
+                        <input type="file" id="pubAdditionalFile" multiple accept="image/*" style="display:none;">
+                        <input type="file" id="pubAdditionalCamera" accept="image/*" capture="environment" style="display:none;">
+                        <div id="pubAdditionalPreviews" class="edit-additional-previews"></div>
+                        <div class="form-hint" id="pubAdditionalHint">Jusqu'à 2 images en plus de l'image principale</div>
+                    </div>
                     <div class="form-group" style="margin-top:1rem;">
                         <label class="notif-checkbox-label">
                             <input type="checkbox" id="pubSendNotif">
@@ -3053,6 +3070,7 @@
         let currentFacingMode = 'environment';
         let compressedImageBlob = null;
         let cropper = null;
+        let pubAdditionalImages = [];
         
         // === RECADRAGE ===
         function openCropModal() {
@@ -3333,6 +3351,102 @@
         }
         
         // === PUBLISH ===
+		// ============================================
+        // IMAGES SUPPLÉMENTAIRES (Onglet Publier)
+        // ============================================
+        document.getElementById('pubAdditionalFile').addEventListener('change', (e) => {
+            handlePubAdditionalFiles(e.target.files);
+            e.target.value = '';
+        });
+        
+        document.getElementById('pubAdditionalCamera').addEventListener('change', (e) => {
+            handlePubAdditionalFiles(e.target.files);
+            e.target.value = '';
+        });
+        
+        async function handlePubAdditionalFiles(files) {
+            const maxAdditional = 2;
+            const remaining = maxAdditional - pubAdditionalImages.length;
+            
+            if (remaining <= 0) {
+                showToast('⚠️ Maximum 2 images supplémentaires', true);
+                return;
+            }
+            
+            const toProcess = Array.from(files).slice(0, remaining);
+            
+            for (const file of toProcess) {
+                if (!file.type.startsWith('image/')) continue;
+                if (file.size > 20 * 1024 * 1024) {
+                    showToast('⚠️ Image trop lourde (max 20 Mo)', true);
+                    continue;
+                }
+                
+                try {
+                    showToast('⏳ Upload en cours...');
+                    const compressed = await compressPubAdditional(file, 1200, 0.85);
+                    const url = await uploadImage(compressed);
+                    pubAdditionalImages.push(url);
+                    renderPubAdditionalPreviews();
+                    showToast('✅ Image ajoutée !');
+                } catch (err) {
+                    console.error('Erreur upload:', err);
+                    showToast('❌ Erreur : ' + err.message, true);
+                }
+            }
+        }
+        
+        function compressPubAdditional(file, maxWidth, quality) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let w = img.width, h = img.height;
+                        if (w > maxWidth) {
+                            h = Math.round(h * maxWidth / w);
+                            w = maxWidth;
+                        }
+                        canvas.width = w;
+                        canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        canvas.toBlob((blob) => {
+                            if (blob) resolve(blob);
+                            else reject(new Error('Compression échouée'));
+                        }, 'image/jpeg', quality);
+                    };
+                    img.onerror = () => reject(new Error('Image illisible'));
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => reject(new Error('Lecture échouée'));
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        function renderPubAdditionalPreviews() {
+            const container = document.getElementById('pubAdditionalPreviews');
+            const hint = document.getElementById('pubAdditionalHint');
+            
+            container.innerHTML = pubAdditionalImages.map((url, i) => `
+                <div class="edit-additional-card">
+                    <img src="${url}" alt="Image ${i + 2}">
+                    <button type="button" class="edit-additional-remove" onclick="removePubAdditional(${i})">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+            `).join('');
+            
+            hint.textContent = pubAdditionalImages.length >= 2 
+                ? '✅ Maximum atteint (2 images supplémentaires)' 
+                : `Encore ${2 - pubAdditionalImages.length} image(s) possible(s)`;
+        }
+        
+        function removePubAdditional(index) {
+            pubAdditionalImages.splice(index, 1);
+            renderPubAdditionalPreviews();
+        }
+		
         document.getElementById('publishForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('publishBtn');
@@ -3355,6 +3469,7 @@
                     location: document.getElementById('pubLocation').value || null,
                     link_url: document.getElementById('pubLink').value || null,
                     image_url: imageUrl,
+                    additional_images: pubAdditionalImages.length > 0 ? pubAdditionalImages : [],
                     author: 'Actu & Média',
                     contact_email: 'admin@actuetmedia.fr',
                     status: 'approved',
@@ -3407,6 +3522,9 @@
                 
                 document.getElementById('publishForm').reset();
                 removeImage();
+                pubAdditionalImages = [];
+                document.getElementById('pubAdditionalPreviews').innerHTML = '';
+                document.getElementById('pubAdditionalHint').textContent = "Jusqu'à 2 images en plus de l'image principale";
                 loadPublishedArticles();
             } catch (error) {
                 console.error(error);

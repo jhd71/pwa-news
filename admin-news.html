@@ -677,11 +677,19 @@
 				<!-- Images supplémentaires (upload) -->
                 <div class="form-group">
                     <label class="form-label">Images depuis l'ordinateur (max 3)</label>
+                    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+                        <button type="button" class="btn btn-secondary" style="flex:1;min-width:140px;" onclick="document.getElementById('additionalFileInput').click()">
+                            <span class="material-icons">photo_library</span> Galerie
+                        </button>
+                        <button type="button" class="btn btn-secondary" style="flex:1;min-width:140px;" onclick="document.getElementById('additionalCameraInput').click()">
+                            <span class="material-icons">photo_camera</span> Photo
+                        </button>
+                    </div>
                     <div class="additional-upload-zone" id="additionalUploadZone">
                         <span class="material-icons" style="font-size:2.5rem;color:var(--text-muted);">cloud_upload</span>
-                        <p style="color:var(--text-secondary);margin:0.5rem 0 0.25rem;font-size:0.9rem;">Glissez vos images ici ou cliquez pour sélectionner</p>
-                        <p style="color:var(--text-muted);font-size:0.8rem;">JPG, PNG, WebP — 5 Mo max par image</p>
+                        <p style="color:var(--text-secondary);margin:0.5rem 0 0.25rem;font-size:0.9rem;">Ou glissez vos images ici</p>
                         <input type="file" id="additionalFileInput" multiple accept="image/*" style="display:none;">
+                        <input type="file" id="additionalCameraInput" accept="image/*" capture="environment" style="display:none;">
                     </div>
                     <div class="additional-previews" id="additionalPreviews"></div>
                 </div>
@@ -1100,6 +1108,12 @@
         
         // Sélection fichiers
         additionalFileInput.addEventListener('change', (e) => {
+            handleAdditionalFiles(e.target.files);
+            e.target.value = '';
+        });
+        
+        // Caméra
+        document.getElementById('additionalCameraInput').addEventListener('change', (e) => {
             handleAdditionalFiles(e.target.files);
             e.target.value = '';
         });
