@@ -1,8 +1,8 @@
 // ============================================
-// ACTU & MÉDIA - Service Worker v39
+// ACTU & MÉDIA - Service Worker v40
 // ============================================
 
-const CACHE_NAME = 'actu-media-v39';
+const CACHE_NAME = 'actu-media-v40';
 
 // Assets statiques à mettre en cache à l'installation
 // Ne PAS inclure les pages admin (toujours besoin de données fraîches)
@@ -48,24 +48,32 @@ const STATIC_ASSETS = [
 // Pages/chemins à TOUJOURS chercher sur le réseau (jamais depuis le cache seul)
 const NETWORK_ONLY = [
     '/api/',
-    '/admin',
-    '/admin-hub',
-    '/admin-news'
+    '/admin'
 ];
 
 // Installation
 self.addEventListener('install', event => {
-    console.log('📦 SW v38: Installation');
+    console.log('📦 SW v40: Installation');
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(STATIC_ASSETS))
+            .then(cache => {
+                // Mettre en cache chaque fichier individuellement
+                // Un fichier manquant ne bloque pas l'installation
+                return Promise.allSettled(
+                    STATIC_ASSETS.map(url =>
+                        cache.add(url).catch(err => {
+                            console.warn('⚠️ Cache échoué pour:', url, err.message);
+                        })
+                    )
+                );
+            })
             .then(() => self.skipWaiting())
     );
 });
 
 // Activation - supprime les anciens caches
 self.addEventListener('activate', event => {
-    console.log('🚀 SW v38: Activation');
+    console.log('🚀 SW v40: Activation');
     event.waitUntil(
         caches.keys().then(keys => {
             return Promise.all(
