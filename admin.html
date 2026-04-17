@@ -1298,6 +1298,91 @@
             cursor: not-allowed;
         }
         
+		/* Miniatures images supplémentaires dans liste publiées */
+        .article-images-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .article-images-row img {
+            height: 80px;
+            width: auto;
+            border-radius: 6px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s;
+        }
+        
+        .article-images-row img:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Zone upload dans modale édition */
+        .edit-upload-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border: 2px dashed var(--border-color, rgba(255,255,255,0.15));
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+        
+        .edit-upload-zone:hover,
+        .edit-upload-zone.dragover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+        
+        .edit-additional-previews {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        
+        .edit-additional-card {
+            position: relative;
+            width: 100px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+        }
+        
+        .edit-additional-card img {
+            width: 100%;
+            height: 70px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .edit-additional-remove {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        .edit-additional-remove .material-icons {
+            font-size: 0.8rem;
+        }
+		
         /* Mobile */
         @media (max-width: 600px) {
             .edit-modal {
@@ -2786,6 +2871,16 @@
                     <div id="editImagePreview" style="margin-top:0.5rem;"></div>
                 </div>
                 
+				<div class="edit-field">
+                    <label>Images supplémentaires</label>
+                    <div class="edit-additional-previews" id="editAdditionalPreviews"></div>
+                    <div class="edit-upload-zone" id="editUploadZone">
+                        <span class="material-icons" style="font-size:2rem;color:var(--text-muted);">cloud_upload</span>
+                        <p style="color:var(--text-secondary);font-size:0.85rem;margin:0.25rem 0 0;">Ajouter des images (max 3 au total)</p>
+                        <input type="file" id="editFileInput" multiple accept="image/*" style="display:none;">
+                    </div>
+                </div>
+				
                 <div class="edit-field">
                     <label>Lien externe</label>
                     <input type="url" id="editLink" placeholder="https://...">
@@ -3032,8 +3127,8 @@
         imageInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 5 * 1024 * 1024) {
-                    showToast('Image trop volumineuse (max 5 Mo)', true);
+                if (file.size > 20 * 1024 * 1024) {
+                    showToast('⚠️ Image trop lourde (max 20 Mo)', true);
                     return;
                 }
                 compressImageBlob(file, 1200, 0.8, function(blob, dataUrl) {
@@ -3574,7 +3669,7 @@
                 container.innerHTML = data.map(a => `
                     <div class="article-card published ${a.pinned ? 'pinned-article' : ''}">
                         ${a.pinned ? '<div style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;padding:0.3rem 0.75rem;border-radius:20px;font-size:0.75rem;font-weight:600;display:inline-flex;align-items:center;gap:0.25rem;margin-bottom:0.5rem;"><span class="material-icons" style="font-size:0.9rem;">push_pin</span> Épinglé</div>' : ''}
-                        ${a.image_url ? `<img src="${a.image_url}" class="article-image" onclick="openImageModal('${a.image_url}')" title="Cliquez pour agrandir">` : ''}
+                        ${(a.image_url || (a.additional_images && a.additional_images.length > 0)) ? `<div class="article-images-row">${a.image_url ? `<img src="${a.image_url}" onclick="openImageModal('${a.image_url}')" title="Image principale">` : ''}${(a.additional_images || []).map(img => `<img src="${img}" onclick="openImageModal('${img}')" title="Image supplémentaire">`).join('')}</div>` : ''}
                         <div class="article-content">
                             <div style="margin-bottom:0.5rem;"><span class="proposition-type ${a.type}">${getTypeLabel(a.type)}</span></div>
                             <div class="article-title">${escapeHtml(a.title)}</div>
@@ -3625,6 +3720,10 @@
                 // Aperçu image
                 updateEditImagePreview();
                 
+                // Pré-remplir les images supplémentaires
+                editAdditionalImages = [...(data.additional_images || [])];
+                renderEditAdditionalPreviews();
+                
                 // Afficher la modale
                 document.getElementById('editModal').classList.add('show');
                 document.body.style.overflow = 'hidden';
@@ -3637,6 +3736,135 @@
         function closeEditModal() {
             document.getElementById('editModal').classList.remove('show');
             document.body.style.overflow = '';
+            editAdditionalImages = [];
+        }
+        
+        // ============================================
+        // UPLOAD IMAGES DANS LA MODALE ÉDITION
+        // ============================================
+        let editAdditionalImages = [];
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const editUploadZone = document.getElementById('editUploadZone');
+            const editFileInput = document.getElementById('editFileInput');
+            
+            if (editUploadZone && editFileInput) {
+                editUploadZone.addEventListener('click', () => editFileInput.click());
+                
+                editUploadZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    editUploadZone.classList.add('dragover');
+                });
+                editUploadZone.addEventListener('dragleave', () => {
+                    editUploadZone.classList.remove('dragover');
+                });
+                editUploadZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    editUploadZone.classList.remove('dragover');
+                    handleEditFiles(e.dataTransfer.files);
+                });
+                
+                editFileInput.addEventListener('change', (e) => {
+                    handleEditFiles(e.target.files);
+                    e.target.value = '';
+                });
+            }
+        });
+        
+        async function handleEditFiles(files) {
+            const mainImage = document.getElementById('editImage').value.trim();
+            const totalCurrent = (mainImage ? 1 : 0) + editAdditionalImages.length;
+            const maxTotal = 3;
+            const remaining = maxTotal - totalCurrent;
+            
+            if (remaining <= 0) {
+                showToast('⚠️ Maximum 3 images au total', true);
+                return;
+            }
+            
+            const toProcess = Array.from(files).slice(0, remaining);
+            
+            for (const file of toProcess) {
+                if (!file.type.startsWith('image/')) continue;
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('⚠️ Image trop lourde (max 5 Mo)', true);
+                    continue;
+                }
+                
+                try {
+                    showToast('⏳ Upload en cours...');
+                    const compressed = await compressEditImage(file, 1200, 0.85);
+                    const url = await uploadEditImage(compressed);
+                    editAdditionalImages.push(url);
+                    renderEditAdditionalPreviews();
+                    showToast('✅ Image ajoutée !');
+                } catch (err) {
+                    console.error('Erreur upload:', err);
+                    showToast('❌ Erreur upload: ' + err.message, true);
+                }
+            }
+        }
+        
+        function compressEditImage(file, maxWidth, quality) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let w = img.width, h = img.height;
+                        if (w > maxWidth) {
+                            h = Math.round(h * maxWidth / w);
+                            w = maxWidth;
+                        }
+                        canvas.width = w;
+                        canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        canvas.toBlob((blob) => {
+                            if (blob) resolve(blob);
+                            else reject(new Error('Compression échouée'));
+                        }, 'image/jpeg', quality);
+                    };
+                    img.onerror = () => reject(new Error('Image illisible'));
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => reject(new Error('Lecture échouée'));
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        async function uploadEditImage(blob) {
+            const fileName = `community/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.jpg`;
+            const { error } = await supabaseClient.storage.from('images').upload(fileName, blob, {
+                contentType: 'image/jpeg',
+                cacheControl: '3600',
+                upsert: false
+            });
+            if (error) throw error;
+            return supabaseClient.storage.from('images').getPublicUrl(fileName).data.publicUrl;
+        }
+        
+        function renderEditAdditionalPreviews() {
+            const container = document.getElementById('editAdditionalPreviews');
+            const uploadZone = document.getElementById('editUploadZone');
+            const mainImage = document.getElementById('editImage').value.trim();
+            const totalImages = (mainImage ? 1 : 0) + editAdditionalImages.length;
+            
+            container.innerHTML = editAdditionalImages.map((url, i) => `
+                <div class="edit-additional-card">
+                    <img src="${url}" alt="Image ${i + 1}">
+                    <button type="button" class="edit-additional-remove" onclick="removeEditAdditionalImage(${i})">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+            `).join('');
+            
+            uploadZone.style.display = totalImages >= 3 ? 'none' : 'flex';
+        }
+        
+        function removeEditAdditionalImage(index) {
+            editAdditionalImages.splice(index, 1);
+            renderEditAdditionalPreviews();
         }
         
         function updateEditImagePreview() {
@@ -3671,6 +3899,7 @@
                         content: document.getElementById('editContent').value.trim(),
                         location: document.getElementById('editLocation').value.trim() || null,
                         image_url: document.getElementById('editImage').value.trim() || null,
+                        additional_images: editAdditionalImages,
                         link: document.getElementById('editLink').value.trim() || null,
                         author: document.getElementById('editAuthor').value.trim() || 'Actu & Média'
                     };
