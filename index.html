@@ -1,1298 +1,387 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    
-<!-- ============================================
-         SCRIPT FACEBOOK IN-APP BROWSER BLOCKER
-         Doit rester en PREMIER pour bloquer le contenu
-         ============================================ -->
-    <style>
-        html.fb-block, body.fb-block {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            min-height: 100vh;
-            overflow: hidden;
-            background: #1a1a2e !important;
-            font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-        }
-        .fb-wrapper {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-            background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 100%);
-        }
-        .fb-logo {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        .fb-wrapper h2 {
-			font-size: 1.8rem;
-			margin: 0 0 0.5rem 0;
-			color: #ffffff;
-			font-weight: 700;
-			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-		}
-		.fb-wrapper p {
-			color: #ffffff;
-			margin: 5px 0;
-			font-size: 1.1rem;
-			text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-		}
-        .fb-arrow {
-            font-size: 2.5rem;
-            margin-top: 1.5rem;
-            animation: arrowMove 1.2s ease-in-out infinite;
-        }
-        @keyframes arrowMove {
-            0%, 100% { transform: translateY(0); opacity: 0.5; }
-            50% { transform: translateY(-8px); opacity: 1; }
-        }
-        .fb-box {
-			margin-top: 1.5rem;
-			padding: 1.25rem 1.5rem;
-			background: rgba(99, 102, 241, 0.35);
-			border: 2px solid rgba(99, 102, 241, 0.7);
-			border-radius: 16px;
-			max-width: 300px;
-			font-size: 1.1rem;
-			line-height: 1.7;
-			color: #ffffff;
-			text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-		}
-        .fb-box strong {
-            color: #a5b4fc;
-            font-weight: 600;
-        }
-        .fb-icon {
-            display: inline-block;
-            background: rgba(99, 102, 241, 0.3);
-            padding: 0.25rem 0.5rem;
-            border-radius: 6px;
-            font-weight: 700;
-            margin: 0 2px;
-        }
-        .fb-footer {
-			margin-top: 2rem;
-			font-size: 0.95rem;
-			color: #ffffff;
-			text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-		}
-        .fb-footer span {
-            font-size: 1.25rem;
-            vertical-align: middle;
-        }
-    </style>
-    <script>
-    (function() {
-        var ua = navigator.userAgent || "";
-        // Détection Facebook, Instagram, Messenger, TikTok
-        var isInAppBrowser = ua.includes("FBAN") || ua.includes("FBAV") || ua.includes("Instagram") || ua.includes("Messenger") || ua.includes("BytedanceWebview");
-        var isIOS = /iPhone|iPad|iPod/i.test(ua);
-        
-        if (!isInAppBrowser) return;
-        
-        document.documentElement.classList.add("fb-block");
-        
-        document.addEventListener("DOMContentLoaded", function() {
-            document.body.classList.add("fb-block");
-            
-            var message = isIOS
-                ? '<div class="fb-logo">📱</div>' +
-                  '<h2>iPhone / iPad</h2>' +
-                  '<p>Ce site fonctionne mieux dans Safari</p>' +
-                  '<div class="fb-arrow">⬆️</div>' +
-                  '<div class="fb-box">' +
-                  '1. Appuyez sur <strong>Partager</strong> <span class="fb-icon">↑</span><br><br>' +
-                  '2. Puis sur<br>' +
-                  '<strong>« Ouvrir dans Safari »</strong>' +
-                  '</div>'
-                : '<div class="fb-logo">📱</div>' +
-                  '<h2>Android</h2>' +
-                  '<p>Ce site fonctionne mieux dans Chrome</p>' +
-                  '<div class="fb-arrow">⬆️</div>' +
-                  '<div class="fb-box">' +
-                  '1. Appuyez sur <span class="fb-icon">⋮</span> (en haut à droite)<br><br>' +
-                  '2. Puis sur<br>' +
-                  '<strong>« Ouvrir dans le navigateur »</strong>' +
-                  '</div>';
-            
-            document.body.innerHTML = '<div class="fb-wrapper">' +
-                message +
-                '<p class="fb-footer">' +
-                '<span>👍</span> Le site s\'ouvrira ensuite normalement' +
-                '</p>' +
-                '</div>';
-        });
-    })();
-    </script>
-    
-    <!-- ============================================
-         SEO - Meta Tags de base
-         ============================================ -->
-    <title>Actu & Média - Actualités Montceau-les-Mines | Info locale Saône-et-Loire</title>
-    <meta name="description" content="Actualités locales de Montceau-les-Mines, Le Creusot et Saône-et-Loire. Infos en temps réel, météo, cinéma Le Capitole, radios locales. 100% gratuit, sans pub.">
-    <meta name="keywords" content="Montceau-les-Mines, actualités, info locale, Saône-et-Loire, Le Creusot, Blanzy, météo, cinéma, Bourgogne, 71, news">
-    <meta name="author" content="Actu & Média">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://actuetmedia.fr/">
-    
-    <!-- ============================================
-         Open Graph (Facebook, LinkedIn, etc.)
-         ============================================ -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://actuetmedia.fr/">
-    <meta property="og:title" content="Actu & Média - Actualités Montceau-les-Mines">
-    <meta property="og:description" content="Votre portail d'informations locales pour Montceau-les-Mines et sa région. Actualités, météo, cinéma, radios. 100% gratuit !">
-    <meta property="og:image" content="https://actuetmedia.fr/images/og-image.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:locale" content="fr_FR">
-    <meta property="og:site_name" content="Actu & Média">
-    
-    <!-- ============================================
-         Twitter Card
-         ============================================ -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://actuetmedia.fr/">
-    <meta name="twitter:title" content="Actu & Média - Actualités Montceau-les-Mines">
-    <meta name="twitter:description" content="Votre portail d'informations locales pour Montceau-les-Mines et sa région. 100% gratuit !">
-    <meta name="twitter:image" content="https://actuetmedia.fr/images/og-image.png">
-    
-    <!-- ============================================
-         PWA - Progressive Web App
-         ============================================ -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1a1a2e">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Actu & Média">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="images/favicon-180.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="images/favicon-180.png">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
-    <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48.png">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    
-    <!-- ============================================
-         Preconnect - Performance
-         ============================================ -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
-    
-    <!-- ============================================
-         Fonts & Icons
-         ============================================ -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&display=swap" rel="stylesheet">
-    
-    <!-- ============================================
-         CSS
-         ============================================ -->
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/weather-widget.css">
-    <link rel="stylesheet" href="css/quick-links.css">
-    <link rel="stylesheet" href="css/support.css">
-	<link rel="stylesheet" href="css/mini-radio.css">
-    
-    <!-- ============================================
-         Google Verification & Analytics
-         ============================================ -->
-    <meta name="google-site-verification" content="74sCYbSwcWjU7BQ8Mxhboe9IiRzajIbyy6C1hyuAr3U">
-    
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-N8FTF9GC');</script>
-    <!-- End Google Tag Manager -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Actu & Média a besoin de vous</title>
+  <meta name="description" content="Actu & Média, votre site d'infos locales de Montceau-les-Mines, est gratuit, sans pub et bénévole depuis 2 ans et 7 mois. Aujourd'hui, il a besoin de votre soutien pour continuer.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bleu: #4299e1;
+      --bleu-fonce: #2c5282;
+      --or: #ffdd57;
+      --texte: #eaf1fa;
+      --texte-doux: rgba(234, 241, 250, 0.75);
+      --carte: rgba(255, 255, 255, 0.05);
+      --bord: rgba(255, 255, 255, 0.12);
+    }
+
+    body {
+      background: linear-gradient(160deg, #0d1b3f 0%, #16294e 45%, #1e3a5c 100%);
+      color: var(--texte);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 50px 20px 60px;
+    }
+
+    h1, h2, .chiffre {
+      font-family: 'Bricolage Grotesque', 'Segoe UI', sans-serif;
+    }
+
+    /* ---------- HERO ---------- */
+    .hero { text-align: center; margin-bottom: 45px; }
+
+    .hero .logo {
+      width: 74px; height: 74px;
+      background: linear-gradient(45deg, var(--bleu), var(--bleu-fonce));
+      border-radius: 50%;
+      margin: 0 auto 22px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 25px rgba(66, 153, 225, 0.35);
+    }
+
+    .hero .logo svg { width: 34px; height: 34px; stroke: #fff; }
+
+    .hero .surtitre {
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 0.8em;
+      color: var(--bleu);
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: clamp(1.9em, 5.5vw, 2.9em);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 18px;
+    }
+
+    h1 .accent { color: var(--or); }
+
+    .hero p {
+      font-size: 1.1em;
+      color: var(--texte-doux);
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* ---------- LE CHIFFRE ---------- */
+    .zero {
+      text-align: center;
+      margin: 45px 0;
+      padding: 35px 20px;
+      background: var(--carte);
+      border: 1px solid var(--bord);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .zero .chiffre {
+      font-size: clamp(4em, 14vw, 6.5em);
+      font-weight: 800;
+      color: var(--or);
+      line-height: 1;
+      display: block;
+    }
+
+    .zero .legende {
+      font-size: 1.15em;
+      margin-top: 10px;
+      color: var(--texte);
+      font-weight: 600;
+    }
+
+    .zero .sous-legende {
+      font-size: 0.95em;
+      color: var(--texte-doux);
+      margin-top: 6px;
+    }
+
+    /* ---------- STATS ---------- */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 35px 0;
+    }
+
+    .stat {
+      background: var(--carte);
+      border: 1px solid var(--bord);
+      border-radius: 14px;
+      padding: 18px 10px;
+      text-align: center;
+    }
+
+    .stat .chiffre { font-size: 1.5em; font-weight: 700; color: var(--bleu); display: block; }
+    .stat .label { font-size: 0.82em; color: var(--texte-doux); margin-top: 4px; display: block; }
+
+    /* ---------- SECTIONS ---------- */
+    section { margin: 45px 0; }
+
+    h2 {
+      font-size: 1.45em;
+      font-weight: 700;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h2 svg { width: 22px; height: 22px; stroke: var(--bleu); flex-shrink: 0; }
+
+    section > p { color: var(--texte-doux); margin-bottom: 14px; }
+    section > p strong { color: var(--texte); }
+
+    /* ---------- LISTE DU TRAVAIL ---------- */
+    .travail {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      list-style: none;
+    }
+
+    .travail li {
+      background: var(--carte);
+      border: 1px solid var(--bord);
+      border-radius: 12px;
+      padding: 13px 15px;
+      font-size: 0.93em;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .travail li svg {
+      width: 17px; height: 17px;
+      stroke: var(--bleu);
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    /* ---------- APPEL AU DON ---------- */
+    .don {
+      background: linear-gradient(145deg, rgba(255, 221, 87, 0.10), rgba(255, 221, 87, 0.04));
+      border: 1px solid rgba(255, 221, 87, 0.35);
+      border-radius: 20px;
+      padding: 32px 26px;
+      text-align: center;
+    }
+
+    .don h2 { justify-content: center; }
+    .don h2 svg { stroke: var(--or); }
+
+    .don p { color: var(--texte-doux); max-width: 520px; margin: 0 auto 22px; }
+    .don p strong { color: var(--or); }
+
+    .btn-paypal {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--or);
+      color: #1a1a2e;
+      font-weight: 700;
+      font-size: 1.1em;
+      text-decoration: none;
+      padding: 15px 34px;
+      border-radius: 30px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 6px 20px rgba(255, 221, 87, 0.25);
+    }
+
+    .btn-paypal:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(255, 221, 87, 0.4);
+    }
+
+    .btn-paypal svg { width: 20px; height: 20px; stroke: #1a1a2e; }
+
+    .don .petit {
+      display: block;
+      margin-top: 14px;
+      font-size: 0.88em;
+      color: var(--texte-doux);
+    }
+
+    /* ---------- CONTACT + ENTRÉE SITE ---------- */
+    .acces {
+      text-align: center;
+      margin-top: 50px;
+      padding-top: 35px;
+      border-top: 1px solid var(--bord);
+    }
+
+    .btn-site {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--texte);
+      background: var(--carte);
+      border: 1px solid var(--bord);
+      text-decoration: none;
+      font-size: 1.05em;
+      font-weight: 600;
+      padding: 14px 30px;
+      border-radius: 30px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-site:hover {
+      background: rgba(66, 153, 225, 0.15);
+      border-color: var(--bleu);
+      transform: translateY(-2px);
+    }
+
+    .btn-site svg { width: 19px; height: 19px; stroke: var(--texte); }
+
+    .acces .contact {
+      margin-top: 20px;
+      font-size: 0.9em;
+      color: var(--texte-doux);
+    }
+
+    .acces .contact a { color: var(--bleu); text-decoration: none; }
+    .acces .contact a:hover { text-decoration: underline; }
+
+    /* ---------- ANIMATIONS ---------- */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: apparition 0.7s ease-out forwards;
+    }
+
+    @keyframes apparition {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in { animation: none; opacity: 1; transform: none; }
+      .btn-paypal, .btn-site { transition: none; }
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 560px) {
+      .page { padding: 35px 16px 45px; }
+      .travail { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .stat { padding: 14px 6px; }
+      .stat .chiffre { font-size: 1.2em; }
+      .stat .label { font-size: 0.72em; }
+    }
+  </style>
 </head>
 <body>
+  <div class="page">
 
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N8FTF9GC"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-    
-    <!-- Header -->
-    <header class="header glass">
-        <div class="header-top">
-            <div class="header-left-btns">
-                <button class="header-btn" id="quickLinksBtn" aria-label="Menu liens rapides">
-                    <span class="material-icons">menu</span>
-                </button>
-                <a href="radio.html" class="header-btn" aria-label="Écouter la radio">
-				<span class="material-icons">radio</span>
-			</a>
-            </div>
-            <div class="header-title">
-                <h1>Actu <span class="header-amp">&</span> Média</h1>
-                <div class="header-subtitle">Montceau-les-Mines</div>
-            </div>
-            <div class="header-right-btns">
-                <button class="theme-toggle" id="themeToggle" aria-label="Changer de thème">
-                    <span class="material-icons" id="themeIcon">light_mode</span>
-                </button>
-                <button class="header-btn support" id="supportBtn" aria-label="À propos et soutien">
-                    <span class="material-icons">favorite</span>
-                </button>
-            </div>
-        </div>
-        <a href="meteo.html" class="weather-widget" id="weatherBar" title="Voir la météo détaillée">
-            <div class="weather-day today">
-                <span class="weather-day-label">Auj.</span>
-                <span class="weather-day-icon" id="weatherIcon0"></span>
-                <span class="weather-day-temp" id="weatherTemp0">--°</span>
-            </div>
-            <div class="weather-separator"></div>
-            <div class="weather-day">
-                <span class="weather-day-label" id="weatherLabel1">Dem.</span>
-                <span class="weather-day-icon" id="weatherIcon1"></span>
-                <span class="weather-day-temp" id="weatherTemp1">--°</span>
-            </div>
-            <div class="weather-separator"></div>
-            <div class="weather-day">
-                <span class="weather-day-label" id="weatherLabel2">--</span>
-                <span class="weather-day-icon" id="weatherIcon2"></span>
-                <span class="weather-day-temp" id="weatherTemp2">--°</span>
-            </div>
-        </a>
+    <!-- HERO -->
+    <header class="hero fade-in">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+      </div>
+      <p class="surtitre">Un message d'Hervé, créateur du site</p>
+      <h1>Actu &amp; Média est gratuit, sans pub, bénévole.<br><span class="accent">Et il a besoin de vous.</span></h1>
+      <p>Depuis 2 ans et 7 mois, je développe et mets à jour ce site seul, sur mon temps libre, pour offrir à Montceau-les-Mines et sa région un portail d'infos locales entièrement gratuit.</p>
     </header>
 
-    <!-- Barre Date & Saint du jour -->
-    <div class="date-bar" id="dateBar">
-		<span class="material-icons date-bar-icon">today</span>
-		<span class="date-bar-day" id="dateBarDay"></span>
-		<span class="date-bar-separator">·</span>
-		<span class="date-bar-saint" id="dateBarSaint"></span>
-	</div>
-
-    <!-- Panel Liens Rapides (gauche) -->
-    <div class="quick-links-overlay" id="quickLinksOverlay"></div>
-    <aside class="quick-links-panel" id="quickLinksPanel">
-        <div class="quick-links-header">
-            <div class="quick-links-title">
-                <span class="material-icons">link</span>
-                Liens rapides
-            </div>
-            <button class="quick-links-close" id="quickLinksClose" aria-label="Fermer">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="quick-links-content">
-            <!-- Section Urgences -->
-            <div class="quick-links-section">
-                <div class="quick-links-section-title">Urgences</div>
-                <button class="quick-link-item" onclick="showEmergencyNumbers()">
-                    <div class="quick-link-icon emergency">🚨</div>
-                    <div class="quick-link-text">
-                        <div class="quick-link-name">Numéros d'urgence</div>
-                        <div class="quick-link-desc">15, 17, 18, 112...</div>
-                    </div>
-                    <span class="material-icons quick-link-arrow">chevron_right</span>
-                </button>
-            </div>
-            
-            <!-- Section Services locaux -->
-            <div class="quick-links-section">
-                <div class="quick-links-section-title">Services locaux</div>
-                <a href="https://www.montceaulesmines.fr/" target="_blank" rel="noopener" class="quick-link-item">
-                    <div class="quick-link-icon local">🏛️</div>
-                    <div class="quick-link-text">
-                        <div class="quick-link-name">Mairie de Montceau</div>
-                        <div class="quick-link-desc">Site officiel</div>
-                    </div>
-                    <span class="material-icons quick-link-arrow">chevron_right</span>
-                </a>
-                <a href="https://www.creusot-montceau.org/" target="_blank" rel="noopener" class="quick-link-item">
-                    <div class="quick-link-icon local">🏢</div>
-                    <div class="quick-link-text">
-                        <div class="quick-link-name">CUCM</div>
-                        <div class="quick-link-desc">Communauté urbaine</div>
-                    </div>
-                    <span class="material-icons quick-link-arrow">chevron_right</span>
-                </a>
-                <a href="https://www.ch-montceau71.fr/" target="_blank" rel="noopener" class="quick-link-item">
-                    <div class="quick-link-icon local">🏥</div>
-                    <div class="quick-link-text">
-                        <div class="quick-link-name">Hôpital</div>
-                        <div class="quick-link-desc">Centre hospitalier</div>
-                    </div>
-                    <span class="material-icons quick-link-arrow">chevron_right</span>
-                </a>
-            </div>
-            
-			<!-- Section Loisirs -->
-            <div class="quick-links-section">
-                <div class="quick-links-section-title">Loisirs</div>
-                <a href="https://brocabrac.fr/71/montceau-les-mines/" target="_blank" rel="noopener" class="quick-link-item">
-                    <div class="quick-link-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);">🛍️</div>
-                    <div class="quick-link-text">
-                        <div class="quick-link-name">Brocantes</div>
-                        <div class="quick-link-desc">Vide-greniers (40km)</div>
-                    </div>
-                    <span class="material-icons quick-link-arrow">chevron_right</span>
-                </a>
-                <button class="quick-link-item" onclick="showTVModal()">
-                    <div class="quick-link-icon tv">📺</div>
-                    <div class="quick-link-text">
-                        <div class="quick-link-name">TV en direct</div>
-                        <div class="quick-link-desc">Chaînes d'info</div>
-                    </div>
-                    <span class="material-icons quick-link-arrow">chevron_right</span>
-                </button>
-                <a href="https://rmcsport.bfmtv.com/cyclisme/" target="_blank" rel="noopener" class="quick-link-item">
-                    <div class="quick-link-icon sports">🚴</div>
-                    <div class="quick-link-text">
-                        <div class="quick-link-name">Cyclisme</div>
-                        <div class="quick-link-desc">RMC Sport · Résultats</div>
-                    </div>
-                    <span class="material-icons quick-link-arrow">chevron_right</span>
-                </a>
-            </div>
-		
-            <!-- Section Transport -->
-            <div class="quick-links-section">
-                <div class="quick-links-section-title">Transport & Routes</div>
-                <a href="https://www.inforoute71.fr/" target="_blank" rel="noopener" class="quick-link-item">
-                    <div class="quick-link-icon transport">🚗</div>
-                    <div class="quick-link-text">
-                        <div class="quick-link-name">Info Routes 71</div>
-                        <div class="quick-link-desc">Trafic en temps réel</div>
-                    </div>
-                    <span class="material-icons quick-link-arrow">chevron_right</span>
-                </a>
-                <a href="https://www.ter.sncf.com/bourgogne-franche-comte" target="_blank" rel="noopener" class="quick-link-item">
-                    <div class="quick-link-icon transport">🚆</div>
-                    <div class="quick-link-text">
-                        <div class="quick-link-name">TER SNCF</div>
-                        <div class="quick-link-desc">Horaires Bourgogne</div>
-                    </div>
-                    <span class="material-icons quick-link-arrow">chevron_right</span>
-                </a>
-            </div>
-        </div>
-    </aside>
-
-    <!-- Panel Support (droite) -->
-    <div class="support-overlay" id="supportOverlay"></div>
-    <aside class="support-panel" id="supportPanel">
-        <div class="support-header">
-            <div class="support-title">
-                <span class="material-icons">info</span>
-                À propos
-            </div>
-            <button class="support-close" id="supportClose" aria-label="Fermer">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="support-content">
-            <!-- Section À propos -->
-            <div class="support-about">
-                <div class="support-logo">📰</div>
-                <div class="support-name">Actu & Média</div>
-                <div class="support-desc">
-                    Votre portail d'informations locales pour Montceau-les-Mines et sa région.
-                    Actualités, météo, cinéma et liens utiles.
-                </div>
-            </div>            
-			
-            <!-- Bouton PayPal -->
-            <div class="donation-section">
-    <a href="https://www.paypal.com/paypalme/actuetmedia" target="_blank" rel="noopener" class="donation-btn heartbeat">
-        <svg class="pulse-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-right:8px;">
-                <path d="M7.144 19.532l1.049-6.65h2.606c2.754 0 5.076-1.87 5.541-4.61.48-2.828-1.352-5.272-4.192-5.272H6.834c-.518 0-.964.373-1.044.883L3.614 18.66c-.087.546.332 1.044.884 1.044h2.083c.312 0 .581-.22.633-.527l-.07.356zm2.639-9.283l.735-4.66h2.267c1.27 0 2.132.99 1.918 2.25-.213 1.262-1.398 2.41-2.667 2.41h-2.253z"/>
-            </svg>
-        Soutenir avec PayPal
-    </a>
-    <p class="donation-note">Un geste simple pour faire vivre Actu & Média ☕</p>
-			</div>
-            
-            <!-- Actions -->
-            <div class="support-actions">
-                <a href="contact.html" class="support-action">
-                    <div class="support-action-icon email">📧</div>
-                    <div class="support-action-text">
-                        <div class="support-action-name">Nous contacter</div>
-                        <div class="support-action-desc">Formulaire de contact</div>
-                    </div>
-                    <span class="material-icons arrow">chevron_right</span>
-                </a>
-                <a href="proposer.html" class="support-action">
-                    <div class="support-action-icon propose">📰</div>
-                    <div class="support-action-text">
-                        <div class="support-action-name">Proposer une actualité</div>
-                        <div class="support-action-desc">Partager une info locale</div>
-                    </div>
-                    <span class="material-icons arrow">chevron_right</span>
-                </a>
-                <a href="radio.html" class="support-action" onclick="closeSupportWidget();" style="text-decoration: none; color: inherit;">
-					<div class="support-action-icon radio">📻</div>
-					<div class="support-action-text">
-						<div class="support-action-name">Écouter la radio</div>
-                        <div class="support-action-desc">Radios locales et nationales</div>
-                    </div>
-                    <span class="material-icons arrow">chevron_right</span>
-                </a>
-                <a href="https://www.swisstransfer.com/fr-fr" target="_blank" rel="noopener" class="support-action">
-                    <div class="support-action-icon upload">📤</div>
-                    <div class="support-action-text">
-                        <div class="support-action-name">SwissTransfer</div>
-                        <div class="support-action-desc">Envoyer des fichiers volumineux</div>
-                    </div>
-                    <span class="material-icons arrow">chevron_right</span>
-                </a>           
-                <button class="support-action" onclick="shareWebsite()">
-                    <div class="support-action-icon share">🔗</div>
-                    <div class="support-action-text">
-                        <div class="support-action-name">Partager le site</div>
-                        <div class="support-action-desc">Faire connaître Actu & Média</div>
-                    </div>
-                    <span class="material-icons arrow">share</span>
-                </button>
-                <button class="support-action" id="notifSubscribeBtn" onclick="togglePushSubscription()">
-                    <div class="support-action-icon notif" id="notifIcon">🔔</div>
-                    <div class="support-action-text">
-                        <div class="support-action-name" id="notifTitle">Activer les notifications</div>
-                        <div class="support-action-desc" id="notifDesc">Recevoir les alertes infos</div>
-                    </div>
-                    <span class="material-icons arrow" id="notifArrow">notifications_none</span>
-                </button>
-                <button class="support-action" onclick="resetAndReload()">
-                    <div class="support-action-icon update">🔄</div>
-                    <div class="support-action-text">
-                        <div class="support-action-name">Mettre à jour l'application</div>
-                        <div class="support-action-desc">Vider le cache et redémarrer</div>
-                    </div>
-                    <span class="material-icons arrow">refresh</span>
-                </button>
-            </div>
-            
-            <!-- Admin link (discret) -->
-            <div id="adminSection" class="admin-section" style="display: none;">
-                <a href="admin.html" class="admin-link">
-                    <span class="material-icons">admin_panel_settings</span>
-                    Administration
-                    <span class="admin-badge" id="adminBadge" style="display: none;">0</span>
-                </a>
-            </div>
-        </div>
-		<!-- Sélecteur taille de texte -->
-            <div class="font-size-selector">
-                <span class="font-size-selector-label">Taille :</span>
-                <button class="font-size-btn active" data-size="normal">A</button>
-                <button class="font-size-btn" data-size="medium">A+</button>
-            </div>
-        <div class="support-footer">
-            <div class="support-social">
-                <a href="https://www.facebook.com/actuetmedia.fr/" target="_blank" rel="noopener" class="support-social-link facebook" title="Facebook">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.144 19.532l1.049-6.65h2.606c2.754 0 5.076-1.87 5.541-4.61.48-2.828-1.352-5.272-4.192-5.272H6.834c-.518 0-.964.373-1.044.883L3.614 18.66c-.087.546.332 1.044.884 1.044h2.083c.312 0 .581-.22.633-.527l-.07.356zm2.639-9.283l.735-4.66h2.267c1.27 0 2.132.99 1.918 2.25-.213 1.262-1.398 2.41-2.667 2.41h-2.253z"/></svg>
-                </a>
-                <a href="/cdn-cgi/l/email-protection#583b37362c393b2c18393b2c2d3d2c353d3c3139763e2a" class="support-social-link email" title="Contact">
-                    <span class="material-icons">email</span>
-                </a>
-            </div>
-            <div class="support-copyright">© 2026 Actu & Média</div>
-            <div class="support-version">Version 3.0 • Fait avec ❤️ à Montceau</div>
-        </div>
-    </aside>
-
-    <!-- News Ticker / Swiper -->
-    <section class="news-ticker-section glass">
-        <div class="news-ticker-header">
-            <span class="material-icons pulse">sensors</span>
-            <span>Infos en direct</span>
-        </div>
-        <div class="news-ticker-container" id="newsTicker">
-            <div class="news-ticker-loading">
-                <span class="material-icons spinning">sync</span>
-                Chargement des actualités...
-            </div>
-        </div>
-        <div class="news-ticker-nav">
-            <button class="ticker-nav-btn" id="tickerPrev" aria-label="Article précédent">
-                <span class="material-icons">chevron_left</span>
-            </button>
-            <div class="ticker-dots" id="tickerDots"></div>
-            <button class="ticker-nav-btn" id="tickerNext" aria-label="Article suivant">
-                <span class="material-icons">chevron_right</span>
-            </button>
-        </div>
-    </section>
-
-    <!-- Tuiles Sites Locaux -->
-    <section class="tiles-section">
-        <h2 class="section-title">
-            <span class="material-icons">language</span>
-            Sites d'actualités locales
-        </h2>
-        <div class="tiles-grid">
-            <a href="https://www.lejsl.com/edition-montceau-les-mines" target="_blank" rel="noopener" class="tile glass" data-color="#3b82f6">
-				<div class="tile-icon"><span class="material-icons">newspaper</span></div>
-				<div class="tile-text"><div class="tile-name">Le JSL</div><div class="tile-subtitle">Montceau</div></div>
-			</a>
-			<a href="https://montceau-news.com/" target="_blank" rel="noopener" class="tile glass" data-color="#ef4444">
-				<div class="tile-icon"><span class="material-icons">location_city</span></div>
-				<div class="tile-text"><div class="tile-name">Montceau News</div><div class="tile-subtitle">Local</div></div>
-			</a>
-			<a href="https://www.creusot-infos.com" target="_blank" rel="noopener" class="tile glass" data-color="#f59e0b">
-				<div class="tile-icon"><span class="material-icons">factory</span></div>
-				<div class="tile-text"><div class="tile-name">Creusot Infos</div><div class="tile-subtitle">Bassin minier</div></div>
-			</a>
-			<a href="https://linformateurdebourgogne.com/" target="_blank" rel="noopener" class="tile glass" data-color="#10b981">
-				<div class="tile-icon"><span class="material-icons">article</span></div>
-				<div class="tile-text"><div class="tile-name">L'Informateur</div><div class="tile-subtitle">Bourgogne</div></div>
-			</a>
-        </div>
-        
-        <div class="tiles-grid tiles-extra" id="tilesExtra">
-            <a href="https://www.lejsl.com/edition-chalon-sur-saone" target="_blank" rel="noopener" class="tile glass" data-color="#8b5cf6">
-				<div class="tile-icon"><span class="material-icons">wine_bar</span></div>
-				<div class="tile-text"><div class="tile-name">Le JSL</div><div class="tile-subtitle">Chalon-sur-Saône</div></div>
-			</a>
-			<a href="https://www.lejsl.com/edition-macon" target="_blank" rel="noopener" class="tile glass" data-color="#06b6d4">
-				<div class="tile-icon"><span class="material-icons">map</span></div>
-				<div class="tile-text"><div class="tile-name">Le JSL</div><div class="tile-subtitle">Mâcon</div></div>
-			</a>
-			<a href="https://www.lejsl.com/edition-autun" target="_blank" rel="noopener" class="tile glass" data-color="#6366f1">
-				<div class="tile-icon"><span class="material-icons">account_balance</span></div>
-				<div class="tile-text"><div class="tile-name">Le JSL</div><div class="tile-subtitle">Autun</div></div>
-			</a>
-        </div>
-        
-        <button class="tiles-toggle" id="tilesToggle" onclick="toggleExtraTiles()">
-            <span class="material-icons" id="tilesToggleIcon">expand_more</span>
-            <span id="tilesToggleText">Plus de villes</span>
-        </button>
-    </section>
-
-    <section class="tiles-section">
-        <h2 class="section-title">
-            <span class="material-icons">tv</span>
-            Médias régionaux
-        </h2>
-        <div class="tiles-grid">
-            <a href="https://www.francebleu.fr/bourgogne-franche-comte/saone-et-loire-71/actu" target="_blank" rel="noopener" class="tile glass" data-color="#2563eb">
-				<div class="tile-icon"><span class="material-icons">mic</span></div>
-				<div class="tile-text"><div class="tile-name">France Bleu</div><div class="tile-subtitle">Saône-et-Loire</div></div>
-			</a>
-			<a href="https://france3-regions.franceinfo.fr/bourgogne-franche-comte/saone-et-loire" target="_blank" rel="noopener" class="tile glass" data-color="#0891b2">
-				<div class="tile-icon"><span class="material-icons">tv</span></div>
-				<div class="tile-text"><div class="tile-name">France 3</div><div class="tile-subtitle">Bourgogne</div></div>
-			</a>
-			<a href="https://actu.fr/bourgogne-franche-comte/dijon_21231" target="_blank" rel="noopener" class="tile glass" data-color="#7c3aed">
-				<div class="tile-icon"><span class="material-icons">visibility</span></div>
-				<div class="tile-text"><div class="tile-name">Actu.fr</div><div class="tile-subtitle">Dijon</div></div>
-			</a>
-			<a href="https://www.bfmtv.com/dijon/" target="_blank" rel="noopener" class="tile glass" data-color="#dc2626">
-				<div class="tile-icon"><span class="material-icons">sensors</span></div>
-				<div class="tile-text"><div class="tile-name">BFM Dijon</div><div class="tile-subtitle">Bourgogne</div></div>
-			</a>
-        </div>
-
-        <div class="tiles-grid tiles-extra" id="mediaRegionalExtra">
-            <a href="https://www.bienpublic.com/" target="_blank" rel="noopener" class="tile glass" data-color="#0284c7">
-				<div class="tile-icon"><span class="material-icons">newspaper</span></div>
-				<div class="tile-text"><div class="tile-name">Le Bien Public</div><div class="tile-subtitle">Dijon</div></div>
-			</a>
-			<a href="https://www.lyonmag.com/" target="_blank" rel="noopener" class="tile glass" data-color="#e11d48">
-				<div class="tile-icon"><span class="material-icons">pets</span></div>
-				<div class="tile-text"><div class="tile-name">Lyon Mag</div><div class="tile-subtitle">Lyon</div></div>
-			</a>
-        </div>
-
-        <button class="tiles-toggle" onclick="toggleSection('mediaRegionalExtra','mediaRegionalBtn','mediaRegionalIcon','mediaRegionalText','Plus de médias','Moins de médias','mediaRegionalExpanded')" id="mediaRegionalBtn">
-            <span class="material-icons" id="mediaRegionalIcon">expand_more</span>
-            <span id="mediaRegionalText">Plus de médias</span>
-        </button>
-    </section>
-
-    <section class="tiles-section">
-        <h2 class="section-title">
-            <span class="material-icons">public</span>
-            Médias nationaux
-        </h2>
-        <div class="tiles-grid">
-            <a href="https://www.francetvinfo.fr/" target="_blank" rel="noopener" class="tile glass" data-color="#1d4ed8">
-				<div class="tile-icon"><span class="material-icons">radar</span></div>
-				<div class="tile-text"><div class="tile-name">France Info</div><div class="tile-subtitle">Info en continu</div></div>
-			</a>
-			<a href="https://www.bfmtv.com/" target="_blank" rel="noopener" class="tile glass" data-color="#dc2626">
-				<div class="tile-icon"><span class="material-icons">sensors</span></div>
-				<div class="tile-text"><div class="tile-name">BFM TV</div><div class="tile-subtitle">Info en continu</div></div>
-			</a>
-			<a href="https://www.cnews.fr/" target="_blank" rel="noopener" class="tile glass" data-color="#0891b2">
-				<div class="tile-icon"><span class="material-icons">live_tv</span></div>
-				<div class="tile-text"><div class="tile-name">CNews</div><div class="tile-subtitle">Info en continu</div></div>
-			</a>
-			<a href="https://www.20minutes.fr/" target="_blank" rel="noopener" class="tile glass" data-color="#059669">
-				<div class="tile-icon"><span class="material-icons">timer</span></div>
-				<div class="tile-text"><div class="tile-name">20 Minutes</div><div class="tile-subtitle">Gratuit</div></div>
-			</a>
-        </div>
-
-        <div class="tiles-grid tiles-extra" id="mediaNationalExtra">
-            <a href="https://www.ladepeche.fr/actu/" target="_blank" rel="noopener" class="tile glass" data-color="#d97706">
-				<div class="tile-icon"><span class="material-icons">feed</span></div>
-				<div class="tile-text"><div class="tile-name">La Dépêche</div><div class="tile-subtitle">Quotidien</div></div>
-			</a>
-			<a href="https://fr.news.yahoo.com/" target="_blank" rel="noopener" class="tile glass" data-color="#7c3aed">
-				<div class="tile-icon"><span class="material-icons">language</span></div>
-				<div class="tile-text"><div class="tile-name">Yahoo! France</div><div class="tile-subtitle">Actualités</div></div>
-			</a>
-			<a href="https://rmcsport.bfmtv.com/" target="_blank" rel="noopener" class="tile glass" data-color="#e11d48">
-				<div class="tile-icon"><span class="material-icons">sports_soccer</span></div>
-				<div class="tile-text"><div class="tile-name">RMC Sport</div><div class="tile-subtitle">Sport</div></div>
-			</a>
-			<a href="https://www.jeanmarcmorandini.com/" target="_blank" rel="noopener" class="tile glass" data-color="#9333ea">
-				<div class="tile-icon"><span class="material-icons">campaign</span></div>
-				<div class="tile-text"><div class="tile-name">Morandini</div><div class="tile-subtitle">People</div></div>
-			</a>
-        </div>
-
-        <button class="tiles-toggle" onclick="toggleSection('mediaNationalExtra','mediaNationalBtn','mediaNationalIcon','mediaNationalText','Plus de médias','Moins de médias','mediaNationalExpanded')" id="mediaNationalBtn">
-            <span class="material-icons" id="mediaNationalIcon">expand_more</span>
-            <span id="mediaNationalText">Plus de médias</span>
-        </button>
-    </section>
-
-<!-- Agenda Local -->
-    <section class="agenda-section glass">
-        <div class="agenda-header">
-            <div class="agenda-title">
-                <span class="material-icons">event</span>
-                <span>Agenda local</span>
-            </div>
-            <a href="agenda.html" class="agenda-link">
-                Voir tout
-                <span class="material-icons">arrow_forward</span>
-            </a>
-        </div>
-        <div class="agenda-content" id="agendaContent">
-            <div class="agenda-loading">
-                <span class="material-icons spinning">sync</span>
-                Chargement des événements...
-            </div>
-        </div>
-        <div class="agenda-empty" id="agendaEmpty" style="display: none;">
-            <div class="agenda-empty-icon">📅</div>
-            <div class="agenda-empty-text">Aucun événement prévu</div>
-        </div>
-    </section>
-	
-    <!-- Widget Cinéma -->
-    <section class="cinema-section glass">
-        <div class="cinema-section-title">🎬 Cinémas</div>
-        <div class="cinema-header">
-            <div class="cinema-tabs">
-                <button class="cinema-tab active" id="tabCapitole" onclick="switchCinema('capitole')">
-                    <span class="material-icons">movie</span>
-                    Le Capitole
-                </button>
-                <button class="cinema-tab" id="tabMagic" onclick="switchCinema('magic')">
-                    <span class="material-icons">movie</span>
-                    Magic
-                </button>
-            </div>
-            <a href="https://www.cinemacapitole-montceau.fr/horaires/" target="_blank" rel="noopener" class="cinema-link" id="cinemaLink">
-                Voir tout
-                <span class="material-icons">arrow_forward</span>
-            </a>
-        </div>
-        <div class="cinema-subtitle" id="cinemaSubtitle">Montceau-les-Mines • <span class="cinema-today">Aujourd'hui</span></div>
-        <div class="cinema-content" id="cinemaContent">
-            <div class="cinema-loading">
-                <span class="material-icons spinning">theaters</span>
-                <span>Chargement du programme...</span>
-            </div>
-        </div>
-    </section>
-
-<!-- Section Sport - FC Montceau Bourgogne -->
-    <section class="sport-section glass" id="sportSection">
-        <div class="sport-header">
-            <div class="sport-title">
-                <span class="sport-title-icon">⚽</span>
-                <span>FC Montceau</span>
-                <span class="sport-badge">R1 Herbelin</span>
-            </div>
-            <a href="https://www.sportcorico.com/clubs/fc-montceau-bourgogne/montceau-fc-bourgogn" target="_blank" rel="noopener" class="sport-link">
-                Détails
-                <span class="material-icons">arrow_forward</span>
-            </a>
-        </div>
-        <div class="sport-loading" id="sportLoading">
-            <span class="material-icons spinning">sync</span>
-            Chargement...
-        </div>
-        <div id="sportContent" style="display: none;">
-            <div class="sport-matches">
-                <div class="sport-match-card" id="sportLastMatch">
-                    <div class="sport-result-indicator" id="sportResultIndicator">
-                        <span class="sport-result-letter" id="sportResultLetter"></span>
-                    </div>
-                    <div class="sport-match-label sport-match-label-result">📊 Dernier match</div>
-                    <div class="sport-match-date" id="sportLastDate"></div>
-                    <div class="sport-match-teams">
-                        <div class="sport-team-row">
-                            <span class="sport-team-name" id="sportLastHome"></span>
-                            <span class="sport-team-score" id="sportLastHomeScore"></span>
-                        </div>
-                        <div class="sport-team-row">
-                            <span class="sport-team-name" id="sportLastAway"></span>
-                            <span class="sport-team-score" id="sportLastAwayScore"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="sport-match-card" id="sportNextMatch">
-                    <div class="sport-match-label sport-match-label-next">📅 <span id="sportNextLabel">Prochain match</span></div>
-                    <div class="sport-match-date" id="sportNextDate"></div>
-                    <div class="sport-match-teams">
-                        <div class="sport-team-row"><span class="sport-team-name" id="sportNextHome"></span></div>
-                        <div class="sport-match-vs">VS</div>
-                        <div class="sport-team-row"><span class="sport-team-name" id="sportNextAway"></span></div>
-                    </div>
-                    <div class="sport-match-time" id="sportNextTime"></div>
-                </div>
-            </div>
-            <div class="sport-standing-row" id="sportStanding">
-                <div class="sport-position" id="sportPosition"></div>
-                <div class="sport-standing-info">
-                    <div class="sport-standing-title">Classement</div>
-                    <div class="sport-standing-stats" id="sportStats"></div>
-                </div>
-                <div class="sport-form" id="sportForm"></div>
-            </div>
-            <button class="sport-classement-btn" id="sportClassementBtn" onclick="showStandingsModal()">
-                <span class="material-icons">leaderboard</span>
-                Voir le classement complet
-            </button>
-            <div class="sport-teams-row">
-                <a href="https://scorenco.com/basket/clubs/elan-chalon-basket-2m40/1-4xe3" target="_blank" rel="noopener" class="sport-team-pill">
-                    <span class="sport-team-pill-icon">🏀</span>
-                    <div class="sport-team-pill-text"><span class="sport-team-pill-name">ELAN Chalon</span><span class="sport-team-pill-league">Pro A · Basket</span></div>
-                </a>
-                <a href="https://monclubhouse.ffr.fr/clubs/r-c-montceau-bourgogne/competitions/federale-3/qualification-44289" target="_blank" rel="noopener" class="sport-team-pill">
-                    <span class="sport-team-pill-icon">🏉</span>
-                    <div class="sport-team-pill-text"><span class="sport-team-pill-name">RC Montceau</span><span class="sport-team-pill-league">Fédérale · Rugby</span></div>
-                </a>
-                <a href="https://ligue1.com/fr/competitions/ligue1mcdonalds/news" target="_blank" rel="noopener" class="sport-team-pill">
-                    <span class="sport-team-pill-icon">⚽</span>
-                    <div class="sport-team-pill-text"><span class="sport-team-pill-name">Ligue 1</span><span class="sport-team-pill-league">Championnat de France</span></div>
-                </a>
-                <a href="https://ligue1.com/fr/competitions/ligue2bkt/news" target="_blank" rel="noopener" class="sport-team-pill">
-                    <span class="sport-team-pill-icon">⚽</span>
-                    <div class="sport-team-pill-text"><span class="sport-team-pill-name">Ligue 2</span><span class="sport-team-pill-league">Championnat de France</span></div>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Modal Classement R1 Herbelin -->
-    <div class="standings-modal-overlay" id="standingsModalOverlay" onclick="closeStandingsModal()"></div>
-    <div class="standings-modal" id="standingsModal">
-        <div class="standings-modal-header">
-            <div class="standings-modal-title">
-                <span class="material-icons">emoji_events</span>
-                R1 Herbelin · Poule A
-            </div>
-            <button class="standings-modal-close" onclick="closeStandingsModal()">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="standings-modal-body" id="standingsModalBody">
-            <div class="standings-loading">
-                <span class="material-icons spinning">sync</span> Chargement...
-            </div>
-        </div>
-        <div class="standings-modal-footer">
-            <a href="https://www.sportcorico.com/championnat/bourgogne-franche-comte-regional-1-herbelin-3/phase-unique/poule-a" target="_blank" rel="noopener" class="standings-source-link">
-                <span class="material-icons">open_in_new</span>
-                Voir sur SportCorico
-            </a>
-        </div>
-    </div>
-	
-    <!-- Section Infos de la communauté -->
-    <section class="community-section glass" id="communitySection">
-        <div class="community-header">
-            <div class="community-title">
-                <span class="material-icons">campaign</span>
-                <span>Infos de la communauté</span>
-            </div>
-            <button class="community-propose-btn" onclick="window.location.href='proposer.html'">
-                <span class="material-icons">add</span>
-                Proposer
-            </button>
-        </div>
-        <div class="community-content" id="communityContent">
-            <div class="community-loading">
-                <span class="material-icons spinning">hourglass_empty</span>
-                <span>Chargement...</span>
-            </div>
-        </div>
-        <div class="community-empty" id="communityEmpty" style="display: none;">
-            <div class="community-empty-icon">📭</div>
-            <p>Aucune info pour le moment</p>
-            <p class="community-empty-sub">Soyez le premier à partager une actualité locale !</p>
-        </div>
-    </section>
-
-    <!-- Section SEO -->
-    <section class="seo-section glass">
-        <h2>Actu & Média : L'information locale de Montceau-les-Mines</h2>
-        <p>Bienvenue sur Actu & Média, votre source d'<strong>actualités locales de Montceau-les-Mines</strong>, 
-        du Creusot et de la Saône-et-Loire (71). Retrouvez chaque jour les dernières infos de votre région, 
-        la météo locale, le programme du cinéma Le Capitole et bien plus.</p>
-        <p>Notre <strong>site d'information local</strong> est 100% gratuit, sans publicité et créé bénévolement 
-        pour la communauté de Montceau-les-Mines et ses environs : Blanzy, Saint-Vallier, Sanvignes, etc.</p>
-        <p><strong>Montceau-les-Mines aujourd'hui :</strong> suivez l'actu en temps réel, consultez les événements locaux et restez connecté à votre ville !</p>
-    </section>
-
-    <!-- Modal TV en direct -->
-    <div class="tv-modal" id="tvModal">
-        <div class="tv-modal-content">
-            <div class="tv-modal-header">
-                <h3>📺 TV en direct</h3>
-                <button class="tv-modal-close" onclick="closeTVModal()" aria-label="Fermer">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            <div class="tv-modal-list">
-                <a href="https://www.francebleu.fr/tv/direct/bourgogne" target="_blank" rel="noopener" class="tv-item">
-                    <span class="tv-icon">🔵</span>
-                    <div class="tv-info">
-                        <strong>France 3 Bourgogne</strong>
-                        <span>Info régionale</span>
-                    </div>
-                </a>
-                <a href="https://www.francetvinfo.fr/en-direct/tv.html" target="_blank" rel="noopener" class="tv-item">
-                    <span class="tv-icon">📺</span>
-                    <div class="tv-info">
-                        <strong>France Info</strong>
-                        <span>Info en continu</span>
-                    </div>
-                </a>
-                <a href="https://www.bfmtv.com/en-direct" target="_blank" rel="noopener" class="tv-item">
-                    <span class="tv-icon">🔴</span>
-                    <div class="tv-info">
-                        <strong>BFM TV</strong>
-                        <span>Info en continu</span>
-                    </div>
-                </a>
-                <a href="https://www.cnews.fr/le-direct" target="_blank" rel="noopener" class="tv-item">
-                    <span class="tv-icon">🟠</span>
-                    <div class="tv-info">
-                        <strong>CNews</strong>
-                        <span>Info en continu</span>
-                    </div>
-                </a>
-            </div>
-        </div>
+    <!-- LE CHIFFRE -->
+    <div class="zero fade-in" style="animation-delay: 0.15s">
+      <span class="chiffre">0&nbsp;€</span>
+      <span class="legende">de dons reçus depuis la création du site</span>
+      <span class="sous-legende">malgré des milliers de visites chaque mois</span>
     </div>
 
-    <!-- Footer -->
-    <footer class="footer glass">
-        <p>© 2026 Actu & Média - Montceau-les-Mines</p>
-        <p class="footer-sub">Fait avec ❤️ par ActuetMedia</p>
-        <div class="footer-links">
-            <a href="mentions-legales.html">Mentions légales</a>
-            <span class="footer-separator">•</span>
-            <a href="confidentialite.html">Confidentialité</a>
-        </div>
-    </footer>
-
-    <!-- Popup Installation PWA -->
-    <div class="install-prompt" id="installPrompt">
-        <div class="install-prompt-content">
-            <div class="install-prompt-icon">📱</div>
-            <div class="install-prompt-text">
-                <div class="install-prompt-title">Installer Actu & Média</div>
-                <div class="install-prompt-desc">Accédez rapidement aux actus locales depuis votre écran d'accueil</div>
-            </div>
-            <div class="install-prompt-actions">
-                <button class="install-btn install-btn-secondary" id="dismissBtn">Plus tard</button>
-                <button class="install-btn install-btn-primary" id="installBtn">Installer</button>
-            </div>
-        </div>
+    <!-- STATS -->
+    <div class="stats fade-in" style="animation-delay: 0.25s">
+      <div class="stat"><span class="chiffre">2 ans ½</span><span class="label">de bénévolat</span></div>
+      <div class="stat"><span class="chiffre">100&nbsp;%</span><span class="label">gratuit</span></div>
+      <div class="stat"><span class="chiffre">0</span><span class="label">publicité</span></div>
     </div>
 
-    <!-- Modal Instructions iOS -->
-    <div class="ios-install-modal" id="iosInstallModal">
-        <div class="ios-install-content">
-            <h3>📱 Installer sur iPhone/iPad</h3>
-            <div class="ios-install-step">
-                <div class="ios-install-step-num">1</div>
-                <div class="ios-install-step-text">
-                    Appuyez sur <strong>Partager</strong> 
-                    <span style="font-size: 1.2rem;">⬆️</span>
-                </div>
-            </div>
-            <div class="ios-install-step">
-                <div class="ios-install-step-num">2</div>
-                <div class="ios-install-step-text">
-                    Faites défiler et appuyez sur <strong>"Sur l'écran d'accueil"</strong>
-                </div>
-            </div>
-            <div class="ios-install-step">
-                <div class="ios-install-step-num">3</div>
-                <div class="ios-install-step-text">
-                    Appuyez sur <strong>Ajouter</strong>
-                </div>
-            </div>
-            <button class="ios-install-close" id="iosCloseBtn">Compris !</button>
-        </div>
+    <!-- LE TRAVAIL -->
+    <section class="fade-in" style="animation-delay: 0.35s">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        Ce que je construis pour vous, chaque jour
+      </h2>
+      <p>Derrière chaque rubrique, il y a des centaines d'heures de développement, de tests et de mises à jour quotidiennes :</p>
+      <ul class="travail">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Actualités locales en temps réel (Montceau, Le Creusot, 71)</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Programme des cinémas Le Capitole et Magic, actualisé automatiquement</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Météo locale détaillée : heure par heure et sur 7 jours</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Résultats et classement du FC Montceau, sport local</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Agenda des événements de la région</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Radios locales et nationales en écoute directe</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Notifications pour les alertes infos importantes</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Application installable sur votre téléphone</li>
+      </ul>
+    </section>
+
+    <!-- POURQUOI LES DONS -->
+    <section class="fade-in" style="animation-delay: 0.45s">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        Pourquoi je vous parle de dons aujourd'hui
+      </h2>
+      <p>Ce site ne vous coûte rien et ne vous affichera jamais de publicité. Mais il a un coût réel pour moi : <strong>le nom de domaine, les services techniques, et surtout un travail quotidien</strong> pour que les infos, la météo et les programmes soient toujours à jour.</p>
+      <p>Je le fais avec plaisir. Mais après 2 ans et 7 mois sans le moindre soutien, je dois être honnête avec vous : <strong>sans un minimum d'encouragement, je ne pourrai pas continuer indéfiniment</strong>, ni développer les nouveautés que je prépare.</p>
+      <p>Un don, même de 2 ou 3 euros — le prix d'un café — me dit simplement : « continue, ce que tu fais est utile ».</p>
+    </section>
+
+    <!-- APPEL AU DON -->
+    <section class="don fade-in" style="animation-delay: 0.55s">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+        Soutenez Actu &amp; Média
+      </h2>
+      <p>Si ce site vous est utile — pour la météo, le cinéma, les actus ou le sport — <strong>c'est le moment de le montrer</strong>. Chaque don compte, quel que soit son montant.</p>
+      <a href="https://www.paypal.com/paypalme/actuetmedia" class="btn-paypal" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+        Faire un don sur PayPal
+      </a>
+      <span class="petit">Paiement sécurisé · Aucun compte PayPal nécessaire</span>
+    </section>
+
+    <!-- ACCÈS AU SITE -->
+    <div class="acces fade-in" style="animation-delay: 0.65s">
+      <a href="accueil.html" class="btn-site" id="btn-entrer">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        Accéder au site
+      </a>
+      <p class="contact">Une question ? Écrivez-moi : <a href="mailto:contact@actuetmedia.fr">contact@actuetmedia.fr</a></p>
     </div>
 
-    <!-- ============================================
-         SCRIPTS
-         ============================================ -->
-    
-    <!-- Supabase SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- Application Scripts -->
-    <script src="js/app.js"></script>
-	<script src="js/mini-radio.js"></script>
-    <script src="js/quick-links.js"></script>
-    <script src="js/support.js"></script>
-    <script src="js/ios-fixes.js"></script>
-    <script src="js/ios-install.js"></script>
-    
-    <!-- Notification toast pour admin -->
-    <div class="notification-toast" id="adminNotification">
-        <span class="notification-toast-icon">📬</span>
-        <div class="notification-toast-content">
-            <div class="notification-toast-title">Nouveaux messages !</div>
-            <div class="notification-toast-text" id="notificationText">Vous avez des messages non lus</div>
-        </div>
-        <button class="notification-toast-close" onclick="closeAdminNotification()" aria-label="Fermer">
-            <span class="material-icons">close</span>
-        </button>
-    </div>
-    
-    <!-- Script Admin Notifications -->
-    <script>
-        const ADMIN_SESSION_KEY = 'admin_session';
-        
-        async function checkAdminNotifications() {
-            const session = JSON.parse(localStorage.getItem(ADMIN_SESSION_KEY));
-            
-            if (!session || !session.logged || session.expires < Date.now()) {
-                return;
-            }
-            
-            const adminSection = document.getElementById('adminSection');
-            if (adminSection) {
-                adminSection.style.display = 'block';
-            }
-            
-            try {
-                const supabaseClient = window.getSupabaseClient ? window.getSupabaseClient() : null;
-                if (!supabaseClient) return;
-                
-                const { data: contactData } = await supabaseClient
-                    .from('contact_messages')
-                    .select('id', { count: 'exact' })
-                    .eq('is_read', false);
-                
-                const { data: newsData } = await supabaseClient
-                    .from('news_submissions')
-                    .select('id', { count: 'exact' })
-                    .eq('status', 'pending');
-                
-                const { data: commentsData } = await supabaseClient
-                    .from('news_comments')
-                    .select('id', { count: 'exact' })
-                    .eq('status', 'pending');
-                
-                // Vérifier les événements en attente
-                const { data: eventsData } = await supabaseClient
-                    .from('events')
-                    .select('id', { count: 'exact' })
-                    .eq('status', 'pending');
-                
-                // Vérifier les commentaires d'événements en attente
-                const { data: eventCommentsData } = await supabaseClient
-                    .from('event_comments')
-                    .select('id', { count: 'exact' })
-                    .eq('status', 'pending');
-                
-                const unreadContacts = contactData ? contactData.length : 0;
-                const pendingNews = newsData ? newsData.length : 0;
-                const pendingComments = commentsData ? commentsData.length : 0;
-                const pendingEvents = eventsData ? eventsData.length : 0;
-                const pendingEventComments = eventCommentsData ? eventCommentsData.length : 0;
-                const totalUnread = unreadContacts + pendingNews + pendingComments + pendingEvents + pendingEventComments;
-                
-                const adminBadge = document.getElementById('adminBadge');
-                if (adminBadge) {
-                    if (totalUnread > 0) {
-                        adminBadge.textContent = totalUnread;
-                        adminBadge.style.display = 'flex';
-                    } else {
-                        adminBadge.style.display = 'none';
-                    }
-                }
-                
-                // Vérifier si le nombre a augmenté depuis la dernière vérification
-                const lastTotal = parseInt(localStorage.getItem('admin_last_total') || '0');
-                
-                // Afficher notification si nouveau contenu détecté
-                if (totalUnread > 0 && totalUnread > lastTotal) {
-                    showAdminNotification(unreadContacts, pendingNews, pendingComments, pendingEvents, pendingEventComments);
-                }
-                
-                // Sauvegarder le total actuel
-                localStorage.setItem('admin_last_total', totalUnread.toString());
-                
-                console.log(`📬 Admin: ${unreadContacts} messages, ${pendingNews} propositions, ${pendingComments} commentaires communauté, ${pendingEvents} événements, ${pendingEventComments} commentaires événements`);
-                
-            } catch (error) {
-                console.error('Erreur vérification admin:', error);
-            }
-        }
-        
-        function showAdminNotification(contacts, news, comments, events, eventComments = 0) {
-            const notification = document.getElementById('adminNotification');
-            const text = document.getElementById('notificationText');
-            
-            let parts = [];
-            if (contacts > 0) {
-                parts.push(`${contacts} message${contacts > 1 ? 's' : ''}`);
-            }
-            if (news > 0) {
-                parts.push(`${news} proposition${news > 1 ? 's' : ''}`);
-            }
-            if (comments > 0) {
-                parts.push(`${comments} commentaire${comments > 1 ? 's' : ''} communauté`);
-            }
-            if (eventComments > 0) {
-                parts.push(`${eventComments} commentaire${eventComments > 1 ? 's' : ''} événement`);
-            }
-            if (events > 0) {
-                parts.push(`${events} événement${events > 1 ? 's' : ''}`);
-            }
-            
-            let message = parts.join(', ');
-            if (parts.length > 1) {
-                const lastComma = message.lastIndexOf(', ');
-                message = message.substring(0, lastComma) + ' et ' + message.substring(lastComma + 2);
-            }
-            
-            text.textContent = message;
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 60000);
-            
-            notification.onclick = (e) => {
-                if (!e.target.closest('.notification-toast-close')) {
-                    window.location.href = 'admin.html';
-                }
-            };
-        }
-        
-		// Vérification automatique toutes les 2 minutes
-        setInterval(() => {
-            if (localStorage.getItem('admin_session')) {
-                checkAdminNotifications();
-                console.log('🔄 Vérification automatique admin...');
-            }
-        }, 2 * 60 * 1000);
-		
-        function closeAdminNotification() {
-            document.getElementById('adminNotification').classList.remove('show');
-        }
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(checkAdminNotifications, 2000);
-        });
-    </script>
-	<!-- Popup Notifications -->
-<div class="notif-prompt" id="notifPrompt">
-    <div class="notif-prompt-content">
-        <button class="notif-prompt-close" onclick="closeNotifPrompt(true)">&times;</button>
-        <div class="notif-prompt-icon">🔔</div>
-        <div class="notif-prompt-title">Restez informé !</div>
-        <div class="notif-prompt-text">Recevez les alertes infos importantes de Montceau et sa région directement sur votre appareil.</div>
-        <div class="notif-prompt-actions">
-            <button class="notif-prompt-btn primary" onclick="acceptNotifPrompt()">Activer</button>
-            <button class="notif-prompt-btn secondary" onclick="closeNotifPrompt(true)">Plus tard</button>
-        </div>
-    </div>
-</div>
-<!-- Popup Don -->
-    <div class="donation-popup" id="donationPopup">
-    <button class="donation-popup-close" onclick="closeDonationPopup(false)" aria-label="Fermer">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-    </button>
-    
-    <div class="donation-popup-content">
-        <div class="donation-icon-wrapper">
-            <span class="donation-emoji">☕</span>
-        </div>
-        
-        <h3 class="donation-popup-title">Vous aimez Actu & Média ?</h3>
-        
-        <p class="donation-popup-text">
-            Ce site est <strong>100% gratuit et sans pub</strong>.<br>
-            M'offrir un petit café aide à faire vivre le projet !
-        </p>
-        
-        <a href="https://www.paypal.com/paypalme/actuetmedia" target="_blank" rel="noopener" class="donation-popup-btn heartbeat" onclick="closeDonationPopup(true)">
-            <svg class="pulse-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-right:8px;">
-                <path d="M7.144 19.532l1.049-6.65h2.606c2.754 0 5.076-1.87 5.541-4.61.48-2.828-1.352-5.272-4.192-5.272H6.834c-.518 0-.964.373-1.044.883L3.614 18.66c-.087.546.332 1.044.884 1.044h2.083c.312 0 .581-.22.633-.527l-.07.356zm2.639-9.283l.735-4.66h2.267c1.27 0 2.132.99 1.918 2.25-.213 1.262-1.398 2.41-2.667 2.41h-2.253z"/>
-            </svg>
-            Soutenir avec PayPal
-        </a>
-        
-        <button class="donation-popup-later" onclick="closeDonationPopup(false)">
-            Peut-être plus tard
-        </button>
-    </div>
-</div>
+  </div>
 
-    <script>
-    // === POPUP DON ===
+  <script>
+    // Les visiteurs réguliers ne voient cette page qu'une fois tous les 3 jours.
+    // Ensuite, ils sont envoyés directement sur le site.
     (function() {
-        const POPUP_DELAY = 60000; // 60 secondes après chargement
-        const POPUP_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 jours entre chaque affichage
-        
-        function shouldShowPopup() {
-            const lastShown = localStorage.getItem('donation_popup_last');
-            const dismissed = localStorage.getItem('donation_popup_dismissed');
-            
-            // Si l'utilisateur a cliqué "Plus tard", attendre 7 jours
-            if (lastShown) {
-                const elapsed = Date.now() - parseInt(lastShown);
-                if (elapsed < POPUP_INTERVAL) return false;
-            }
-            
-            // Si déjà donné ou fermé définitivement
-            if (dismissed === 'permanent') return false;
-            
-            return true;
-        }
-        
-        function showDonationPopup() {
-            if (!shouldShowPopup()) return;
-            
-            const popup = document.getElementById('donationPopup');
-            if (popup) {
-                popup.classList.add('show');
-            }
-        }
-        
-        window.closeDonationPopup = function(permanent = false) {
-            const popup = document.getElementById('donationPopup');
-            if (popup) {
-                popup.classList.remove('show');
-            }
-            
-            // Toujours sauvegarder le timestamp (7 jours avant réaffichage)
-            localStorage.setItem('donation_popup_last', Date.now().toString());
-            
-            // Si clic sur le lien PayPal → ne plus jamais montrer
-            if (permanent) {
-                localStorage.setItem('donation_popup_dismissed', 'permanent');
-            }
-        };
-        
-        // Afficher après 60 secondes
-        setTimeout(showDonationPopup, POPUP_DELAY);
+      const CLE = 'aem_soutien_vu';
+      const TROIS_JOURS = 3 * 24 * 60 * 60 * 1000;
+      const derniereVue = localStorage.getItem(CLE);
+
+      if (derniereVue && (Date.now() - parseInt(derniereVue, 10)) < TROIS_JOURS) {
+        window.location.replace('accueil.html');
+        return;
+      }
+
+      document.getElementById('btn-entrer').addEventListener('click', function() {
+        localStorage.setItem(CLE, Date.now().toString());
+      });
     })();
-    </script>
-    <script>
-    // === MISE À JOUR / RESET CACHE ===
-    async function resetAndReload() {
-        if (!confirm('Mettre à jour l\'application ?\n\nCela va :\n• Vider le cache (pages, images, scripts)\n• Supprimer le Service Worker\n• Recharger avec la dernière version\n\nVos préférences (thème, notifications) seront conservées.')) {
-            return;
-        }
-
-        try {
-            // Sauvegarder les préférences importantes
-            const keysToKeep = ['theme', 'push_subscription', 'adminHubAuth', 'adminSportAuth', 
-                'donation_popup_last', 'donation_popup_dismissed', 'font_size', 'notif_permission',
-                'tilesExpanded', 'mediaRegionalExpanded', 'mediaNationalExpanded'];
-            const saved = {};
-            keysToKeep.forEach(key => {
-                const val = localStorage.getItem(key);
-                if (val !== null) saved[key] = val;
-            });
-
-            // Supprimer tous les Service Workers
-            if ('serviceWorker' in navigator) {
-                const registrations = await navigator.serviceWorker.getRegistrations();
-                for (const reg of registrations) {
-                    await reg.unregister();
-                }
-            }
-
-            // Supprimer tous les caches
-            if ('caches' in window) {
-                const cacheNames = await caches.keys();
-                for (const name of cacheNames) {
-                    await caches.delete(name);
-                }
-            }
-
-            // Nettoyer localStorage sauf préférences
-            localStorage.clear();
-
-            // Restaurer les préférences
-            Object.keys(saved).forEach(key => {
-                localStorage.setItem(key, saved[key]);
-            });
-
-            // Recharger
-            window.location.reload(true);
-        } catch (err) {
-            alert('Erreur lors de la mise à jour : ' + err.message + '\n\nEssayez de recharger manuellement.');
-        }
-    }
-    </script>
-	<!-- Bouton retour en haut -->
-<button class="scroll-top-btn" id="scrollTopBtn" aria-label="Retour en haut">
-    <span class="material-icons">keyboard_arrow_up</span>
-</button>
-
-<script>
-// Bouton retour en haut
-(function() {
-    const btn = document.getElementById('scrollTopBtn');
-    if (!btn) return;
-    
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 600) {
-            btn.classList.add('visible');
-        } else {
-            btn.classList.remove('visible');
-        }
-    });
-    
-    btn.addEventListener('click', function() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-})();
-</script>
+  </script>
 </body>
 </html>
