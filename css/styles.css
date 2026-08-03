@@ -4745,3 +4745,24 @@ a.agenda-item:hover {
         }
     }
 }
+
+/* ============================================
+   GRILLE 2 COLONNES SUR PC
+   Ajouté le 04/08/2026 - supprimable d'un bloc
+   ============================================ */
+@media (min-width: 1025px) {
+    .row-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .row-2 > section {
+        max-width: none;
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+}
