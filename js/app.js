@@ -1776,8 +1776,7 @@ function toggleSection(extraId, btnId, iconId, textId, openLabel, closeLabel, st
 // Restaurer l'état des sections au chargement
 function initToggleSections() {
     const sections = [
-        { storageKey: 'mediaRegionalExpanded', extraId: 'mediaRegionalExtra', btnId: 'mediaRegionalBtn', iconId: 'mediaRegionalIcon', textId: 'mediaRegionalText', closeLabel: 'Moins de médias' },
-        { storageKey: 'mediaNationalExpanded', extraId: 'mediaNationalExtra', btnId: 'mediaNationalBtn', iconId: 'mediaNationalIcon', textId: 'mediaNationalText', closeLabel: 'Moins de médias' }
+        { storageKey: 'mediasExpanded', extraId: 'mediasExtra', btnId: 'mediasBtn', iconId: 'mediasIcon', textId: 'mediasText', closeLabel: 'Masquer les autres médias' }
     ];
     
     sections.forEach(function(s) {
