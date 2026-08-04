@@ -4030,7 +4030,7 @@ a.agenda-item:hover {
 
 /* Liens cliquables dans les infos communauté */
 .community-link {
-    color: var(--primary);
+    color: #f59e0b;
     text-decoration: none;
     word-break: break-all;
 }
