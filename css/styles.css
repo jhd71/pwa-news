@@ -4773,3 +4773,34 @@ a.agenda-item:hover {
         margin-right: 1rem;
     }
 }
+
+/* ============================================
+   ICÔNES MATERIAL À LA PLACE DES EMOJIS
+   Ajouté le 04/08/2026 - supprimable d'un bloc
+   ============================================ */
+.cinema-section-title .material-icons {
+    font-size: 1.1rem;
+    color: var(--primary-light);
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.sport-title-icon.material-icons {
+    font-size: 1.2rem;
+    color: var(--primary-light);
+}
+
+.sport-match-label .material-icons {
+    font-size: 0.85rem;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.sport-team-pill-icon.material-icons {
+    font-size: 1.1rem;
+}
+
+.agenda-empty-icon .material-icons,
+.community-empty-icon .material-icons {
+    font-size: inherit;
+}
