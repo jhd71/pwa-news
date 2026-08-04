@@ -4796,8 +4796,13 @@ a.agenda-item:hover {
     letter-spacing: normal;
 }
 
+.sport-team-pill {
+    color: var(--text-primary);
+}
+
 .sport-team-pill-icon.material-icons {
     font-size: 1.1rem;
+    color: var(--primary-light);
 }
 
 .agenda-empty-icon .material-icons,
