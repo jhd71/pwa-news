@@ -16,7 +16,7 @@
     
     /* Fonds - Valeurs optimisées pour lisibilité */
     --bg-body: #0e0e14;
-    --bg-card: rgba(255, 255, 255, 0.15);
+    --bg-card: rgba(255, 255, 255, 0.17);
     --bg-elevated: rgba(255, 255, 255, 0.18);
     
     /* Bordures et ombres */
@@ -2912,7 +2912,7 @@ h2, h3 {
 }
 
 .notif-prompt-content {
-    background: rgb(20 20 20);
+    background: rgb(22 22 32);
     border: 1px solid var(--border-color);
     border-radius: 20px;
     padding: 1.5rem;

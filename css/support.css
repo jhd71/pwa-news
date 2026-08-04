@@ -52,7 +52,7 @@
     align-items: center;
     padding: 1.25rem 1rem;
     border-bottom: 1px solid var(--border-color);
-    background: rgb(20 20 20);
+    background: rgb(22 22 32);
     position: sticky;
     top: 0;
     z-index: 1;
