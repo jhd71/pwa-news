@@ -2168,15 +2168,16 @@ async function initAgenda() {
             
             return `
                 <a href="agenda.html?event=${event.id}" class="agenda-item" data-event-id="${event.id}">
-                    <div class="agenda-item-date">
-                        <span class="agenda-item-day">${day}</span>
-                        <span class="agenda-item-month">${month}</span>
+                    <div class="agenda-item-date${event.event_date < todayStr ? ' ongoing' : ''}">
+                        <span class="${event.event_date < todayStr ? 'material-icons ' : ''}agenda-item-day">${event.event_date < todayStr ? 'play_circle' : day}</span>
+                        <span class="agenda-item-month">${event.event_date < todayStr ? 'EN COURS' : month}</span>
                     </div>
                     <div class="agenda-item-content">
                         <div class="agenda-item-title">${escapeHtml(event.title)}</div>
                         <div class="agenda-item-info">
                             ${event.event_time ? `<span><span class="material-icons">schedule</span>${formatAgendaTime(event.event_time)}</span>` : ''}
                             ${event.location ? `<span><span class="material-icons">place</span>${escapeHtml(event.location)}</span>` : ''}
+                            ${event.event_end_date && event.event_end_date !== event.event_date ? `<span><span class="material-icons">event_available</span>Jusqu'au ${new Date(event.event_end_date + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace('.', '')}</span>` : ''}
                             <span class="agenda-views"><span class="material-icons">visibility</span>${event.views || 0}</span>
                         </div>
                         <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>

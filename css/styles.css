@@ -4812,3 +4812,19 @@ a.agenda-item:hover {
         display: none;
     }
 }
+
+/* ============================================
+   AGENDA : pastille "EN COURS"
+   ============================================ */
+.agenda-item-date.ongoing {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.agenda-item-date.ongoing .agenda-item-day {
+    font-size: 1.5rem;
+}
+
+.agenda-item-date.ongoing .agenda-item-month {
+    font-size: 0.5rem;
+    letter-spacing: 0.02em;
+}

@@ -193,6 +193,16 @@
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         }
         
+		.events-date-badge.ongoing {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .events-date-badge.ongoing .events-date-day {
+            font-size: 1.4rem;
+        }
+        .events-date-badge.ongoing .events-date-weekday {
+            font-size: 0.55rem;
+        }
+		
         .events-date-day { font-size: 1.5rem; font-weight: 700; line-height: 1; }
         .events-date-weekday { font-size: 0.7rem; text-transform: uppercase; opacity: 0.9; }
         .events-date-full { font-size: 1rem; font-weight: 600; }
@@ -1002,9 +1012,17 @@
             
             let html = '';
             
-            // Séparer récurrents et réguliers
+            // Date du jour, pour repérer les événements déjà commencés
+            const nowRef = new Date();
+            const todayKey = formatDateLocal(nowRef.getFullYear(), nowRef.getMonth(), nowRef.getDate());
+
+            // Séparer récurrents / en cours / à venir
             const recurring = filteredEvents.filter(e => e._isRecurringDisplay);
-            const regular = filteredEvents.filter(e => !e._isRecurringDisplay);
+            const ongoing = filteredEvents.filter(e => !e._isRecurringDisplay
+                && e.event_end_date
+                && e.event_date < todayKey
+                && e.event_end_date >= todayKey);
+            const regular = filteredEvents.filter(e => !e._isRecurringDisplay && !ongoing.includes(e));
             
             // Afficher les événements récurrents en premier
             if (recurring.length > 0) {
@@ -1022,6 +1040,22 @@
                 `;
             }
             
+			// Événements en cours : commencés avant aujourd'hui, pas encore terminés
+            if (ongoing.length > 0) {
+                html += `
+                    <div class="events-date-group">
+                        <div class="events-date-header">
+                            <div class="events-date-badge ongoing">
+                                <span class="material-icons events-date-day">play_circle</span>
+                                <span class="events-date-weekday">EN COURS</span>
+                            </div>
+                            <span class="events-date-full">En ce moment</span>
+                        </div>
+                        ${ongoing.map(event => renderEventCard(event)).join('')}
+                    </div>
+                `;
+            }
+			
             // Grouper les événements réguliers par date
             const groupedEvents = {};
             regular.forEach(event => {
@@ -1061,6 +1095,13 @@
             const icon = icons[event.category] || '📌';
             const label = labels[event.category] || 'Événement';
             
+			let periodeInfo = '';
+            if (event.event_end_date && event.event_end_date !== event.event_date) {
+                const fin = new Date(event.event_end_date + 'T12:00:00');
+                const finTexte = fin.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+                periodeInfo = `<span><span class="material-icons">event_available</span>Jusqu'au ${finTexte}</span>`;
+            }
+			
             let recurringBadge = '';
             if (event._isRecurringDisplay && event._recurrenceLabel) {
                 recurringBadge = `<span class="recurring-badge">${event._recurrenceLabel}</span>`;
@@ -1094,6 +1135,7 @@
                         <div class="event-card-meta">
                             ${event.event_time ? `<span><span class="material-icons">schedule</span>${formatTime(event.event_time)}${event.end_time ? ' - ' + formatTime(event.end_time) : ''}</span>` : ''}
                             ${event.location ? `<span><span class="material-icons">place</span>${escapeHtml(event.location)}</span>` : ''}
+                            ${periodeInfo}
                         </div>
                         <div class="event-card-footer">
                             <span class="event-views">
