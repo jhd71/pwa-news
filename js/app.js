@@ -2121,9 +2121,15 @@ async function initAgenda() {
             .map(event => ({
                 ...event,
                 _sortOrder: 1,
-                _displayDate: event.event_date < todayStr ? todayStr : event.event_date
+                _enCours: event.event_date < todayStr,
+                _displayDate: event.event_date < todayStr
+                    ? (event.event_end_date || event.event_date)
+                    : event.event_date
             }))
-            .sort((a, b) => a._displayDate.localeCompare(b._displayDate));
+            .sort((a, b) => {
+                if (a._enCours !== b._enCours) return a._enCours ? 1 : -1;
+                return a._displayDate.localeCompare(b._displayDate);
+            });
         
         // 5. Combiner : récurrents d'abord, puis par date (limité à 3 pour l'accueil)
         const allEvents = [...processedRecurring, ...processedRegular].slice(0, 4);
