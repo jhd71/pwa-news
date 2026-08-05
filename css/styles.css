@@ -4803,3 +4803,12 @@ a.agenda-item:hover {
 .community-empty-icon .material-icons {
     font-size: inherit;
 }
+
+/* ============================================
+   AGENDA : 3 entrées sur mobile, 5 sur PC
+   ============================================ */
+@media (max-width: 1024px) {
+    .agenda-item:nth-of-type(n + 4) {
+        display: none;
+    }
+}

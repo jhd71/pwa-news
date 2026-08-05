@@ -941,7 +941,7 @@
                     .select('*')
                     .eq('status', 'approved')
                     .or('is_recurring.is.null,is_recurring.eq.false')
-                    .gte('event_date', todayStr)
+                    .or(`event_end_date.gte.${todayStr},and(event_end_date.is.null,event_date.gte.${todayStr})`)
                     .lte('event_date', endDate)
                     .order('event_date', { ascending: true });
                 

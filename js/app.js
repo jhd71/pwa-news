@@ -2092,9 +2092,9 @@ async function initAgenda() {
             .select('*')
             .eq('status', 'approved')
             .eq('is_recurring', false)
-            .gte('event_date', todayStr)
+            .or(`event_end_date.gte.${todayStr},and(event_end_date.is.null,event_date.gte.${todayStr})`)
             .order('event_date', { ascending: true })
-            .limit(5);
+            .limit(30);
         
         // 2. Charger les événements RÉCURRENTS (UNE SEULE FOIS chacun)
         const { data: recurringEvents, error: err2 } = await supabase
@@ -2117,13 +2117,16 @@ async function initAgenda() {
         });
         
         // 4. Préparer les événements réguliers
-        const processedRegular = (regularEvents || []).map(event => ({
-            ...event,
-            _sortOrder: 1
-        }));
+        const processedRegular = (regularEvents || [])
+            .map(event => ({
+                ...event,
+                _sortOrder: 1,
+                _displayDate: event.event_date < todayStr ? todayStr : event.event_date
+            }))
+            .sort((a, b) => a._displayDate.localeCompare(b._displayDate));
         
         // 5. Combiner : récurrents d'abord, puis par date (limité à 3 pour l'accueil)
-        const allEvents = [...processedRecurring, ...processedRegular].slice(0, 3);
+        const allEvents = [...processedRecurring, ...processedRegular].slice(0, 5);
         
         if (!allEvents || allEvents.length === 0) {
             contentEl.innerHTML = '';
