@@ -2126,7 +2126,7 @@ async function initAgenda() {
             .sort((a, b) => a._displayDate.localeCompare(b._displayDate));
         
         // 5. Combiner : récurrents d'abord, puis par date (limité à 3 pour l'accueil)
-        const allEvents = [...processedRecurring, ...processedRegular].slice(0, 5);
+        const allEvents = [...processedRecurring, ...processedRegular].slice(0, 4);
         
         if (!allEvents || allEvents.length === 0) {
             contentEl.innerHTML = '';
