@@ -4828,3 +4828,12 @@ a.agenda-item:hover {
     font-size: 0.5rem;
     letter-spacing: 0.02em;
 }
+
+/* ============================================
+   Séparateurs : masqués dans la grille 2 colonnes
+   ============================================ */
+@media (min-width: 1025px) {
+    .row-2 > section::before {
+        display: none;
+    }
+}
