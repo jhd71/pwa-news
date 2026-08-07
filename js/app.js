@@ -2409,7 +2409,19 @@ async function loadSportData() {
 
         if (data.last_match_date) {
             const matchDate = new Date(data.last_match_date + 'T00:00:00');
-            lastDate.textContent = (data.last_match_matchday || '') + ' · ' + matchDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+
+            // Match vieux de plus de 2 mois : on précise la saison pour ne pas induire en erreur
+            const deuxMois = new Date();
+            deuxMois.setMonth(deuxMois.getMonth() - 2);
+            let prefixe = data.last_match_matchday || '';
+
+            if (matchDate < deuxMois) {
+                const an = matchDate.getFullYear();
+                const saison = matchDate.getMonth() < 6 ? `${an - 1}-${an}` : `${an}-${an + 1}`;
+                prefixe = `Saison ${saison}` + (prefixe ? ` · ${prefixe}` : '');
+            }
+
+            lastDate.textContent = prefixe + ' · ' + matchDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
             
             lastHome.textContent = data.last_match_home_team;
             lastAway.textContent = data.last_match_away_team;
