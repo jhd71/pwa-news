@@ -2500,7 +2500,20 @@ async function loadSportData() {
 
             const diff = data.standing_goals_for - data.standing_goals_against;
             const diffStr = diff > 0 ? '+' + diff : diff.toString();
-            statsEl.innerHTML = '<strong>' + data.standing_points + ' pts</strong> · ' + data.standing_played + 'J · ' + data.standing_won + 'V ' + data.standing_drawn + 'N ' + data.standing_lost + 'D · ' + diffStr;
+
+            // Classement périmé si le dernier match remonte à plus de 2 mois
+            let mention = '';
+            if (data.last_match_date) {
+                const limite = new Date();
+                limite.setMonth(limite.getMonth() - 2);
+                const dernier = new Date(data.last_match_date + 'T00:00:00');
+                if (dernier < limite) {
+                    const an = dernier.getFullYear();
+                    mention = ' <em>(saison ' + (dernier.getMonth() < 6 ? (an - 1) + '-' + an : an + '-' + (an + 1)) + ')</em>';
+                }
+            }
+
+            statsEl.innerHTML = '<strong>' + data.standing_points + ' pts</strong> · ' + data.standing_played + 'J · ' + data.standing_won + 'V ' + data.standing_drawn + 'N ' + data.standing_lost + 'D · ' + diffStr + mention;
         }
 
         // === FORME ===
