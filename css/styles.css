@@ -4837,3 +4837,8 @@ a.agenda-item:hover {
         display: none;
     }
 }
+
+/* Compteur de vues masqué (trop de "0 vue" tant que le trafic démarre) */
+.agenda-views {
+    display: none;
+}
