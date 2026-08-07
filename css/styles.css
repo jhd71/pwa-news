@@ -4842,3 +4842,12 @@ a.agenda-item:hover {
 .agenda-views {
     display: none;
 }
+
+/* ============================================
+   ICÔNES DES PASTILLES DE CATÉGORIE (agenda)
+   ============================================ */
+.agenda-item-category .material-icons {
+    font-size: 0.9rem;
+    text-transform: none;
+    letter-spacing: normal;
+}

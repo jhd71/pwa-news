@@ -126,6 +126,9 @@
             color: white;
         }
 		
+		.filter-btn .material-icons { font-size: 1rem; }
+        .event-card-category .material-icons { font-size: 0.85rem; }
+		
 		#agendaPeriods {
             padding-top: 0;
             border-bottom: 1px solid var(--border-color);
@@ -710,13 +713,13 @@
     
     <div class="agenda-filters" id="agendaFilters">
         <button class="filter-btn active" data-filter="all">Tous</button>
-        <button class="filter-btn" data-filter="sport">⚽ Sport</button>
-        <button class="filter-btn" data-filter="culture">🎭 Culture</button>
-        <button class="filter-btn" data-filter="marche">🛒 Marchés</button>
-        <button class="filter-btn" data-filter="brocante">🏷️ Brocantes</button>
-        <button class="filter-btn" data-filter="concert">🎵 Concerts</button>
-        <button class="filter-btn" data-filter="fete">🎉 Fêtes</button>
-        <button class="filter-btn" data-filter="autre">📌 Autre</button>
+        <button class="filter-btn" data-filter="sport"><span class="material-icons">sports_soccer</span>Sport</button>
+        <button class="filter-btn" data-filter="culture"><span class="material-icons">theater_comedy</span>Culture</button>
+        <button class="filter-btn" data-filter="marche"><span class="material-icons">storefront</span>Marchés</button>
+        <button class="filter-btn" data-filter="brocante"><span class="material-icons">local_offer</span>Brocantes</button>
+        <button class="filter-btn" data-filter="concert"><span class="material-icons">music_note</span>Concerts</button>
+        <button class="filter-btn" data-filter="fete"><span class="material-icons">celebration</span>Fêtes</button>
+        <button class="filter-btn" data-filter="autre"><span class="material-icons">push_pin</span>Autre</button>
     </div>
     
 	<div class="agenda-filters" id="agendaPeriods">
@@ -1151,9 +1154,9 @@
         }
         
         function renderEventCard(event) {
-            const icons = { 'sport': '⚽', 'culture': '🎭', 'marche': '🛒', 'brocante': '🏷️', 'concert': '🎵', 'fete': '🎉', 'reunion': '👥', 'autre': '📌' };
+            const icons = { 'sport': 'sports_soccer', 'culture': 'theater_comedy', 'marche': 'storefront', 'brocante': 'local_offer', 'concert': 'music_note', 'fete': 'celebration', 'reunion': 'groups', 'autre': 'push_pin' };
             const labels = { 'sport': 'Sport', 'culture': 'Culture', 'marche': 'Marché', 'brocante': 'Brocante', 'concert': 'Concert', 'fete': 'Fête', 'reunion': 'Réunion', 'autre': 'Autre' };
-            const icon = icons[event.category] || '📌';
+            const icon = `<span class="material-icons">${icons[event.category] || 'push_pin'}</span>`;
             const label = labels[event.category] || 'Événement';
             
 			let periodeInfo = '';

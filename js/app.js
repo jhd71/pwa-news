@@ -2214,8 +2214,16 @@ function formatAgendaTime(timeStr) {
 }
 
 function getAgendaCategoryIcon(category) {
-    const icons = { 'sport': '⚽', 'culture': '🎭', 'marche': '🛒', 'brocante': '🏷️', 'concert': '🎵', 'fete': '🎉' };
-    return icons[category] || '📅';
+    const icons = {
+        'sport': 'sports_soccer',
+        'culture': 'theater_comedy',
+        'marche': 'storefront',
+        'brocante': 'local_offer',
+        'concert': 'music_note',
+        'fete': 'celebration',
+        'reunion': 'groups'
+    };
+    return `<span class="material-icons">${icons[category] || 'push_pin'}</span>`;
 }
 
 function getAgendaCategoryLabel(category) {
