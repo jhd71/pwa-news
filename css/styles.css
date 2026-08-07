@@ -4851,3 +4851,12 @@ a.agenda-item:hover {
     text-transform: none;
     letter-spacing: normal;
 }
+
+/* ============================================
+   ICÔNES MATERIAL DANS LES PASTILLES
+   ============================================ */
+.quick-link-icon .material-icons {
+    font-size: 1.35rem;
+    color: #ffffff;
+    line-height: 1;
+}
