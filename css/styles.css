@@ -1174,12 +1174,12 @@ h2, h3 {
     right: 6px;
     width: 28px;
     height: 28px;
-    background: rgba(0, 0, 0, 0.6);
+    background: #ff0000;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     transition: all 0.2s ease;
 }
 
@@ -1189,8 +1189,8 @@ h2, h3 {
 }
 
 .cinema-film:hover .cinema-play-badge {
-    background: rgba(239, 68, 68, 0.85);
-    transform: scale(1.1);
+    background: #cc0000;
+    transform: scale(1.15);
 }
 
 /* === Bandeau astuce cinéma === */
