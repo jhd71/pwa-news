@@ -71,6 +71,10 @@
                 <span class="material-icons" aria-hidden="true">favorite</span>
                 <span>Favoris</span>
             </button>
+            <button class="tab-button" data-tab="tv" aria-label="Chaînes de télévision en direct">
+                <span class="material-icons" aria-hidden="true">live_tv</span>
+                <span>TV</span>
+            </button>
         </nav>
 
         <!-- Filtre par catégorie et mode d'affichage -->
@@ -127,6 +131,44 @@
                             <div class="radios-grid" id="favorisGrid" style="display: none;">
                                 <!-- Les favoris seront ajoutés dynamiquement ici -->
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Onglet TV -->
+                    <div class="tab-content" id="tv-tab" role="tabpanel" aria-label="Chaînes de télévision en direct">
+                        <div class="tv-grid">
+                            <a href="https://www.francebleu.fr/tv/direct/bourgogne" target="_blank" rel="noopener" class="tv-channel">
+                                <span class="material-icons tv-channel-icon" style="color: #0084c8;">live_tv</span>
+                                <div class="tv-channel-info">
+                                    <strong>France 3 Bourgogne</strong>
+                                    <span>Info régionale</span>
+                                </div>
+                                <span class="material-icons tv-channel-arrow">open_in_new</span>
+                            </a>
+                            <a href="https://www.francetvinfo.fr/en-direct/tv.html" target="_blank" rel="noopener" class="tv-channel">
+                                <span class="material-icons tv-channel-icon" style="color: #1d4ed8;">live_tv</span>
+                                <div class="tv-channel-info">
+                                    <strong>France Info</strong>
+                                    <span>Info en continu</span>
+                                </div>
+                                <span class="material-icons tv-channel-arrow">open_in_new</span>
+                            </a>
+                            <a href="https://www.bfmtv.com/en-direct" target="_blank" rel="noopener" class="tv-channel">
+                                <span class="material-icons tv-channel-icon" style="color: #dc2626;">live_tv</span>
+                                <div class="tv-channel-info">
+                                    <strong>BFM TV</strong>
+                                    <span>Info en continu</span>
+                                </div>
+                                <span class="material-icons tv-channel-arrow">open_in_new</span>
+                            </a>
+                            <a href="https://www.cnews.fr/le-direct" target="_blank" rel="noopener" class="tv-channel">
+                                <span class="material-icons tv-channel-icon" style="color: #f97316;">live_tv</span>
+                                <div class="tv-channel-info">
+                                    <strong>CNews</strong>
+                                    <span>Info en continu</span>
+                                </div>
+                                <span class="material-icons tv-channel-arrow">open_in_new</span>
+                            </a>
                         </div>
                     </div>
                 </div>

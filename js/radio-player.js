@@ -1099,7 +1099,7 @@ class RadioPlayerApp {
         };
 
         tabsSlider.addEventListener('touchstart', (e) => {
-            if (e.target.closest('.radios-grid') || e.target.closest('.favoris-container')) {
+            if (e.target.closest('.radios-grid') || e.target.closest('.favoris-container') || e.target.closest('.tv-grid')) {
                 touchStartX = e.touches[0].clientX;
                 touchStartY = e.touches[0].clientY;
                 touchStartTime = Date.now();
@@ -1124,7 +1124,7 @@ class RadioPlayerApp {
                 let newTranslateX = startTranslateX + deltaX;
 
                 const maxTranslate = 0;
-                const minTranslate = -tabsSlider.offsetWidth / 2;
+                const minTranslate = -tabsSlider.offsetWidth * 2 / 3;
                 newTranslateX = Math.max(minTranslate, Math.min(maxTranslate, newTranslateX));
 
                 tabsSlider.style.transform = `translateX(${newTranslateX}px)`;
@@ -1145,11 +1145,11 @@ class RadioPlayerApp {
                 Math.abs(deltaX) > 50 &&
                 swipeTime < 500) {
 
-                if (deltaX < 0) {
-                    this.switchToTab('favoris');
-                } else {
-                    this.switchToTab('radios');
-                }
+                const ordre = ['radios', 'favoris', 'tv'];
+                const actuel = document.querySelector('.tab-button.active').dataset.tab;
+                let index = ordre.indexOf(actuel) + (deltaX < 0 ? 1 : -1);
+                index = Math.max(0, Math.min(ordre.length - 1, index));
+                this.switchToTab(ordre[index]);
             } else {
                 const currentTab = document.querySelector('.tab-button.active').dataset.tab;
                 this.switchToTab(currentTab);
@@ -1548,11 +1548,8 @@ class RadioPlayerApp {
         }
 
         if (tabsSlider) {
-            if (tabName === 'radios') {
-                tabsSlider.style.transform = 'translateX(0)';
-            } else if (tabName === 'favoris') {
-                tabsSlider.style.transform = 'translateX(-50%)';
-            }
+            const positions = { 'radios': '0', 'favoris': '-33.3333%', 'tv': '-66.6666%' };
+            tabsSlider.style.transform = `translateX(${positions[tabName] || '0'})`;
         }
 
         this.toggleCategoryFilter(tabName);
@@ -1565,7 +1562,7 @@ class RadioPlayerApp {
         const categoryFilter = document.getElementById('categoryFilter');
         if (!categoryFilter) return;
 
-        if (tab === 'favoris') {
+        if (tab === 'favoris' || tab === 'tv') {
             categoryFilter.classList.add('hidden');
         } else {
             categoryFilter.classList.remove('hidden');

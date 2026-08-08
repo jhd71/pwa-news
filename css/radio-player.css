@@ -537,7 +537,7 @@ input[type="time"].glass-select::-webkit-calendar-picker-indicator {
 
 .tabs-slider {
     display: flex;
-    width: 200%;
+    width: 300%;
     height: 100%;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;
@@ -548,7 +548,7 @@ input[type="time"].glass-select::-webkit-calendar-picker-indicator {
 }
 
 .tab-content {
-    width: 50%;
+    width: 33.3333%;
     flex-shrink: 0;
     overflow-y: auto;
     overflow-x: hidden;
@@ -2939,4 +2939,58 @@ body.player-visible .bottom-home-btn {
 
 #settingsPanel #settingsCloseBtn .material-icons {
     font-size: 20px;
+}
+
+/* === ONGLET TV === */
+.tv-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: 0 var(--spacing-md);
+}
+
+.tv-channel {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: all var(--transition-normal);
+}
+
+.tv-channel:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+}
+
+.tv-channel-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.tv-channel-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.tv-channel-info strong {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.tv-channel-info span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.tv-channel-arrow {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    flex-shrink: 0;
 }
