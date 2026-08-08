@@ -18,7 +18,8 @@
     --bg-body: #0e0e14;
     --bg-card: rgba(255, 255, 255, 0.05);
     --bg-elevated: rgba(255, 255, 255, 0.09);
-    
+    --bg-surface-dark: rgb(22 22 32);
+	
     /* Bordures et ombres */
     --border-color: rgba(255, 255, 255, 0.12);
     --shadow-color: rgba(0, 0, 0, 0.3);
@@ -91,7 +92,7 @@ body {
     padding: 0.75rem 1rem;
     border-radius: 0 0 20px 20px;
     gap: 0.6rem;
-    background: rgb(22 22 32);
+    background: var(--bg-surface-dark);
     border: 1px solid var(--border-color);
     border-top: none;
 }
@@ -2791,7 +2792,7 @@ h2, h3 {
 }
 
 .notif-prompt-content {
-    background: rgb(22 22 32);
+    background: var(--bg-surface-dark);
     border: 1px solid var(--border-color);
     border-radius: 20px;
     padding: 1.5rem;
