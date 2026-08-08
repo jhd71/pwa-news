@@ -233,3 +233,15 @@
 [data-theme="light"] .quick-links-close:hover {
     background: rgba(0, 0, 0, 0.1);
 }
+
+/* ============================================
+   THÈME CLAIR - Séparation des liens
+   ============================================ */
+[data-theme="light"] .quick-link-item {
+    background: #f1f5f9;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .quick-link-item:hover {
+    background: #e8edf3;
+}

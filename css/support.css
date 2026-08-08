@@ -727,3 +727,16 @@
     color: var(--primary-light);
     line-height: 1;
 }
+
+/* ============================================
+   THÈME CLAIR - Séparation des actions
+   ============================================ */
+[data-theme="light"] .support-action {
+    background: #f1f5f9;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .support-action:hover {
+    background: #e8edf3;
+    border-color: var(--primary-light);
+}
