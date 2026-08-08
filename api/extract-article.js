@@ -143,6 +143,8 @@ export default async function handler(req, res) {
 				truncated = truncated.substring(0, lastAmpersand);
 			}
 			
+			const lastSpace = truncated.lastIndexOf(' ');
+			if (lastSpace > 250) truncated = truncated.substring(0, lastSpace);
 			data.description = truncated.trim() + '...';
 		}
 

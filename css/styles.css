@@ -1899,7 +1899,7 @@ h2, h3 {
     position: relative;
     transition: max-height 0.3s ease;
     max-width: 75ch;
-    margin-left: auto;
+    margin-left: 0;
     margin-right: auto;
 }
 
