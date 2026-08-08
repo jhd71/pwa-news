@@ -4767,7 +4767,9 @@ a.agenda-item:hover {
     font-size: 1.25rem;
 }
 
+.footer a.footer-social-link:hover,
 .footer-social-link:hover {
+    text-decoration: none;
     transform: translateY(-3px) scale(1.05);
 }
 
