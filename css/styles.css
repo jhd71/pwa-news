@@ -1110,6 +1110,11 @@ h2, h3 {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
+[data-theme="light"] .cinema-film:hover {
+    border-color: var(--primary-light);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
+}
+
 .cinema-film-title {
     font-weight: 600;
     font-size: 1rem;
