@@ -1560,12 +1560,15 @@ class RadioPlayerApp {
     // =====================================================
     toggleCategoryFilter(tab) {
         const categoryFilter = document.getElementById('categoryFilter');
-        if (!categoryFilter) return;
+        const hint = document.getElementById('radiosHint');
 
-        if (tab === 'favoris' || tab === 'tv') {
-            categoryFilter.classList.add('hidden');
-        } else {
-            categoryFilter.classList.remove('hidden');
+        if (categoryFilter) {
+            categoryFilter.classList.toggle('hidden', tab === 'favoris' || tab === 'tv');
+        }
+
+        // L'astuce ne parle que des radios : inutile sur l'onglet TV
+        if (hint) {
+            hint.style.display = (tab === 'tv') ? 'none' : '';
         }
     }
 
