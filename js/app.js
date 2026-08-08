@@ -511,11 +511,22 @@ async function loadCinema(cinemaKey) {
             // Sauvegarder en cache
             setCachedData(cacheKey, data.films);
             
-            // Sauvegarder le dateLabel du JSON
-            if (data.dateLabel) {
-                cinemaDateLabels[cinemaKey] = data.dateLabel;
+            // On se fie à la date réelle des séances, pas au mot figé par le scraper
+            if (data.date) {
+                const aujourdhui = new Intl.DateTimeFormat('fr-CA', {
+                    timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit'
+                }).format(new Date());
+
+                if (data.date === aujourdhui) {
+                    cinemaDateLabels[cinemaKey] = "Aujourd'hui";
+                } else {
+                    const d = new Date(data.date + 'T12:00:00');
+                    cinemaDateLabels[cinemaKey] = 'Séances du ' + d.toLocaleDateString('fr-FR', {
+                        weekday: 'long', day: 'numeric', month: 'long'
+                    });
+                }
             } else {
-                cinemaDateLabels[cinemaKey] = "Aujourd'hui";
+                cinemaDateLabels[cinemaKey] = data.dateLabel || "Aujourd'hui";
             }
             
             // Mettre à jour le sous-titre avec la vraie date
