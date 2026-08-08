@@ -22,15 +22,20 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Récupérer la page
+        // Récupérer la page (avec un vrai délai d'expiration)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+
         const response = await fetch(url, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (compatible; ActuMediaBot/1.0)',
                 'Accept': 'text/html,application/xhtml+xml',
                 'Accept-Language': 'fr-FR,fr;q=0.9'
             },
-            timeout: 10000
+            signal: controller.signal
         });
+
+        clearTimeout(timeoutId);
 
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
@@ -51,23 +56,23 @@ export default async function handler(req, res) {
         // Fonctions d'extraction
         const getMetaContent = (html, property) => {
             // Open Graph
-            let match = html.match(new RegExp(`<meta[^>]*property=["']og:${property}["'][^>]*content=["']([^"']*)["']`, 'i'));
-            if (match) return match[1];
-            
+            let match = html.match(new RegExp(`<meta[^>]*property=["']og:${property}["'][^>]*content=(["'])([\\s\\S]*?)\\1`, 'i'));
+            if (match) return match[2];
+
             // Inverser l'ordre des attributs
-            match = html.match(new RegExp(`<meta[^>]*content=["']([^"']*)["'][^>]*property=["']og:${property}["']`, 'i'));
-            if (match) return match[1];
-            
+            match = html.match(new RegExp(`<meta[^>]*content=(["'])([\\s\\S]*?)\\1[^>]*property=["']og:${property}["']`, 'i'));
+            if (match) return match[2];
+
             return null;
         };
 
         const getMetaName = (html, name) => {
-            let match = html.match(new RegExp(`<meta[^>]*name=["']${name}["'][^>]*content=["']([^"']*)["']`, 'i'));
-            if (match) return match[1];
-            
-            match = html.match(new RegExp(`<meta[^>]*content=["']([^"']*)["'][^>]*name=["']${name}["']`, 'i'));
-            if (match) return match[1];
-            
+            let match = html.match(new RegExp(`<meta[^>]*name=["']${name}["'][^>]*content=(["'])([\\s\\S]*?)\\1`, 'i'));
+            if (match) return match[2];
+
+            match = html.match(new RegExp(`<meta[^>]*content=(["'])([\\s\\S]*?)\\1[^>]*name=["']${name}["']`, 'i'));
+            if (match) return match[2];
+
             return null;
         };
 
@@ -116,7 +121,7 @@ export default async function handler(req, res) {
                 .replace(/&lt;/g, '<')
                 .replace(/&gt;/g, '>')
                 .replace(/&quot;/g, '"')
-                .replace(/&#39;/g, "'")
+                .replace(/&#0?39;|&apos;/g, "'")
                 .replace(/&nbsp;/g, ' ')
                 .trim();
         };
