@@ -1061,6 +1061,7 @@ h2, h3 {
 }
 
 .cinema-film-poster {
+    position: relative;
     width: 80px;
     height: 115px;
     flex-shrink: 0;
@@ -1160,9 +1161,6 @@ h2, h3 {
 }
 
 /* === Icône Play sur affiche === */
-.cinema-film-poster {
-    position: relative;
-}
 
 .cinema-play-badge {
     position: absolute;
@@ -1756,7 +1754,6 @@ h2, h3 {
 .seo-section p {
     font-size: 0.9rem;
     line-height: 1.7;
-    color: var(--text-secondary);
     margin-bottom: 0.85rem;
     max-width: 65ch;
     margin-left: auto;
@@ -1765,14 +1762,6 @@ h2, h3 {
 
 .seo-section p:last-child {
     margin-bottom: 0;
-}
-
-.seo-section strong {
-    color: var(--primary-light);
-}
-
-[data-theme="light"] .seo-section strong {
-    color: var(--primary);
 }
 
 /* ============================================
@@ -1930,6 +1919,7 @@ h2, h3 {
 
 /* Wrapper image avec effet zoom */
 .community-image-wrapper {
+    position: relative;
     display: flex;
     justify-content: center;
     margin: 0.75rem 0;
@@ -3483,11 +3473,6 @@ p,
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
 }
 
-.agenda-item-date.recurring {
-    background: linear-gradient(145deg, #f59e0b 0%, #f97316 100%);
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-}
-
 .agenda-item-day {
     font-size: 1.5rem;
     font-weight: 800;
@@ -3535,11 +3520,6 @@ p,
     display: flex;
     align-items: center;
     gap: 0.25rem;
-}
-
-.agenda-item-info .material-icons {
-    font-size: 0.95rem;
-    opacity: 0.8;
 }
 
 /* Badge catégorie - Style moderne */
@@ -3746,6 +3726,7 @@ a.agenda-item:hover {
 
 /* Compteur de vues discret */
 .agenda-views {
+    display: none;
     font-size: 0.75rem;
     color: var(--text-muted);
 }
@@ -3929,9 +3910,6 @@ a.agenda-item:hover {
 }
 
 /* Crédit photo sur les images communauté */
-.community-image-wrapper {
-    position: relative !important;
-}
 
 .community-image-credit {
     position: absolute;
@@ -4191,6 +4169,7 @@ a.agenda-item:hover {
 }
 
 .sport-team-pill {
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 0.35rem;
@@ -4685,10 +4664,6 @@ a.agenda-item:hover {
     letter-spacing: normal;
 }
 
-.sport-team-pill {
-    color: var(--text-primary);
-}
-
 .sport-team-pill-icon.material-icons {
     font-size: 1.1rem;
     color: var(--primary-light);
@@ -4731,11 +4706,6 @@ a.agenda-item:hover {
     .row-2 > section::before {
         display: none;
     }
-}
-
-/* Compteur de vues masqué (trop de "0 vue" tant que le trafic démarre) */
-.agenda-views {
-    display: none;
 }
 
 /* ============================================
