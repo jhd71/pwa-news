@@ -1050,8 +1050,8 @@ h2, h3 {
 }
 
 .cinema-film:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.25);
     border-color: var(--primary-light);
 }
 
@@ -1100,10 +1100,6 @@ h2, h3 {
 .cinema-film:last-child {
     border-bottom: none;
     margin-bottom: 0;
-}
-
-.cinema-film:hover {
-    background: rgba(99, 102, 241, 0.1);
 }
 
 /* Mode clair - séparation plus visible */
@@ -2917,6 +2913,11 @@ p,
 
 .fade-in {
     animation: fadeIn 0.5s ease forwards;
+}
+
+/* L'animation d'apparition ne doit pas bloquer le survol */
+.cinema-film.fade-in:hover {
+    animation: none;
 }
 
 /* ============================================
