@@ -711,3 +711,19 @@
 [data-theme="light"] .support-social-link {
     background: rgba(0, 0, 0, 0.05);
 }
+
+/* ============================================
+   ICÔNES MATERIAL DANS LE PANNEAU
+   ============================================ */
+.support-action-icon .material-icons,
+.support-action-icon.material-icons {
+    font-size: 1.35rem;
+    color: #ffffff;
+    line-height: 1;
+}
+
+.support-logo .material-icons {
+    font-size: 3rem;
+    color: var(--primary-light);
+    line-height: 1;
+}

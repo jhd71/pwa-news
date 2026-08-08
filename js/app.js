@@ -1891,14 +1891,14 @@ function updateNotifButton(isSubscribed) {
 
     if (isSubscribed) {
         btn.classList.add('subscribed');
-        icon.textContent = '🔔';
+        icon.textContent = 'notifications_active';
         icon.classList.add('subscribed');
         title.textContent = 'Notifications activées';
         desc.textContent = 'Cliquez pour désactiver';
         arrow.textContent = 'notifications_active';
     } else {
         btn.classList.remove('subscribed');
-        icon.textContent = '🔕';
+        icon.textContent = 'notifications_off';
         icon.classList.remove('subscribed');
         title.textContent = 'Activer les notifications';
         desc.textContent = 'Recevoir les alertes infos';
