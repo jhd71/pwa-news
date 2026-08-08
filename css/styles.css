@@ -1108,7 +1108,9 @@ h2, h3 {
 
 /* Mode clair - séparation plus visible */
 [data-theme="light"] .cinema-film {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .cinema-film-title {
@@ -3448,7 +3450,7 @@ p,
     display: flex;
     gap: 1rem;
     padding: 1rem;
-    background: rgba(30, 30, 45, 0.95);
+    background: var(--card-bg);
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     text-decoration: none;
