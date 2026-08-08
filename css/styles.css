@@ -1040,7 +1040,7 @@ h2, h3 {
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    background: var(--card-bg);
+    background: var(--bg-card);
     border-radius: 12px;
     padding: 14px 16px;
     text-decoration: none;
@@ -1052,7 +1052,7 @@ h2, h3 {
 .cinema-film:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    border-color: var(--accent-color);
+    border-color: var(--primary-light);
 }
 
 .cinema-film-info {
@@ -1066,7 +1066,7 @@ h2, h3 {
     flex-shrink: 0;
     border-radius: 8px;
     overflow: hidden;
-    background: var(--bg-tertiary);
+    background: var(--bg-elevated);
 }
 
 /* Affiche plus grande sur tablette */
@@ -3450,7 +3450,7 @@ p,
     display: flex;
     gap: 1rem;
     padding: 1rem;
-    background: var(--card-bg);
+    background: var(--bg-card);
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     text-decoration: none;
