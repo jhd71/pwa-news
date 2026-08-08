@@ -900,7 +900,7 @@ h2, h3 {
     margin: 1.5rem 1rem;
     padding: 1.25rem;
     border-radius: 20px;
-    background: var(--bg-card);
+    background: var(--bg-elevated);
     border: 1px solid var(--border-color);
 }
 
