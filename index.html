@@ -422,14 +422,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </div>
                     <span class="material-icons arrow">chevron_right</span>
                 </a>           
-                <button class="support-action" onclick="shareWebsite()">
-                    <div class="support-action-icon share"><span class="material-icons">link</span></div>
-                    <div class="support-action-text">
-                        <div class="support-action-name">Partager le site</div>
-                        <div class="support-action-desc">Faire connaître Actu & Média</div>
-                    </div>
-                    <span class="material-icons arrow">share</span>
-                </button>
                 <button class="support-action" id="notifSubscribeBtn" onclick="togglePushSubscription()">
                     <div class="support-action-icon notif material-icons" id="notifIcon">notifications</div>
                     <div class="support-action-text">
@@ -463,15 +455,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <button class="font-size-btn active" data-size="normal">A</button>
                 <button class="font-size-btn" data-size="medium">A+</button>
             </div>
-        <div class="support-footer">
-            <div class="support-social">
-                <a href="https://www.facebook.com/actuetmedia.fr/" target="_blank" rel="noopener" class="support-social-link facebook" title="Facebook">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                </a>
-                <a href="mailto:contact@actuetmedia.fr" class="support-social-link email" title="Contact">
-                    <span class="material-icons">email</span>
-                </a>
-            </div>
+        <div class="support-footer">         
             <div class="support-copyright">© 2026 Actu & Média</div>
             <div class="support-version">Version 3.0 • Fait avec ❤️ à Montceau</div>
         </div>
@@ -783,6 +767,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <!-- Footer -->
     <footer class="footer glass">
+        <div class="footer-social">
+            <a href="https://www.facebook.com/actuetmedia.fr/" target="_blank" rel="noopener" class="footer-social-link facebook" aria-label="Page Facebook d'Actu &amp; Média" title="Facebook">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="mailto:contact@actuetmedia.fr" class="footer-social-link email" aria-label="Nous écrire" title="Contact">
+                <span class="material-icons">email</span>
+            </a>
+            <button class="footer-social-link share" onclick="shareWebsite()" aria-label="Partager le site" title="Partager">
+                <span class="material-icons">share</span>
+            </button>
+        </div>
         <p>© 2026 Actu & Média - Montceau-les-Mines</p>
         <p class="footer-sub">Fait avec ❤️ par ActuetMedia</p>
         <div class="footer-links">
