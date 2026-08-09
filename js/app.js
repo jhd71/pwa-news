@@ -1616,27 +1616,6 @@ async function toggleLike(newsId, btn) {
     }
 }
 
-function toggleSeeMore(newsId) {
-    const descEl = document.getElementById(`desc-${newsId}`);
-    const btnEl = document.getElementById(`see-more-${newsId}`);
-    
-    if (!descEl || !btnEl) return;
-    
-    const isExpanded = descEl.classList.contains('expanded');
-    
-    if (isExpanded) {
-        // Réduire
-        descEl.classList.remove('expanded');
-        btnEl.classList.remove('expanded');
-        btnEl.querySelector('span:first-child').textContent = 'Voir plus';
-    } else {
-        // Déplier
-        descEl.classList.add('expanded');
-        btnEl.classList.add('expanded');
-        btnEl.querySelector('span:first-child').textContent = 'Voir moins';
-    }
-}
-
 // Fonction pour ouvrir une image en grand
 function openImageModal(imageUrl, sourceName = '') {
     // Créer le modal s'il n'existe pas

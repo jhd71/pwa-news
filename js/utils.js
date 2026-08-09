@@ -51,3 +51,21 @@ function linkifyContent(text) {
         return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="community-link">${libelle}</a>`;
     });
 }
+
+/**
+ * Déplie ou replie la description d'une publication.
+ * Utilisée par index.html et infos.html, qui ont le même
+ * balisage de bouton : <span>texte</span><span>icône</span>
+ */
+function toggleSeeMore(id) {
+    const descEl = document.getElementById(`desc-${id}`);
+    const btnEl = document.getElementById(`see-more-${id}`);
+
+    if (!descEl || !btnEl) return;
+
+    const isExpanded = descEl.classList.contains('expanded');
+
+    descEl.classList.toggle('expanded', !isExpanded);
+    btnEl.classList.toggle('expanded', !isExpanded);
+    btnEl.querySelector('span:first-child').textContent = isExpanded ? 'Voir plus' : 'Voir moins';
+}
