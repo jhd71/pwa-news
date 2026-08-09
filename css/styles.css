@@ -3908,7 +3908,7 @@ a.agenda-item:hover {
 .community-link {
     color: #f59e0b;
     text-decoration: none;
-    word-break: break-all;
+    white-space: nowrap;
 }
 
 .community-link:hover {
