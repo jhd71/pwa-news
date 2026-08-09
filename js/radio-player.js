@@ -2595,10 +2595,12 @@ class RadioPlayerApp {
                 console.log(`👥 Utilisateurs en ligne: ${this.onlineUsers}`);
             })
             .on('presence', { event: 'join' }, ({ key, newPresences }) => {
-                console.log(`👋 ${key} a rejoint le chat`);
+                const nom = newPresences?.[0]?.username || key;
+                console.log(`👋 ${nom} a rejoint le chat`);
             })
             .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-                console.log(`👋 ${key} a quitté le chat`);
+                const nom = leftPresences?.[0]?.username || key;
+                console.log(`👋 ${nom} a quitté le chat`);
             })
             .subscribe(async (status) => {
                 if (status === 'SUBSCRIBED') {
