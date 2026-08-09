@@ -317,12 +317,15 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-[data-theme="light"] .news-item,
-[data-theme="light"] .cinema-section,
-[data-theme="light"] .sport-section,
-[data-theme="light"] .community-section,
+/* Cartes posées à l'intérieur d'une section : plus claires qu'elle */
+[data-theme="light"] .news-item {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Groupes du panneau Liens rapides */
 [data-theme="light"] .quick-links-section {
-    background: #ffffff4d;
+    background: rgb(248 249 251);
     border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
