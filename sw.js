@@ -1,8 +1,8 @@
 // ============================================
-// ACTU & MÉDIA - Service Worker v41
+// ACTU & MÉDIA - Service Worker v42
 // ============================================
 
-const CACHE_NAME = 'actu-media-v41';
+const CACHE_NAME = 'actu-media-v42';
 
 // Assets statiques à mettre en cache à l'installation
 // Ne PAS inclure les pages admin (toujours besoin de données fraîches)
@@ -20,13 +20,15 @@ const STATIC_ASSETS = [
     '/css/mini-radio.css',
 
     // JS
+    '/js/utils.js',
     '/js/app.js',
     '/js/quick-links.js',
     '/js/support.js',
     '/js/mini-radio.js',
     '/js/radio-player.js',
     '/js/ios-fixes.js',
-
+    '/js/ios-install.js',
+	
     // Pages publiques
     '/radio.html',
     '/meteo.html',
@@ -53,7 +55,7 @@ const NETWORK_ONLY = [
 
 // Installation
 self.addEventListener('install', event => {
-    console.log('📦 SW v41: Installation');
+    console.log('📦 SW v42: Installation');
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
@@ -73,7 +75,7 @@ self.addEventListener('install', event => {
 
 // Activation - supprime les anciens caches
 self.addEventListener('activate', event => {
-    console.log('🚀 SW v41: Activation');
+    console.log('🚀 SW v42: Activation');
     event.waitUntil(
         caches.keys().then(keys => {
             return Promise.all(

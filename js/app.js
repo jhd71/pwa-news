@@ -1328,37 +1328,6 @@ function formatCommunityDate(dateStr) {
     return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
 }
 
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-// Convertir les URLs en liens cliquables (après escapeHtml)
-function linkifyContent(text) {
-    if (!text) return '';
-    // D'abord échapper le HTML
-    let safe = escapeHtml(text);
-
-    // Puis convertir les URLs en liens cliquables, en affichant le nom du site
-    const urlRegex = /(https?:\/\/[^\s<]+)/g;
-    return safe.replace(urlRegex, (url) => {
-        let libelle = url;
-        try {
-            const hote = new URL(url).hostname.replace(/^www\./, '');
-            libelle = hote
-                .split('.')[0]
-                .split('-')
-                .map(mot => mot.charAt(0).toUpperCase() + mot.slice(1))
-                .join(' ');
-        } catch (e) {
-            // URL non analysable : on garde l'adresse brute
-        }
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="community-link">${libelle}</a>`;
-    });
-}
-
 // ============================================
 // GESTION DES COMMENTAIRES
 // ============================================
