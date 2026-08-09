@@ -18,7 +18,7 @@
     --bg-body: #0e0e14;
     --bg-card: rgba(255, 255, 255, 0.05);
     --bg-elevated: rgba(255, 255, 255, 0.09);
-    --bg-surface-dark: rgb(22 22 32);
+    --bg-surface-dark: rgba(22, 22, 32, 0.6);
 	
     /* Bordures et ombres */
     --border-color: rgba(255, 255, 255, 0.12);
