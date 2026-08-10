@@ -534,9 +534,6 @@
             <button class="header-btn" onclick="toggleTheme()" title="Changer le thème">
                 <span class="material-icons" id="themeIcon">light_mode</span>
             </button>
-            <button class="header-btn" onclick="runScraper()" title="Scraper automatique">
-                <span class="material-icons">sync</span>
-            </button>
             <button class="header-btn" onclick="saveSportData()" title="Sauvegarder" style="background:rgba(16,185,129,0.2);border-color:rgba(16,185,129,0.4);color:var(--success);">
                 <span class="material-icons">save</span>
             </button>
@@ -548,13 +545,6 @@
             </a>
         </div>
     </div>
-
-    <!-- Scraper status -->
-    <div id="scraperStatus" style="display:none;" class="status-bar info">
-        <span class="material-icons" style="font-size:1rem;animation:spin 1s linear infinite;">sync</span>
-        Scraping en cours...
-    </div>
-    <style>@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }</style>
 
     <div id="statusBar" style="display:none;"></div>
 
@@ -1026,31 +1016,6 @@
             const dot = document.getElementById('unsavedDot');
             if (dot) dot.classList.remove('visible');
         };
-        async function runScraper() {
-            const statusEl = document.getElementById('scraperStatus');
-            statusEl.style.display = 'flex';
-            statusEl.className = 'status-bar info';
-            statusEl.innerHTML = '<span class="material-icons" style="font-size:1rem;animation:spin 1s linear infinite;">sync</span> Scraping en cours...';
-
-            try {
-                const response = await fetch('/api/updateSport');
-                const result = await response.json();
-
-                if (result.success) {
-                    statusEl.className = 'status-bar success';
-                    const logsHtml = result.logs.map(l => '<div>' + l + '</div>').join('');
-                    statusEl.innerHTML = '<div><strong>✅ Scraping terminé !</strong></div>' + logsHtml;
-
-                    // Recharger les données dans le formulaire
-                    setTimeout(loadExistingData, 1000);
-                } else {
-                    throw new Error(result.error || 'Erreur inconnue');
-                }
-            } catch (err) {
-                statusEl.className = 'status-bar error';
-                statusEl.innerHTML = '❌ Erreur scraper: ' + err.message;
-            }
-        }
     </script>
 </body>
 </html>

@@ -2082,7 +2082,7 @@
             <button class="tab" data-tab="published">✅ Publiées</button>
             <button class="tab" data-tab="notifications">🔔 Notifications</button>
             <button class="tab" data-tab="stats">📊 Statistiques</button>
-            <button class="tab" data-tab="sport">⚽ Sport</button>
+			<a href="/admin-sport.html" class="tab" style="text-decoration:none;">⚽ Sport ↗</a>
         </div>
         
         <!-- PUBLIER -->
@@ -2608,163 +2608,8 @@
                 <div id="notifResult" style="margin-top:1rem;padding:1rem;border-radius:10px;text-align:center;display:none;"></div>
             </div>
         </div>
-        
-        <!-- SPORT -->
-        <div class="tab-content" id="tabSport">
-            <div class="sport-section">
-                <h2 style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
-                    <span class="material-icons" style="color:var(--success);">sports_soccer</span> FC Montceau Bourgogne
-                </h2>
-                
-                <!-- Actions -->
-                <div class="sport-actions">
-                    <button class="sport-btn sport-btn-save" onclick="sportSaveData()">
-                        <span class="material-icons" style="font-size:1rem;">save</span>
-                        Sauvegarder
-                    </button>
-                </div>
-                
-                <!-- Status bars -->
-                <div class="sport-status-bar" id="sportStatusBar"></div>
-                
-                <!-- DERNIER MATCH -->
-                <div class="sport-card">
-                    <div class="sport-card-title">📊 Dernier match joué</div>
-                    <div class="sport-form-grid">
-                        <div>
-                            <label>Date du match</label>
-                            <input type="date" id="sportLastMatchDate">
-                        </div>
-                        <div>
-                            <label>Journée</label>
-                            <input type="text" id="sportLastMatchDay" placeholder="Journée 10">
-                        </div>
-                        <div>
-                            <label>Équipe domicile</label>
-                            <input type="text" id="sportLastHomeTeam" placeholder="FC Montceau">
-                        </div>
-                        <div>
-                            <label>Score domicile</label>
-                            <input type="number" id="sportLastHomeScore" min="0" max="20">
-                        </div>
-                        <div>
-                            <label>Équipe extérieur</label>
-                            <input type="text" id="sportLastAwayTeam" placeholder="Adversaire">
-                        </div>
-                        <div>
-                            <label>Score extérieur</label>
-                            <input type="number" id="sportLastAwayScore" min="0" max="20">
-                        </div>
-                        <div class="full-width">
-                            <div class="sport-checkbox-row">
-                                <input type="checkbox" id="sportLastIsHome" checked>
-                                <label for="sportLastIsHome" style="margin:0;text-transform:none;font-size:0.85rem;">FCMB joue à domicile</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- PROCHAIN MATCH -->
-                <div class="sport-card">
-                    <div class="sport-card-title">📅 Prochain match</div>
-                    <div class="sport-form-grid">
-                        <div>
-                            <label>Date du match</label>
-                            <input type="date" id="sportNextMatchDate">
-                        </div>
-                        <div>
-                            <label>Heure</label>
-                            <input type="time" id="sportNextMatchTime" value="18:00">
-                        </div>
-                        <div>
-                            <label>Journée</label>
-                            <input type="text" id="sportNextMatchDay" placeholder="Journée 11">
-                        </div>
-                        <div>
-                            <label>Adversaire</label>
-                            <input type="text" id="sportNextAwayTeam" placeholder="Nom de l'adversaire">
-                        </div>
-                        <div class="full-width">
-                            <div class="sport-checkbox-row">
-                                <input type="checkbox" id="sportNextIsHome" checked>
-                                <label for="sportNextIsHome" style="margin:0;text-transform:none;font-size:0.85rem;">FCMB joue à domicile</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- CLASSEMENT -->
-                <div class="sport-card">
-                    <div class="sport-card-title">🏆 Classement</div>
-                    <div class="sport-form-grid">
-                        <div>
-                            <label>Position</label>
-                            <input type="number" id="sportStandingPosition" min="1" max="20">
-                        </div>
-                        <div>
-                            <label>Points</label>
-                            <input type="number" id="sportStandingPoints" min="0">
-                        </div>
-                        <div>
-                            <label>Matchs joués</label>
-                            <input type="number" id="sportStandingPlayed" min="0">
-                        </div>
-                        <div>
-                            <label>Victoires</label>
-                            <input type="number" id="sportStandingWon" min="0">
-                        </div>
-                        <div>
-                            <label>Nuls</label>
-                            <input type="number" id="sportStandingDrawn" min="0">
-                        </div>
-                        <div>
-                            <label>Défaites</label>
-                            <input type="number" id="sportStandingLost" min="0">
-                        </div>
-                        <div>
-                            <label>Buts pour</label>
-                            <input type="number" id="sportStandingGoalsFor" min="0">
-                        </div>
-                        <div>
-                            <label>Buts contre</label>
-                            <input type="number" id="sportStandingGoalsAgainst" min="0">
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- FORME -->
-                <div class="sport-card">
-                    <div class="sport-card-title">📈 Forme (5 derniers matchs)</div>
-                    <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.75rem;">Du plus ancien au plus récent. V = Victoire, N = Nul, D = Défaite</p>
-                    <div class="sport-form-row">
-                        <div class="sport-form-group">
-                            <label>Match 1</label>
-                            <select id="sportForm1"><option value="V">V</option><option value="N">N</option><option value="D">D</option></select>
-                        </div>
-                        <div class="sport-form-group">
-                            <label>Match 2</label>
-                            <select id="sportForm2"><option value="V">V</option><option value="N">N</option><option value="D">D</option></select>
-                        </div>
-                        <div class="sport-form-group">
-                            <label>Match 3</label>
-                            <select id="sportForm3"><option value="V">V</option><option value="N">N</option><option value="D">D</option></select>
-                        </div>
-                        <div class="sport-form-group">
-                            <label>Match 4</label>
-                            <select id="sportForm4"><option value="V">V</option><option value="N">N</option><option value="D">D</option></select>
-                        </div>
-                        <div class="sport-form-group">
-                            <label>Match 5</label>
-                            <select id="sportForm5"><option value="V">V</option><option value="N">N</option><option value="D">D</option></select>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="sport-last-update" id="sportLastUpdate"></div>
-            </div>
-        </div>
     </div>
-    
+
     <div class="toast" id="toast"><span class="toast-icon">✅</span><span class="toast-text">Message</span></div>
 	
     <!-- Modal de recadrage -->
@@ -3010,12 +2855,12 @@
             loadPendingComments();
             loadEventComments();
             loadPendingEvents();
-            sportLoadData();
         }
         
         // === TABS ===
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
+                if (!tab.dataset.tab) return; // lien externe (Sport) : on laisse naviguer
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                 tab.classList.add('active');
@@ -5681,162 +5526,6 @@
                 document.documentElement.setAttribute('data-theme', 'light');
             }
             updateThemeIcon(savedTheme);
-        }
-        
-        // === ONGLET SPORT - FC MONTCEAU ===
-        let sportDataId = null;
-        
-        async function sportLoadData() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('sport_data')
-                    .select('*')
-                    .order('updated_at', { ascending: false })
-                    .limit(1)
-                    .single();
-
-                if (error || !data) {
-                    sportShowStatus('Aucune donnée sport existante. Remplissez le formulaire.', 'info');
-                    return;
-                }
-
-                sportDataId = data.id;
-
-                // Dernier match
-                if (data.last_match_date) document.getElementById('sportLastMatchDate').value = data.last_match_date;
-                if (data.last_match_matchday) document.getElementById('sportLastMatchDay').value = data.last_match_matchday;
-                if (data.last_match_home_team) document.getElementById('sportLastHomeTeam').value = data.last_match_home_team;
-                if (data.last_match_away_team) document.getElementById('sportLastAwayTeam').value = data.last_match_away_team;
-                if (data.last_match_home_score !== null) document.getElementById('sportLastHomeScore').value = data.last_match_home_score;
-                if (data.last_match_away_score !== null) document.getElementById('sportLastAwayScore').value = data.last_match_away_score;
-                document.getElementById('sportLastIsHome').checked = data.last_match_is_home !== false;
-
-                // Prochain match
-                if (data.next_match_date) document.getElementById('sportNextMatchDate').value = data.next_match_date;
-                if (data.next_match_time) document.getElementById('sportNextMatchTime').value = data.next_match_time;
-                if (data.next_match_matchday) document.getElementById('sportNextMatchDay').value = data.next_match_matchday;
-                if (data.next_match_is_home) {
-                    document.getElementById('sportNextAwayTeam').value = data.next_match_away_team || '';
-                } else {
-                    document.getElementById('sportNextAwayTeam').value = data.next_match_home_team || '';
-                }
-                document.getElementById('sportNextIsHome').checked = data.next_match_is_home !== false;
-
-                // Classement
-                if (data.standing_position) document.getElementById('sportStandingPosition').value = data.standing_position;
-                if (data.standing_points !== null) document.getElementById('sportStandingPoints').value = data.standing_points;
-                if (data.standing_played !== null) document.getElementById('sportStandingPlayed').value = data.standing_played;
-                if (data.standing_won !== null) document.getElementById('sportStandingWon').value = data.standing_won;
-                if (data.standing_drawn !== null) document.getElementById('sportStandingDrawn').value = data.standing_drawn;
-                if (data.standing_lost !== null) document.getElementById('sportStandingLost').value = data.standing_lost;
-                if (data.standing_goals_for !== null) document.getElementById('sportStandingGoalsFor').value = data.standing_goals_for;
-                if (data.standing_goals_against !== null) document.getElementById('sportStandingGoalsAgainst').value = data.standing_goals_against;
-
-                // Forme
-                if (data.form) {
-                    const formArr = data.form.split(',').map(f => f.trim());
-                    for (let i = 0; i < 5; i++) {
-                        const sel = document.getElementById('sportForm' + (i + 1));
-                        if (sel && formArr[i]) sel.value = formArr[i];
-                    }
-                }
-
-                // Date mise à jour
-                if (data.updated_at) {
-                    const d = new Date(data.updated_at);
-                    document.getElementById('sportLastUpdate').textContent = 'Dernière mise à jour : ' + d.toLocaleString('fr-FR');
-                }
-
-                sportShowStatus('✅ Données sport chargées', 'success');
-
-            } catch (err) {
-                console.error('Sport - Erreur chargement:', err);
-                sportShowStatus('Erreur de chargement sport: ' + err.message, 'error');
-            }
-        }
-
-        async function sportSaveData() {
-            try {
-                const isHome = document.getElementById('sportNextIsHome').checked;
-                const adversaire = document.getElementById('sportNextAwayTeam').value.trim();
-
-                const payload = {
-                    // Dernier match
-                    last_match_date: document.getElementById('sportLastMatchDate').value || null,
-                    last_match_time: '18:00',
-                    last_match_matchday: document.getElementById('sportLastMatchDay').value.trim() || null,
-                    last_match_home_team: document.getElementById('sportLastHomeTeam').value.trim() || null,
-                    last_match_away_team: document.getElementById('sportLastAwayTeam').value.trim() || null,
-                    last_match_home_score: parseInt(document.getElementById('sportLastHomeScore').value) || 0,
-                    last_match_away_score: parseInt(document.getElementById('sportLastAwayScore').value) || 0,
-                    last_match_is_home: document.getElementById('sportLastIsHome').checked,
-
-                    // Prochain match
-                    next_match_date: document.getElementById('sportNextMatchDate').value || null,
-                    next_match_time: document.getElementById('sportNextMatchTime').value || '18:00',
-                    next_match_matchday: document.getElementById('sportNextMatchDay').value.trim() || null,
-                    next_match_home_team: isHome ? 'FC Montceau' : adversaire,
-                    next_match_away_team: isHome ? adversaire : 'FC Montceau',
-                    next_match_is_home: isHome,
-
-                    // Classement
-                    standing_position: parseInt(document.getElementById('sportStandingPosition').value) || null,
-                    standing_points: parseInt(document.getElementById('sportStandingPoints').value) || 0,
-                    standing_played: parseInt(document.getElementById('sportStandingPlayed').value) || 0,
-                    standing_won: parseInt(document.getElementById('sportStandingWon').value) || 0,
-                    standing_drawn: parseInt(document.getElementById('sportStandingDrawn').value) || 0,
-                    standing_lost: parseInt(document.getElementById('sportStandingLost').value) || 0,
-                    standing_goals_for: parseInt(document.getElementById('sportStandingGoalsFor').value) || 0,
-                    standing_goals_against: parseInt(document.getElementById('sportStandingGoalsAgainst').value) || 0,
-
-                    // Forme
-                    form: [
-                        document.getElementById('sportForm1').value,
-                        document.getElementById('sportForm2').value,
-                        document.getElementById('sportForm3').value,
-                        document.getElementById('sportForm4').value,
-                        document.getElementById('sportForm5').value
-                    ].join(','),
-
-                    updated_at: new Date().toISOString(),
-                    updated_by: 'admin'
-                };
-
-                let result;
-                if (sportDataId) {
-                    result = await supabaseClient
-                        .from('sport_data')
-                        .update(payload)
-                        .eq('id', sportDataId);
-                } else {
-                    result = await supabaseClient
-                        .from('sport_data')
-                        .insert(payload)
-                        .select()
-                        .single();
-                    if (result.data) sportDataId = result.data.id;
-                }
-
-                if (result.error) throw result.error;
-
-                sportShowStatus('✅ Données sport sauvegardées !', 'success');
-                document.getElementById('sportLastUpdate').textContent = 'Dernière mise à jour : ' + new Date().toLocaleString('fr-FR');
-                showToast('Sport sauvegardé');
-
-            } catch (err) {
-                console.error('Sport - Erreur sauvegarde:', err);
-                sportShowStatus('❌ Erreur: ' + err.message, 'error');
-            }
-        }
-
-        function sportShowStatus(message, type) {
-            const bar = document.getElementById('sportStatusBar');
-            bar.className = 'sport-status-bar ' + type;
-            bar.textContent = message;
-            bar.style.display = 'flex';
-            if (type === 'success') {
-                setTimeout(() => { bar.style.display = 'none'; }, 4000);
-            }
         }
         
         initTheme();
