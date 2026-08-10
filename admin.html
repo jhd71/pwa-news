@@ -2618,10 +2618,6 @@
                 
                 <!-- Actions -->
                 <div class="sport-actions">
-                    <button class="sport-btn sport-btn-scraper" onclick="sportRunScraper()">
-                        <span class="material-icons" style="font-size:1rem;">sync</span>
-                        Scraper auto
-                    </button>
                     <button class="sport-btn sport-btn-save" onclick="sportSaveData()">
                         <span class="material-icons" style="font-size:1rem;">save</span>
                         Sauvegarder
@@ -2629,10 +2625,6 @@
                 </div>
                 
                 <!-- Status bars -->
-                <div class="sport-status-bar" id="sportScraperStatus">
-                    <span class="material-icons" style="font-size:1rem;animation:spin 1s linear infinite;">sync</span>
-                    Scraping en cours...
-                </div>
                 <div class="sport-status-bar" id="sportStatusBar"></div>
                 
                 <!-- DERNIER MATCH -->
@@ -5834,31 +5826,6 @@
             } catch (err) {
                 console.error('Sport - Erreur sauvegarde:', err);
                 sportShowStatus('❌ Erreur: ' + err.message, 'error');
-            }
-        }
-
-        async function sportRunScraper() {
-            const statusEl = document.getElementById('sportScraperStatus');
-            statusEl.style.display = 'flex';
-            statusEl.className = 'sport-status-bar info';
-            statusEl.innerHTML = '<span class="material-icons" style="font-size:1rem;animation:spin 1s linear infinite;">sync</span> Scraping en cours...';
-
-            try {
-                const response = await fetch('/api/updateSport');
-                const result = await response.json();
-
-                if (result.success) {
-                    statusEl.className = 'sport-status-bar success';
-                    const logsHtml = result.logs ? '<div class="sport-scraper-logs">' + result.logs.map(l => '<div class="sport-scraper-log">' + l + '</div>').join('') + '</div>' : '';
-                    statusEl.innerHTML = '<div><strong>✅ Scraping terminé !</strong></div>' + logsHtml;
-                    // Recharger les données
-                    setTimeout(sportLoadData, 1000);
-                } else {
-                    throw new Error(result.error || 'Erreur inconnue');
-                }
-            } catch (err) {
-                statusEl.className = 'sport-status-bar error';
-                statusEl.innerHTML = '❌ Erreur scraper: ' + err.message;
             }
         }
 
