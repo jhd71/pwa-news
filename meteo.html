@@ -31,8 +31,8 @@
 		/* Durée du jour */
         .meteo-daylight {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.5rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem 0.5rem;
             margin: 1rem;
             padding: 1rem;
             border-radius: 20px;
@@ -87,6 +87,7 @@
 
         @media (min-width: 768px) {
             .meteo-daylight {
+                grid-template-columns: repeat(4, 1fr);
                 max-width: 600px;
                 margin-left: auto;
                 margin-right: auto;
@@ -351,6 +352,16 @@
 <!-- Durée du jour -->
     <section class="meteo-daylight" id="daylightBox">
         <div class="daylight-item">
+            <span class="material-icons">wb_sunny</span>
+            <span class="daylight-label">Lever vs hier</span>
+            <span class="daylight-value" id="sunriseDelta">--</span>
+        </div>
+        <div class="daylight-item">
+            <span class="material-icons">nights_stay</span>
+            <span class="daylight-label">Coucher vs hier</span>
+            <span class="daylight-value" id="sunsetDelta">--</span>
+        </div>
+        <div class="daylight-item">
             <span class="material-icons">hourglass_bottom</span>
             <span class="daylight-label">Durée du jour</span>
             <span class="daylight-value" id="daylightDuration">--</span>
@@ -359,11 +370,6 @@
             <span class="material-icons">wb_twilight</span>
             <span class="daylight-label">Jour vs hier</span>
             <span class="daylight-value" id="daylightDelta">--</span>
-        </div>
-        <div class="daylight-item">
-            <span class="material-icons">nights_stay</span>
-            <span class="daylight-label">Coucher vs hier</span>
-            <span class="daylight-value" id="sunsetDelta">--</span>
         </div>
     </section>
 	
@@ -558,7 +564,7 @@
         // ============================================
         async function loadDaylightInfo() {
             try {
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${METEO_CONFIG.latitude}&longitude=${METEO_CONFIG.longitude}&daily=sunset,daylight_duration&past_days=1&forecast_days=1&timezone=${METEO_CONFIG.timezone}`;
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${METEO_CONFIG.latitude}&longitude=${METEO_CONFIG.longitude}&daily=sunrise,sunset,daylight_duration&past_days=1&forecast_days=1&timezone=${METEO_CONFIG.timezone}`;
 
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('Erreur API durée du jour');
@@ -581,18 +587,13 @@
                 elDelta.textContent = diffJour === 0 ? 'Identique' : `${diffJour > 0 ? '+' : '-'}${Math.abs(diffJour)} min`;
                 elDelta.className = 'daylight-value ' + (diffJour > 0 ? 'positif' : diffJour < 0 ? 'negatif' : '');
 
-                // 3) Le soleil se couche plus tôt ou plus tard qu'hier
-                const coucherHier = new Date(d.sunset[0]);
-                const coucherAujourdhui = new Date(d.sunset[1]);
-                const minutesHier = coucherHier.getHours() * 60 + coucherHier.getMinutes();
-                const minutesAujourdhui = coucherAujourdhui.getHours() * 60 + coucherAujourdhui.getMinutes();
-                const diffCoucher = minutesAujourdhui - minutesHier;
+                // 3) Le soleil se lève plus tôt ou plus tard qu'hier
+                const diffLever = ecartEnMinutes(d.sunrise[0], d.sunrise[1]);
+                afficherEcartHoraire('sunriseDelta', diffLever, false);
 
-                const elSunset = document.getElementById('sunsetDelta');
-                elSunset.textContent = diffCoucher === 0
-                    ? 'Identique'
-                    : `${Math.abs(diffCoucher)} min ${diffCoucher > 0 ? 'plus tard' : 'plus tôt'}`;
-                elSunset.className = 'daylight-value ' + (diffCoucher > 0 ? 'positif' : diffCoucher < 0 ? 'negatif' : '');
+                // 4) Le soleil se couche plus tôt ou plus tard qu'hier
+                const diffCoucher = ecartEnMinutes(d.sunset[0], d.sunset[1]);
+                afficherEcartHoraire('sunsetDelta', diffCoucher, true);
 
                 console.log('🌅 Durée du jour chargée');
 
@@ -600,6 +601,30 @@
                 console.error('❌ Erreur durée du jour:', error);
                 document.getElementById('daylightBox').style.display = 'none';
             }
+        }
+		
+		// Écart en minutes entre hier et aujourd'hui (positif = plus tard aujourd'hui)
+        function ecartEnMinutes(dateHier, dateAujourdhui) {
+            const h = new Date(dateHier);
+            const a = new Date(dateAujourdhui);
+            const minutesHier = h.getHours() * 60 + h.getMinutes();
+            const minutesAujourdhui = a.getHours() * 60 + a.getMinutes();
+            return minutesAujourdhui - minutesHier;
+        }
+
+        // Affiche "2 min plus tard" / "1 min plus tôt" avec la bonne couleur.
+        // gagnantSiPlusTard = true  pour le coucher (plus tard = plus de jour)
+        //                     false pour le lever   (plus tôt  = plus de jour)
+        function afficherEcartHoraire(elementId, diff, gagnantSiPlusTard) {
+            const el = document.getElementById(elementId);
+            if (diff === 0) {
+                el.textContent = 'Identique';
+                el.className = 'daylight-value';
+                return;
+            }
+            el.textContent = `${Math.abs(diff)} min ${diff > 0 ? 'plus tard' : 'plus tôt'}`;
+            const gagneDuJour = gagnantSiPlusTard ? diff > 0 : diff < 0;
+            el.className = 'daylight-value ' + (gagneDuJour ? 'positif' : 'negatif');
         }
 		
         function updateHourly(hourly) {
