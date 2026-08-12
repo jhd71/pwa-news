@@ -28,6 +28,71 @@
             }
         }
 
+		/* Durée du jour */
+        .meteo-daylight {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin: 1rem;
+            padding: 1rem;
+            border-radius: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+        }
+
+        .daylight-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 0.3rem;
+        }
+
+        .daylight-item .material-icons {
+            font-size: 1.35rem;
+            color: var(--primary-light);
+        }
+
+        .daylight-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--text-muted);
+            line-height: 1.2;
+        }
+
+        .daylight-value {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .daylight-value.positif { color: #34d399; }
+        .daylight-value.negatif { color: #fbbf24; }
+
+		.uv-label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+		
+        [data-theme="light"] .meteo-daylight {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        [data-theme="light"] .daylight-value.positif { color: #059669; }
+        [data-theme="light"] .daylight-value.negatif { color: #d97706; }
+
+        @media (min-width: 768px) {
+            .meteo-daylight {
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+		
         /* Météo heure par heure */
         .meteo-hourly {
             margin: 0 1rem 1.5rem;
@@ -283,6 +348,25 @@
         </div>
     </section>
 
+<!-- Durée du jour -->
+    <section class="meteo-daylight" id="daylightBox">
+        <div class="daylight-item">
+            <span class="material-icons">hourglass_bottom</span>
+            <span class="daylight-label">Durée du jour</span>
+            <span class="daylight-value" id="daylightDuration">--</span>
+        </div>
+        <div class="daylight-item">
+            <span class="material-icons">wb_twilight</span>
+            <span class="daylight-label">Jour vs hier</span>
+            <span class="daylight-value" id="daylightDelta">--</span>
+        </div>
+        <div class="daylight-item">
+            <span class="material-icons">nights_stay</span>
+            <span class="daylight-label">Coucher vs hier</span>
+            <span class="daylight-value" id="sunsetDelta">--</span>
+        </div>
+    </section>
+	
     <!-- Météo heure par heure -->
     <section class="meteo-hourly">
         <h2 class="meteo-section-title">
@@ -373,6 +457,8 @@
         };
 
         let hourlyData = null;
+        let SUNRISE_HOUR = 7;   // valeurs de secours, remplacées par les vraies données
+        let SUNSET_HOUR = 20;
 
         // Thème
         const THEMES = ['dark', 'light'];
@@ -402,7 +488,7 @@
 
         async function loadWeatherData() {
             try {
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${METEO_CONFIG.latitude}&longitude=${METEO_CONFIG.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,surface_pressure,cloud_cover&hourly=temperature_2m,weather_code,precipitation_probability,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&timezone=${METEO_CONFIG.timezone}`;
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${METEO_CONFIG.latitude}&longitude=${METEO_CONFIG.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,surface_pressure,cloud_cover&hourly=temperature_2m,weather_code,precipitation_probability,wind_speed_10m,visibility&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&timezone=${METEO_CONFIG.timezone}`;
                 
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('Erreur API');
@@ -413,7 +499,8 @@
                 hourlyData = data.hourly;
                 updateHourly(data.hourly);
                 updateForecast(data.daily);
-                updateExtras(data.current, data.daily);
+                updateExtras(data.current, data.daily, data.hourly);
+                loadDaylightInfo();
                 
                 console.log('🌤️ Météo chargée');
                 
@@ -424,6 +511,12 @@
         }
 
         function updateCurrentWeather(current, daily) {
+            // On calcule d'abord le vrai lever/coucher : les icônes s'en servent juste après
+            const sunriseInit = new Date(daily.sunrise[0]);
+            const sunsetInit = new Date(daily.sunset[0]);
+            SUNRISE_HOUR = sunriseInit.getHours() + sunriseInit.getMinutes() / 60;
+            SUNSET_HOUR = sunsetInit.getHours() + sunsetInit.getMinutes() / 60;
+
             document.getElementById('currentTemp').textContent = Math.round(current.temperature_2m);
             document.getElementById('currentIcon').innerHTML = getWeatherIconV2(current.weather_code, 'xlarge');
             document.getElementById('currentDesc').textContent = getWeatherDescription(current.weather_code);
@@ -460,6 +553,55 @@
             document.getElementById('sunPosition').style.left = `${percentage}%`;
         }
 
+		// ============================================
+        // DURÉE DU JOUR + COMPARAISON AVEC HIER
+        // ============================================
+        async function loadDaylightInfo() {
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${METEO_CONFIG.latitude}&longitude=${METEO_CONFIG.longitude}&daily=sunset,daylight_duration&past_days=1&forecast_days=1&timezone=${METEO_CONFIG.timezone}`;
+
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Erreur API durée du jour');
+
+                const data = await response.json();
+                const d = data.daily;
+
+                // index 0 = hier, index 1 = aujourd'hui
+                const dureeHier = d.daylight_duration[0];
+                const dureeAujourdhui = d.daylight_duration[1];
+
+                // 1) Durée du jour d'aujourd'hui (ex: 14h 32)
+                const heures = Math.floor(dureeAujourdhui / 3600);
+                const minutes = Math.round((dureeAujourdhui % 3600) / 60);
+                document.getElementById('daylightDuration').textContent = `${heures}h ${String(minutes).padStart(2, '0')}`;
+
+                // 2) Minutes de jour en plus ou en moins par rapport à hier
+                const diffJour = Math.round((dureeAujourdhui - dureeHier) / 60);
+                const elDelta = document.getElementById('daylightDelta');
+                elDelta.textContent = diffJour === 0 ? 'Identique' : `${diffJour > 0 ? '+' : '-'}${Math.abs(diffJour)} min`;
+                elDelta.className = 'daylight-value ' + (diffJour > 0 ? 'positif' : diffJour < 0 ? 'negatif' : '');
+
+                // 3) Le soleil se couche plus tôt ou plus tard qu'hier
+                const coucherHier = new Date(d.sunset[0]);
+                const coucherAujourdhui = new Date(d.sunset[1]);
+                const minutesHier = coucherHier.getHours() * 60 + coucherHier.getMinutes();
+                const minutesAujourdhui = coucherAujourdhui.getHours() * 60 + coucherAujourdhui.getMinutes();
+                const diffCoucher = minutesAujourdhui - minutesHier;
+
+                const elSunset = document.getElementById('sunsetDelta');
+                elSunset.textContent = diffCoucher === 0
+                    ? 'Identique'
+                    : `${Math.abs(diffCoucher)} min ${diffCoucher > 0 ? 'plus tard' : 'plus tôt'}`;
+                elSunset.className = 'daylight-value ' + (diffCoucher > 0 ? 'positif' : diffCoucher < 0 ? 'negatif' : '');
+
+                console.log('🌅 Durée du jour chargée');
+
+            } catch (error) {
+                console.error('❌ Erreur durée du jour:', error);
+                document.getElementById('daylightBox').style.display = 'none';
+            }
+        }
+		
         function updateHourly(hourly) {
             const container = document.getElementById('hourlyScroll');
             const now = new Date();
@@ -525,7 +667,7 @@
                             <span class="forecast-day-date">${dateStr}</span>
                             <span class="forecast-day-desc">${getWeatherDescription(daily.weather_code[i])}</span>
                         </div>
-                        <div class="forecast-icon">${getWeatherIconV2(daily.weather_code[i], 'medium')}</div>
+                        <div class="forecast-icon">${getWeatherIconV2(daily.weather_code[i], 'medium', 12)}</div>
                         <div class="forecast-precip">
                             <span class="material-icons">water_drop</span>
                             ${daily.precipitation_probability_max[i] || 0}%
@@ -595,11 +737,53 @@
             container.classList.add('open');
         }
 
-        function updateExtras(current, daily) {
+        function updateExtras(current, daily, hourly) {
             document.getElementById('pressure').textContent = Math.round(current.surface_pressure) + ' hPa';
             document.getElementById('cloudCover').textContent = current.cloud_cover + '%';
-            document.getElementById('uvIndex').textContent = daily.uv_index_max[0] || '--';
-            document.getElementById('visibility').textContent = '10+ km';
+
+            // Visibilité réelle (donnée horaire, fournie en mètres)
+            const idx = getCurrentHourIndex(hourly);
+            const metres = hourly.visibility ? hourly.visibility[idx] : null;
+            const elVis = document.getElementById('visibility');
+            if (metres === null || metres === undefined) {
+                elVis.textContent = '--';
+            } else {
+                const km = metres / 1000;
+                if (km >= 20) {
+                    elVis.textContent = '20+ km';
+                } else if (km >= 10) {
+                    elVis.textContent = Math.round(km) + ' km';
+                } else {
+                    elVis.textContent = km.toFixed(1).replace('.', ',') + ' km';
+                }
+            }
+
+            // Indice UV avec libellé coloré
+            const uv = daily.uv_index_max[0];
+            const elUv = document.getElementById('uvIndex');
+            if (uv === null || uv === undefined) {
+                elUv.textContent = '--';
+            } else {
+                const uvArrondi = Math.round(uv);
+                const info = getUvInfo(uvArrondi);
+                elUv.innerHTML = `${uvArrondi} <span class="uv-label" style="color:${info.couleur}">${info.texte}</span>`;
+            }
+        }
+
+        function getCurrentHourIndex(hourly) {
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2, '0');
+            const cible = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:00`;
+            const index = hourly.time.indexOf(cible);
+            return index === -1 ? 0 : index;
+        }
+
+        function getUvInfo(uv) {
+            if (uv <= 2) return { texte: 'Faible', couleur: '#34d399' };
+            if (uv <= 5) return { texte: 'Modéré', couleur: '#fbbf24' };
+            if (uv <= 7) return { texte: 'Élevé', couleur: '#fb923c' };
+            if (uv <= 10) return { texte: 'Très élevé', couleur: '#f87171' };
+            return { texte: 'Extrême', couleur: '#c084fc' };
         }
 
         // ============================================
@@ -619,7 +803,7 @@
         
         function getMeteoconName(code, forceHour = null) {
             const hour = forceHour !== null ? forceHour : new Date().getHours();
-            const isDay = hour >= 7 && hour < 20;
+            const isDay = hour >= SUNRISE_HOUR && hour < SUNSET_HOUR;
             const daySuffix = isDay ? 'day' : 'night';
             
             // Soleil / Lune
