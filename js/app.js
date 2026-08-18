@@ -521,12 +521,12 @@ async function loadCinema(cinemaKey) {
                     cinemaDateLabels[cinemaKey] = "Aujourd'hui";
                 } else {
                     const d = new Date(data.date + 'T12:00:00');
-                    cinemaDateLabels[cinemaKey] = 'Séances du ' + d.toLocaleDateString('fr-FR', {
+                                        cinemaDateLabels[cinemaKey] = d.toLocaleDateString('fr-FR', {
                         weekday: 'long', day: 'numeric', month: 'long'
                     });
                 }
             } else {
-                cinemaDateLabels[cinemaKey] = data.dateLabel || "Aujourd'hui";
+                cinemaDateLabels[cinemaKey] = (data.dateLabel || "Aujourd'hui").replace(/^Séances du /i, '');
             }
             
             // Mettre à jour le sous-titre avec la vraie date
@@ -690,18 +690,18 @@ function openFilmModal(index) {
                 ` : ''}
                 <div class="film-modal-info">
                     <h2 class="film-modal-title">${film.titre}</h2>
-                    <div class="film-modal-details">
-                        <span class="film-modal-badge">🎭 ${film.genre || 'Film'}</span>
-                        ${film.duree ? `<span class="film-modal-badge">⏱️ ${film.duree}</span>` : ''}
+                                        <div class="film-modal-details">
+                        <span class="film-modal-badge">${film.genre || 'Film'}</span>
+                        ${film.duree ? `<span class="film-modal-badge">${film.duree}</span>` : ''}
                     </div>
                     <div class="film-modal-cinema">
-                        📍 ${config.nom} - ${config.ville}
+                        <span class="material-icons">place</span>${config.nom} — ${config.ville}
                     </div>
                 </div>
             </div>
             
             <div class="film-modal-section">
-                <div class="film-modal-section-title">🕐 Séances ${cinemaDateLabels[currentCinema] === "Aujourd'hui" ? "aujourd'hui" : cinemaDateLabels[currentCinema]}</div>
+                <div class="film-modal-section-title">Séances ${cinemaDateLabels[currentCinema] === "Aujourd'hui" ? "aujourd'hui" : 'du ' + cinemaDateLabels[currentCinema]}</div>
                 <div class="film-modal-times">
                     ${(film.horaires || []).map(time => 
                         `<span class="film-modal-time">${time}</span>`

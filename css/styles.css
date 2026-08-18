@@ -5230,3 +5230,166 @@ a.agenda-item:hover .agenda-item-title {
     .cinema-film { padding: 0.8rem 0; gap: 0.75rem; }
     .cinema-subtitle { font-size: 0.68rem; }
 }
+
+
+/* ============================================================
+   REFONTE ÉDITORIAL — FENÊTRE FILM (18 août 2026)
+   Bloc autonome : pour tout annuler, supprimer ce bloc entier.
+   ============================================================ */
+
+.film-modal-content {
+    max-width: 440px;
+    padding: 1.4rem;
+    background: var(--bg-surface-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+
+[data-theme="light"] .film-modal-content {
+    background: #ffffff;
+}
+
+/* --- Croix de fermeture, discrète --- */
+.film-modal-close {
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 32px;
+    height: 32px;
+    background: none;
+    color: var(--text-muted);
+}
+
+.film-modal-close:hover {
+    background: none;
+    color: var(--text-primary);
+}
+
+.film-modal-close .material-icons {
+    font-size: 1.3rem;
+}
+
+/* --- Affiche + titre, séparés du reste par un trait fin --- */
+.film-modal-header {
+    gap: 1.1rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.film-modal-poster {
+    width: 110px;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.film-modal-info {
+    gap: 0.4rem;
+    padding-top: 0.1rem;
+}
+
+.film-modal-title {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+}
+
+/* --- Genre · durée : ligne simple, plus de pastilles --- */
+.film-modal-details {
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.film-modal-badge,
+[data-theme="light"] .film-modal-badge {
+    padding: 0;
+    background: none;
+    border-radius: 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.film-modal-badge + .film-modal-badge::before {
+    content: '·';
+    margin-right: 0.5rem;
+}
+
+.film-modal-cinema {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.film-modal-cinema .material-icons {
+    font-size: 0.95rem;
+    opacity: 0.65;
+}
+
+/* --- Titre "Séances du ..." --- */
+.film-modal-section {
+    margin-bottom: 1.4rem;
+}
+
+.film-modal-section-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+}
+
+/* --- Horaires : mêmes pastilles que dans la liste --- */
+.film-modal-time {
+    padding: 0.3rem 0.65rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    background: rgba(99, 102, 241, 0.16);
+    color: #a5b4fc;
+}
+
+[data-theme="light"] .film-modal-time {
+    border: none;
+    background: rgba(79, 70, 229, 0.09);
+    color: #4338ca;
+}
+
+/* --- Boutons : "Réserver" en action principale --- */
+.film-modal-btn {
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.film-modal-btn-trailer {
+    background: none;
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #f87171;
+}
+
+.film-modal-btn-trailer:hover {
+    background: rgba(239, 68, 68, 0.12);
+    transform: none;
+}
+
+[data-theme="light"] .film-modal-btn-trailer {
+    border-color: rgba(220, 38, 38, 0.45);
+    color: #dc2626;
+}
+
+.film-modal-btn-site {
+    background: var(--primary);
+    border: 1px solid var(--primary);
+    color: #ffffff;
+}
+
+.film-modal-btn-site:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: none;
+}
