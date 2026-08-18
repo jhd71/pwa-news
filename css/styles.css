@@ -5653,3 +5653,153 @@ a.agenda-item:hover .agenda-item-title {
     .sport-position.top3,
     .sport-position.mid { font-size: 1.5rem; min-width: 2rem; }
 }
+
+
+/* ============================================================
+   REFONTE ÉDITORIAL — CLASSEMENT COMPLET (18 août 2026)
+   Bloc autonome : pour tout annuler, supprimer ce bloc entier.
+   ============================================================ */
+
+.standings-modal {
+    max-width: 540px;
+    background: var(--bg-surface-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="light"] .standings-modal {
+    background: #ffffff;
+    border-color: var(--border-color);
+}
+
+/* --- En-tête : titre serif, plus de pastille verte --- */
+.standings-modal-header,
+[data-theme="light"] .standings-modal-header {
+    align-items: baseline;
+    padding: 1.1rem 1.2rem 0.7rem;
+    background: none;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.standings-modal-title {
+    padding: 0;
+    background: none;
+    border-radius: 0;
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+}
+
+.standings-modal-close {
+    align-self: center;
+    color: var(--text-muted);
+}
+
+.standings-modal-close:hover,
+[data-theme="light"] .standings-modal-close:hover {
+    background: none;
+    color: var(--text-primary);
+}
+
+/* --- Tableau --- */
+.standings-table {
+    font-size: 0.75rem;
+}
+
+.standings-table th {
+    padding: 0.6rem 0.3rem;
+    background: var(--bg-surface-dark);
+    color: var(--text-muted);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--border-color);
+}
+
+[data-theme="light"] .standings-table th {
+    background: #ffffff;
+    color: var(--text-muted);
+    border-bottom-color: var(--border-color);
+}
+
+.standings-table td {
+    padding: 0.55rem 0.3rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="light"] .standings-table td {
+    color: var(--text-muted);
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+.standings-table td:nth-child(2),
+[data-theme="light"] .standings-table td:nth-child(2) {
+    max-width: 140px;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* --- Place : petit carré plat au lieu de la pastille dégradée --- */
+.standings-pos {
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 3px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.standings-pos.top3 {
+    background: #10b981;
+    color: #ffffff;
+}
+
+.standings-pos.bottom3 {
+    background: #ef4444;
+    color: #ffffff;
+}
+
+/* --- Points : en blanc gras plutôt qu'en doré --- */
+.standings-pts {
+    color: var(--text-primary) !important;
+    font-weight: 700;
+}
+
+.standings-table tr.is-montceau {
+    background: rgba(99, 102, 241, 0.10);
+}
+
+.standings-table tr.is-montceau .standings-pts {
+    color: #a5b4fc !important;
+}
+
+[data-theme="light"] .standings-table tr.is-montceau .standings-pts {
+    color: #4f46e5 !important;
+}
+
+/* --- Pied de fenêtre --- */
+.standings-modal-footer,
+[data-theme="light"] .standings-modal-footer {
+    padding: 0.8rem 1.2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.standings-source-link,
+.standings-source-link:hover {
+    color: var(--primary-light);
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+
+.standings-source-link:hover {
+    text-decoration: underline;
+}
+
+[data-theme="light"] .standings-source-link,
+[data-theme="light"] .standings-source-link:hover {
+    color: var(--primary);
+}
