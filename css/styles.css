@@ -5803,3 +5803,249 @@ a.agenda-item:hover .agenda-item-title {
 [data-theme="light"] .standings-source-link:hover {
     color: var(--primary);
 }
+
+
+/* ============================================================
+   REFONTE ÉDITORIAL — SECTION VOS INFOS (18 août 2026)
+   Bloc autonome : pour tout annuler, supprimer ce bloc entier.
+   ============================================================ */
+
+/* --- Titre --- */
+.community-header {
+    align-items: baseline;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.community-title {
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+    padding-left: 0;
+    border-left: none;
+}
+
+/* --- Bouton "Proposer" : violet plat, sans dégradé --- */
+.community-propose-btn {
+    padding: 0.35rem 0.75rem;
+    background: var(--primary);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.community-propose-btn:hover {
+    background: var(--primary-dark);
+    transform: none;
+    box-shadow: none;
+}
+
+/* --- Les infos : plus de cartes, séparation au trait fin --- */
+.community-content {
+    gap: 0;
+}
+
+.community-item,
+[data-theme="light"] .community-item {
+    padding: 1.2rem 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.community-item.pinned {
+    background: none;
+    border: none;
+    border-left: 2px solid var(--primary);
+    padding-left: 1rem;
+}
+
+.community-item + .community-item,
+[data-theme="light"] .community-item + .community-item {
+    border-top: 1px solid var(--border-color);
+}
+
+.community-item:hover {
+    background: none;
+}
+
+.community-item:hover .community-item-title {
+    color: var(--primary-light);
+}
+
+[data-theme="light"] .community-item:hover .community-item-title {
+    color: var(--primary);
+}
+
+/* --- Épinglé : petit libellé au lieu de la pastille violette --- */
+.community-pinned-badge {
+    padding: 0;
+    margin-bottom: 0.5rem;
+    background: none;
+    border-radius: 0;
+    color: var(--primary-light);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+[data-theme="light"] .community-pinned-badge {
+    color: var(--primary);
+}
+
+/* --- Ligne auteur · date --- */
+.community-item-header {
+    gap: 0.45rem;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.community-item-header .community-item-icon {
+    font-size: 1.1rem;
+}
+
+.community-item-author {
+    color: var(--text-secondary);
+}
+
+.community-item-date {
+    color: var(--text-muted);
+}
+
+/* --- Titre et texte --- */
+.community-item-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    transition: color 0.2s ease;
+}
+
+.community-image-inner,
+.community-item-image {
+    border-radius: 4px;
+}
+
+/* --- Lien de l'info : lien simple --- */
+.community-item-link,
+.community-item-link:hover {
+    padding: 0;
+    background: none;
+    border-radius: 0;
+    color: var(--primary-light);
+    font-weight: 500;
+    transform: none;
+    box-shadow: none;
+}
+
+.community-item-link:hover {
+    text-decoration: underline;
+}
+
+[data-theme="light"] .community-item-link,
+[data-theme="light"] .community-item-link:hover {
+    color: var(--primary);
+}
+
+/* --- Pied de l'info : lieu et vues --- */
+.community-item-footer {
+    margin-top: 0.9rem;
+    padding-top: 0.7rem;
+    color: var(--text-muted);
+}
+
+.community-item-footer .community-item-location,
+.community-item-footer .community-item-views {
+    font-size: 0.78rem;
+}
+
+.community-item-footer .community-item-location .material-icons,
+.community-item-footer .community-item-views .material-icons {
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+/* --- J'aime / Commenter / Partager : liens au lieu de pilules --- */
+.community-item-actions {
+    gap: 1.25rem;
+    padding: 0.75rem 0 0;
+}
+
+.like-btn,
+.comments-toggle-btn,
+.share-btn,
+[data-theme="light"] .share-btn {
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.like-btn:hover,
+.like-btn.liked,
+.like-btn.liked:hover {
+    background: none;
+    border: none;
+    color: #ef4444;
+}
+
+.comments-toggle-btn:hover {
+    background: none;
+    border: none;
+    color: var(--primary-light);
+}
+
+.share-btn:hover,
+[data-theme="light"] .share-btn:hover {
+    background: none;
+    border: none;
+    box-shadow: none;
+    transform: none;
+    color: var(--primary-light);
+}
+
+.community-comments-section {
+    padding: 0 0 0.75rem;
+}
+
+/* --- "Voir toutes les infos" : lien --- */
+.community-voir-tout,
+.community-voir-tout:hover {
+    padding: 0.85rem 0 0.2rem;
+    margin: 0.5rem auto 0;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    color: var(--primary-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transform: none;
+}
+
+.community-voir-tout:hover {
+    text-decoration: underline;
+}
+
+[data-theme="light"] .community-voir-tout {
+    color: var(--primary);
+}
+
+/* --- Responsive --- */
+@media (max-width: 480px) {
+    .community-title { font-size: 1.2rem; }
+    .community-item { padding: 1rem 0; }
+    .community-item-actions { gap: 1rem; padding: 0.75rem 0 0; }
+    .community-item-actions .like-btn,
+    .community-item-actions .comments-toggle-btn,
+    .community-item-actions .share-btn { padding: 0; font-size: 0.78rem; }
+}
