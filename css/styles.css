@@ -6049,3 +6049,231 @@ a.agenda-item:hover .agenda-item-title {
     .community-item-actions .comments-toggle-btn,
     .community-item-actions .share-btn { padding: 0; font-size: 0.78rem; }
 }
+
+
+/* ============================================================
+   REFONTE ÉDITORIAL — INFOS EN DIRECT + PRESSE LOCALE (18 août 2026)
+   Bloc autonome : pour tout annuler, supprimer ce bloc entier.
+   ============================================================ */
+
+/* ---------- INFOS EN DIRECT ---------- */
+
+.news-ticker-header {
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+    padding-left: 0;
+    padding-bottom: 0.6rem;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+    border-left: none;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Le point rouge "en direct" */
+.news-ticker-header::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--danger);
+    flex-shrink: 0;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.news-item {
+    min-height: 0;
+    padding: 0.9rem 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+}
+
+.news-item:hover {
+    background: none;
+    border-color: transparent;
+    transform: none;
+}
+
+.news-item:hover .news-item-title {
+    color: var(--primary-light);
+}
+
+[data-theme="light"] .news-item:hover .news-item-title {
+    color: var(--primary);
+}
+
+.news-item-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.45rem;
+    transition: color 0.2s ease;
+}
+
+.news-item-date {
+    font-size: 0.76rem;
+}
+
+/* "Lire" : lien au lieu de la pilule violette */
+.news-item-read,
+.news-item:hover .news-item-read {
+    padding: 0;
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+    color: var(--primary-light);
+    font-size: 0.76rem;
+    font-weight: 500;
+}
+
+[data-theme="light"] .news-item-read,
+[data-theme="light"] .news-item:hover .news-item-read {
+    color: var(--primary);
+}
+
+/* Flèches de navigation, sans rond gris */
+.ticker-nav-btn {
+    width: 26px;
+    height: 26px;
+    background: none;
+    border-radius: 0;
+    color: var(--text-muted);
+}
+
+.ticker-nav-btn:hover {
+    background: none;
+    color: var(--primary-light);
+}
+
+/* ---------- PRESSE LOCALE ---------- */
+
+.section-title {
+    align-items: baseline;
+    padding-left: 0;
+    padding-bottom: 0.6rem;
+    margin-bottom: 0;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+    border-left: none;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Les médias : une liste en 2 colonnes séparées par des traits */
+.tiles-grid,
+.tiles-extra.show {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-top: 0;
+    padding-bottom: 0;
+}
+
+.tile,
+[data-theme="light"] .tile {
+    gap: 0.6rem;
+    padding: 0.7rem 0.75rem 0.7rem 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    border-top: 1px solid var(--border-color);
+    box-shadow: none;
+}
+
+.tile:nth-child(even) {
+    padding-left: 0.9rem;
+    border-left: 1px solid var(--border-color);
+}
+
+.tile:hover,
+[data-theme="light"] .tile:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--border-color);
+    border-top-color: var(--border-color);
+}
+
+.tile:active {
+    transform: none;
+}
+
+.tile:hover .tile-name {
+    color: var(--primary-light);
+}
+
+[data-theme="light"] .tile:hover .tile-name {
+    color: var(--primary);
+}
+
+/* L'icône garde sa couleur mais perd son carré teinté */
+.tile-icon,
+.tile[data-color] .tile-icon {
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: none;
+}
+
+.tile:hover .tile-icon {
+    transform: none;
+}
+
+.tile:hover .material-icons {
+    transform: none;
+}
+
+.tile-icon .material-icons {
+    font-size: 1.15rem;
+}
+
+.tile-name {
+    font-size: 0.83rem;
+    transition: color 0.2s ease;
+}
+
+.tile-subtitle {
+    font-size: 0.68rem;
+}
+
+/* "Voir les 11 autres médias" : lien au lieu du cadre pointillé */
+.tiles-toggle,
+.tiles-toggle:hover {
+    width: fit-content;
+    margin: 0 auto;
+    padding: 0.85rem 0 0.2rem;
+    background: none;
+    border: none;
+    border-radius: 0;
+    color: var(--primary-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.tiles-toggle:hover {
+    text-decoration: underline;
+}
+
+[data-theme="light"] .tiles-toggle,
+[data-theme="light"] .tiles-toggle:hover {
+    color: var(--primary);
+}
+
+.tiles-toggle .material-icons {
+    font-size: 1.1rem;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 480px) {
+    .news-ticker-header { font-size: 1.2rem; }
+    .section-title { font-size: 1.2rem; }
+    .tile { padding: 0.6rem 0.5rem 0.6rem 0; gap: 0.5rem; }
+    .tile:nth-child(even) { padding-left: 0.6rem; }
+    .tile-name { font-size: 0.78rem; }
+}
