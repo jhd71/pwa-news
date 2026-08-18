@@ -588,11 +588,9 @@ function renderCinema(films, cinemaKey = 'capitole') {
                  style="cursor:pointer">
                 <div class="cinema-film-info">
                     <div class="cinema-film-title">${film.titre}</div>
-                    <div class="cinema-film-meta">
-                        <span>🎭 ${film.genre || 'Film'}</span>
-                    </div>
-                    <div class="cinema-film-meta">
-                        <span>⏱️ ${film.duree || 'N/A'}</span>
+                                        <div class="cinema-film-meta">
+                        <span>${film.genre || 'Film'}</span>
+                        ${film.duree ? `<span>${film.duree}</span>` : ''}
                     </div>
                     <div class="cinema-film-times">
                         ${(film.horaires || []).slice(0, 5).map(time => 
@@ -2112,14 +2110,6 @@ async function initAgenda() {
                 </a>
             `;
         }).join('');
-        
-        // Ajouter le bouton "Voir tout l'agenda" en bas
-        contentEl.innerHTML += `
-            <a href="agenda.html" class="agenda-voir-tout">
-                <span>Voir tout l'agenda</span>
-                <span class="material-icons">calendar_month</span>
-            </a>
-        `;
         
         console.log(`📅 ${allEvents.length} événements agenda chargés`);
         

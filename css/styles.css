@@ -908,22 +908,6 @@ h2, h3 {
     border: 1px solid var(--border-color);
 }
 
-/* Séparateurs visuels entre grandes sections */
-.agenda-section::before,
-.cinema-section::before,
-.sport-section::before,
-.community-section::before,
-.seo-section::before {
-    content: '';
-    display: block;
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--primary-light));
-    border-radius: 3px;
-    margin: 0 auto 1rem;
-    opacity: 0.5;
-}
-
 .cinema-header {
     display: flex;
     justify-content: space-between;
@@ -4709,15 +4693,6 @@ a.agenda-item:hover {
 }
 
 /* ============================================
-   Séparateurs : masqués dans la grille 2 colonnes
-   ============================================ */
-@media (min-width: 1025px) {
-    .row-2 > section::before {
-        display: none;
-    }
-}
-
-/* ============================================
    ICÔNES DES PASTILLES DE CATÉGORIE (agenda)
    ============================================ */
 .agenda-item-category .material-icons {
@@ -4852,10 +4827,13 @@ a.agenda-item:hover {
     padding: 0.9rem 0;
     background: none;
     border: none;
-    border-bottom: 1px solid var(--border-color);
     border-radius: 0;
     box-shadow: none;
     transition: color 0.2s ease;
+}
+
+.agenda-item + .agenda-item {
+    border-top: 1px solid var(--border-color);
 }
 
 a.agenda-item:hover,
@@ -5023,4 +5001,232 @@ a.agenda-item:hover .agenda-item-title {
     .agenda-item { padding: 0.7rem 0; gap: 0.6rem; }
     .agenda-item-date { min-width: 40px; }
     .agenda-item-day { font-size: 1.6rem; }
+}
+
+
+/* ============================================================
+   REFONTE ÉDITORIAL — SECTION CINÉMAS (18 août 2026)
+   Bloc autonome : pour tout annuler, supprimer ce bloc entier.
+   ============================================================ */
+
+/* --- Titre + lien "Voir tout" sur la même ligne --- */
+.cinema-section-title {
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+    padding-left: 0;
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.75rem;
+    border-left: none;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.cinema-link {
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    color: var(--primary-light);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: normal;
+}
+
+.cinema-link:hover {
+    transform: none;
+    box-shadow: none;
+    text-decoration: underline;
+}
+
+[data-theme="light"] .cinema-link {
+    color: var(--primary);
+}
+
+.cinema-section-title .cinema-link .material-icons {
+    font-size: 1rem;
+    color: inherit;
+}
+
+/* --- Onglets : plus de pilules rouges, soulignement simple --- */
+.cinema-header {
+    justify-content: flex-start;
+    margin-bottom: 0.35rem;
+}
+
+.cinema-tabs {
+    gap: 1.25rem;
+}
+
+.cinema-tab {
+    padding: 0.25rem 0 0.45rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.cinema-tab:hover {
+    background: none;
+    border-color: transparent;
+    color: var(--text-secondary);
+}
+
+.cinema-tab.active {
+    background: none;
+    border-bottom-color: #ef4444;
+    color: var(--text-primary);
+}
+
+/* --- Ligne "Montceau-les-Mines • Aujourd'hui" --- */
+.cinema-subtitle {
+    padding-left: 0;
+    margin: 0 0 0.9rem 0;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+/* --- Bandeau astuce : sans cadre --- */
+.cinema-tip {
+    padding: 0 0 0.9rem 0;
+    margin-bottom: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    font-size: 0.73rem;
+    color: var(--text-muted);
+}
+
+/* --- Films : plus de cartes, séparation au trait fin --- */
+.cinema-films {
+    gap: 0;
+}
+
+.cinema-films-extra.expanded {
+    margin-top: 0;
+}
+
+.cinema-film,
+[data-theme="light"] .cinema-film {
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.9rem 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.cinema-film + .cinema-film,
+.cinema-films-extra.expanded .cinema-film:first-child {
+    border-top: 1px solid var(--border-color);
+}
+
+.cinema-film:hover,
+[data-theme="light"] .cinema-film:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--border-color);
+}
+
+.cinema-film:hover .cinema-film-title {
+    color: var(--primary-light);
+}
+
+[data-theme="light"] .cinema-film:hover .cinema-film-title {
+    color: var(--primary);
+}
+
+.cinema-film:last-child {
+    border-bottom: none;
+}
+
+/* --- Titre du film et ligne genre · durée --- */
+.cinema-film-title {
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.cinema-film-meta {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.cinema-film-meta span + span::before {
+    content: '·';
+    margin-right: 0.5rem;
+}
+
+/* --- Horaires : pastilles plus discrètes --- */
+.cinema-time {
+    padding: 0.22rem 0.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    background: rgba(99, 102, 241, 0.16);
+    color: #a5b4fc;
+}
+
+[data-theme="light"] .cinema-time {
+    border: none;
+    background: rgba(79, 70, 229, 0.09);
+    color: #4338ca;
+}
+
+/* --- "Voir les N autres films" : lien, plus de pilule violette --- */
+.cinema-toggle-btn {
+    padding: 0.85rem 0 0.2rem;
+    margin: 0 auto;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    color: var(--primary-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.cinema-toggle-btn:hover {
+    transform: none;
+    box-shadow: none;
+    text-decoration: underline;
+}
+
+[data-theme="light"] .cinema-toggle-btn {
+    color: var(--primary);
+}
+
+.cinema-toggle-btn .material-icons {
+    font-size: 1.1rem;
+}
+
+/* --- Responsive (obligatoire ici, même raison que pour l'agenda) --- */
+@media (max-width: 768px) {
+    .cinema-section-title { font-size: 1.2rem; }
+    .cinema-film { padding: 0.85rem 0; gap: 0.85rem; }
+    .cinema-film-meta { font-size: 0.75rem; }
+}
+
+@media (max-width: 480px) {
+    .cinema-header { gap: 0.4rem; }
+    .cinema-tabs { gap: 1rem; }
+    .cinema-tab { padding: 0.25rem 0 0.45rem; font-size: 0.82rem; }
+    .cinema-link { padding: 0; font-size: 0.8rem; }
+    .cinema-film { padding: 0.8rem 0; gap: 0.75rem; }
+    .cinema-subtitle { font-size: 0.68rem; }
 }
