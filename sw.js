@@ -1,8 +1,8 @@
 // ============================================
-// ACTU & MÉDIA - Service Worker v44
+// ACTU & MÉDIA - Service Worker v45
 // ============================================
 
-const CACHE_NAME = 'actu-media-v44';
+const CACHE_NAME = 'actu-media-v45';
 
 // Assets statiques à mettre en cache à l'installation
 // Ne PAS inclure les pages admin (toujours besoin de données fraîches)
@@ -55,7 +55,7 @@ const NETWORK_ONLY = [
 
 // Installation
 self.addEventListener('install', event => {
-    console.log('📦 SW v44: Installation');
+    console.log('📦 SW v45: Installation');
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
@@ -75,7 +75,7 @@ self.addEventListener('install', event => {
 
 // Activation - supprime les anciens caches
 self.addEventListener('activate', event => {
-    console.log('🚀 SW v44: Activation');
+    console.log('🚀 SW v45: Activation');
     event.waitUntil(
         caches.keys().then(keys => {
             return Promise.all(

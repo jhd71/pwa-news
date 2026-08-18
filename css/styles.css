@@ -4791,3 +4791,236 @@ a.agenda-item:hover {
     color: #ffffff;
     box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
 }
+
+
+/* ============================================================
+   REFONTE ÉDITORIAL — SECTION AGENDA (18 août 2026)
+   Bloc autonome : pour tout annuler, supprimer ce bloc entier.
+   ============================================================ */
+
+:root {
+    --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+}
+
+/* --- Titre de section : serif, pas de barre violette --- */
+.agenda-header {
+    align-items: baseline;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.6rem;
+}
+
+.agenda-title {
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+    padding-left: 0;
+    border-left: none;
+}
+
+/* --- Lien "Voir tout" : simple lien, plus de bouton dégradé --- */
+.agenda-link {
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    color: var(--primary-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.agenda-link:hover {
+    transform: none;
+    box-shadow: none;
+    text-decoration: underline;
+}
+
+[data-theme="light"] .agenda-link {
+    color: var(--primary);
+}
+
+/* --- Événements : plus de cartes, séparation au trait fin --- */
+.agenda-content {
+    gap: 0;
+}
+
+.agenda-item,
+[data-theme="light"] .agenda-item {
+    gap: 1rem;
+    padding: 0.9rem 0;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 0;
+    box-shadow: none;
+    transition: color 0.2s ease;
+}
+
+a.agenda-item:hover,
+[data-theme="light"] a.agenda-item:hover {
+    transform: none;
+    box-shadow: none;
+    background: none;
+    border-color: var(--border-color);
+}
+
+a.agenda-item:hover .agenda-item-title {
+    color: var(--primary-light);
+}
+
+[data-theme="light"] a.agenda-item:hover .agenda-item-title {
+    color: var(--primary);
+}
+
+/* --- Date : gros chiffre, plus de badge violet --- */
+.agenda-item-date,
+.agenda-item-date.recurring,
+.agenda-item-date.ongoing {
+    justify-content: flex-start;
+    min-width: 54px;
+    padding: 0.1rem 0 0;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    color: var(--text-primary);
+}
+
+.agenda-item-day {
+    font-family: var(--font-serif);
+    font-size: 2.2rem;
+    font-weight: 600;
+    line-height: 0.95;
+    text-shadow: none;
+    color: var(--text-primary);
+}
+
+/* Garde la police icône pour "EN COURS" et "HEBDO" */
+.agenda-item-day.material-icons {
+    font-family: 'Material Icons';
+    line-height: 1;
+}
+
+.agenda-item-date.ongoing .agenda-item-day.material-icons,
+.agenda-item-date.recurring .agenda-item-day.material-icons {
+    font-size: 1.7rem;
+}
+
+.agenda-item-month {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    opacity: 1;
+    margin-top: 0.25rem;
+}
+
+.agenda-item-date.ongoing .agenda-item-day,
+.agenda-item-date.ongoing .agenda-item-month {
+    color: #10b981;
+}
+
+.agenda-item-date.ongoing .agenda-item-month {
+    font-size: 0.55rem;
+    letter-spacing: 0.04em;
+}
+
+.agenda-item-date.recurring .agenda-item-day,
+.agenda-item-date.recurring .agenda-item-month {
+    color: #f59e0b;
+}
+
+/* --- Titre et infos de l'événement --- */
+.agenda-item-title,
+[data-theme="light"] .agenda-item-title {
+    font-size: 1.02rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+    line-height: 1.35;
+}
+
+.agenda-item-info {
+    gap: 0.65rem;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.agenda-item-info .material-icons {
+    font-size: 0.95rem;
+    margin-right: 0.15rem;
+    opacity: 0.65;
+}
+
+[data-theme="light"] .agenda-item-info,
+[data-theme="light"] .agenda-item-info .material-icons {
+    color: #64748b;
+}
+
+/* --- Pastille catégorie : plus discrète --- */
+.agenda-item-category {
+    padding: 0.22rem 0.5rem;
+    border-radius: 4px;
+    border: none;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    margin-top: 0.55rem;
+}
+
+.agenda-item-category .material-icons {
+    font-size: 0.85rem;
+}
+
+/* --- "Voir tout l'agenda" : lien, plus de pilule violette --- */
+.agenda-voir-tout,
+[data-theme="light"] .agenda-voir-tout {
+    padding: 0.9rem 0 0.2rem;
+    margin-top: 0;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    color: var(--primary-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.agenda-voir-tout:hover,
+[data-theme="light"] .agenda-voir-tout:hover {
+    transform: none;
+    box-shadow: none;
+    text-decoration: underline;
+}
+
+.agenda-voir-tout .material-icons {
+    font-size: 1.1rem;
+}
+
+/* --- Responsive (obligatoire ici, sinon les tailles mobiles
+       plus haut dans le fichier seraient écrasées) --- */
+@media (max-width: 768px) {
+    .agenda-title { font-size: 1.2rem; }
+    .agenda-item { padding: 0.85rem 0; gap: 0.85rem; }
+    .agenda-item-date { min-width: 48px; padding: 0.1rem 0 0; }
+    .agenda-item-day { font-size: 1.9rem; }
+    .agenda-item-month { font-size: 0.62rem; }
+    .agenda-item-title { font-size: 0.97rem; }
+    .agenda-item-info { font-size: 0.75rem; }
+    .agenda-item-category { font-size: 0.66rem; padding: 0.2rem 0.45rem; }
+}
+
+@media (max-width: 480px) {
+    .agenda-item { padding: 0.8rem 0; gap: 0.7rem; border-radius: 0; }
+    .agenda-item-date { min-width: 44px; padding: 0.1rem 0 0; border-radius: 0; }
+    .agenda-item-day { font-size: 1.75rem; }
+    .agenda-item-date.ongoing .agenda-item-day.material-icons,
+    .agenda-item-date.recurring .agenda-item-day.material-icons { font-size: 1.5rem; }
+    .agenda-item-title { font-size: 0.93rem; }
+}
+
+@media (max-width: 360px) {
+    .agenda-item { padding: 0.7rem 0; gap: 0.6rem; }
+    .agenda-item-date { min-width: 40px; }
+    .agenda-item-day { font-size: 1.6rem; }
+}
