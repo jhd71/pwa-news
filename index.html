@@ -279,7 +279,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <!-- Barre Date & Saint du jour -->
     <div class="date-bar" id="dateBar">
-		<span class="material-icons date-bar-icon">today</span>
 		<span class="date-bar-day" id="dateBarDay"></span>
 		<span class="date-bar-separator">·</span>
 		<span class="date-bar-saint" id="dateBarSaint"></span>
@@ -772,6 +771,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <button class="install-btn install-btn-secondary" id="dismissBtn">Plus tard</button>
                 <button class="install-btn install-btn-primary" id="installBtn">Installer</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal Instructions iOS -->
+    <div class="ios-install-modal" id="iosInstallModal">
+        <div class="ios-install-content">
+            <h3>📱 Installer sur iPhone/iPad</h3>
+            <div class="ios-install-step">
+                <div class="ios-install-step-num">1</div>
+                <div class="ios-install-step-text">
+                    Appuyez sur <strong>Partager</strong> 
+                    <span style="font-size: 1.2rem;">⬆️</span>
+                </div>
+            </div>
+            <div class="ios-install-step">
+                <div class="ios-install-step-num">2</div>
+                <div class="ios-install-step-text">
+                    Faites défiler et appuyez sur <strong>"Sur l'écran d'accueil"</strong>
+                </div>
+            </div>
+            <div class="ios-install-step">
+                <div class="ios-install-step-num">3</div>
+                <div class="ios-install-step-text">
+                    Appuyez sur <strong>Ajouter</strong>
+                </div>
+            </div>
+            <button class="ios-install-close" id="iosCloseBtn">Compris !</button>
         </div>
     </div>
 
