@@ -100,7 +100,7 @@ function showEmergencyNumbers() {
     modal.innerHTML = `
         <div class="emergency-content">
             <div class="emergency-header">
-                <h3>🚨 Numéros d'urgence</h3>
+                <h3>Numéros d'urgence</h3>
                 <button class="emergency-close" onclick="this.closest('.emergency-modal').remove()">
                     <span class="material-icons">close</span>
                 </button>

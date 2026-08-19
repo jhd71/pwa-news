@@ -525,9 +525,9 @@
 }
 
 .emergency-content {
-    background: rgb(22 22 21);
+    background: var(--bg-surface-dark);
     border: 1px solid var(--border-color);
-    border-radius: 24px;
+    border-radius: 12px;
     padding: 1.5rem;
     max-width: 360px;
     width: 100%;
@@ -547,7 +547,10 @@
 }
 
 .emergency-header h3 {
-    font-size: 1.1rem;
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     color: var(--text-primary);
 }
 
@@ -555,17 +558,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    padding: 0.2rem;
     border: none;
-    background: var(--bg-elevated);
-    border-radius: 50%;
-    color: var(--text-secondary);
+    background: none;
+    color: var(--text-muted);
     cursor: pointer;
+    transition: color 0.2s ease;
 }
 
 .emergency-close:hover {
-    background: rgba(99, 102, 241, 0.2);
+    color: var(--text-primary);
 }
 
 .emergency-list {
@@ -580,10 +582,10 @@
     gap: 1rem;
     padding: 1rem;
     background: var(--bg-elevated);
-    border-radius: 12px;
+    border-radius: 8px;
     text-decoration: none;
     color: var(--text-primary);
-    transition: all 0.3s ease;
+    transition: background 0.2s ease;
 }
 
 .emergency-item:hover {
@@ -598,9 +600,12 @@
     flex: 1;
 }
 
+/* Le numéro doit sauter aux yeux avant le libellé */
 .emergency-info strong {
     display: block;
-    font-size: 0.95rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
     margin-bottom: 0.15rem;
 }
 
