@@ -1063,11 +1063,13 @@ async function initCommunity() {
                     <div class="community-item-title">${escapeHtml(item.title)}</div>
                     ${renderCommunityImages(item)}
                     <div class="community-item-desc" id="desc-${item.id}">${linkifyContent(item.content)}</div>
-                    <button class="see-more-btn" id="see-more-${item.id}" onclick="event.stopPropagation(); toggleSeeMore(${item.id})">
-                        <span>Voir plus</span>
-                        <span class="material-icons">expand_more</span>
-                    </button>
-                    ${item.link ? `<a href="${item.link}" target="_blank" class="community-item-link" onclick="event.stopPropagation()"><span class="material-icons">link</span>Voir le lien</a>` : ''}
+                                                            <div class="community-item-links">
+                        <button class="see-more-btn" id="see-more-${item.id}" onclick="event.stopPropagation(); toggleSeeMore(${item.id})">
+                            <span>Voir plus</span>
+                            <span class="material-icons">expand_more</span>
+                        </button>
+                        ${item.link ? `<a href="${item.link}" target="_blank" class="community-item-link" onclick="event.stopPropagation()"><span class="material-icons">link</span>Voir le lien</a>` : ''}
+                    </div>
                     
                     <!-- FOOTER : Lieu + Vues -->
                     <div class="community-item-footer">

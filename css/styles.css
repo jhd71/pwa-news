@@ -6487,3 +6487,52 @@ a.agenda-item:hover .agenda-item-title {
     .seo-section h2 { font-size: 1.3rem; }
     .footer-social { gap: 1.25rem; }
 }
+
+
+/* ============================================================
+   REFONTE ÉDITORIAL — ligne "Voir plus / Voir le lien"
+   ============================================================ */
+
+.community-item-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.1rem;
+}
+
+.community-item-links .see-more-btn,
+.community-item-links .community-item-link {
+    margin: 0.45rem 0 0;
+}
+
+/* "Voir plus" : lien, comme partout ailleurs */
+.see-more-btn,
+.see-more-btn:hover {
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    color: var(--primary-light);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.see-more-btn:hover {
+    text-decoration: underline;
+}
+
+[data-theme="light"] .see-more-btn,
+[data-theme="light"] .see-more-btn:hover {
+    color: var(--primary);
+}
+
+@media (max-width: 480px) {
+    .community-item-links {
+        gap: 0.9rem;
+    }
+
+    .community-item-links .community-item-link {
+        padding: 0;
+        font-size: 0.8rem;
+    }
+}
