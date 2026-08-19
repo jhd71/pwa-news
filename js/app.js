@@ -820,36 +820,12 @@ function initInstallPrompt() {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     const isInStandaloneMode = window.navigator.standalone === true;
     
-    if (isIOS && !isInStandaloneMode) {
-        // iOS - Afficher après 3 secondes
-        setTimeout(() => {
-            if (installPrompt) {
-                installPrompt.classList.add('show');
-            }
-        }, 3000);
-        
-        if (installBtn) {
-            installBtn.addEventListener('click', () => {
-                installPrompt.classList.remove('show');
-                if (iosModal) {
-                    iosModal.classList.add('show');
-                }
-            });
-        }
-        
-        if (iosCloseBtn) {
-            iosCloseBtn.addEventListener('click', () => {
-                iosModal.classList.remove('show');
-            });
-        }
-        
-        if (iosModal) {
-            iosModal.addEventListener('click', (e) => {
-                if (e.target === iosModal) {
-                    iosModal.classList.remove('show');
-                }
-            });
-        }
+        if (isIOS && !isInStandaloneMode) {
+        // iOS : l'invitation à installer est gérée par js/ios-install.js,
+        // qui affiche sa propre fenêtre avec les étapes Partager / Écran d'accueil.
+        // On n'affiche donc pas le bandeau du bas, sinon les deux se superposent.
+        console.log('📱 iOS : installation gérée par ios-install.js');
+        return;
     } else {
         // Android / Chrome - Écouter l'événement beforeinstallprompt
         window.addEventListener('beforeinstallprompt', (e) => {
