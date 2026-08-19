@@ -6560,3 +6560,70 @@ a.agenda-item:hover .agenda-item-title {
         margin-right: auto;
     }
 }
+
+
+/* ============================================================
+   REFONTE ÉDITORIAL — BANDEAU D'INSTALLATION (19 août 2026)
+   Bloc autonome : pour tout annuler, supprimer ce bloc entier.
+   ============================================================ */
+
+.install-prompt,
+[data-theme="light"] .install-prompt {
+    padding: 1rem 1.25rem;
+    background: var(--bg-surface-dark);
+    border: none;
+    border-top: 1px solid var(--border-color);
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="light"] .install-prompt {
+    background: #ffffff;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.install-prompt-title {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.install-prompt-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.install-prompt-icon {
+    font-size: 2rem;
+}
+
+.install-btn {
+    padding: 0.6rem 1.1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.install-btn-primary {
+    background: var(--primary);
+    color: #ffffff;
+}
+
+.install-btn-primary:hover {
+    background: var(--primary-dark);
+    transform: none;
+    box-shadow: none;
+}
+
+/* "Plus tard" : lien plutôt que bouton gris */
+.install-btn-secondary,
+.install-btn-secondary:hover {
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    background: none;
+    color: var(--text-muted);
+}
+
+.install-btn-secondary:hover {
+    color: var(--text-primary);
+}

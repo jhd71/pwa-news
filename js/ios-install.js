@@ -496,10 +496,67 @@
             }
         }
         
-        @supports (padding: env(safe-area-inset-top)) {
+                @supports (padding: env(safe-area-inset-top)) {
             .ios-prompt-card {
                 bottom: calc(20px + env(safe-area-inset-bottom)) !important;
             }
+        }
+
+        /* ===== Refonte Éditorial (19 août 2026) ===== */
+        .ios-prompt-card {
+            border-radius: 14px;
+        }
+
+        .ios-prompt-header {
+            background: var(--primary, #6366f1);
+        }
+
+        .ios-prompt-header h3 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-weight: 600;
+        }
+
+        .ios-app-icon {
+            border-radius: 8px;
+        }
+
+        .ios-step-number,
+        .ios-share-icon,
+        .ios-home-icon {
+            background: var(--primary, #6366f1);
+        }
+
+        .ios-share-icon,
+        .ios-home-icon {
+            border-radius: 6px;
+        }
+
+        .ios-benefits {
+            border-radius: 8px;
+        }
+
+        .ios-btn-later,
+        .ios-btn-install {
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .ios-btn-install {
+            background: var(--primary, #6366f1);
+            box-shadow: none;
+        }
+
+        .ios-btn-install:hover {
+            transform: none;
+            box-shadow: none;
+            filter: brightness(1.1);
+        }
+
+        .ios-arrow-content {
+            background: var(--primary, #6366f1);
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
         }
     `;
     
