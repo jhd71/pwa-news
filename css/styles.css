@@ -6277,3 +6277,213 @@ a.agenda-item:hover .agenda-item-title {
     .tile { padding: 0.6rem 0; gap: 0.5rem; }
     .tile-name { font-size: 0.78rem; }
 }
+
+
+/* ============================================================
+   REFONTE ÉDITORIAL — HAUT ET BAS DE PAGE (19 août 2026)
+   Bloc autonome : pour tout annuler, supprimer ce bloc entier.
+   ============================================================ */
+
+/* ---------- BARRE DATE & SAINT DU JOUR ---------- */
+
+.date-bar {
+    gap: 0.55rem;
+    padding: 0.6rem 1rem 0.8rem;
+    font-size: 0.76rem;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+}
+
+.date-bar-icon {
+    display: none;
+}
+
+.date-bar-day {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.date-bar-separator {
+    opacity: 0.4;
+    font-size: 0.6rem;
+}
+
+.date-bar-saint,
+[data-theme="light"] .date-bar-saint {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text-muted);
+}
+
+/* ---------- WIDGET MÉTÉO DU HEADER ----------
+   Sélecteurs préfixés par .header : weather-widget.css est
+   chargé APRÈS styles.css, il faut passer devant lui.        */
+
+.header .weather-widget {
+    gap: 10px;
+    padding: 4px 0 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+}
+
+.header .weather-widget:hover,
+[data-theme="light"] .header .weather-widget {
+    background: none;
+    border: none;
+    box-shadow: none;
+    transform: none;
+}
+
+.header .weather-day,
+.header .weather-day.today,
+[data-theme="light"] .header .weather-day.today {
+    padding: 2px 0;
+    background: none;
+    border-radius: 0;
+}
+
+.header .weather-day-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+[data-theme="light"] .header .weather-day-label {
+    color: #64748b;
+}
+
+.header .weather-day.today .weather-day-label {
+    color: #e5a134;
+}
+
+[data-theme="light"] .header .weather-day.today .weather-day-label {
+    color: #b45309;
+}
+
+.header .weather-day-temp {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.header .weather-separator {
+    height: 14px;
+    background: var(--border-color);
+    margin: 0;
+}
+
+/* ---------- SECTION SEO ---------- */
+
+.seo-section h2 {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 1.1rem;
+    padding-bottom: 0.7rem;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.seo-section p {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+.seo-section strong,
+[data-theme="light"] .seo-section strong {
+    color: var(--text-primary) !important;
+}
+
+.seo-section a {
+    text-decoration: none;
+}
+
+.seo-section a:hover {
+    text-decoration: underline;
+}
+
+/* ---------- FOOTER ---------- */
+
+.footer,
+[data-theme="light"] .footer {
+    margin: 2rem 1rem;
+    padding: 1.75rem 0 0;
+    background: none;
+    border: none;
+    border-top: 1px solid var(--border-color);
+    border-radius: 0;
+}
+
+.footer-social {
+    gap: 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.footer-social-link {
+    width: auto;
+    height: auto;
+    background: none;
+    border: none;
+    border-radius: 0;
+    color: var(--text-muted);
+}
+
+.footer a.footer-social-link:hover,
+.footer-social-link:hover,
+.footer-social-link.email:hover,
+.footer-social-link.share:hover {
+    background: none;
+    border: none;
+    box-shadow: none;
+    transform: none;
+    color: var(--primary-light);
+}
+
+.footer-social-link.facebook:hover {
+    background: none;
+    border: none;
+    box-shadow: none;
+    color: #1877f2;
+}
+
+.footer-social-link svg {
+    width: 20px;
+    height: 20px;
+}
+
+.footer-social-link .material-icons {
+    font-size: 1.35rem;
+}
+
+.footer p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.footer-sub {
+    margin-top: 0.3rem;
+    font-size: 0.76rem;
+}
+
+.footer-links,
+[data-theme="light"] .footer-links {
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 480px) {
+    .date-bar { font-size: 0.72rem; padding: 0.5rem 0.75rem 0.7rem; }
+    .date-bar-day { font-size: 0.66rem; }
+    .seo-section h2 { font-size: 1.3rem; }
+    .footer-social { gap: 1.25rem; }
+}
