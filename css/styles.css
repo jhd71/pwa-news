@@ -6059,7 +6059,7 @@ a.agenda-item:hover .agenda-item-title {
 /* ---------- INFOS EN DIRECT ---------- */
 
 .news-ticker-header {
-    align-items: baseline;
+    align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.6rem;
     padding-left: 0;
@@ -6074,15 +6074,11 @@ a.agenda-item:hover .agenda-item-title {
     border-bottom: 1px solid var(--border-color);
 }
 
-/* Le point rouge "en direct" */
-.news-ticker-header::before {
-    content: '';
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--danger);
-    flex-shrink: 0;
-    animation: pulse 2s ease-in-out infinite;
+/* Icône radar : alignée sur le titre */
+.news-ticker-header .material-icons {
+    font-size: 1.2rem;
+    margin-bottom: 0;
+    vertical-align: baseline;
 }
 
 .news-item {
