@@ -371,3 +371,42 @@
 .quick-link-desc {
     font-size: 0.72rem;
 }
+
+/* ============================================================
+   LIGNE DES URGENCES — la seule qui doit sauter aux yeux
+   ============================================================ */
+.quick-link-urgence,
+[data-theme="light"] .quick-link-urgence {
+    padding: 0.9rem 0.75rem;
+    background: rgba(239, 68, 68, 0.08);
+    border-left: 2px solid var(--danger);
+    border-radius: 0 4px 4px 0;
+}
+
+.quick-link-urgence:hover,
+[data-theme="light"] .quick-link-urgence:hover {
+    background: rgba(239, 68, 68, 0.14);
+}
+
+.quick-link-urgence .quick-link-name {
+    color: var(--danger);
+    font-size: 0.92rem;
+}
+
+.quick-link-urgence:hover .quick-link-name {
+    color: var(--danger);
+}
+
+.quick-link-urgence .quick-link-icon {
+    color: var(--danger);
+}
+
+.quick-link-urgence .quick-link-icon .material-icons {
+    font-size: 1.5rem;
+}
+
+.quick-link-urgence .quick-link-arrow {
+    opacity: 1;
+    transform: none;
+    color: var(--danger);
+}
