@@ -2307,6 +2307,30 @@ h2, h3 {
     background: var(--primary, #6366f1);
 }
 
+/* Sur écran tactile : la flèche devient une bande sur toute la hauteur,
+   pour ne plus déclencher le zoom quand on la rate de quelques pixels. */
+@media (max-width: 768px) {
+    .carousel-arrow {
+        top: 0;
+        bottom: 0;
+        height: auto;
+        width: 48px;
+        transform: none;
+        border-radius: 0;
+        background: none;
+    }
+
+    .carousel-prev { left: 0; }
+    .carousel-next { right: 0; }
+
+    .carousel-arrow .material-icons {
+        background: rgba(0, 0, 0, 0.55);
+        border-radius: 50%;
+        padding: 5px;
+        font-size: 1.35rem;
+    }
+}
+
 .carousel-counter {
     position: absolute;
     top: 10px;
