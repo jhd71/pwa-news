@@ -683,3 +683,225 @@
     background: #e8edf3;
     border-color: var(--primary-light);
 }
+
+
+/* ============================================================
+   REFONTE ÉDITORIAL — PANNEAU À PROPOS (19 août 2026)
+   Bloc autonome : pour tout annuler, supprimer ce bloc entier.
+   ============================================================ */
+
+.support-header {
+    align-items: baseline;
+    padding: 1.25rem 1.25rem 0.8rem;
+    background: var(--bg-body);
+    border-bottom: 1px solid var(--border-color);
+}
+
+[data-theme="light"] .support-header {
+    background: #ffffff;
+}
+
+.support-title {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.support-title .material-icons {
+    display: none;
+}
+
+.support-close,
+[data-theme="light"] .support-close {
+    width: auto;
+    height: auto;
+    align-self: center;
+    background: none;
+    border-radius: 0;
+    color: var(--text-muted);
+}
+
+.support-close:hover,
+[data-theme="light"] .support-close:hover {
+    background: none;
+    color: var(--text-primary);
+}
+
+.support-content {
+    padding: 1.25rem 1.25rem 1.5rem;
+}
+
+/* Bloc de présentation */
+.support-about {
+    text-align: left;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.support-logo {
+    font-size: 1.5rem;
+    margin-bottom: 0.4rem;
+    color: var(--text-muted);
+}
+
+.support-name {
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.4rem;
+}
+
+.support-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+/* Bouton PayPal : aplati, sans dégradé */
+.donation-btn,
+.donation-popup-btn {
+    padding: 0.8rem 1.25rem;
+    background: #0070ba !important;
+    border-radius: 6px;
+    box-shadow: none;
+    font-size: 0.9rem;
+}
+
+.donation-btn:hover {
+    background: #005c99 !important;
+    box-shadow: none;
+    transform: none;
+    filter: none;
+}
+
+.donation-note {
+    font-size: 0.76rem;
+}
+
+/* Actions : lignes séparées par un trait fin */
+.support-actions {
+    gap: 0;
+}
+
+.support-action,
+[data-theme="light"] .support-action {
+    gap: 0.75rem;
+    padding: 0.8rem 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+}
+
+.support-action + .support-action,
+[data-theme="light"] .support-action + .support-action {
+    border-top: 1px solid var(--border-color);
+}
+
+.support-action:hover,
+[data-theme="light"] .support-action:hover {
+    background: none;
+    transform: none;
+}
+
+.support-action:hover .support-action-name {
+    color: var(--primary-light);
+}
+
+[data-theme="light"] .support-action:hover .support-action-name {
+    color: var(--primary);
+}
+
+/* Icônes colorées sans carré dégradé */
+.support-action-icon {
+    width: 24px;
+    height: 24px;
+    background: none;
+    border-radius: 0;
+    font-size: 1.35rem;
+}
+
+.support-action-icon.email     { background: none; color: var(--primary-light); }
+.support-action-icon.upload    { background: none; color: #06b6d4; }
+.support-action-icon.share     { background: none; color: #10b981; }
+.support-action-icon.update    { background: none; color: #3b82f6; }
+.support-action-icon.propose   { background: none; color: #f59e0b; }
+.support-action-icon.radio     { background: none; color: #8b5cf6; }
+.support-action-icon.emergency { background: none; color: var(--danger); }
+.support-action-icon.notif     { color: var(--primary-light); }
+
+.support-action-icon .material-icons {
+    color: inherit;
+}
+
+.support-action-name {
+    font-size: 0.88rem;
+    transition: color 0.2s ease;
+}
+
+.support-action-desc {
+    font-size: 0.72rem;
+}
+
+.support-action .material-icons.arrow {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+}
+
+/* Sélecteur de taille de texte
+   (il est défini dans styles.css, chargé avant : on le corrige ici) */
+.font-size-selector {
+    justify-content: flex-start;
+    margin: 0 1.25rem;
+    padding: 0.9rem 0 0;
+    background: none;
+    border: none;
+    border-top: 1px solid var(--border-color);
+    border-radius: 0;
+}
+
+.font-size-selector-label {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+}
+
+.font-size-btn,
+[data-theme="light"] .font-size-btn {
+    padding: 0.3rem 0.7rem;
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.font-size-btn:hover,
+[data-theme="light"] .font-size-btn:hover {
+    background: none;
+    border-color: var(--primary-light);
+    color: var(--primary-light);
+}
+
+.font-size-btn.active,
+[data-theme="light"] .font-size-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+}
+
+/* Pied du panneau */
+.support-footer {
+    padding: 1rem 1.25rem;
+    text-align: left;
+    border-top: 1px solid var(--border-color);
+}
+
+.support-copyright {
+    font-size: 0.76rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.support-version {
+    font-size: 0.68rem;
+}

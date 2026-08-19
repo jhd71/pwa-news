@@ -245,3 +245,129 @@
 [data-theme="light"] .quick-link-item:hover {
     background: #e8edf3;
 }
+
+
+/* ============================================================
+   REFONTE ÉDITORIAL — PANNEAU LIENS RAPIDES (19 août 2026)
+   Bloc autonome : pour tout annuler, supprimer ce bloc entier.
+   ============================================================ */
+
+.quick-links-header {
+    align-items: baseline;
+    padding: 1.25rem 1.25rem 0.8rem;
+    background: var(--bg-body);
+    border-bottom: 1px solid var(--border-color);
+}
+
+[data-theme="light"] .quick-links-header {
+    background: #ffffff;
+}
+
+.quick-links-title {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.quick-links-title .material-icons {
+    display: none;
+}
+
+.quick-links-close,
+[data-theme="light"] .quick-links-close {
+    width: auto;
+    height: auto;
+    align-self: center;
+    background: none;
+    border-radius: 0;
+    color: var(--text-muted);
+}
+
+.quick-links-close:hover,
+[data-theme="light"] .quick-links-close:hover {
+    background: none;
+    color: var(--text-primary);
+}
+
+.quick-links-content {
+    padding: 0.5rem 1.25rem 1.5rem;
+}
+
+.quick-links-section {
+    margin-bottom: 1.75rem;
+    padding: 0;
+}
+
+.quick-links-section-title {
+    padding-left: 0;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0;
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Les liens : lignes séparées par un trait fin */
+.quick-link-item,
+[data-theme="light"] .quick-link-item {
+    gap: 0.75rem;
+    padding: 0.8rem 0;
+    margin-bottom: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+}
+
+.quick-link-item + .quick-link-item,
+[data-theme="light"] .quick-link-item + .quick-link-item {
+    border-top: 1px solid var(--border-color);
+}
+
+.quick-link-item:hover,
+[data-theme="light"] .quick-link-item:hover {
+    background: none;
+    transform: none;
+}
+
+.quick-link-item:active {
+    transform: none;
+}
+
+.quick-link-item:hover .quick-link-name {
+    color: var(--primary-light);
+}
+
+[data-theme="light"] .quick-link-item:hover .quick-link-name {
+    color: var(--primary);
+}
+
+/* L'icône garde sa couleur mais perd son carré dégradé */
+.quick-link-icon {
+    width: 24px;
+    height: 24px;
+    background: none;
+    border-radius: 0;
+    color: var(--primary-light);
+}
+
+.quick-link-icon.emergency { background: none; color: var(--danger); }
+.quick-link-icon.local     { background: none; color: #10b981; }
+.quick-link-icon.media     { background: none; color: #f59e0b; }
+.quick-link-icon.transport { background: none; color: #06b6d4; }
+.quick-link-icon.tv        { background: none; color: #8b5cf6; }
+.quick-link-icon.sports    { background: none; color: #22c55e; }
+
+.quick-link-icon .material-icons {
+    font-size: 1.35rem;
+    color: inherit;
+}
+
+.quick-link-name {
+    font-size: 0.88rem;
+    transition: color 0.2s ease;
+}
+
+.quick-link-desc {
+    font-size: 0.72rem;
+}
