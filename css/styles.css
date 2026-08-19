@@ -6546,3 +6546,17 @@ a.agenda-item:hover .agenda-item-title {
     justify-content: flex-start;
     margin: 0.85rem 0;
 }
+
+
+/* ============================================================
+   CORRECTIF ÉDITORIAL — recentrage du footer
+   Le raccourci `margin` du bloc Éditorial avait écrasé les
+   `margin-left/right: auto` des règles responsive.
+   ============================================================ */
+@media (min-width: 768px) {
+    .footer,
+    [data-theme="light"] .footer {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
