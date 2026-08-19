@@ -2190,8 +2190,9 @@ h2, h3 {
    ============================================ */
 .carousel {
     position: relative;
-    margin: 0.75rem 0;
-    border-radius: 10px;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0.85rem 0;
 }
 
 .carousel-slides {
@@ -2200,7 +2201,7 @@ h2, h3 {
 
 .carousel-slide {
     display: none;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
 
@@ -2217,7 +2218,7 @@ h2, h3 {
 .carousel-slide-inner img {
     max-width: 100%;
     max-height: 300px;
-    border-radius: 8px;
+    border-radius: 4px;
     object-fit: contain;
     display: block;
 }
