@@ -1208,6 +1208,20 @@
             .action-btn { flex: 0 1 auto; justify-content: flex-start; }
         }
 		
+		
+        /* ---------- Ligne "Voir plus / Voir le lien" ---------- */
+        .info-card-links {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.1rem;
+        }
+
+        .info-card-links .see-more-btn,
+        .info-card-links .info-card-link {
+            margin: 0.45rem 0 0;
+        }
+		
     </style>
 </head>
 <body>
@@ -1476,17 +1490,18 @@
                         ${renderInfoImages(item)}
                         
                         <p class="info-card-desc" id="desc-${item.id}">${linkifyContent(item.content)}</p>
-                        <button class="see-more-btn" id="see-more-${item.id}" onclick="toggleSeeMore(${item.id})">
-                            <span>Voir plus</span>
-                            <span class="material-icons">expand_more</span>
-                        </button>
-                        
-                        ${item.link ? `
-                            <a href="${item.link}" target="_blank" class="info-card-link">
-                                <span class="material-icons">link</span>
-                                Voir le lien
-                            </a>
-                        ` : ''}
+                                                                        <div class="info-card-links">
+                            <button class="see-more-btn" id="see-more-${item.id}" onclick="toggleSeeMore(${item.id})">
+                                <span>Voir plus</span>
+                                <span class="material-icons">expand_more</span>
+                            </button>
+                            ${item.link ? `
+                                <a href="${item.link}" target="_blank" class="info-card-link">
+                                    <span class="material-icons">link</span>
+                                    Voir le lien
+                                </a>
+                            ` : ''}
+                        </div>
                     </div>
                     
                     <div class="info-card-footer">

@@ -6536,3 +6536,13 @@ a.agenda-item:hover .agenda-item-title {
         font-size: 0.8rem;
     }
 }
+
+
+/* ============================================================
+   REFONTE ÉDITORIAL — images de la section Vos infos
+   ============================================================ */
+
+.community-image-wrapper {
+    justify-content: flex-start;
+    margin: 0.85rem 0;
+}
