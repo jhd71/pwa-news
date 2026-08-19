@@ -364,18 +364,6 @@ body {
 }
 
 /* ============================================
-   MODE CLAIR - Widget météo
-   ============================================ */
-[data-theme="light"] .weather-widget {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .weather-widget * {
-    color: #1e293b;
-}
-
-/* ============================================
    MODE CLAIR - Footer
    ============================================ */
 [data-theme="light"] .footer a {
