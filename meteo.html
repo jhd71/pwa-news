@@ -19,6 +19,13 @@
     
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/meteo-v2.css">
+	    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            var t = localStorage.getItem('theme') || 'light';
+            if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        })();
+    </script>
     <!-- Les icônes météo utilisent maintenant les Meteocons SVG (pas besoin de CSS) -->
     <style>
         /* Fix iOS safe-area pour la page météo */
@@ -260,6 +267,417 @@
         .forecast-hourly-scroll::-webkit-scrollbar {
             display: none;
         }
+		
+		
+        /* ============================================================
+           REFONTE ÉDITORIAL — PAGE MÉTÉO (19 août 2026)
+           Ce bloc est chargé après styles.css ET meteo-v2.css,
+           il passe donc devant les deux.
+           Pour tout annuler, supprimer ce bloc entier.
+           ============================================================ */
+
+        /* ---------- Localisation ---------- */
+        .meteo-location,
+        [data-theme="light"] .meteo-location {
+            gap: 0.75rem;
+            margin: 0 1rem;
+            padding: 1.1rem 0 0.9rem;
+            background: none;
+            border: none;
+            border-radius: 0;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: none;
+        }
+
+        .meteo-location-icon {
+            width: auto;
+            height: auto;
+            background: none;
+            border-radius: 0;
+            color: var(--text-muted);
+        }
+
+        .meteo-location-icon .material-icons {
+            font-size: 1.2rem;
+        }
+
+        .meteo-city {
+            font-family: var(--font-serif);
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .meteo-region {
+            font-size: 0.76rem;
+        }
+
+        /* ---------- Température actuelle ---------- */
+        .meteo-current,
+        [data-theme="light"] .meteo-current {
+            margin: 0 1rem;
+            padding: 1.75rem 0;
+            background: none;
+            border-radius: 0;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            text-align: left;
+        }
+
+        .meteo-current::before {
+            display: none;
+        }
+
+        .meteo-current-main {
+            justify-content: flex-start;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .meteo-current-icon {
+            filter: none;
+        }
+
+        .meteo-temp-value {
+            font-family: var(--font-serif);
+            font-size: 4.5rem;
+            font-weight: 600;
+            background: none;
+            color: var(--text-primary);
+            -webkit-text-fill-color: var(--text-primary);
+        }
+
+        .meteo-temp-unit {
+            margin-top: 0.7rem;
+            font-size: 1.6rem;
+            font-weight: 400;
+            opacity: 0.45;
+        }
+
+        .meteo-current-desc {
+            margin-bottom: 1.25rem;
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            opacity: 1;
+        }
+
+        .meteo-current-details {
+            justify-content: flex-start;
+            gap: 1.5rem;
+        }
+
+        .meteo-detail {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            opacity: 1;
+        }
+
+        .meteo-detail .material-icons {
+            font-size: 1rem;
+            opacity: 0.6;
+        }
+
+        .meteo-detail strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* ---------- Lever / coucher du soleil ---------- */
+        .meteo-sun,
+        [data-theme="light"] .meteo-sun {
+            margin: 0 1rem;
+            padding: 1.1rem 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: none;
+        }
+
+        .meteo-sun-icon,
+        .meteo-sun-icon.sunrise,
+        .meteo-sun-icon.sunset {
+            width: auto;
+            height: auto;
+            background: none;
+            border-radius: 0;
+        }
+
+        .meteo-sun-icon.sunrise { color: #f59e0b; }
+        .meteo-sun-icon.sunset { color: var(--primary-light); }
+
+        .meteo-sun-icon .material-icons {
+            font-size: 1.3rem;
+        }
+
+        .meteo-sun-label {
+            font-size: 0.64rem;
+            letter-spacing: 0.08em;
+        }
+
+        .meteo-sun-time {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .meteo-sun-bar,
+        [data-theme="light"] .meteo-sun-bar {
+            height: 2px;
+            background: var(--border-color);
+        }
+
+        .meteo-sun-fill {
+            background: #f59e0b;
+        }
+
+        .meteo-sun-position {
+            width: 12px;
+            height: 12px;
+            background: #f59e0b;
+            box-shadow: none;
+        }
+
+        /* ---------- Durée du jour ---------- */
+        .meteo-daylight,
+        [data-theme="light"] .meteo-daylight {
+            margin: 0 1rem;
+            padding: 1.1rem 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: none;
+        }
+
+        .daylight-item {
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .daylight-item .material-icons {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        .daylight-label {
+            font-size: 0.64rem;
+            letter-spacing: 0.08em;
+        }
+
+        .daylight-value {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+
+        /* ---------- Sections Prévisions et Détails ---------- */
+        .meteo-forecast,
+        .meteo-extra,
+        [data-theme="light"] .meteo-forecast,
+        [data-theme="light"] .meteo-extra {
+            margin: 0 1rem;
+            padding: 1.5rem 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: none;
+        }
+
+        .meteo-section-title {
+            align-items: baseline;
+            margin-bottom: 0.9rem;
+            padding-bottom: 0.6rem;
+            font-family: var(--font-serif);
+            font-size: 1.35rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .meteo-section-title .icon-box {
+            display: none;
+        }
+
+        /* ---------- Les 7 jours ---------- */
+        .meteo-forecast-list {
+            gap: 0;
+        }
+
+        .meteo-forecast-item,
+        [data-theme="light"] .meteo-forecast-item,
+        .meteo-forecast-item.today,
+        [data-theme="light"] .meteo-forecast-item.today {
+            padding: 0.9rem 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+        }
+
+        .meteo-forecast-item + .meteo-forecast-item,
+        [data-theme="light"] .meteo-forecast-item + .meteo-forecast-item {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .meteo-forecast-item:hover,
+        [data-theme="light"] .meteo-forecast-item:hover {
+            transform: none;
+            background: none;
+            border-color: var(--border-color);
+        }
+
+        .meteo-forecast-item.today .forecast-day-name {
+            color: var(--primary-light);
+        }
+
+        [data-theme="light"] .meteo-forecast-item.today .forecast-day-name {
+            color: var(--primary);
+        }
+
+        .forecast-temp-max {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* ---------- Détails supplémentaires ---------- */
+        .meteo-extra-grid {
+            gap: 0;
+        }
+
+        .meteo-extra-item,
+        [data-theme="light"] .meteo-extra-item {
+            align-items: flex-start;
+            text-align: left;
+            padding: 1rem 0.75rem 1rem 0;
+            background: none;
+            border-radius: 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .meteo-extra-item:nth-child(-n + 2) {
+            border-top: none;
+        }
+
+        .meteo-extra-item:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .meteo-extra-icon {
+            width: auto;
+            height: auto;
+            margin-bottom: 0.5rem;
+            background: none;
+            border-radius: 0;
+        }
+
+        .meteo-extra-icon .material-icons,
+        [data-theme="light"] .meteo-extra-icon .material-icons {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+        }
+
+        .meteo-extra-label {
+            font-size: 0.64rem;
+            letter-spacing: 0.08em;
+        }
+
+        .meteo-extra-value {
+            font-family: var(--font-serif);
+            font-size: 1.35rem;
+            font-weight: 600;
+        }
+
+        /* ---------- Heure par heure ---------- */
+        .hourly-item,
+        [data-theme="light"] .hourly-item,
+        .hourly-item.now,
+        [data-theme="light"] .hourly-item.now {
+            padding: 0.6rem 0.85rem;
+            background: none;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .hourly-item + .hourly-item {
+            border-left: 1px solid var(--border-color);
+        }
+
+        .hourly-item.now .hourly-time {
+            color: var(--primary-light);
+            font-weight: 700;
+        }
+
+        .hourly-temp {
+            font-family: var(--font-serif);
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        /* "Voir heure par heure" : lien */
+        .forecast-hourly-btn,
+        [data-theme="light"] .forecast-hourly-btn {
+            justify-content: flex-start;
+            width: auto;
+            padding: 0.5rem 0 0;
+            background: none;
+            border-radius: 0;
+            color: var(--primary-light);
+            font-size: 0.76rem;
+            font-weight: 500;
+        }
+
+        .forecast-hourly-btn:hover,
+        [data-theme="light"] .forecast-hourly-btn:hover {
+            background: none;
+            text-decoration: underline;
+        }
+
+        [data-theme="light"] .forecast-hourly-btn {
+            color: var(--primary);
+        }
+
+        /* ---------- Pied de page ---------- */
+        .meteo-footer,
+        [data-theme="light"] .meteo-footer {
+            margin: 0 1rem 2.5rem;
+            padding: 1.25rem 0 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            text-align: left;
+        }
+
+        /* ---------- Boutons du header ---------- */
+        .home-btn {
+            width: auto;
+            height: auto;
+            padding: 0.2rem;
+            background: none;
+            border: none;
+            border-radius: 0;
+            color: var(--text-secondary);
+        }
+
+        .home-btn:hover {
+            background: none;
+            border: none;
+            color: var(--primary-light);
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 480px) {
+            .meteo-city { font-size: 1.35rem; }
+            .meteo-temp-value { font-size: 3.6rem; }
+            .meteo-temp-unit { font-size: 1.3rem; }
+            .meteo-section-title { font-size: 1.2rem; }
+            .meteo-current-details { gap: 1rem; }
+        }
     </style>
 </head>
 <body>
@@ -476,7 +894,7 @@
         });
 
         function initTheme() {
-            const saved = localStorage.getItem('theme') || 'dark';
+            const saved = localStorage.getItem('theme') || 'light';
             applyTheme(saved);
             
             document.getElementById('themeToggle').addEventListener('click', () => {
