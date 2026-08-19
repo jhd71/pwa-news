@@ -16,6 +16,12 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+	    <script>
+        (function () {
+            var t = localStorage.getItem('theme') || 'light';
+            if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        })();
+    </script>
     
     <style>
         :root {
@@ -1102,6 +1108,33 @@
             .event-card-title { font-size: 0.98rem; }
         }
 		
+		
+        /* ============================================================
+           CORRECTIF ÉDITORIAL — alignement de la page agenda
+           ============================================================ */
+
+        /* L'en-tête, les filtres et le titre suivent la même
+           colonne de 800 px que les événements */
+        .page-header,
+        .agenda-filters,
+        .month-selector {
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* "Événements à venir" et non "Événements À Venir" */
+        .current-month {
+            text-transform: none;
+        }
+
+        /* Un seul trait avant les commentaires, pas deux */
+        .event-comments-section {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+		
     </style>
 </head>
 <body>
@@ -1321,10 +1354,12 @@
             loadEvents().then(() => scrollToEventFromUrl());
         });
         
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
+                function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
             if (savedTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
             }
         }
         
