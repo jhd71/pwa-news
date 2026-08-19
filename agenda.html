@@ -15,6 +15,7 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -695,6 +696,412 @@
         @media (min-width: 768px) {
             .event-card-image { width: 200px; }
         }
+		
+		
+        /* ============================================================
+           REFONTE ÉDITORIAL — PAGE AGENDA (19 août 2026)
+           Bloc autonome : pour tout annuler, supprimer ce bloc entier.
+           ============================================================ */
+
+        /* Alignement des couleurs sur celles de l'accueil */
+        :root {
+            --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+            --bg-primary: #0e0e14;
+            --bg-secondary: #0e0e14;
+            --border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        [data-theme="light"] {
+            --primary-light: #4f46e5;
+            --bg-primary: #e8ecf1;
+            --bg-secondary: #e8ecf1;
+            --border-color: rgba(0, 0, 0, 0.10);
+        }
+
+        body {
+            background: var(--bg-primary);
+        }
+
+        /* ---------- En-tête de page ---------- */
+        .page-header {
+            padding: 1.1rem 1rem 0.9rem;
+            background: none;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .page-title h1 {
+            font-family: var(--font-serif);
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .page-title p {
+            font-size: 0.76rem;
+        }
+
+        .back-btn, .home-btn {
+            width: auto;
+            height: auto;
+            padding: 0.2rem;
+            background: none;
+            border: none;
+            border-radius: 0;
+            color: var(--text-muted);
+        }
+
+        .back-btn:hover, .home-btn:hover {
+            background: none;
+            border: none;
+            color: var(--primary-light);
+        }
+
+        /* ---------- Filtres : onglets soulignés ---------- */
+        .agenda-filters {
+            gap: 1.25rem;
+            padding: 0.7rem 1rem 0;
+            background: none;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        #agendaPeriods {
+            padding-top: 0;
+        }
+
+        .filter-btn {
+            padding: 0.35rem 0 0.5rem;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            border-radius: 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover {
+            border-color: transparent;
+            color: var(--text-secondary);
+        }
+
+        .filter-btn.active {
+            background: none;
+            border-color: transparent;
+            border-bottom-color: var(--primary);
+            color: var(--text-primary);
+        }
+
+        /* ---------- Titre de la période ---------- */
+        .month-selector {
+            justify-content: flex-start;
+            padding: 1.1rem 1rem 0.25rem;
+            background: none;
+            border-bottom: none;
+        }
+
+        .current-month {
+            min-width: 0;
+            text-align: left;
+            font-family: var(--font-serif);
+            font-size: 1.35rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .month-nav-btn {
+            width: auto;
+            height: auto;
+            background: none;
+            border: none;
+            border-radius: 0;
+            color: var(--text-muted);
+        }
+
+        .month-nav-btn:hover {
+            background: none;
+            border: none;
+            color: var(--primary-light);
+        }
+
+        /* ---------- En-tête de groupe de date ---------- */
+        .events-date-header {
+            align-items: baseline;
+            gap: 0.9rem;
+            margin-bottom: 0.4rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .events-date-badge,
+        .events-date-badge.recurring,
+        .events-date-badge.ongoing {
+            flex-direction: row;
+            align-items: baseline;
+            gap: 0.4rem;
+            min-width: 0;
+            padding: 0;
+            background: none;
+            border-radius: 0;
+            color: var(--text-primary);
+        }
+
+        .events-date-day {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        /* Garde la police icône pour l'état "en cours" */
+        .events-date-day.material-icons {
+            font-family: 'Material Icons';
+        }
+
+        .events-date-badge.ongoing .events-date-day,
+        .events-date-badge.recurring .events-date-day {
+            font-size: 1.5rem;
+        }
+
+        .events-date-weekday,
+        .events-date-badge.ongoing .events-date-weekday {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            opacity: 1;
+            color: var(--text-muted);
+        }
+
+        .events-date-badge.ongoing .events-date-day,
+        .events-date-badge.ongoing .events-date-weekday {
+            color: #10b981;
+        }
+
+        .events-date-badge.recurring .events-date-weekday {
+            color: #f59e0b;
+        }
+
+        .events-date-full {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        /* ---------- Cartes événement ---------- */
+        .events-list { gap: 0; }
+        .events-date-group { margin-bottom: 2rem; }
+
+        .event-card,
+        [data-theme="light"] .event-card {
+            gap: 1rem;
+            margin-bottom: 0;
+            padding: 1.1rem 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            overflow: visible;
+        }
+
+        .event-card + .event-card,
+        [data-theme="light"] .event-card + .event-card {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .event-card:hover,
+        [data-theme="light"] .event-card:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: var(--border-color);
+        }
+
+        .event-card-image {
+            width: 90px;
+            height: 90px;
+            min-height: 0;
+            align-self: flex-start;
+            border-radius: 4px;
+        }
+
+        .event-card-content {
+            padding: 0;
+        }
+
+        .event-card-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .event-card-category,
+        .recurring-badge {
+            padding: 0.22rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .event-card-description {
+            font-size: 0.87rem;
+        }
+
+        /* "Voir plus" : lien au lieu de la pilule orange */
+        .see-more-btn,
+        .see-more-btn:hover {
+            padding: 0;
+            margin-top: 0.15rem;
+            background: none;
+            border-radius: 0;
+            box-shadow: none;
+            transform: none;
+            color: var(--primary-light);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .see-more-btn:hover {
+            text-decoration: underline;
+        }
+
+        .event-card-meta {
+            gap: 0.65rem;
+            font-size: 0.78rem;
+        }
+
+        .event-card-meta .material-icons {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        .event-card-footer {
+            margin-top: 0.7rem;
+            padding-top: 0.7rem;
+        }
+
+        .event-card-link {
+            padding: 0;
+            background: none;
+            border-radius: 0;
+            color: var(--primary-light);
+            font-weight: 500;
+        }
+
+        .event-card-link:hover {
+            text-decoration: underline;
+        }
+
+        /* ---------- Commentaires ---------- */
+        .comments-toggle {
+            justify-content: flex-start;
+            gap: 0.4rem;
+            padding: 0.5rem 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+            font-size: 0.82rem;
+            font-weight: 500;
+        }
+
+        .comments-toggle:hover {
+            background: none;
+            text-decoration: underline;
+        }
+
+        .comment-item,
+        [data-theme="light"] .comment-item {
+            padding: 0.75rem 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+        }
+
+        .comment-item + .comment-item {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .comment-form {
+            padding: 0.9rem 0 0;
+            background: none;
+            border: none;
+            border-top: 1px solid var(--border-color);
+            border-radius: 0;
+        }
+
+        .comment-form input,
+        .comment-form textarea {
+            border-radius: 4px;
+        }
+
+        .comment-submit-btn {
+            padding: 0.45rem 0.9rem;
+            background: var(--primary);
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .comment-submit-btn:hover {
+            background: var(--primary);
+            transform: none;
+            box-shadow: none;
+            filter: brightness(1.1);
+        }
+
+        /* ---------- Boutons du bas ---------- */
+        .fab-home,
+        .fab-propose {
+            padding: 0.55rem 1rem;
+            border-radius: 6px;
+            box-shadow: none;
+            font-weight: 500;
+        }
+
+        .fab-home { background: var(--primary); }
+        .fab-propose { background: #d97706; }
+
+        .fab-home:hover,
+        .fab-propose:hover {
+            transform: none;
+            box-shadow: none;
+            filter: brightness(1.1);
+        }
+
+        .propose-event-btn {
+            padding: 0.6rem 1.1rem;
+            background: #d97706;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* ---------- État vide ---------- */
+        .events-empty-icon {
+            font-size: 2.5rem;
+            opacity: 0.4;
+        }
+
+        .events-empty-icon .material-icons {
+            font-size: 2.5rem;
+        }
+
+        .events-empty-title {
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (min-width: 768px) {
+            .event-card-image { width: 130px; height: 130px; }
+        }
+
+        @media (max-width: 480px) {
+            .page-title h1 { font-size: 1.35rem; }
+            .current-month { font-size: 1.15rem; }
+            .events-date-day { font-size: 1.7rem; }
+            .event-card { padding: 1rem 0; gap: 0.8rem; }
+            .event-card-image { width: 80px; height: 80px; }
+            .event-card-title { font-size: 0.98rem; }
+        }
+		
     </style>
 </head>
 <body>
@@ -703,7 +1110,7 @@
             <span class="material-icons">arrow_back</span>
         </a>
         <div class="page-title">
-            <h1>📅 Agenda local</h1>
+                        <h1>Agenda local</h1>
             <p>Événements à Montceau et environs</p>
         </div>
         <a href="index.html" class="home-btn" title="Accueil">
@@ -730,7 +1137,7 @@
     </div>
 	
     <div class="month-selector">
-        <span class="current-month" id="currentMonth">📅 Événements à venir</span>
+                <span class="current-month" id="currentMonth">Événements à venir</span>
     </div>
     
     <div class="events-container">
@@ -742,7 +1149,7 @@
         </div>
         
         <div class="events-empty" id="eventsEmpty" style="display: none;">
-            <div class="events-empty-icon">📅</div>
+                        <div class="events-empty-icon"><span class="material-icons">event_busy</span></div>
             <div class="events-empty-title">Aucun événement</div>
             <a href="proposer-evenement.html" class="propose-event-btn">
                 <span class="material-icons">add</span>
