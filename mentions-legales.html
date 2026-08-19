@@ -10,6 +10,12 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+        })();
+    </script>
     <style>
         :root {
             --primary: #6366f1;
@@ -227,6 +233,169 @@
                 gap: 1rem;
             }
         }
+		
+		
+        /* ============================================================
+           REFONTE ÉDITORIAL — PAGES LÉGALES (19 août 2026)
+           Bloc identique dans mentions-legales.html et confidentialite.html.
+           Pour tout annuler, supprimer ce bloc entier.
+           ============================================================ */
+
+        :root {
+            --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+            --bg-body: #0e0e14;
+            --border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        [data-theme="light"] {
+            --primary-light: #4f46e5;
+            --bg-body: #e8ecf1;
+            --border-color: rgba(0, 0, 0, 0.10);
+        }
+
+        /* ---------- Barre du haut ---------- */
+        .header,
+        [data-theme="light"] .header {
+            position: static;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1.1rem 1rem 0.9rem;
+            background: none;
+            backdrop-filter: none;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header h1 {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        .back-btn,
+        .theme-toggle {
+            width: auto;
+            height: auto;
+            padding: 0.2rem;
+            background: none;
+            border-radius: 0;
+            color: var(--text-secondary);
+        }
+
+        .back-btn:hover,
+        .theme-toggle:hover {
+            background: none;
+            color: var(--primary-light);
+        }
+
+        /* ---------- Le texte ---------- */
+        .container {
+            padding: 0 1rem 3rem;
+        }
+
+        .content-card {
+            padding: 2rem 0 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 1.9rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+            margin-bottom: 0.6rem;
+        }
+
+        .page-title .material-icons {
+            display: none;
+        }
+
+        .page-subtitle {
+            font-size: 0.85rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+        }
+
+        h2 {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+            margin-top: 2.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        h2 .material-icons {
+            display: none;
+        }
+
+        p, li {
+            font-size: 0.92rem;
+        }
+
+        /* ---------- Encadrés : trait latéral au lieu du cadre ---------- */
+        .info-box {
+            padding: 0 0 0 1rem;
+            margin-top: 2rem;
+            background: none;
+            border: none;
+            border-left: 2px solid var(--primary);
+            border-radius: 0;
+        }
+
+        .success-box {
+            padding: 0 0 0 1rem;
+            margin: 1.5rem 0;
+            background: none;
+            border: none;
+            border-left: 2px solid #10b981;
+            border-radius: 0;
+        }
+
+        /* ---------- Tableau (page Confidentialité) ---------- */
+        .data-table th {
+            background: none;
+            color: var(--text-muted, rgba(255, 255, 255, 0.5));
+            font-size: 0.66rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.6rem 0.75rem 0.6rem 0;
+        }
+
+        /* ---------- Pied de page ---------- */
+        .footer-links {
+            justify-content: flex-start;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            padding-top: 1.25rem;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 600px) {
+            .content-card {
+                padding: 1.5rem 0 0;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .footer-links {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 1.25rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -235,7 +404,7 @@
             <a href="index.html" class="back-btn" title="Retour à l'accueil">
                 <span class="material-icons">arrow_back</span>
             </a>
-            <h1>📋 Mentions légales</h1>
+                        <h1>Mentions légales</h1>
         </div>
         <button class="theme-toggle" onclick="toggleTheme()" title="Changer de thème">
             <span class="material-icons" id="themeIcon">light_mode</span>
@@ -317,7 +486,7 @@
     <script>
         // Gestion du thème
         function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
             updateThemeIcon(savedTheme);
         }

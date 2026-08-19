@@ -1,8 +1,8 @@
 // ============================================
-// ACTU & MÉDIA - Service Worker v61
+// ACTU & MÉDIA - Service Worker v62
 // ============================================
 
-const CACHE_NAME = 'actu-media-v61';
+const CACHE_NAME = 'actu-media-v62';
 
 // Assets statiques à mettre en cache à l'installation
 // Ne PAS inclure les pages admin (toujours besoin de données fraîches)
@@ -39,7 +39,6 @@ const STATIC_ASSETS = [
     '/confidentialite.html',
     '/proposer.html',
     '/proposer-evenement.html',
-    '/merci.html',
 
     // Icônes
     '/icons/icon-72.png',
@@ -55,7 +54,7 @@ const NETWORK_ONLY = [
 
 // Installation
 self.addEventListener('install', event => {
-    console.log('📦 SW v61: Installation');
+    console.log('📦 SW v62: Installation');
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
@@ -75,7 +74,7 @@ self.addEventListener('install', event => {
 
 // Activation - supprime les anciens caches
 self.addEventListener('activate', event => {
-    console.log('🚀 SW v61: Activation');
+    console.log('🚀 SW v62: Activation');
     event.waitUntil(
         caches.keys().then(keys => {
             return Promise.all(
