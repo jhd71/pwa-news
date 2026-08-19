@@ -22,6 +22,13 @@
     
     <!-- CSS -->
     <link rel="stylesheet" href="css/styles.css">
+	    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            var t = localStorage.getItem('theme') || 'light';
+            if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        })();
+    </script>
     
     <style>
         /* Page Proposer */
@@ -1049,6 +1056,242 @@
             .type-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
+        }
+		
+		
+        /* ============================================================
+           REFONTE ÉDITORIAL — PROPOSER UNE ACTUALITÉ (19 août 2026)
+           Formulaire : on garde les cartes, seules la typographie
+           et les dégradés changent.
+           ============================================================ */
+
+        /* ---------- En-tête ---------- */
+        .propose-header {
+            text-align: left;
+            max-width: 500px;
+            margin: 0 auto 2rem;
+        }
+
+        .propose-logo {
+            display: none;
+        }
+
+        .propose-title {
+            font-family: var(--font-serif);
+            font-size: 1.9rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+
+        .propose-subtitle {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        /* ---------- Boutons retour : liens ---------- */
+        .propose-back,
+        [data-theme="light"] .propose-back {
+            padding: 0.3rem;
+            background: none;
+            border: none;
+            border-radius: 0;
+            color: var(--text-muted);
+        }
+
+        .propose-back:hover {
+            background: none;
+            transform: none;
+            color: var(--primary-light);
+        }
+
+        .back-bottom,
+        .back-bottom:hover {
+            width: fit-content;
+            padding: 0.85rem 0 0.2rem;
+            background: none;
+            border: none;
+            border-radius: 0;
+            color: var(--primary-light);
+            font-size: 0.88rem;
+            font-weight: 500;
+            transform: none;
+        }
+
+        .back-bottom:hover {
+            text-decoration: underline;
+        }
+
+        /* ---------- Le formulaire ---------- */
+        .propose-form {
+            border-radius: 12px;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            border-radius: 6px;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+        }
+
+        .form-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        /* Numéros d'étape : violet uni */
+        .form-step-badge {
+            background: var(--primary, #6366f1);
+        }
+
+        /* ---------- Choix du type ---------- */
+        .type-option,
+        [data-theme="light"] .type-option {
+            border-width: 1px;
+            border-radius: 6px;
+        }
+
+        .type-option:hover,
+        [data-theme="light"] .type-option:hover {
+            transform: none;
+        }
+
+        .type-option.selected {
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* ---------- Boutons photo ---------- */
+        .photo-btn,
+        [data-theme="light"] .photo-btn {
+            border-width: 1px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .photo-btn:hover,
+        [data-theme="light"] .photo-btn:hover {
+            transform: none;
+        }
+
+        .photo-btn:active {
+            transform: none;
+        }
+
+        /* ---------- Recadrage ---------- */
+        .crop-validate-btn {
+            background: #10b981;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .crop-cancel-btn,
+        .crop-ratio-btn {
+            border-radius: 6px;
+        }
+
+        /* ---------- Barre de progression ---------- */
+        .progress-fill {
+            background: var(--primary);
+        }
+
+        /* ---------- Bouton d'envoi : violet uni ---------- */
+        .submit-btn {
+            padding: 0.9rem;
+            background: var(--primary);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-dark);
+            transform: none;
+            box-shadow: none;
+        }
+
+        .submit-btn:active {
+            transform: none;
+        }
+
+        /* ---------- Notifications ---------- */
+        .toast {
+            background: #10b981;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .toast.error {
+            background: #ef4444;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ---------- Message de succès ---------- */
+        .success-icon {
+            font-size: 2.5rem;
+            opacity: 0.5;
+        }
+
+        .success-title {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .success-btn {
+            padding: 0.75rem 1.25rem;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .success-btn:hover {
+            background: var(--primary-dark);
+            transform: none;
+        }
+
+        /* ---------- Réseaux sociaux ---------- */
+        .contact-info {
+            text-align: left;
+        }
+
+        .contact-info-title {
+            font-size: 0.66rem;
+            letter-spacing: 0.1em;
+        }
+
+        .contact-socials {
+            justify-content: flex-start;
+            gap: 1.5rem;
+        }
+
+        .contact-social {
+            width: auto;
+            height: auto;
+            background: none;
+            border: none;
+            border-radius: 0;
+            color: var(--text-muted);
+        }
+
+        .contact-social:hover {
+            transform: none;
+            box-shadow: none;
+            background: none;
+            border: none;
+            color: var(--primary-light);
+        }
+
+        @media (max-width: 480px) {
+            .propose-title { font-size: 1.6rem; }
         }
     </style>
 </head>
