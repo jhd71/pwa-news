@@ -13,6 +13,12 @@
     
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+        })();
+    </script>
     
     <style>
         :root {
@@ -873,6 +879,335 @@
 				text-decoration: underline;
 			}
 
+
+        /* ============================================================
+           REFONTE ÉDITORIAL — PAGE INFOS (19 août 2026)
+           Bloc autonome : pour tout annuler, supprimer ce bloc entier.
+           ============================================================ */
+
+        :root {
+            --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+            --bg-primary: #0e0e14;
+            --bg-secondary: #0e0e14;
+            --border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        [data-theme="light"] {
+            --primary-light: #4f46e5;
+            --bg-primary: #e8ecf1;
+            --bg-secondary: #e8ecf1;
+            --border-color: rgba(0, 0, 0, 0.10);
+        }
+
+        body {
+            background: var(--bg-primary);
+        }
+
+        /* ---------- En-tête de page ---------- */
+        .page-header,
+        [data-theme="light"] .page-header {
+            position: static;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1.1rem 1rem 0.9rem;
+            background: none;
+            backdrop-filter: none;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .page-title {
+            text-align: left;
+        }
+
+        .page-title h1 {
+            justify-content: flex-start;
+            font-family: var(--font-serif);
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .page-title p {
+            font-size: 0.76rem;
+        }
+
+        .back-btn, .home-btn, .theme-btn {
+            width: auto;
+            height: auto;
+            padding: 0.2rem;
+            background: none;
+            border-radius: 0;
+            color: var(--text-muted);
+        }
+
+        .back-btn:hover, .home-btn:hover, .theme-btn:hover {
+            background: none;
+            color: var(--primary-light);
+        }
+
+        /* ---------- Colonne de lecture ---------- */
+        .container {
+            max-width: 800px;
+            padding: 0 1rem 1rem;
+        }
+
+        /* ---------- Chiffres ---------- */
+        .stats-bar {
+            justify-content: flex-start;
+            gap: 2.5rem;
+            padding: 1rem 0;
+            margin-bottom: 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stat-item {
+            text-align: left;
+        }
+
+        .stat-value {
+            font-family: var(--font-serif);
+            font-size: 1.7rem;
+            font-weight: 600;
+            line-height: 1.1;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 0.66rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* ---------- Les infos : plus de cartes ---------- */
+        .infos-list {
+            gap: 0;
+        }
+
+        .info-card,
+        [data-theme="light"] .info-card {
+            background: none;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            overflow: visible;
+        }
+
+        .info-card.pinned {
+            background: none;
+            border: none;
+            border-left: 2px solid #f59e0b;
+            padding-left: 1rem;
+        }
+
+        .info-card + .info-card,
+        [data-theme="light"] .info-card + .info-card {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .info-card:hover,
+        [data-theme="light"] .info-card:hover {
+            border-color: var(--border-color);
+            box-shadow: none;
+        }
+
+        .info-card:hover .info-card-title {
+            color: var(--primary-light);
+        }
+
+        /* Épinglé : petit libellé au lieu de la pastille orange */
+        .pinned-badge {
+            margin: 1.25rem 0 0;
+            padding: 0;
+            background: none;
+            border-radius: 0;
+            color: #f59e0b;
+            font-size: 0.66rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* Les marges intérieures passent des enfants au bloc */
+        .info-card-header {
+            padding: 1.25rem 0 0.5rem;
+            font-size: 0.78rem;
+        }
+
+        .info-card-icon {
+            font-size: 1.1rem;
+        }
+
+        .info-card-content {
+            padding: 0;
+        }
+
+        .info-card-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .info-card-image-wrapper {
+            border-radius: 4px;
+        }
+
+        .info-card-desc {
+            font-size: 0.87rem;
+        }
+
+        /* "Voir plus" : lien au lieu de la pilule */
+        .see-more-btn,
+        .see-more-btn:hover {
+            padding: 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+            color: var(--primary-light);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .see-more-btn:hover {
+            text-decoration: underline;
+        }
+
+        .info-card-footer {
+            padding: 0.75rem 0;
+            margin-top: 0.75rem;
+            font-size: 0.78rem;
+        }
+
+        .info-card-meta .material-icons {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        /* J'aime / Commenter : liens au lieu de pilules */
+        .info-card-actions {
+            gap: 1.25rem;
+            padding: 0 0 1.25rem;
+        }
+
+        .action-btn {
+            padding: 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .action-btn:hover {
+            background: none;
+            border: none;
+            color: var(--primary-light);
+        }
+
+        .action-btn.liked {
+            background: none;
+            border: none;
+            color: #ef4444;
+        }
+
+        /* ---------- Commentaires ---------- */
+        .comments-section {
+            padding: 0 0 1.25rem;
+        }
+
+        .comment-item {
+            padding: 0.7rem 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+        }
+
+        .comment-item + .comment-item {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .comment-form {
+            padding: 0.9rem 0 0;
+            background: none;
+            border: none;
+            border-top: 1px solid var(--border-color);
+            border-radius: 0;
+        }
+
+        .comment-form input,
+        .comment-form textarea {
+            border-radius: 4px;
+        }
+
+        .comment-submit-btn {
+            padding: 0.45rem 0.9rem;
+            background: var(--primary);
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .comment-submit-btn:hover {
+            background: var(--primary);
+            transform: none;
+            box-shadow: none;
+            filter: brightness(1.1);
+        }
+
+        /* ---------- "Charger plus" : lien ---------- */
+        .load-more-btn,
+        .load-more-btn:hover {
+            width: fit-content;
+            margin: 0.5rem auto 0;
+            padding: 0.85rem 0 0.2rem;
+            background: none;
+            border: none;
+            border-radius: 0;
+            color: var(--primary-light);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .load-more-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* ---------- Boutons du bas ---------- */
+        .fab-btn {
+            padding: 0.55rem 1rem;
+            border-radius: 6px;
+            box-shadow: none;
+            font-weight: 500;
+        }
+
+        .fab-btn.home { background: var(--primary); }
+        .fab-btn.propose { background: #d97706; }
+
+        .fab-btn:hover {
+            transform: none;
+            box-shadow: none;
+            filter: brightness(1.1);
+        }
+
+        /* ---------- État vide ---------- */
+        .empty-state-icon {
+            font-size: 2.5rem;
+            opacity: 0.4;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 480px) {
+            .page-title h1 { font-size: 1.35rem; }
+            .stats-bar { gap: 1.75rem; }
+            .stat-value { font-size: 1.45rem; }
+            .info-card-title { font-size: 0.98rem; }
+            .info-card-actions { gap: 1rem; }
+            .action-btn { flex: 0 1 auto; justify-content: flex-start; }
+        }
+		
     </style>
 </head>
 <body>
@@ -881,7 +1216,7 @@
             <span class="material-icons">arrow_back</span>
         </a>
         <div class="page-title">
-            <h1>📢 Infos de la communauté</h1>
+                        <h1>Infos de la communauté</h1>
             <p>Actualités de Montceau et environs</p>
         </div>
         <div class="header-actions">
