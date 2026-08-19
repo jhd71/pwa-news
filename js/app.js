@@ -301,11 +301,13 @@ function renderNewsSlider(articles) {
                     <a href="${article.link}" target="_blank" rel="noopener" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
                         <div class="news-item-content">
                             <div class="news-item-title">${article.title}</div>
+                            ${article.excerpt ? `<div class="news-item-excerpt">${article.excerpt}</div>` : ''}
                             <div class="news-item-meta">
                                 <span class="news-item-date">${formatDate(article.date)}</span>
                                 <span class="news-item-read">Lire la suite sur ${article.source} →</span>
                             </div>
                         </div>
+                        ${article.image ? `<img src="${article.image}" alt="" class="news-item-image" loading="lazy" onerror="this.remove()">` : ''}
                     </a>
                 </div>
             `).join('')}
