@@ -307,7 +307,11 @@ function renderNewsSlider(articles) {
                                 <span class="news-item-read">Lire la suite sur ${article.source} →</span>
                             </div>
                         </div>
-                        ${article.image ? `<img src="${article.image}" alt="" class="news-item-image" loading="lazy" onerror="this.remove()">` : ''}
+                        ${article.image ? `
+                        <div class="news-item-figure">
+                            <img src="${article.image}" alt="" class="news-item-image" loading="lazy" onerror="this.closest('.news-item-figure').remove()">
+                            <span class="news-item-credit">${article.source}</span>
+                        </div>` : ''}
                     </a>
                 </div>
             `).join('')}
