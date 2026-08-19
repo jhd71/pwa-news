@@ -91,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initCommunity();
     initServiceWorker();
     initInstallPrompt();
-    initToggleSections();
     initPushNotifications();
     initAgenda();
     initSport();
@@ -796,8 +795,6 @@ function initInstallPrompt() {
     const installPrompt = document.getElementById('installPrompt');
     const installBtn = document.getElementById('installBtn');
     const dismissBtn = document.getElementById('dismissBtn');
-    const iosModal = document.getElementById('iosInstallModal');
-    const iosCloseBtn = document.getElementById('iosCloseBtn');
     
     // Vérifier si déjà installé
     if (window.matchMedia('(display-mode: standalone)').matches) {
@@ -820,7 +817,7 @@ function initInstallPrompt() {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     const isInStandaloneMode = window.navigator.standalone === true;
     
-        if (isIOS && !isInStandaloneMode) {
+    if (isIOS && !isInStandaloneMode) {
         // iOS : l'invitation à installer est gérée par js/ios-install.js,
         // qui affiche sa propre fenêtre avec les étapes Partager / Écran d'accueil.
         // On n'affiche donc pas le bandeau du bas, sinon les deux se superposent.
@@ -1643,56 +1640,6 @@ setInterval(() => {
     console.log('🔄 Rafraîchissement des actualités...');
     initNews();
 }, CONFIG.news.refreshInterval);
-
-// === TOGGLE GÉNÉRIQUE POUR TOUTES LES SECTIONS ===
-function toggleSection(extraId, btnId, iconId, textId, openLabel, closeLabel, storageKey) {
-    const extra = document.getElementById(extraId);
-    const btn = document.getElementById(btnId);
-    const icon = document.getElementById(iconId);
-    const text = document.getElementById(textId);
-    
-    if (!extra || !btn) return;
-    
-    const isExpanded = extra.classList.contains('show');
-    
-    if (isExpanded) {
-        extra.classList.remove('show');
-        btn.classList.remove('expanded');
-        icon.textContent = 'expand_more';
-        text.textContent = openLabel;
-        localStorage.setItem(storageKey, 'false');
-    } else {
-        extra.classList.add('show');
-        btn.classList.add('expanded');
-        icon.textContent = 'expand_less';
-        text.textContent = closeLabel;
-        localStorage.setItem(storageKey, 'true');
-    }
-}
-
-// Restaurer l'état des sections au chargement
-function initToggleSections() {
-    const sections = [
-        { storageKey: 'mediasExpanded', extraId: 'mediasExtra', btnId: 'mediasBtn', iconId: 'mediasIcon', textId: 'mediasText', closeLabel: 'Masquer les autres médias' }
-    ];
-    
-    sections.forEach(function(s) {
-        if (localStorage.getItem(s.storageKey) === 'true') {
-            const extra = document.getElementById(s.extraId);
-            const btn = document.getElementById(s.btnId);
-            const icon = document.getElementById(s.iconId);
-            const text = document.getElementById(s.textId);
-            if (extra && btn) {
-                extra.classList.add('show');
-                btn.classList.add('expanded');
-                icon.textContent = 'expand_less';
-                text.textContent = s.closeLabel;
-            }
-        }
-    });
-}
-
-window.toggleSection = toggleSection;
 
 // ============================================
 // NOTIFICATIONS PUSH
