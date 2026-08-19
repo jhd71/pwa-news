@@ -15,6 +15,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Cropper.js pour le recadrage -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
+	    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            var t = localStorage.getItem('theme') || 'light';
+            if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        })();
+    </script>
     
     <style>
         :root {
@@ -765,6 +772,232 @@
             .form-row { grid-template-columns: 1fr; }
             .recurrence-day { width: 42px; height: 42px; font-size: 0.8rem; }
         }
+		
+		
+        /* ============================================================
+           REFONTE ÉDITORIAL — PROPOSER UN ÉVÉNEMENT (19 août 2026)
+           Formulaire : on garde les cartes, seules la typographie
+           et les dégradés changent.
+           ============================================================ */
+
+        :root {
+            --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+            --bg-primary: #0e0e14;
+            --bg-secondary: #0e0e14;
+            --border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        [data-theme="light"] {
+            --primary-light: #4f46e5;
+            --bg-primary: #e8ecf1;
+            --bg-secondary: #e8ecf1;
+            --border-color: rgba(0, 0, 0, 0.10);
+        }
+
+        body {
+            background: var(--bg-primary);
+        }
+
+        /* ---------- En-tête ---------- */
+        .page-header {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 1.1rem 1rem 0.9rem;
+            background: none;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .page-title h1 {
+            font-family: var(--font-serif);
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .page-title p {
+            font-size: 0.76rem;
+        }
+
+        .back-btn {
+            width: auto;
+            height: auto;
+            padding: 0.2rem;
+            background: none;
+            border: none;
+            border-radius: 0;
+            color: var(--text-muted);
+        }
+
+        .back-btn:hover {
+            background: none;
+            border: none;
+            color: var(--primary-light);
+        }
+
+        /* ---------- Bandeau d'accueil : sans dégradé ---------- */
+        .form-intro {
+            text-align: left;
+            padding: 1.5rem 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .form-intro-icon {
+            display: none;
+        }
+
+        .form-intro-title {
+            font-family: var(--font-serif);
+            font-size: 1.35rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .form-intro-text {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        /* ---------- Champs ---------- */
+        .form-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .form-label .material-icons {
+            display: none;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            border-radius: 6px;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+        }
+
+        .draft-banner,
+        .draft-restore-btn {
+            border-radius: 6px;
+        }
+
+        /* ---------- Catégories ---------- */
+        .category-option,
+        [data-theme="light"] .category-option {
+            border-width: 1px;
+            border-radius: 6px;
+        }
+
+        .category-option:hover {
+            transform: none;
+        }
+
+        .category-option.selected {
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* ---------- Récurrence ---------- */
+        .recurrence-toggle,
+        .recurrence-day,
+        [data-theme="light"] .recurrence-day {
+            border-radius: 6px;
+        }
+
+        /* ---------- Photo et recadrage ---------- */
+        .photo-btn,
+        [data-theme="light"] .photo-btn {
+            border-width: 1px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .photo-btn:hover,
+        [data-theme="light"] .photo-btn:hover {
+            transform: none;
+        }
+
+        .crop-validate-btn {
+            background: #10b981;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .crop-cancel-btn,
+        .crop-ratio-btn,
+        .photo-rotate-btn,
+        .photo-crop-btn {
+            border-radius: 6px;
+        }
+
+        .progress-fill {
+            background: var(--primary);
+        }
+
+        /* ---------- Bouton d'envoi : orange uni ---------- */
+        .submit-btn {
+            padding: 0.9rem 2rem;
+            background: #d97706;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .submit-btn:hover {
+            transform: none;
+            box-shadow: none;
+            filter: brightness(1.1);
+        }
+
+        /* ---------- Message de succès ---------- */
+        .success-message {
+            padding: 1.5rem 0 0;
+            background: none;
+            border: none;
+            border-top: 1px solid var(--border-color);
+            border-radius: 0;
+            text-align: left;
+        }
+
+        .success-message-icon {
+            font-size: 2.25rem;
+            opacity: 0.6;
+        }
+
+        .success-message-title {
+            font-family: var(--font-serif);
+            font-size: 1.35rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .success-btn {
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .success-btn.primary:hover {
+            background: var(--primary);
+            filter: brightness(1.1);
+        }
+
+        .toast {
+            border-radius: 6px;
+        }
+
+        @media (max-width: 480px) {
+            .page-title h1 { font-size: 1.35rem; }
+            .form-intro-title { font-size: 1.2rem; }
+        }
     </style>
 </head>
 <body>
@@ -773,7 +1006,7 @@
             <span class="material-icons">arrow_back</span>
         </a>
         <div class="page-title">
-            <h1>📅 Proposer un événement</h1>
+                        <h1>Proposer un événement</h1>
             <p>Partagez avec la communauté</p>
         </div>
     </header>
@@ -1175,7 +1408,7 @@
         });
         
         function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const savedTheme = localStorage.getItem('theme') || 'light';
             if (savedTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
             }
