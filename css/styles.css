@@ -1336,14 +1336,18 @@ h2, h3 {
 .film-modal-content {
     position: relative;
     width: 92%;
-    max-width: 420px;
+    max-width: 440px;
     max-height: 90vh;
     overflow-y: auto;
-    background: var(--bg-card);
+    padding: 1.4rem;
+    background: var(--bg-surface-dark);
     border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 1.2rem;
+    border-radius: 12px;
     animation: filmModalIn 0.3s ease;
+}
+
+[data-theme="light"] .film-modal-content {
+    background: #ffffff;
 }
 
 @keyframes filmModalIn {
@@ -1351,42 +1355,49 @@ h2, h3 {
     to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
+/* Croix de fermeture, discrète */
 .film-modal-close {
     position: absolute;
-    top: 0.6rem;
-    right: 0.6rem;
-    background: rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 32px;
+    height: 32px;
+    background: none;
     border: none;
-    color: white;
-    width: 36px;
-    height: 36px;
+    color: var(--text-muted);
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 2;
-    transition: background 0.2s;
+    transition: color 0.2s;
 }
 
 .film-modal-close:hover {
-    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
 }
 
+.film-modal-close .material-icons {
+    font-size: 1.3rem;
+}
+
+/* Affiche + titre, séparés du reste par un trait fin */
 .film-modal-header {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: 1.1rem;
+    margin-bottom: 1.2rem;
     padding-right: 2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .film-modal-poster {
     flex-shrink: 0;
-    width: 120px;
-    border-radius: 10px;
+    width: 110px;
+    border-radius: 4px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .film-modal-poster img {
@@ -1399,51 +1410,70 @@ h2, h3 {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    padding-top: 0.3rem;
+    gap: 0.4rem;
+    padding-top: 0.1rem;
 }
 
 .film-modal-title {
-    font-size: 1.15rem;
-    font-weight: 700;
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
     color: var(--text-primary);
-    line-height: 1.3;
     margin: 0;
 }
 
+/* Genre · durée : ligne simple, plus de pastilles */
 .film-modal-details {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
 }
 
 .film-modal-badge {
     display: inline-flex;
     align-items: center;
-    padding: 0.2rem 0.5rem;
-    background: rgba(99, 102, 241, 0.15);
-    border-radius: 6px;
-    font-size: 0.78rem;
-    color: var(--text-secondary);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.film-modal-badge + .film-modal-badge::before {
+    content: '·';
+    margin-right: 0.5rem;
 }
 
 .film-modal-cinema {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: auto;
     font-size: 0.8rem;
     color: var(--text-muted);
-    margin-top: auto;
 }
 
+.film-modal-cinema .material-icons {
+    font-size: 0.95rem;
+    opacity: 0.65;
+}
+
+/* Titre "Séances du ..." */
 .film-modal-section {
-    margin-bottom: 1rem;
+    margin-bottom: 1.4rem;
 }
 
 .film-modal-section-title {
-    font-size: 0.85rem;
+    font-size: 0.72rem;
     font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
 }
 
+/* Horaires : mêmes pastilles que dans la liste */
 .film-modal-times {
     display: flex;
     flex-wrap: wrap;
@@ -1454,16 +1484,21 @@ h2, h3 {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.35rem 0.7rem;
-    background: rgba(99, 102, 241, 0.2);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--primary-light);
     min-width: 50px;
+    padding: 0.3rem 0.65rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: rgba(99, 102, 241, 0.16);
+    color: #a5b4fc;
 }
 
+[data-theme="light"] .film-modal-time {
+    background: rgba(79, 70, 229, 0.09);
+    color: #4338ca;
+}
+
+/* Boutons : "Réserver" en action principale */
 .film-modal-actions {
     display: flex;
     gap: 0.6rem;
@@ -1475,14 +1510,13 @@ h2, h3 {
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
-    padding: 0.7rem 1rem;
-    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
     font-size: 0.85rem;
     font-weight: 600;
     text-decoration: none;
-    transition: all 0.2s;
-    border: none;
     cursor: pointer;
+    transition: all 0.2s;
 }
 
 .film-modal-btn .material-icons {
@@ -1490,34 +1524,29 @@ h2, h3 {
 }
 
 .film-modal-btn-trailer {
-    background: #ff0000;
-    color: white;
+    background: none;
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #f87171;
 }
 
 .film-modal-btn-trailer:hover {
-    background: #cc0000;
-    transform: translateY(-1px);
+    background: rgba(239, 68, 68, 0.12);
+}
+
+[data-theme="light"] .film-modal-btn-trailer {
+    border-color: rgba(220, 38, 38, 0.45);
+    color: #dc2626;
 }
 
 .film-modal-btn-site {
     background: var(--primary);
-    color: white;
+    border: 1px solid var(--primary);
+    color: #ffffff;
 }
 
 .film-modal-btn-site:hover {
     background: var(--primary-dark);
-    transform: translateY(-1px);
-}
-
-/* Thème clair */
-[data-theme="light"] .film-modal-badge {
-    background: rgba(79, 70, 229, 0.1);
-}
-
-[data-theme="light"] .film-modal-time {
-    background: rgba(79, 70, 229, 0.1);
-    border-color: rgba(79, 70, 229, 0.2);
-    color: var(--primary);
+    border-color: var(--primary-dark);
 }
 
 /* ============================================
@@ -3603,14 +3632,10 @@ a.agenda-item:hover .agenda-item-title {
    SECTION SPORT - FC MONTCEAU BOURGOGNE
    ============================================ */
 
-.sport-section {
-    /* styles partagés via .agenda-section, .cinema-section */
-}
-
 .sport-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: baseline;
     margin-bottom: 0.75rem;
     padding-bottom: 0.6rem;
     border-bottom: 1px solid var(--border-color);
@@ -3619,86 +3644,94 @@ a.agenda-item:hover .agenda-item-title {
 .sport-title {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-weight: 700;
-    font-size: 1rem;
+    gap: 0.6rem;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     color: var(--text-primary);
     flex-wrap: nowrap;
     white-space: nowrap;
-    overflow: hidden;
 }
 
-.sport-title-icon { font-size: 1.2rem; }
-
 .sport-badge {
-    font-size: 0.65rem;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 0.66rem;
     font-weight: 600;
-    padding: 0.15rem 0.5rem;
-    border-radius: 6px;
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
     white-space: nowrap;
 }
 
 .sport-link {
     display: flex;
-    gap: 0.25rem;
-    padding: 0.2rem 0.6rem;
-    flex-shrink: 0;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-    color: white;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
     align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+    color: var(--primary-light);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: normal;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
 }
 
 .sport-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    text-decoration: underline;
+}
+
+[data-theme="light"] .sport-link {
+    color: var(--primary);
 }
 
 .sport-link .material-icons { font-size: 1rem; }
 
+/* Les 2 matchs : trait vertical au milieu */
 .sport-matches {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-    margin-bottom: 0.6rem;
+    gap: 0;
+    margin-bottom: 0;
 }
 
 .sport-match-card {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 0.6rem;
     position: relative;
     overflow: hidden;
+    padding: 0.9rem 1rem 0.9rem 0;
+}
+
+.sport-match-card + .sport-match-card {
+    padding: 0.9rem 0 0.9rem 1rem;
+    border-left: 1px solid var(--border-color);
 }
 
 .sport-match-label {
-    font-size: 0.6rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.4rem;
     display: flex;
     align-items: center;
     gap: 0.3rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.45rem;
+}
+
+.sport-match-label .material-icons {
+    font-size: 0.85rem;
+    text-transform: none;
+    letter-spacing: normal;
 }
 
 .sport-match-label-result { color: #f59e0b; }
 .sport-match-label-next { color: #10b981; }
 
 .sport-match-date {
-    font-size: 0.6rem;
-    color: var(--text-secondary);
-    margin-bottom: 0.35rem;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    margin-bottom: 0.45rem;
 }
 
 .sport-match-teams {
@@ -3715,7 +3748,7 @@ a.agenda-item:hover .agenda-item-title {
 }
 
 .sport-team-name {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 500;
     color: var(--text-primary);
     flex: 1;
@@ -3727,8 +3760,9 @@ a.agenda-item:hover .agenda-item-title {
 .sport-team-name.is-fcmb { font-weight: 700; }
 
 .sport-team-score {
-    font-size: 0.85rem;
-    font-weight: 800;
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 600;
     min-width: 1.2rem;
     text-align: center;
     color: var(--text-primary);
@@ -3748,55 +3782,88 @@ a.agenda-item:hover .agenda-item-title {
     font-weight: 600;
 }
 
+/* Résultat du dernier match : petit carré coloré */
+.sport-result-indicator {
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 3px;
+    background: #6b7280;
+}
+
+.sport-result-indicator.win { background: #10b981; }
+.sport-result-indicator.loss { background: #ef4444; }
+.sport-result-indicator.draw { background: #6b7280; }
+
+.sport-result-letter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: white;
+}
+
+/* "Aujourd'hui !" : texte rouge, sans clignotement */
+.sport-today-badge {
+    margin-left: 0.35rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #f87171;
+}
+
+/* Classement : bande entre deux traits */
 .sport-standing-row {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 0.5rem 0.7rem;
-    margin-bottom: 0.6rem;
+    gap: 0.9rem;
+    padding: 0.9rem 0;
+    margin-bottom: 0;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .sport-position {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.2rem;
-    height: 2.2rem;
-    border-radius: 10px;
-    font-weight: 800;
-    font-size: 1.1rem;
+    width: auto;
+    min-width: 2.4rem;
+    height: auto;
+    padding: 0;
     flex-shrink: 0;
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--text-primary);
 }
 
 .sport-position.top3 {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: white;
-}
-
-.sport-position.mid {
-    border: 2px solid var(--border-color);
-    color: #ffffff;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #f59e0b;
 }
 
 .sport-standing-info { flex: 1; min-width: 0; }
 
 .sport-standing-title {
-    font-size: 0.7rem;
+    font-size: 0.66rem;
     font-weight: 600;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.08em;
 }
 
 .sport-standing-stats {
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     color: var(--text-primary);
     font-weight: 500;
-    margin-top: 0.1rem;
+    margin-top: 0.15rem;
 }
 
 .sport-standing-stats strong {
@@ -3808,7 +3875,7 @@ a.agenda-item:hover .agenda-item-title {
 .sport-form-dot {
     width: 1.3rem;
     height: 1.3rem;
-    border-radius: 6px;
+    border-radius: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3821,33 +3888,72 @@ a.agenda-item:hover .agenda-item-title {
 .sport-form-dot.draw { background: #6b7280; }
 .sport-form-dot.loss { background: #ef4444; }
 
+/* "Voir le classement complet" : lien */
+.sport-classement-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    width: fit-content;
+    margin: 0 auto 0.6rem;
+    padding: 0.85rem 0 0.2rem;
+    background: none;
+    border: none;
+    border-radius: 0;
+    color: var(--primary-light);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.sport-classement-btn:hover {
+    text-decoration: underline;
+}
+
+[data-theme="light"] .sport-classement-btn {
+    color: var(--primary);
+}
+
+.sport-classement-btn .material-icons {
+    font-size: 1rem;
+}
+
+/* Les 4 autres clubs : liens simples */
 .sport-teams-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: 0 1.25rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid var(--border-color);
 }
 
 .sport-team-pill {
-    color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    padding: 0.35rem 0.65rem;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    flex: 1 1 calc(50% - 0.2rem);
+    flex: 1 1 calc(50% - 0.75rem);
     min-width: 0;
+    padding: 0.5rem 0;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
 }
 
-.sport-team-pill:hover {
-    border-color: var(--primary-light);
-    transform: translateY(-1px);
+.sport-team-pill:hover .sport-team-pill-name {
+    color: var(--primary-light);
 }
 
-.sport-team-pill-icon { font-size: 1rem; flex-shrink: 0; }
+[data-theme="light"] .sport-team-pill:hover .sport-team-pill-name {
+    color: var(--primary);
+}
+
+.sport-team-pill-icon { flex-shrink: 0; }
+
+.sport-team-pill-icon.material-icons {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
 
 .sport-team-pill-text {
     display: flex;
@@ -3862,11 +3968,12 @@ a.agenda-item:hover .agenda-item-title {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: color 0.2s ease;
 }
 
 .sport-team-pill-league {
-    font-size: 0.6rem;
-    color: var(--text-secondary);
+    font-size: 0.62rem;
+    color: var(--text-muted);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -3882,96 +3989,26 @@ a.agenda-item:hover .agenda-item-title {
     font-size: 0.85rem;
 }
 
-.sport-result-indicator {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 28px 28px 0;
-}
-
-.sport-result-indicator.win { border-color: transparent #10b981 transparent transparent; }
-.sport-result-indicator.loss { border-color: transparent #ef4444 transparent transparent; }
-.sport-result-indicator.draw { border-color: transparent #6b7280 transparent transparent; }
-
-.sport-result-letter {
-    position: absolute;
-    top: 2px;
-    right: -24px;
-    font-size: 0.55rem;
-    font-weight: 800;
-    color: white;
-}
-
-.sport-today-badge {
-    font-size: 0.55rem;
-    font-weight: 700;
-    padding: 0.1rem 0.4rem;
-    border-radius: 4px;
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-    text-transform: uppercase;
-    animation: sportPulse 2s ease-in-out infinite;
-}
-
-@keyframes sportPulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.3); }
+/* ============================================
+   SPORT - RESPONSIVE
+   ============================================ */
+@media (min-width: 768px) {
+    .sport-team-pill { flex: 1 1 calc(25% - 1rem); }
 }
 
 @media (max-width: 480px) {
     .sport-header { gap: 0.3rem; }
-    .sport-title { font-size: 0.9rem; gap: 0.35rem; }
-    .sport-link { padding: 0.2rem 0.5rem; font-size: 0.75rem; }
-    .sport-matches { grid-template-columns: 1fr 1fr; gap: 0.4rem; }
-    .sport-match-card { padding: 0.5rem; }
-    .sport-team-name { font-size: 0.7rem; }
-    .sport-team-pill { flex: 1 1 calc(50% - 0.2rem); }
-}
-
-@media (min-width: 768px) {
-    .sport-standing-row { padding: 0.6rem 1rem; }
-    .sport-team-pill { flex: 1 1 calc(25% - 0.3rem); }
-}
-
-/* ============================================
-   BOUTON VOIR CLASSEMENT
-   ============================================ */
-.sport-classement-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    padding: 0.65rem 1.25rem;
-    margin-top: 0.5rem;
-    margin-bottom: 0.8rem;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    border: none;
-    border-radius: 25px;
-    color: white;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 12px rgba(99, 102, 241, 0.35);
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
-}
-.sport-classement-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
-}
-.sport-classement-btn .material-icons {
-    font-size: 1rem;
-}
-[data-theme="light"] .sport-classement-btn {
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-}
-[data-theme="light"] .sport-classement-btn:hover {
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    .sport-title { font-size: 1.15rem; gap: 0.45rem; }
+    .sport-badge { font-size: 0.6rem; }
+    .sport-link { padding: 0; font-size: 0.8rem; }
+    .sport-matches { grid-template-columns: 1fr 1fr; }
+    .sport-match-card { padding: 0.8rem 0.7rem 0.8rem 0; }
+    .sport-match-card + .sport-match-card { padding: 0.8rem 0 0.8rem 0.7rem; }
+    .sport-result-indicator { right: 0.7rem; }
+    .sport-team-name { font-size: 0.75rem; }
+    .sport-teams-row { gap: 0 1rem; }
+    .sport-team-pill { flex: 1 1 calc(50% - 0.5rem); }
+    .sport-position { font-size: 1.5rem; min-width: 2rem; }
 }
 
 /* ============================================
@@ -4305,22 +4342,6 @@ a.agenda-item:hover .agenda-item-title {
    ICÔNES MATERIAL À LA PLACE DES EMOJIS
    Ajouté le 04/08/2026 - supprimable d'un bloc
    ============================================ */
-.sport-title-icon.material-icons {
-    font-size: 1.2rem;
-    color: var(--primary-light);
-}
-
-.sport-match-label .material-icons {
-    font-size: 0.85rem;
-    text-transform: none;
-    letter-spacing: normal;
-}
-
-.sport-team-pill-icon.material-icons {
-    font-size: 1.1rem;
-    color: var(--primary-light);
-}
-
 .agenda-empty-icon .material-icons,
 .community-empty-icon .material-icons {
     font-size: inherit;
@@ -4401,429 +4422,6 @@ a.agenda-item:hover .agenda-item-title {
     box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
 }
 
-
-
-/* ============================================================
-   REFONTE ÉDITORIAL — FENÊTRE FILM (18 août 2026)
-   Bloc autonome : pour tout annuler, supprimer ce bloc entier.
-   ============================================================ */
-
-.film-modal-content {
-    max-width: 440px;
-    padding: 1.4rem;
-    background: var(--bg-surface-dark);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-}
-
-[data-theme="light"] .film-modal-content {
-    background: #ffffff;
-}
-
-/* --- Croix de fermeture, discrète --- */
-.film-modal-close {
-    top: 0.5rem;
-    right: 0.5rem;
-    width: 32px;
-    height: 32px;
-    background: none;
-    color: var(--text-muted);
-}
-
-.film-modal-close:hover {
-    background: none;
-    color: var(--text-primary);
-}
-
-.film-modal-close .material-icons {
-    font-size: 1.3rem;
-}
-
-/* --- Affiche + titre, séparés du reste par un trait fin --- */
-.film-modal-header {
-    gap: 1.1rem;
-    margin-bottom: 1.2rem;
-    padding-bottom: 1.2rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.film-modal-poster {
-    width: 110px;
-    border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.film-modal-info {
-    gap: 0.4rem;
-    padding-top: 0.1rem;
-}
-
-.film-modal-title {
-    font-family: var(--font-serif);
-    font-size: 1.4rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    line-height: 1.2;
-}
-
-/* --- Genre · durée : ligne simple, plus de pastilles --- */
-.film-modal-details {
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-.film-modal-badge,
-[data-theme="light"] .film-modal-badge {
-    padding: 0;
-    background: none;
-    border-radius: 0;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-.film-modal-badge + .film-modal-badge::before {
-    content: '·';
-    margin-right: 0.5rem;
-}
-
-.film-modal-cinema {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-.film-modal-cinema .material-icons {
-    font-size: 0.95rem;
-    opacity: 0.65;
-}
-
-/* --- Titre "Séances du ..." --- */
-.film-modal-section {
-    margin-bottom: 1.4rem;
-}
-
-.film-modal-section-title {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 0.6rem;
-}
-
-/* --- Horaires : mêmes pastilles que dans la liste --- */
-.film-modal-time {
-    padding: 0.3rem 0.65rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    background: rgba(99, 102, 241, 0.16);
-    color: #a5b4fc;
-}
-
-[data-theme="light"] .film-modal-time {
-    border: none;
-    background: rgba(79, 70, 229, 0.09);
-    color: #4338ca;
-}
-
-/* --- Boutons : "Réserver" en action principale --- */
-.film-modal-btn {
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    font-weight: 600;
-}
-
-.film-modal-btn-trailer {
-    background: none;
-    border: 1px solid rgba(239, 68, 68, 0.5);
-    color: #f87171;
-}
-
-.film-modal-btn-trailer:hover {
-    background: rgba(239, 68, 68, 0.12);
-    transform: none;
-}
-
-[data-theme="light"] .film-modal-btn-trailer {
-    border-color: rgba(220, 38, 38, 0.45);
-    color: #dc2626;
-}
-
-.film-modal-btn-site {
-    background: var(--primary);
-    border: 1px solid var(--primary);
-    color: #ffffff;
-}
-
-.film-modal-btn-site:hover {
-    background: var(--primary-dark);
-    border-color: var(--primary-dark);
-    transform: none;
-}
-
-
-/* ============================================================
-   REFONTE ÉDITORIAL — SECTION SPORT (18 août 2026)
-   Bloc autonome : pour tout annuler, supprimer ce bloc entier.
-   ============================================================ */
-
-/* --- Titre "FC Montceau · R1 Herbelin" --- */
-.sport-header {
-    align-items: baseline;
-}
-
-.sport-title {
-    gap: 0.6rem;
-    font-family: var(--font-serif);
-    font-size: 1.35rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--text-primary);
-    overflow: visible;
-}
-
-.sport-badge {
-    padding: 0;
-    background: none;
-    border-radius: 0;
-    font-family: 'Inter', -apple-system, sans-serif;
-    font-size: 0.66rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-}
-
-.sport-link {
-    padding: 0;
-    background: none;
-    box-shadow: none;
-    border-radius: 0;
-    color: var(--primary-light);
-    font-family: 'Inter', -apple-system, sans-serif;
-    font-size: 0.85rem;
-    font-weight: 500;
-    letter-spacing: normal;
-}
-
-.sport-link:hover {
-    transform: none;
-    box-shadow: none;
-    text-decoration: underline;
-}
-
-[data-theme="light"] .sport-link {
-    color: var(--primary);
-}
-
-/* --- Les 2 matchs : plus de cartes, trait vertical au milieu --- */
-.sport-matches {
-    gap: 0;
-    margin-bottom: 0;
-}
-
-.sport-match-card {
-    background: none;
-    border: none;
-    border-radius: 0;
-    padding: 0.9rem 1rem 0.9rem 0;
-}
-
-.sport-match-card + .sport-match-card {
-    padding: 0.9rem 0 0.9rem 1rem;
-    border-left: 1px solid var(--border-color);
-}
-
-.sport-match-label {
-    font-size: 0.62rem;
-    letter-spacing: 0.08em;
-    margin-bottom: 0.45rem;
-}
-
-.sport-match-date {
-    font-size: 0.68rem;
-    color: var(--text-muted);
-    margin-bottom: 0.45rem;
-}
-
-.sport-team-name {
-    font-size: 0.8rem;
-}
-
-.sport-team-score {
-    font-family: var(--font-serif);
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-/* --- Résultat : petit carré au lieu du coin plié --- */
-.sport-result-indicator {
-    top: 0.75rem;
-    right: 1rem;
-    width: 1.15rem;
-    height: 1.15rem;
-    border: none;
-    border-radius: 3px;
-    background: #6b7280;
-}
-
-.sport-result-indicator.win { background: #10b981; }
-.sport-result-indicator.loss { background: #ef4444; }
-.sport-result-indicator.draw { background: #6b7280; }
-
-.sport-result-letter {
-    position: static;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    font-size: 0.62rem;
-}
-
-/* --- "Aujourd'hui !" : sans dégradé ni clignotement --- */
-.sport-today-badge {
-    padding: 0;
-    margin-left: 0.35rem;
-    background: none;
-    border-radius: 0;
-    color: #f87171;
-    font-size: 0.62rem;
-    letter-spacing: 0.06em;
-    animation: none;
-}
-
-/* --- Classement : bande simple entre deux traits --- */
-.sport-standing-row {
-    gap: 0.9rem;
-    padding: 0.9rem 0;
-    margin-bottom: 0;
-    background: none;
-    border: none;
-    border-top: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
-    border-radius: 0;
-}
-
-.sport-position,
-.sport-position.top3,
-.sport-position.mid {
-    width: auto;
-    min-width: 2.4rem;
-    height: auto;
-    padding: 0;
-    background: none;
-    border: none;
-    border-radius: 0;
-    font-family: var(--font-serif);
-    font-size: 1.8rem;
-    font-weight: 600;
-    line-height: 1;
-    color: var(--text-primary);
-}
-
-.sport-position.top3 {
-    color: #f59e0b;
-}
-
-.sport-standing-title {
-    font-size: 0.66rem;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-}
-
-.sport-standing-stats {
-    font-size: 0.78rem;
-    margin-top: 0.15rem;
-}
-
-.sport-form-dot {
-    border-radius: 3px;
-}
-
-/* --- "Voir le classement complet" : lien --- */
-.sport-classement-btn,
-[data-theme="light"] .sport-classement-btn {
-    padding: 0.85rem 0 0.2rem;
-    margin: 0 auto 0.6rem;
-    background: none;
-    box-shadow: none;
-    border-radius: 0;
-    color: var(--primary-light);
-    font-size: 0.85rem;
-    font-weight: 500;
-}
-
-.sport-classement-btn:hover,
-[data-theme="light"] .sport-classement-btn:hover {
-    transform: none;
-    box-shadow: none;
-    text-decoration: underline;
-}
-
-[data-theme="light"] .sport-classement-btn {
-    color: var(--primary);
-}
-
-/* --- Les 4 autres clubs : liens simples --- */
-.sport-teams-row {
-    gap: 0 1.25rem;
-    padding-top: 0.35rem;
-    border-top: 1px solid var(--border-color);
-}
-
-.sport-team-pill,
-.sport-team-pill:hover {
-    flex: 1 1 calc(50% - 0.75rem);
-    padding: 0.5rem 0;
-    background: none;
-    border: none;
-    border-radius: 0;
-    transform: none;
-}
-
-.sport-team-pill:hover .sport-team-pill-name {
-    color: var(--primary-light);
-}
-
-[data-theme="light"] .sport-team-pill:hover .sport-team-pill-name {
-    color: var(--primary);
-}
-
-.sport-team-pill-icon.material-icons {
-    color: var(--text-muted);
-}
-
-.sport-team-pill-league {
-    font-size: 0.62rem;
-    color: var(--text-muted);
-}
-
-/* --- Responsive --- */
-@media (min-width: 768px) {
-    .sport-team-pill,
-    .sport-team-pill:hover {
-        flex: 1 1 calc(25% - 1rem);
-    }
-}
-
-@media (max-width: 480px) {
-    .sport-title { font-size: 1.15rem; gap: 0.45rem; }
-    .sport-badge { font-size: 0.6rem; }
-    .sport-link { padding: 0; font-size: 0.8rem; }
-    .sport-match-card { padding: 0.8rem 0.7rem 0.8rem 0; }
-    .sport-match-card + .sport-match-card { padding: 0.8rem 0 0.8rem 0.7rem; }
-    .sport-result-indicator { right: 0.7rem; }
-    .sport-team-name { font-size: 0.75rem; }
-    .sport-teams-row { gap: 0 1rem; }
-    .sport-position,
-    .sport-position.top3,
-    .sport-position.mid { font-size: 1.5rem; min-width: 2rem; }
-}
 
 
 /* ============================================================
