@@ -905,3 +905,43 @@
 .support-version {
     font-size: 0.68rem;
 }
+
+
+/* ============================================================
+   CORRECTIF ÉDITORIAL — bouton notifications et logo
+   (ces éléments ont des règles plus spécifiques plus haut)
+   ============================================================ */
+
+/* L'icône porte la classe material-icons sur elle-même,
+   pas sur un enfant : il faut la viser directement. */
+.support-action-icon.material-icons {
+    color: inherit;
+}
+
+.support-action-icon.notif,
+.support-action-icon.notif.subscribed {
+    background: none;
+}
+
+.support-action-icon.notif {
+    color: var(--text-muted);
+}
+
+.support-action-icon.notif.subscribed {
+    color: #10b981;
+}
+
+/* Plus de barre verte à gauche : l'icône verte suffit */
+#notifSubscribeBtn.subscribed {
+    border-left: none;
+}
+
+#notifSubscribeBtn.subscribed .material-icons.arrow {
+    color: #10b981;
+}
+
+/* Logo du panneau : plus discret */
+.support-logo .material-icons {
+    font-size: 1.75rem;
+    color: var(--text-muted);
+}
