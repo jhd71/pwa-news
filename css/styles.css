@@ -2329,6 +2329,24 @@ h2, h3 {
         padding: 5px;
         font-size: 1.35rem;
     }
+
+    /* Sur tactile, :hover reste collé après le toucher et peindrait
+       une bande noire sur toute la hauteur : on le neutralise. */
+    .carousel-arrow:hover,
+    .carousel-arrow:focus,
+    .carousel-arrow:active {
+        background: none;
+        transform: none;
+        outline: none;
+    }
+
+    .carousel-arrow {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .carousel-arrow:active .material-icons {
+        background: rgba(0, 0, 0, 0.8);
+    }
 }
 
 .carousel-counter {
