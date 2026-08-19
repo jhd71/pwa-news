@@ -6163,11 +6163,11 @@ a.agenda-item:hover .agenda-item-title {
 }
 
 /* Les médias : une liste en 2 colonnes séparées par des traits */
-.tiles-grid,
-.tiles-extra.show {
+.tiles-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0;
+    column-gap: 2.5rem;
+    row-gap: 0;
     margin-top: 0;
     padding-bottom: 0;
 }
@@ -6175,17 +6175,21 @@ a.agenda-item:hover .agenda-item-title {
 .tile,
 [data-theme="light"] .tile {
     gap: 0.6rem;
-    padding: 0.7rem 0.75rem 0.7rem 0;
+    padding: 0.7rem 0;
     background: none;
     border: none;
     border-radius: 0;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
     box-shadow: none;
 }
 
-.tile:nth-child(even) {
-    padding-left: 0.9rem;
-    border-left: 1px solid var(--border-color);
+[data-theme="light"] .tile {
+    border-top-color: rgba(0, 0, 0, 0.07);
+}
+
+/* Pas de trait sur la première ligne : le titre en a déjà un */
+.tile:nth-child(-n + 2) {
+    border-top: none;
 }
 
 .tile:hover,
@@ -6269,7 +6273,7 @@ a.agenda-item:hover .agenda-item-title {
 @media (max-width: 480px) {
     .news-ticker-header { font-size: 1.2rem; }
     .section-title { font-size: 1.2rem; }
-    .tile { padding: 0.6rem 0.5rem 0.6rem 0; gap: 0.5rem; }
-    .tile:nth-child(even) { padding-left: 0.6rem; }
+    .tiles-grid { column-gap: 1.25rem; }
+    .tile { padding: 0.6rem 0; gap: 0.5rem; }
     .tile-name { font-size: 0.78rem; }
 }
