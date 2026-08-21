@@ -2761,6 +2761,96 @@
             </form>
         </div>
     </div>
+
+    <!-- Modal de modification d'un événement -->
+    <div class="edit-modal" id="editEventModal" onclick="closeEditEventModal()">
+        <div class="edit-modal-content" onclick="event.stopPropagation()">
+            <div class="edit-modal-header">
+                <h2><span class="material-icons">edit_calendar</span> Modifier l'événement</h2>
+                <button class="edit-modal-close" onclick="closeEditEventModal()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+
+            <form id="editEventForm" class="edit-modal-body" onsubmit="saveEditedEvent(event); return false;">
+                <input type="hidden" id="editEventId">
+
+                <div id="editEventRecurringNote" style="display:none;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);color:#f59e0b;padding:0.75rem 1rem;border-radius:10px;font-size:0.85rem;margin-bottom:1.25rem;">
+                    <span class="material-icons" style="font-size:1rem;vertical-align:middle;">autorenew</span>
+                    Événement récurrent. Les jours de répétition ne se modifient pas ici : supprimez et recréez si besoin.
+                </div>
+
+                <div class="edit-field">
+                    <label>Titre *</label>
+                    <input type="text" id="editEventTitle" required maxlength="200">
+                </div>
+
+                <div class="edit-field">
+                    <label>Description</label>
+                    <textarea id="editEventDescription" maxlength="2000"></textarea>
+                </div>
+
+                <div class="edit-field">
+                    <label>Catégorie</label>
+                    <select id="editEventCategory">
+                        <option value="sport">⚽ Sport</option>
+                        <option value="culture">🎭 Culture</option>
+                        <option value="marche">🛒 Marché</option>
+                        <option value="brocante">🏷️ Brocante</option>
+                        <option value="concert">🎵 Concert</option>
+                        <option value="fete">🎉 Fête</option>
+                        <option value="reunion">👥 Réunion</option>
+                        <option value="autre">📌 Autre</option>
+                    </select>
+                </div>
+
+                <div class="edit-field" id="editEventDateWrap">
+                    <label>Date</label>
+                    <input type="date" id="editEventDate">
+                </div>
+
+                <div class="edit-field">
+                    <label>Date de fin <span style="font-weight:400;opacity:0.7;">— pour un événement sur plusieurs jours</span></label>
+                    <input type="date" id="editEventEndDate">
+                </div>
+
+                <div class="edit-field">
+                    <label>Horaires</label>
+                    <div style="display:flex;gap:0.75rem;">
+                        <input type="time" id="editEventTime" style="flex:1;">
+                        <input type="time" id="editEventEndTime" style="flex:1;">
+                    </div>
+                </div>
+
+                <div class="edit-field">
+                    <label>Lieu</label>
+                    <input type="text" id="editEventLocation" placeholder="Stade des Alouettes, Montceau-les-Mines">
+                </div>
+
+                <div class="edit-field">
+                    <label>Lien</label>
+                    <input type="url" id="editEventLink" placeholder="https://...">
+                </div>
+
+                <div class="edit-field">
+                    <label>Image (URL)</label>
+                    <input type="url" id="editEventImage" placeholder="https://...">
+                    <div id="editEventImagePreview" style="margin-top:0.5rem;"></div>
+                </div>
+
+                <div class="edit-modal-actions">
+                    <button type="button" class="edit-btn-cancel" onclick="closeEditEventModal()">
+                        <span class="material-icons">close</span>
+                        Annuler
+                    </button>
+                    <button type="submit" class="edit-btn-save">
+                        <span class="material-icons">save</span>
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 	
     <!-- Modal de recadrage ÉVÉNEMENTS -->
     <div class="crop-modal event-crop-modal" id="eventCropModal">
@@ -4802,10 +4892,12 @@
             if (status === 'pending') {
                 actions = `
                     <button class="action-btn mark-read" onclick="approveEvent(${event.id})"><span class="material-icons">check</span>Approuver</button>
+                    <button class="action-btn" style="background:rgba(16,185,129,0.2);color:#10b981;" onclick="openEditEventModal(${event.id})"><span class="material-icons">edit</span>Modifier</button>
                     <button class="action-btn delete" onclick="deleteEvent(${event.id})"><span class="material-icons">delete</span>Supprimer</button>
                 `;
             } else if (status === 'approved') {
                 actions = `
+                    <button class="action-btn" style="background:rgba(16,185,129,0.2);color:#10b981;" onclick="openEditEventModal(${event.id})"><span class="material-icons">edit</span>Modifier</button>
                     <button class="action-btn" onclick="unpublishEvent(${event.id})" style="background:rgba(245,158,11,0.2);border-color:var(--warning);color:var(--warning);">
                         <span class="material-icons">archive</span>Dépublier
                     </button>
@@ -4814,6 +4906,7 @@
             } else if (status === 'unpublished') {
                 actions = `
                     <button class="action-btn mark-read" onclick="republishEvent(${event.id})"><span class="material-icons">publish</span>Republier</button>
+                    <button class="action-btn" style="background:rgba(16,185,129,0.2);color:#10b981;" onclick="openEditEventModal(${event.id})"><span class="material-icons">edit</span>Modifier</button>
                     <button class="action-btn delete" onclick="deleteEvent(${event.id})"><span class="material-icons">delete</span>Supprimer</button>
                 `;
             }
@@ -4902,6 +4995,137 @@
             }
         }
         
+        // ============================================
+        // MODIFICATION D'UN EVENEMENT
+        // ============================================
+
+        function heureCourte(v) {
+            return v ? String(v).substring(0, 5) : '';
+        }
+
+        async function openEditEventModal(id) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('events')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error) throw error;
+                if (!data) {
+                    showToast('\u274C \u00C9v\u00E9nement introuvable', true);
+                    return;
+                }
+
+                document.getElementById('editEventId').value = data.id;
+                document.getElementById('editEventTitle').value = data.title || '';
+                document.getElementById('editEventDescription').value = data.description || '';
+                document.getElementById('editEventCategory').value = data.category || 'autre';
+                document.getElementById('editEventDate').value = data.event_date || '';
+                document.getElementById('editEventEndDate').value = data.event_end_date || '';
+                document.getElementById('editEventTime').value = heureCourte(data.event_time);
+                document.getElementById('editEventEndTime').value = heureCourte(data.end_time);
+                document.getElementById('editEventLocation').value = data.location || '';
+                document.getElementById('editEventLink').value = data.link || '';
+                document.getElementById('editEventImage').value = data.image_url || '';
+
+                // Un evenement recurrent n'a pas de date fixe : on previent et on masque le champ
+                const recurrent = !!data.is_recurring;
+                document.getElementById('editEventRecurringNote').style.display = recurrent ? 'block' : 'none';
+                document.getElementById('editEventDateWrap').style.display = recurrent ? 'none' : 'block';
+
+                updateEditEventImagePreview();
+
+                document.getElementById('editEventModal').classList.add('show');
+                document.body.style.overflow = 'hidden';
+            } catch (error) {
+                console.error('Erreur chargement \u00E9v\u00E9nement:', error);
+                showToast('\u274C Erreur : ' + error.message, true);
+            }
+        }
+
+        function closeEditEventModal() {
+            document.getElementById('editEventModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function updateEditEventImagePreview() {
+            const url = document.getElementById('editEventImage').value.trim();
+            const zone = document.getElementById('editEventImagePreview');
+            zone.innerHTML = url
+                ? '<img src="' + url + '" style="max-width:100%;max-height:180px;border-radius:8px;" onerror="this.remove()">'
+                : '';
+        }
+
+        async function saveEditedEvent(e) {
+            if (e) e.preventDefault();
+
+            const form = document.getElementById('editEventForm');
+            const btn = form.querySelector('.edit-btn-save');
+            const id = document.getElementById('editEventId').value;
+
+            const titre = document.getElementById('editEventTitle').value.trim();
+            if (!titre) {
+                showToast('\u274C Le titre est obligatoire', true);
+                return;
+            }
+
+            // Champ vide => null, pour ne pas ecrire des chaines vides en base
+            const vide = v => (v && v.trim() ? v.trim() : null);
+
+            const donnees = {
+                title: titre,
+                description: vide(document.getElementById('editEventDescription').value),
+                category: document.getElementById('editEventCategory').value,
+                event_end_date: vide(document.getElementById('editEventEndDate').value),
+                event_time: vide(document.getElementById('editEventTime').value),
+                end_time: vide(document.getElementById('editEventEndTime').value),
+                location: vide(document.getElementById('editEventLocation').value),
+                link: vide(document.getElementById('editEventLink').value),
+                image_url: vide(document.getElementById('editEventImage').value)
+            };
+
+            // La date n'est envoyee que pour un evenement non recurrent :
+            // ecrire event_date sur un recurrent casserait son affichage
+            if (document.getElementById('editEventDateWrap').style.display !== 'none') {
+                donnees.event_date = vide(document.getElementById('editEventDate').value);
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-icons">hourglass_empty</span> Enregistrement...';
+
+            try {
+                const { error } = await supabaseClient
+                    .from('events')
+                    .update(donnees)
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                showToast('\u00C9v\u00E9nement modifi\u00E9 \u2705');
+                closeEditEventModal();
+                loadPendingEvents();
+            } catch (error) {
+                console.error('Erreur modification \u00E9v\u00E9nement:', error);
+                showToast('\u274C Erreur : ' + error.message, true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-icons">save</span> Enregistrer';
+            }
+        }
+
+        // Apercu de l'image pendant la saisie + fermeture par Echap
+        document.addEventListener('DOMContentLoaded', function() {
+            const champ = document.getElementById('editEventImage');
+            if (champ) champ.addEventListener('input', updateEditEventImagePreview);
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('editEventModal')?.classList.contains('show')) {
+                closeEditEventModal();
+            }
+        });
+
         async function deleteEvent(id) {
             if (!confirm('Supprimer définitivement cet événement ?')) return;
             
