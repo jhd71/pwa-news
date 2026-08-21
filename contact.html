@@ -61,9 +61,11 @@
             transition: all 0.3s ease;
         }
         
-        .contact-back:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: scale(1.02);
+        @media (hover: hover) {
+            .contact-back:hover {
+                background: rgba(255, 255, 255, 0.15);
+                transform: scale(1.02);
+            }
         }
         
         .contact-back .material-icons {
@@ -90,9 +92,11 @@
             transition: all 0.3s ease;
         }
         
-        .back-bottom:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
+        @media (hover: hover) {
+            .back-bottom:hover {
+                background: rgba(255, 255, 255, 0.1);
+                transform: translateY(-2px);
+            }
         }
         
         .back-bottom .material-icons {
@@ -216,9 +220,11 @@
             transition: all 0.3s ease;
         }
         
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        @media (hover: hover) {
+            .submit-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+            }
         }
         
         .submit-btn:active {
@@ -268,9 +274,11 @@
             transition: all 0.3s ease;
         }
         
-        .success-btn:hover {
-            background: var(--primary-light);
-            transform: translateY(-2px);
+        @media (hover: hover) {
+            .success-btn:hover {
+                background: var(--primary-light);
+                transform: translateY(-2px);
+            }
         }
         
         /* Infos complémentaires */
@@ -311,26 +319,32 @@
 			color: var(--text-secondary);
 		}
 
-		.contact-social:hover {
-			transform: translateY(-3px) scale(1.05);
+		@media (hover: hover) {
+		    .contact-social:hover {
+    			transform: translateY(-3px) scale(1.05);
+    		}
 		}
 
 		.contact-social.facebook {
 			color: var(--text-secondary);
 		}
 
-		.contact-social.facebook:hover {
-			background: #1877f2;
-			border-color: #1877f2;
-			color: white;
-			box-shadow: 0 8px 25px rgba(24, 119, 242, 0.4);
+		@media (hover: hover) {
+		    .contact-social.facebook:hover {
+    			background: #1877f2;
+    			border-color: #1877f2;
+    			color: white;
+    			box-shadow: 0 8px 25px rgba(24, 119, 242, 0.4);
+    		}
 		}
 
-		.contact-social.paypal:hover {
-			background: #0070ba;
-			border-color: #0070ba;
-			color: white;
-			box-shadow: 0 8px 25px rgba(0, 112, 186, 0.4);
+		@media (hover: hover) {
+		    .contact-social.paypal:hover {
+    			background: #0070ba;
+    			border-color: #0070ba;
+    			color: white;
+    			box-shadow: 0 8px 25px rgba(0, 112, 186, 0.4);
+    		}
 		}
 
 		.contact-social svg {
@@ -454,14 +468,15 @@
             color: var(--text-muted);
         }
 
-        .contact-back:hover {
-            background: none;
-            transform: none;
-            color: var(--primary-light);
+        @media (hover: hover) {
+            .contact-back:hover {
+                background: none;
+                transform: none;
+                color: var(--primary-light);
+            }
         }
 
-        .back-bottom,
-        .back-bottom:hover {
+        .back-bottom {
             width: fit-content;
             padding: 0.85rem 0 0.2rem;
             background: none;
@@ -473,13 +488,34 @@
             transform: none;
         }
 
-        .back-bottom:hover {
-            text-decoration: underline;
+        @media (hover: hover) {
+            .back-bottom:hover {
+                width: fit-content;
+                padding: 0.85rem 0 0.2rem;
+                background: none;
+                border: none;
+                border-radius: 0;
+                color: var(--primary-light);
+                font-size: 0.88rem;
+                font-weight: 500;
+                transform: none;
+            }
         }
 
-        [data-theme="light"] .back-bottom,
-        [data-theme="light"] .contact-back:hover {
+        @media (hover: hover) {
+            .back-bottom:hover {
+                text-decoration: underline;
+            }
+        }
+
+        [data-theme="light"] .back-bottom {
             color: var(--primary);
+        }
+
+        @media (hover: hover) {
+            [data-theme="light"] .contact-back:hover {
+                color: var(--primary);
+            }
         }
 
         /* ---------- Le formulaire ---------- */
@@ -516,10 +552,12 @@
             font-weight: 500;
         }
 
-        .submit-btn:hover {
-            background: var(--primary-dark);
-            transform: none;
-            box-shadow: none;
+        @media (hover: hover) {
+            .submit-btn:hover {
+                background: var(--primary-dark);
+                transform: none;
+                box-shadow: none;
+            }
         }
 
         .submit-btn:active {
@@ -545,9 +583,11 @@
             font-weight: 500;
         }
 
-        .success-btn:hover {
-            background: var(--primary-dark);
-            transform: none;
+        @media (hover: hover) {
+            .success-btn:hover {
+                background: var(--primary-dark);
+                transform: none;
+            }
         }
 
         /* ---------- Réseaux sociaux : icônes simples ---------- */
@@ -575,23 +615,29 @@
             color: var(--text-muted);
         }
 
-        .contact-social:hover {
-            transform: none;
-            box-shadow: none;
-            background: none;
-            border: none;
+        @media (hover: hover) {
+            .contact-social:hover {
+                transform: none;
+                box-shadow: none;
+                background: none;
+                border: none;
+            }
         }
 
-        .contact-social.facebook:hover {
-            background: none;
-            box-shadow: none;
-            color: #1877f2;
+        @media (hover: hover) {
+            .contact-social.facebook:hover {
+                background: none;
+                box-shadow: none;
+                color: #1877f2;
+            }
         }
 
-        .contact-social.paypal:hover {
-            background: none;
-            box-shadow: none;
-            color: #0070ba;
+        @media (hover: hover) {
+            .contact-social.paypal:hover {
+                background: none;
+                box-shadow: none;
+                color: #0070ba;
+            }
         }
 
         @media (max-width: 480px) {

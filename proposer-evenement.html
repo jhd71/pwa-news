@@ -84,7 +84,9 @@
             transition: all 0.2s;
         }
         
-        .back-btn:hover { background: var(--primary); border-color: var(--primary); color: white; }
+        @media (hover: hover) {
+            .back-btn:hover { background: var(--primary); border-color: var(--primary); color: white; }
+        }
         .page-title h1 { font-size: 1.2rem; font-weight: 700; }
         .page-title p { font-size: 0.8rem; color: var(--text-muted); }
         
@@ -208,7 +210,9 @@
             transition: all 0.25s;
         }
         
-        .category-option:hover { border-color: var(--primary-light); transform: translateY(-1px); }
+        @media (hover: hover) {
+            .category-option:hover { border-color: var(--primary-light); transform: translateY(-1px); }
+        }
         .category-option.selected { border-color: var(--primary); background: rgba(99, 102, 241, 0.15); box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.3); transform: scale(1.02); }
         .category-option input { display: none; }
         .category-option-icon { font-size: 1.35rem; line-height: 1; }
@@ -231,7 +235,9 @@
             transition: all 0.2s;
         }
         
-        .recurrence-toggle:hover { border-color: var(--primary-light); }
+        @media (hover: hover) {
+            .recurrence-toggle:hover { border-color: var(--primary-light); }
+        }
         .recurrence-toggle.active { border-color: var(--primary); background: rgba(99, 102, 241, 0.1); }
         .recurrence-toggle input { display: none; }
         
@@ -283,9 +289,11 @@
             user-select: none;
         }
         
-        .recurrence-day:hover { 
-            border-color: var(--primary-light); 
-            background: rgba(99, 102, 241, 0.1);
+        @media (hover: hover) {
+            .recurrence-day:hover { 
+                border-color: var(--primary-light); 
+                background: rgba(99, 102, 241, 0.1);
+            }
         }
         
         .recurrence-day.selected { 
@@ -329,16 +337,20 @@
             transition: all 0.3s ease;
         }
         
-        .photo-btn:hover {
-            background: rgba(99, 102, 241, 0.2);
-            transform: translateY(-2px);
+        @media (hover: hover) {
+            .photo-btn:hover {
+                background: rgba(99, 102, 241, 0.2);
+                transform: translateY(-2px);
+            }
         }
         
         .photo-btn .material-icons { font-size: 1.75rem; }
         .photo-buttons.hidden { display: none; }
         
         [data-theme="light"] .photo-btn { background: rgba(99, 102, 241, 0.08); }
-        [data-theme="light"] .photo-btn:hover { background: rgba(99, 102, 241, 0.15); }
+        @media (hover: hover) {
+            [data-theme="light"] .photo-btn:hover { background: rgba(99, 102, 241, 0.15); }
+        }
 
         /* === PREVIEW PHOTO === */
         .photo-preview-wrapper {
@@ -385,7 +397,9 @@
             transition: all 0.3s ease;
         }
         
-        .photo-remove-btn:hover { background: #dc2626; transform: scale(1.1); }
+        @media (hover: hover) {
+            .photo-remove-btn:hover { background: #dc2626; transform: scale(1.1); }
+        }
         
         /* Boutons de rotation */
         .photo-rotate-buttons {
@@ -411,7 +425,9 @@
             transition: all 0.3s ease;
         }
         
-        .photo-rotate-btn:hover { background: #6366f1; transform: scale(1.1); }
+        @media (hover: hover) {
+            .photo-rotate-btn:hover { background: #6366f1; transform: scale(1.1); }
+        }
         .photo-rotate-btn .material-icons { font-size: 1.25rem; }
         
         /* Bouton recadrer */
@@ -433,7 +449,9 @@
             transition: all 0.3s ease;
         }
         
-        .photo-crop-btn:hover { background: #6366f1; transform: scale(1.05); }
+        @media (hover: hover) {
+            .photo-crop-btn:hover { background: #6366f1; transform: scale(1.05); }
+        }
         .photo-crop-btn .material-icons { font-size: 1rem; }
         
         /* Modal de recadrage */
@@ -515,9 +533,16 @@
             transition: all 0.3s ease;
         }
         
-        .crop-ratio-btn:hover, .crop-ratio-btn.active {
+        .crop-ratio-btn.active {
             background: rgba(99, 102, 241, 0.5);
             border-color: #6366f1;
+        }
+
+        @media (hover: hover) {
+            .crop-ratio-btn:hover {
+                background: rgba(99, 102, 241, 0.5);
+                border-color: #6366f1;
+            }
         }
         
         .crop-actions {
@@ -540,7 +565,9 @@
             gap: 0.5rem;
         }
         
-        .crop-cancel-btn:hover { background: #ef4444; color: white; }
+        @media (hover: hover) {
+            .crop-cancel-btn:hover { background: #ef4444; color: white; }
+        }
         
         .crop-validate-btn {
             padding: 0.75rem 1.5rem;
@@ -556,7 +583,9 @@
             gap: 0.5rem;
         }
         
-        .crop-validate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+        @media (hover: hover) {
+            .crop-validate-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+        }
         
         .photo-upload-input { display: none; }
         
@@ -659,7 +688,9 @@
             transition: all 0.2s;
         }
         
-        .camera-capture-btn:hover { transform: scale(1.1); }
+        @media (hover: hover) {
+            .camera-capture-btn:hover { transform: scale(1.1); }
+        }
         .camera-capture-btn:active { transform: scale(0.95); }
         
         .camera-switch-btn {
@@ -704,7 +735,9 @@
             margin-top: 1rem;
         }
         
-        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4); }
+        @media (hover: hover) {
+            .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4); }
+        }
         .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .submit-btn .material-icons.spinning { animation: spin 1s linear infinite; }
         
@@ -742,9 +775,13 @@
         }
         
         .success-btn.primary { background: var(--primary); color: white; }
-        .success-btn.primary:hover { background: var(--primary-light); }
+        @media (hover: hover) {
+            .success-btn.primary:hover { background: var(--primary-light); }
+        }
         .success-btn.secondary { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); }
-        .success-btn.secondary:hover { background: var(--bg-elevated); }
+        @media (hover: hover) {
+            .success-btn.secondary:hover { background: var(--bg-elevated); }
+        }
         
         /* Toast */
         .toast {
@@ -828,10 +865,12 @@
             color: var(--text-muted);
         }
 
-        .back-btn:hover {
-            background: none;
-            border: none;
-            color: var(--primary-light);
+        @media (hover: hover) {
+            .back-btn:hover {
+                background: none;
+                border: none;
+                color: var(--primary-light);
+            }
         }
 
         /* ---------- Bandeau d'accueil : sans dégradé ---------- */
@@ -897,8 +936,10 @@
             border-radius: 6px;
         }
 
-        .category-option:hover {
-            transform: none;
+        @media (hover: hover) {
+            .category-option:hover {
+                transform: none;
+            }
         }
 
         .category-option.selected {
@@ -921,9 +962,11 @@
             font-weight: 500;
         }
 
-        .photo-btn:hover,
-        [data-theme="light"] .photo-btn:hover {
-            transform: none;
+        @media (hover: hover) {
+            .photo-btn:hover,
+            [data-theme="light"] .photo-btn:hover {
+                transform: none;
+            }
         }
 
         .crop-validate-btn {
@@ -952,10 +995,12 @@
             font-weight: 500;
         }
 
-        .submit-btn:hover {
-            transform: none;
-            box-shadow: none;
-            filter: brightness(1.1);
+        @media (hover: hover) {
+            .submit-btn:hover {
+                transform: none;
+                box-shadow: none;
+                filter: brightness(1.1);
+            }
         }
 
         /* ---------- Message de succès ---------- */
@@ -985,9 +1030,11 @@
             font-weight: 500;
         }
 
-        .success-btn.primary:hover {
-            background: var(--primary);
-            filter: brightness(1.1);
+        @media (hover: hover) {
+            .success-btn.primary:hover {
+                background: var(--primary);
+                filter: brightness(1.1);
+            }
         }
 
         .toast {

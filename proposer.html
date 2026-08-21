@@ -63,9 +63,11 @@
             transition: all 0.3s ease;
         }
         
-        .propose-back:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: scale(1.02);
+        @media (hover: hover) {
+            .propose-back:hover {
+                background: rgba(255, 255, 255, 0.15);
+                transform: scale(1.02);
+            }
         }
         
         .propose-back .material-icons {
@@ -91,9 +93,11 @@
             transition: all 0.3s ease;
         }
         
-        .back-bottom:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
+        @media (hover: hover) {
+            .back-bottom:hover {
+                background: rgba(255, 255, 255, 0.1);
+                transform: translateY(-2px);
+            }
         }
         
         .back-bottom .material-icons {
@@ -243,7 +247,9 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        .draft-restore-btn:hover { background: rgba(245, 158, 11, 0.35); }
+        @media (hover: hover) {
+            .draft-restore-btn:hover { background: rgba(245, 158, 11, 0.35); }
+        }
         .draft-discard-btn {
             padding: 0.3rem 0.5rem;
             background: none;
@@ -288,9 +294,11 @@
             transition: all 0.25s ease;
         }
         
-        .type-option:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-1px);
+        @media (hover: hover) {
+            .type-option:hover {
+                background: rgba(255, 255, 255, 0.08);
+                transform: translateY(-1px);
+            }
         }
         
         .type-option.selected {
@@ -346,9 +354,11 @@
             transition: all 0.3s ease;
         }
         
-        .photo-btn:hover {
-            background: rgba(99, 102, 241, 0.2);
-            transform: translateY(-2px);
+        @media (hover: hover) {
+            .photo-btn:hover {
+                background: rgba(99, 102, 241, 0.2);
+                transform: translateY(-2px);
+            }
         }
         
         .photo-btn:active {
@@ -367,8 +377,10 @@
             background: rgba(99, 102, 241, 0.08);
         }
         
-        [data-theme="light"] .photo-btn:hover {
-            background: rgba(99, 102, 241, 0.15);
+        @media (hover: hover) {
+            [data-theme="light"] .photo-btn:hover {
+                background: rgba(99, 102, 241, 0.15);
+            }
         }
 
         /* === PREVIEW PHOTO === */
@@ -418,9 +430,11 @@
             transition: all 0.3s ease;
         }
         
-        .photo-remove-btn:hover {
-            background: #dc2626;
-            transform: scale(1.1);
+        @media (hover: hover) {
+            .photo-remove-btn:hover {
+                background: #dc2626;
+                transform: scale(1.1);
+            }
         }
         
         /* Boutons de rotation */
@@ -447,9 +461,11 @@
             transition: all 0.3s ease;
         }
         
-        .photo-rotate-btn:hover {
-            background: #6366f1;
-            transform: scale(1.1);
+        @media (hover: hover) {
+            .photo-rotate-btn:hover {
+                background: #6366f1;
+                transform: scale(1.1);
+            }
         }
         
         .photo-rotate-btn .material-icons {
@@ -475,9 +491,11 @@
             transition: all 0.3s ease;
         }
         
-        .photo-crop-btn:hover {
-            background: #6366f1;
-            transform: scale(1.05);
+        @media (hover: hover) {
+            .photo-crop-btn:hover {
+                background: #6366f1;
+                transform: scale(1.05);
+            }
         }
         
         .photo-crop-btn .material-icons {
@@ -568,10 +586,16 @@
             transition: all 0.3s ease;
         }
         
-        .crop-ratio-btn:hover,
         .crop-ratio-btn.active {
             background: rgba(99, 102, 241, 0.5);
             border-color: #6366f1;
+        }
+
+        @media (hover: hover) {
+            .crop-ratio-btn:hover {
+                background: rgba(99, 102, 241, 0.5);
+                border-color: #6366f1;
+            }
         }
         
         .crop-actions {
@@ -595,9 +619,11 @@
             transition: all 0.3s ease;
         }
         
-        .crop-cancel-btn:hover {
-            background: #ef4444;
-            color: white;
+        @media (hover: hover) {
+            .crop-cancel-btn:hover {
+                background: #ef4444;
+                color: white;
+            }
         }
         
         .crop-validate-btn {
@@ -615,9 +641,11 @@
             transition: all 0.3s ease;
         }
         
-        .crop-validate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        @media (hover: hover) {
+            .crop-validate-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            }
         }
         
         .photo-upload-input {
@@ -753,8 +781,10 @@
             transition: all 0.2s ease;
         }
         
-        .camera-capture-btn:hover {
-            transform: scale(1.05);
+        @media (hover: hover) {
+            .camera-capture-btn:hover {
+                transform: scale(1.05);
+            }
         }
         
         .camera-capture-btn:active {
@@ -775,8 +805,10 @@
             justify-content: center;
         }
         
-        .camera-switch-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+        @media (hover: hover) {
+            .camera-switch-btn:hover {
+                background: rgba(255, 255, 255, 0.3);
+            }
         }
         
         /* Contrôle de zoom */
@@ -804,8 +836,10 @@
             font-weight: bold;
         }
         
-        .camera-zoom-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+        @media (hover: hover) {
+            .camera-zoom-btn:hover {
+                background: rgba(255, 255, 255, 0.3);
+            }
         }
         
         .camera-zoom-btn:disabled {
@@ -878,9 +912,11 @@
             transition: all 0.3s ease;
         }
         
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        @media (hover: hover) {
+            .submit-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+            }
         }
         
         .submit-btn:active {
@@ -930,9 +966,11 @@
             transition: all 0.3s ease;
         }
         
-        .success-btn:hover {
-            background: var(--primary-light);
-            transform: translateY(-2px);
+        @media (hover: hover) {
+            .success-btn:hover {
+                background: var(--primary-light);
+                transform: translateY(-2px);
+            }
         }
         
         /* Mode clair */
@@ -961,8 +999,10 @@
             background: rgba(0, 0, 0, 0.02);
         }
         
-        [data-theme="light"] .type-option:hover {
-            background: rgba(0, 0, 0, 0.05);
+        @media (hover: hover) {
+            [data-theme="light"] .type-option:hover {
+                background: rgba(0, 0, 0, 0.05);
+            }
         }
         
         /* Spinner */
@@ -1046,10 +1086,12 @@
             justify-content: center;
         }
         
-        .contact-social:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            transform: translateY(-3px);
+        @media (hover: hover) {
+            .contact-social:hover {
+                background: var(--primary);
+                border-color: var(--primary);
+                transform: translateY(-3px);
+            }
         }
 
         @media (max-width: 400px) {
@@ -1099,14 +1141,15 @@
             color: var(--text-muted);
         }
 
-        .propose-back:hover {
-            background: none;
-            transform: none;
-            color: var(--primary-light);
+        @media (hover: hover) {
+            .propose-back:hover {
+                background: none;
+                transform: none;
+                color: var(--primary-light);
+            }
         }
 
-        .back-bottom,
-        .back-bottom:hover {
+        .back-bottom {
             width: fit-content;
             padding: 0.85rem 0 0.2rem;
             background: none;
@@ -1118,8 +1161,24 @@
             transform: none;
         }
 
-        .back-bottom:hover {
-            text-decoration: underline;
+        @media (hover: hover) {
+            .back-bottom:hover {
+                width: fit-content;
+                padding: 0.85rem 0 0.2rem;
+                background: none;
+                border: none;
+                border-radius: 0;
+                color: var(--primary-light);
+                font-size: 0.88rem;
+                font-weight: 500;
+                transform: none;
+            }
+        }
+
+        @media (hover: hover) {
+            .back-bottom:hover {
+                text-decoration: underline;
+            }
         }
 
         /* ---------- Le formulaire ---------- */
@@ -1159,9 +1218,11 @@
             border-radius: 6px;
         }
 
-        .type-option:hover,
-        [data-theme="light"] .type-option:hover {
-            transform: none;
+        @media (hover: hover) {
+            .type-option:hover,
+            [data-theme="light"] .type-option:hover {
+                transform: none;
+            }
         }
 
         .type-option.selected {
@@ -1177,9 +1238,11 @@
             font-weight: 500;
         }
 
-        .photo-btn:hover,
-        [data-theme="light"] .photo-btn:hover {
-            transform: none;
+        @media (hover: hover) {
+            .photo-btn:hover,
+            [data-theme="light"] .photo-btn:hover {
+                transform: none;
+            }
         }
 
         .photo-btn:active {
@@ -1212,10 +1275,12 @@
             font-weight: 500;
         }
 
-        .submit-btn:hover {
-            background: var(--primary-dark);
-            transform: none;
-            box-shadow: none;
+        @media (hover: hover) {
+            .submit-btn:hover {
+                background: var(--primary-dark);
+                transform: none;
+                box-shadow: none;
+            }
         }
 
         .submit-btn:active {
@@ -1253,9 +1318,11 @@
             font-weight: 500;
         }
 
-        .success-btn:hover {
-            background: var(--primary-dark);
-            transform: none;
+        @media (hover: hover) {
+            .success-btn:hover {
+                background: var(--primary-dark);
+                transform: none;
+            }
         }
 
         /* ---------- Réseaux sociaux ---------- */
@@ -1282,12 +1349,14 @@
             color: var(--text-muted);
         }
 
-        .contact-social:hover {
-            transform: none;
-            box-shadow: none;
-            background: none;
-            border: none;
-            color: var(--primary-light);
+        @media (hover: hover) {
+            .contact-social:hover {
+                transform: none;
+                box-shadow: none;
+                background: none;
+                border: none;
+                color: var(--primary-light);
+            }
         }
 
         @media (max-width: 480px) {

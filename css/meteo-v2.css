@@ -307,9 +307,11 @@
     border: 1px solid transparent;
 }
 
-.meteo-forecast-item:hover {
-    transform: translateX(4px);
-    border-color: var(--primary-light);
+@media (hover: hover) {
+    .meteo-forecast-item:hover {
+        transform: translateX(4px);
+        border-color: var(--primary-light);
+    }
 }
 
 .meteo-forecast-item.today {
@@ -406,9 +408,11 @@
     transition: all 0.3s ease;
 }
 
-.meteo-extra-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+@media (hover: hover) {
+    .meteo-extra-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 }
 
 .meteo-extra-icon {
@@ -490,8 +494,10 @@
     font-weight: 500;
 }
 
-.meteo-footer a:hover {
-    text-decoration: underline;
+@media (hover: hover) {
+    .meteo-footer a:hover {
+        text-decoration: underline;
+    }
 }
 
 .meteo-footer .footer-sub {
@@ -540,8 +546,10 @@
     background: rgba(0, 0, 0, 0.03);
 }
 
-[data-theme="light"] .meteo-forecast-item:hover {
-    background: rgba(0, 0, 0, 0.05);
+@media (hover: hover) {
+    [data-theme="light"] .meteo-forecast-item:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
 }
 
 [data-theme="light"] .meteo-forecast-item.today {
@@ -571,8 +579,10 @@
     transition: all 0.2s;
 }
 
-.home-btn:hover {
-    background: var(--primary-light);
-    border-color: var(--primary-light);
-    color: white;
+@media (hover: hover) {
+    .home-btn:hover {
+        background: var(--primary-light);
+        border-color: var(--primary-light);
+        color: white;
+    }
 }

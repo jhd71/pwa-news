@@ -95,9 +95,13 @@
             transition: all 0.3s ease;
         }
         
-        .back-btn:hover, .home-btn:hover, .theme-btn:hover {
-            background: var(--primary);
-            color: white;
+        @media (hover: hover) {
+            .back-btn:hover,
+            .home-btn:hover,
+            .theme-btn:hover {
+                background: var(--primary);
+                color: white;
+            }
         }
         
         .page-title {
@@ -174,9 +178,11 @@
             transition: all 0.3s ease;
         }
         
-        .info-card:hover {
-            border-color: var(--primary-light);
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+        @media (hover: hover) {
+            .info-card:hover {
+                border-color: var(--primary-light);
+                box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+            }
         }
         
         [data-theme="light"] .info-card {
@@ -262,8 +268,10 @@
             transition: transform 0.3s ease;
         }
         
-        .info-card-image-wrapper:hover .info-card-image {
-            transform: scale(1.02);
+        @media (hover: hover) {
+            .info-card-image-wrapper:hover .info-card-image {
+                transform: scale(1.02);
+            }
         }
         
         .info-card-zoom {
@@ -282,8 +290,10 @@
             transition: opacity 0.3s ease;
         }
         
-        .info-card-image-wrapper:hover .info-card-zoom {
-            opacity: 1;
+        @media (hover: hover) {
+            .info-card-image-wrapper:hover .info-card-zoom {
+                opacity: 1;
+            }
         }
         
 		/* === CARROUSEL MULTI-IMAGES === */
@@ -350,9 +360,11 @@
         }
         .carousel-prev { left: 8px; }
         .carousel-next { right: 8px; }
-        .carousel-arrow:hover {
-            background: rgba(0, 0, 0, 0.75);
-            transform: translateY(-50%) scale(1.1);
+        @media (hover: hover) {
+            .carousel-arrow:hover {
+                background: rgba(0, 0, 0, 0.75);
+                transform: translateY(-50%) scale(1.1);
+            }
         }
         .carousel-dots {
             display: flex;
@@ -421,8 +433,10 @@
             display: inline-flex;
         }
         
-        .see-more-btn:hover {
-            background: rgba(99, 102, 241, 0.1);
+        @media (hover: hover) {
+            .see-more-btn:hover {
+                background: rgba(99, 102, 241, 0.1);
+            }
         }
         
         .see-more-btn .material-icons {
@@ -444,8 +458,10 @@
             text-decoration: none;
         }
         
-        .info-card-link:hover {
-            text-decoration: underline;
+        @media (hover: hover) {
+            .info-card-link:hover {
+                text-decoration: underline;
+            }
         }
         
         .info-card-footer {
@@ -497,9 +513,11 @@
             transition: all 0.3s ease;
         }
         
-        .action-btn:hover {
-            background: rgba(99, 102, 241, 0.1);
-            border-color: var(--primary-light);
+        @media (hover: hover) {
+            .action-btn:hover {
+                background: rgba(99, 102, 241, 0.1);
+                border-color: var(--primary-light);
+            }
         }
         
         .action-btn.liked {
@@ -627,9 +645,11 @@
             transition: all 0.3s ease;
         }
         
-        .comment-submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        @media (hover: hover) {
+            .comment-submit-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            }
         }
         
         .comment-submit-btn:disabled {
@@ -656,10 +676,12 @@
             transition: all 0.3s ease;
         }
         
-        .load-more-btn:hover {
-            background: var(--bg-elevated);
-            border-color: var(--primary-light);
-            color: var(--primary-light);
+        @media (hover: hover) {
+            .load-more-btn:hover {
+                background: var(--bg-elevated);
+                border-color: var(--primary-light);
+                color: var(--primary-light);
+            }
         }
         
         .load-more-btn:disabled {
@@ -709,8 +731,10 @@
             box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
         }
         
-        .fab-btn:hover {
-            transform: translateY(-2px);
+        @media (hover: hover) {
+            .fab-btn:hover {
+                transform: translateY(-2px);
+            }
         }
         
         .fab-btn .material-icons {
@@ -881,8 +905,10 @@
 				white-space: nowrap;
 			}
 
-			.community-link:hover {
-				text-decoration: underline;
+			@media (hover: hover) {
+			    .community-link:hover {
+    				text-decoration: underline;
+    			}
 			}
 
 
@@ -946,9 +972,13 @@
             color: var(--text-muted);
         }
 
-        .back-btn:hover, .home-btn:hover, .theme-btn:hover {
-            background: none;
-            color: var(--primary-light);
+        @media (hover: hover) {
+            .back-btn:hover,
+            .home-btn:hover,
+            .theme-btn:hover {
+                background: none;
+                color: var(--primary-light);
+            }
         }
 
         /* ---------- Colonne de lecture ---------- */
@@ -1014,14 +1044,18 @@
             border-top: 1px solid var(--border-color);
         }
 
-        .info-card:hover,
-        [data-theme="light"] .info-card:hover {
-            border-color: var(--border-color);
-            box-shadow: none;
+        @media (hover: hover) {
+            .info-card:hover,
+            [data-theme="light"] .info-card:hover {
+                border-color: var(--border-color);
+                box-shadow: none;
+            }
         }
 
-        .info-card:hover .info-card-title {
-            color: var(--primary-light);
+        @media (hover: hover) {
+            .info-card:hover .info-card-title {
+                color: var(--primary-light);
+            }
         }
 
         /* Épinglé : petit libellé au lieu de la pastille orange */
@@ -1065,9 +1099,7 @@
             font-size: 0.87rem;
         }
 
-        /* "Voir plus" : lien au lieu de la pilule */
-        .see-more-btn,
-        .see-more-btn:hover {
+        .see-more-btn {
             padding: 0;
             background: none;
             border: none;
@@ -1077,8 +1109,22 @@
             font-weight: 500;
         }
 
-        .see-more-btn:hover {
-            text-decoration: underline;
+        @media (hover: hover) {
+            .see-more-btn:hover {
+                padding: 0;
+                background: none;
+                border: none;
+                border-radius: 0;
+                color: var(--primary-light);
+                font-size: 0.8rem;
+                font-weight: 500;
+            }
+        }
+
+        @media (hover: hover) {
+            .see-more-btn:hover {
+                text-decoration: underline;
+            }
         }
 
         .info-card-footer {
@@ -1108,10 +1154,12 @@
             font-size: 0.8rem;
         }
 
-        .action-btn:hover {
-            background: none;
-            border: none;
-            color: var(--primary-light);
+        @media (hover: hover) {
+            .action-btn:hover {
+                background: none;
+                border: none;
+                color: var(--primary-light);
+            }
         }
 
         .action-btn.liked {
@@ -1156,16 +1204,16 @@
             font-weight: 500;
         }
 
-        .comment-submit-btn:hover {
-            background: var(--primary);
-            transform: none;
-            box-shadow: none;
-            filter: brightness(1.1);
+        @media (hover: hover) {
+            .comment-submit-btn:hover {
+                background: var(--primary);
+                transform: none;
+                box-shadow: none;
+                filter: brightness(1.1);
+            }
         }
 
-        /* ---------- "Charger plus" : lien ---------- */
-        .load-more-btn,
-        .load-more-btn:hover {
+        .load-more-btn {
             width: fit-content;
             margin: 0.5rem auto 0;
             padding: 0.85rem 0 0.2rem;
@@ -1177,8 +1225,24 @@
             font-weight: 500;
         }
 
-        .load-more-btn:hover {
-            text-decoration: underline;
+        @media (hover: hover) {
+            .load-more-btn:hover {
+                width: fit-content;
+                margin: 0.5rem auto 0;
+                padding: 0.85rem 0 0.2rem;
+                background: none;
+                border: none;
+                border-radius: 0;
+                color: var(--primary-light);
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+        }
+
+        @media (hover: hover) {
+            .load-more-btn:hover {
+                text-decoration: underline;
+            }
         }
 
         /* ---------- Boutons du bas ---------- */
@@ -1192,10 +1256,12 @@
         .fab-btn.home { background: var(--primary); }
         .fab-btn.propose { background: #d97706; }
 
-        .fab-btn:hover {
-            transform: none;
-            box-shadow: none;
-            filter: brightness(1.1);
+        @media (hover: hover) {
+            .fab-btn:hover {
+                transform: none;
+                box-shadow: none;
+                filter: brightness(1.1);
+            }
         }
 
         /* ---------- État vide ---------- */

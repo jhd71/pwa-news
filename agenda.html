@@ -87,10 +87,13 @@
             transition: all 0.2s;
         }
         
-        .back-btn:hover, .home-btn:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
+        @media (hover: hover) {
+            .back-btn:hover,
+            .home-btn:hover {
+                background: var(--primary);
+                border-color: var(--primary);
+                color: white;
+            }
         }
         
         .page-title { flex: 1; }
@@ -126,7 +129,9 @@
             transition: all 0.2s;
         }
         
-        .filter-btn:hover { border-color: var(--primary-light); }
+        @media (hover: hover) {
+            .filter-btn:hover { border-color: var(--primary-light); }
+        }
         .filter-btn.active {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             border-color: var(--primary);
@@ -165,10 +170,12 @@
             transition: all 0.2s;
         }
         
-        .month-nav-btn:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
+        @media (hover: hover) {
+            .month-nav-btn:hover {
+                background: var(--primary);
+                border-color: var(--primary);
+                color: white;
+            }
         }
         
         .current-month {
@@ -235,10 +242,12 @@
         
         [data-theme="light"] .event-card { background: white; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); }
         
-        .event-card:hover {
-            border-color: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        @media (hover: hover) {
+            .event-card:hover {
+                border-color: var(--primary-light);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            }
         }
         
         .event-card.highlighted {
@@ -329,10 +338,12 @@
 			transition: all 0.2s ease;
 		}
 
-		.see-more-btn:hover {
-			background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-			transform: translateY(-1px);
-			box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+		@media (hover: hover) {
+		    .see-more-btn:hover {
+    			background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    			transform: translateY(-1px);
+    			box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+    		}
 		}
         
         .event-card-meta {
@@ -427,8 +438,10 @@
             transition: color 0.2s;
         }
         
-        .lightbox-close:hover {
-            color: var(--primary-light);
+        @media (hover: hover) {
+            .lightbox-close:hover {
+                color: var(--primary-light);
+            }
         }
         
         .event-card-image {
@@ -436,9 +449,11 @@
             transition: transform 0.2s, opacity 0.2s;
         }
         
-        .event-card-image:hover {
-            transform: scale(1.02);
-            opacity: 0.9;
+        @media (hover: hover) {
+            .event-card-image:hover {
+                transform: scale(1.02);
+                opacity: 0.9;
+            }
         }
 		
         .propose-event-btn {
@@ -497,16 +512,23 @@
             box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
         }
         
-        .fab-propose:hover, .fab-home:hover {
-            transform: translateY(-2px);
+        @media (hover: hover) {
+            .fab-propose:hover,
+            .fab-home:hover {
+                transform: translateY(-2px);
+            }
         }
         
-        .fab-propose:hover {
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+        @media (hover: hover) {
+            .fab-propose:hover {
+                box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+            }
         }
         
-        .fab-home:hover {
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        @media (hover: hover) {
+            .fab-home:hover {
+                box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+            }
         }
         
         .fab-propose .material-icons, .fab-home .material-icons {
@@ -549,8 +571,10 @@
             transition: all 0.3s ease;
         }
         
-        .comments-toggle:hover {
-            background: rgba(99, 102, 241, 0.2);
+        @media (hover: hover) {
+            .comments-toggle:hover {
+                background: rgba(99, 102, 241, 0.2);
+            }
         }
         
         .comments-toggle .material-icons {
@@ -681,9 +705,11 @@
             transition: all 0.3s ease;
         }
         
-        .comment-submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        @media (hover: hover) {
+            .comment-submit-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            }
         }
         
         .comment-submit-btn:disabled {
@@ -756,10 +782,13 @@
             color: var(--text-muted);
         }
 
-        .back-btn:hover, .home-btn:hover {
-            background: none;
-            border: none;
-            color: var(--primary-light);
+        @media (hover: hover) {
+            .back-btn:hover,
+            .home-btn:hover {
+                background: none;
+                border: none;
+                color: var(--primary-light);
+            }
         }
 
         /* ---------- Filtres : onglets soulignés ---------- */
@@ -785,9 +814,11 @@
             font-weight: 600;
         }
 
-        .filter-btn:hover {
-            border-color: transparent;
-            color: var(--text-secondary);
+        @media (hover: hover) {
+            .filter-btn:hover {
+                border-color: transparent;
+                color: var(--text-secondary);
+            }
         }
 
         .filter-btn.active {
@@ -823,10 +854,12 @@
             color: var(--text-muted);
         }
 
-        .month-nav-btn:hover {
-            background: none;
-            border: none;
-            color: var(--primary-light);
+        @media (hover: hover) {
+            .month-nav-btn:hover {
+                background: none;
+                border: none;
+                color: var(--primary-light);
+            }
         }
 
         /* ---------- En-tête de groupe de date ---------- */
@@ -912,11 +945,13 @@
             border-top: 1px solid var(--border-color);
         }
 
-        .event-card:hover,
-        [data-theme="light"] .event-card:hover {
-            transform: none;
-            box-shadow: none;
-            border-color: var(--border-color);
+        @media (hover: hover) {
+            .event-card:hover,
+            [data-theme="light"] .event-card:hover {
+                transform: none;
+                box-shadow: none;
+                border-color: var(--border-color);
+            }
         }
 
         .event-card-image {
@@ -949,9 +984,7 @@
             font-size: 0.87rem;
         }
 
-        /* "Voir plus" : lien au lieu de la pilule orange */
-        .see-more-btn,
-        .see-more-btn:hover {
+        .see-more-btn {
             padding: 0;
             margin-top: 0.15rem;
             background: none;
@@ -963,8 +996,24 @@
             font-weight: 500;
         }
 
-        .see-more-btn:hover {
-            text-decoration: underline;
+        @media (hover: hover) {
+            .see-more-btn:hover {
+                padding: 0;
+                margin-top: 0.15rem;
+                background: none;
+                border-radius: 0;
+                box-shadow: none;
+                transform: none;
+                color: var(--primary-light);
+                font-size: 0.8rem;
+                font-weight: 500;
+            }
+        }
+
+        @media (hover: hover) {
+            .see-more-btn:hover {
+                text-decoration: underline;
+            }
         }
 
         .event-card-meta {
@@ -991,8 +1040,10 @@
             font-weight: 500;
         }
 
-        .event-card-link:hover {
-            text-decoration: underline;
+        @media (hover: hover) {
+            .event-card-link:hover {
+                text-decoration: underline;
+            }
         }
 
         /* ---------- Commentaires ---------- */
@@ -1007,9 +1058,11 @@
             font-weight: 500;
         }
 
-        .comments-toggle:hover {
-            background: none;
-            text-decoration: underline;
+        @media (hover: hover) {
+            .comments-toggle:hover {
+                background: none;
+                text-decoration: underline;
+            }
         }
 
         .comment-item,
@@ -1044,11 +1097,13 @@
             font-weight: 500;
         }
 
-        .comment-submit-btn:hover {
-            background: var(--primary);
-            transform: none;
-            box-shadow: none;
-            filter: brightness(1.1);
+        @media (hover: hover) {
+            .comment-submit-btn:hover {
+                background: var(--primary);
+                transform: none;
+                box-shadow: none;
+                filter: brightness(1.1);
+            }
         }
 
         /* ---------- Boutons du bas ---------- */
@@ -1063,11 +1118,13 @@
         .fab-home { background: var(--primary); }
         .fab-propose { background: #d97706; }
 
-        .fab-home:hover,
-        .fab-propose:hover {
-            transform: none;
-            box-shadow: none;
-            filter: brightness(1.1);
+        @media (hover: hover) {
+            .fab-home:hover,
+            .fab-propose:hover {
+                transform: none;
+                box-shadow: none;
+                filter: brightness(1.1);
+            }
         }
 
         .propose-event-btn {
