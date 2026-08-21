@@ -698,6 +698,16 @@ body {
     font-size: 0.76rem;
     font-weight: 500;
     white-space: nowrap;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+    transition: border-color 0.2s ease;
+}
+
+/* Le lien couvre tout l'article : le survol de la ligne allume "Lire la suite" */
+@media (hover: hover) {
+    .news-item:hover .news-item-read {
+        border-bottom-color: currentColor;
+    }
 }
 
 [data-theme="light"] .news-item-read {
@@ -906,17 +916,29 @@ h2, h3 {
     letter-spacing: normal;
     text-decoration: none;
     cursor: pointer;
-    transition: color 0.2s ease;
+    /* Trait dessine plutot que le souligne du navigateur : il se pose plus bas
+       et ne bouge pas la mise en page puisque la place est deja reservee. */
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+    transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 @media (hover: hover) {
     .cinema-link:hover {
-        text-decoration: underline;
+        border-bottom-color: currentColor;
+    }
+
+    .cinema-link:hover .material-icons {
+        transform: translateX(2px);
     }
 }
 
 [data-theme="light"] .cinema-link {
     color: var(--primary);
+}
+
+.cinema-link .material-icons {
+    transition: transform 0.2s ease;
 }
 
 .cinema-section-title .cinema-link .material-icons {
@@ -2098,9 +2120,16 @@ h2, h3 {
     transition: color 0.2s ease;
 }
 
+/* Le trait ne souligne que le texte, pas l'icone ni le rembourrage du dessus */
+.community-voir-tout span:last-child {
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+    transition: border-color 0.2s ease;
+}
+
 @media (hover: hover) {
-    .community-voir-tout:hover {
-        text-decoration: underline;
+    .community-voir-tout:hover span:last-child {
+        border-bottom-color: currentColor;
     }
 }
 
@@ -3338,12 +3367,18 @@ p,
     font-weight: 500;
     text-decoration: none;
     cursor: pointer;
-    transition: color 0.2s ease;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+    transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 @media (hover: hover) {
     .agenda-link:hover {
-        text-decoration: underline;
+        border-bottom-color: currentColor;
+    }
+
+    .agenda-link:hover .material-icons {
+        transform: translateX(2px);
     }
 }
 
@@ -3353,6 +3388,7 @@ p,
 
 .agenda-link .material-icons {
     font-size: 1rem;
+    transition: transform 0.2s ease;
 }
 
 .agenda-content {
@@ -3721,12 +3757,22 @@ a.agenda-item {
     letter-spacing: normal;
     text-decoration: none;
     cursor: pointer;
-    transition: color 0.2s ease;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.sport-link .material-icons {
+    transition: transform 0.2s ease;
 }
 
 @media (hover: hover) {
     .sport-link:hover {
-        text-decoration: underline;
+        border-bottom-color: currentColor;
+    }
+
+    .sport-link:hover .material-icons {
+        transform: translateX(2px);
     }
 }
 
