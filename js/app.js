@@ -1271,10 +1271,19 @@ function getCommunityIcon(type) {
         'evenement': '🎪',
         'sport': '⚽',
         'culture': '🎭',
-        'economie': '💼',
-        'pratique': '💡',
-        'insolite': '🤔',
+        'economie': '🏪',
+        'solidarite': '🤝',
+        'travaux': '🚧',
+        'environnement': '🌿',
+        'education': '🎓',
+        'pratique': 'ℹ️',
+        'insolite': '😮',
         'photo': '📸',
+        'perdu': '🐾',
+        // anciens types encore possibles en base
+        'alerte': '🚨',
+        'annonce': '📢',
+        'bon-plan': '💰',
         'autre': '📋'
     };
     return icons[type] || '📰';

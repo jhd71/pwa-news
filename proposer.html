@@ -1389,6 +1389,11 @@
                             <span class="type-icon">📸</span>
                             <span class="type-label">Photo/Vidéo</span>
                         </label>
+                        <label class="type-option" data-type="perdu">
+                            <input type="radio" name="type" value="perdu">
+                            <span class="type-icon">🐾</span>
+                            <span class="type-label">Perdu / Trouvé</span>
+                        </label>
                     </div>
                 </div>
                 
@@ -1784,6 +1789,26 @@
         var maxZoom = 1;
         var videoTrack = null;
         
+        // Textes d'aide adaptés au type choisi
+        var PLACEHOLDERS = {
+            'perdu': {
+                title: 'Ex: Chat roux perdu quartier Bois-du-Verne',
+                content: "Animal ou objet, commune et lieu précis, date de la disparition, description (couleur, taille, collier, puce…), et comment vous joindre."
+            }
+        };
+        var PLACEHOLDER_DEFAUT = {
+            title: 'Ex: Brocante ce dimanche à Blanzy',
+            content: "Décrivez l'actualité en détail : quoi, où, quand, qui..."
+        };
+
+        function updatePlaceholders(type) {
+            var p = PLACEHOLDERS[type] || PLACEHOLDER_DEFAUT;
+            var titleEl = document.getElementById('title');
+            var contentEl = document.getElementById('content');
+            if (titleEl) titleEl.placeholder = p.title;
+            if (contentEl) contentEl.placeholder = p.content;
+        }
+
         // Gestion des types
         document.querySelectorAll('.type-option').forEach(function(option) {
             option.addEventListener('click', function() {
@@ -1791,6 +1816,7 @@
                     o.classList.remove('selected');
                 });
                 option.classList.add('selected');
+                updatePlaceholders(option.dataset.type);
             });
         });
         
@@ -2287,6 +2313,7 @@
                     typeRadio.checked = true;
                     document.querySelectorAll('.type-option').forEach(function(o) { o.classList.remove('selected'); });
                     typeRadio.closest('.type-option').classList.add('selected');
+                    updatePlaceholders(draft.type);
                 }
                 if (draft.title) { document.getElementById('title').value = draft.title; updateCharCounter(document.getElementById('title'), 'titleCounter', 150); }
                 if (draft.content) { document.getElementById('content').value = draft.content; updateCharCounter(document.getElementById('content'), 'contentCounter', 2000); }
