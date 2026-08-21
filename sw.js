@@ -2,7 +2,7 @@
 // ACTU & MÉDIA - Service Worker v81
 // ============================================
 
-const CACHE_NAME = 'actu-media-v85';
+const CACHE_NAME = 'actu-media-v86';
 
 // Assets statiques à mettre en cache à l'installation
 // Ne PAS inclure les pages admin (toujours besoin de données fraîches)
