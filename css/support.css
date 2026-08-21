@@ -85,9 +85,11 @@
     transition: all 0.3s ease;
 }
 
-.support-close:hover {
-    background: rgba(99, 102, 241, 0.2);
-    color: var(--text-primary);
+@media (hover: hover) {
+    .support-close:hover {
+        background: rgba(99, 102, 241, 0.2);
+        color: var(--text-primary);
+    }
 }
 
 /* Contenu */
@@ -175,10 +177,12 @@
     transition: all 0.2s ease;
 }
 
-.donation-popup-close:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    transform: rotate(90deg);
+@media (hover: hover) {
+    .donation-popup-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        transform: rotate(90deg);
+    }
 }
 
 /* Bulle flottante avec le Café */
@@ -245,10 +249,12 @@
     border: none;
 }
 
-.donation-popup-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 112, 186, 0.5);
-    background: linear-gradient(135deg, #007bd0 0%, #003bb3 100%);
+@media (hover: hover) {
+    .donation-popup-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 112, 186, 0.5);
+        background: linear-gradient(135deg, #007bd0 0%, #003bb3 100%);
+    }
 }
 
 .donation-popup-btn:active {
@@ -271,9 +277,11 @@
     text-decoration-color: transparent;
 }
 
-.donation-popup-later:hover {
-    color: #aaa;
-    text-decoration-color: #aaa;
+@media (hover: hover) {
+    .donation-popup-later:hover {
+        color: #aaa;
+        text-decoration-color: #aaa;
+    }
 }
 
 /* === Version CLAIR (Light Mode) === 
@@ -328,10 +336,12 @@
     box-shadow: 0 4px 15px rgba(0, 112, 186, 0.3);
 }
 
-.donation-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0, 112, 186, 0.5);
-    filter: brightness(1.1);
+@media (hover: hover) {
+    .donation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 112, 186, 0.5);
+        filter: brightness(1.1);
+    }
 }
 
 .donation-btn:active {
@@ -347,10 +357,11 @@
     animation: simple-pulse 4s ease-in-out infinite !important;
 }
 
-/* On stoppe au survol */
-.donation-btn.heartbeat:hover, 
-.donation-popup-btn.heartbeat:hover {
-    animation-play-state: paused !important;
+@media (hover: hover) {
+    .donation-btn.heartbeat:hover,
+    .donation-popup-btn.heartbeat:hover {
+        animation-play-state: paused !important;
+    }
 }
 
 @keyframes simple-pulse {
@@ -427,9 +438,11 @@
     text-align: left;
 }
 
-.support-action:hover {
-    background: rgba(99, 102, 241, 0.15);
-    transform: translateX(4px);
+@media (hover: hover) {
+    .support-action:hover {
+        background: rgba(99, 102, 241, 0.15);
+        transform: translateX(4px);
+    }
 }
 
 .support-action-icon {
@@ -566,8 +579,10 @@
     transition: color 0.2s ease;
 }
 
-.emergency-close:hover {
-    color: var(--text-primary);
+@media (hover: hover) {
+    .emergency-close:hover {
+        color: var(--text-primary);
+    }
 }
 
 .emergency-list {
@@ -588,8 +603,10 @@
     transition: background 0.2s ease;
 }
 
-.emergency-item:hover {
-    background: rgba(239, 68, 68, 0.15);
+@media (hover: hover) {
+    .emergency-item:hover {
+        background: rgba(239, 68, 68, 0.15);
+    }
 }
 
 .emergency-icon {
@@ -631,8 +648,10 @@
     background: rgba(0, 0, 0, 0.03);
 }
 
-[data-theme="light"] .emergency-item:hover {
-    background: rgba(239, 68, 68, 0.1);
+@media (hover: hover) {
+    [data-theme="light"] .emergency-item:hover {
+        background: rgba(239, 68, 68, 0.1);
+    }
 }
 
 /* Safe area iOS */
@@ -684,9 +703,11 @@
     border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-[data-theme="light"] .support-action:hover {
-    background: #e8edf3;
-    border-color: var(--primary-light);
+@media (hover: hover) {
+    [data-theme="light"] .support-action:hover {
+        background: #e8edf3;
+        border-color: var(--primary-light);
+    }
 }
 
 
@@ -727,10 +748,12 @@
     color: var(--text-muted);
 }
 
-.support-close:hover,
-[data-theme="light"] .support-close:hover {
-    background: none;
-    color: var(--text-primary);
+@media (hover: hover) {
+    .support-close:hover,
+    [data-theme="light"] .support-close:hover {
+        background: none;
+        color: var(--text-primary);
+    }
 }
 
 .support-content {
@@ -774,11 +797,13 @@
     font-size: 0.9rem;
 }
 
-.donation-btn:hover {
-    background: #005c99 !important;
-    box-shadow: none;
-    transform: none;
-    filter: none;
+@media (hover: hover) {
+    .donation-btn:hover {
+        background: #005c99 !important;
+        box-shadow: none;
+        transform: none;
+        filter: none;
+    }
 }
 
 .donation-note {
@@ -804,18 +829,24 @@
     border-top: 1px solid var(--border-color);
 }
 
-.support-action:hover,
-[data-theme="light"] .support-action:hover {
-    background: none;
-    transform: none;
+@media (hover: hover) {
+    .support-action:hover,
+    [data-theme="light"] .support-action:hover {
+        background: none;
+        transform: none;
+    }
 }
 
-.support-action:hover .support-action-name {
-    color: var(--primary-light);
+@media (hover: hover) {
+    .support-action:hover .support-action-name {
+        color: var(--primary-light);
+    }
 }
 
-[data-theme="light"] .support-action:hover .support-action-name {
-    color: var(--primary);
+@media (hover: hover) {
+    [data-theme="light"] .support-action:hover .support-action-name {
+        color: var(--primary);
+    }
 }
 
 /* Icônes colorées sans carré dégradé */
@@ -880,11 +911,13 @@
     font-size: 0.85rem;
 }
 
-.font-size-btn:hover,
-[data-theme="light"] .font-size-btn:hover {
-    background: none;
-    border-color: var(--primary-light);
-    color: var(--primary-light);
+@media (hover: hover) {
+    .font-size-btn:hover,
+    [data-theme="light"] .font-size-btn:hover {
+        background: none;
+        border-color: var(--primary-light);
+        color: var(--primary-light);
+    }
 }
 
 .font-size-btn.active,

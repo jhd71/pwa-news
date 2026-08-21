@@ -92,9 +92,11 @@
     transition: all 0.3s ease;
 }
 
-.quick-links-close:hover {
-    background: rgba(99, 102, 241, 0.2);
-    color: var(--text-primary);
+@media (hover: hover) {
+    .quick-links-close:hover {
+        background: rgba(99, 102, 241, 0.2);
+        color: var(--text-primary);
+    }
 }
 
 /* Contenu */
@@ -140,9 +142,11 @@
     text-align: left;
 }
 
-.quick-link-item:hover {
-    background: rgba(99, 102, 241, 0.15);
-    transform: translateX(4px);
+@media (hover: hover) {
+    .quick-link-item:hover {
+        background: rgba(99, 102, 241, 0.15);
+        transform: translateX(4px);
+    }
 }
 
 .quick-link-item:active {
@@ -212,9 +216,11 @@
     transition: all 0.3s ease;
 }
 
-.quick-link-item:hover .quick-link-arrow {
-    opacity: 1;
-    transform: translateX(0);
+@media (hover: hover) {
+    .quick-link-item:hover .quick-link-arrow {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 /* Mode clair */
@@ -230,8 +236,10 @@
     background: rgba(0, 0, 0, 0.05);
 }
 
-[data-theme="light"] .quick-links-close:hover {
-    background: rgba(0, 0, 0, 0.1);
+@media (hover: hover) {
+    [data-theme="light"] .quick-links-close:hover {
+        background: rgba(0, 0, 0, 0.1);
+    }
 }
 
 /* ============================================
@@ -242,8 +250,10 @@
     border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-[data-theme="light"] .quick-link-item:hover {
-    background: #e8edf3;
+@media (hover: hover) {
+    [data-theme="light"] .quick-link-item:hover {
+        background: #e8edf3;
+    }
 }
 
 
@@ -284,10 +294,12 @@
     color: var(--text-muted);
 }
 
-.quick-links-close:hover,
-[data-theme="light"] .quick-links-close:hover {
-    background: none;
-    color: var(--text-primary);
+@media (hover: hover) {
+    .quick-links-close:hover,
+    [data-theme="light"] .quick-links-close:hover {
+        background: none;
+        color: var(--text-primary);
+    }
 }
 
 .quick-links-content {
@@ -324,22 +336,28 @@
     border-top: 1px solid var(--border-color);
 }
 
-.quick-link-item:hover,
-[data-theme="light"] .quick-link-item:hover {
-    background: none;
-    transform: none;
+@media (hover: hover) {
+    .quick-link-item:hover,
+    [data-theme="light"] .quick-link-item:hover {
+        background: none;
+        transform: none;
+    }
 }
 
 .quick-link-item:active {
     transform: none;
 }
 
-.quick-link-item:hover .quick-link-name {
-    color: var(--primary-light);
+@media (hover: hover) {
+    .quick-link-item:hover .quick-link-name {
+        color: var(--primary-light);
+    }
 }
 
-[data-theme="light"] .quick-link-item:hover .quick-link-name {
-    color: var(--primary);
+@media (hover: hover) {
+    [data-theme="light"] .quick-link-item:hover .quick-link-name {
+        color: var(--primary);
+    }
 }
 
 /* L'icône garde sa couleur mais perd son carré dégradé */
@@ -383,9 +401,11 @@
     border-radius: 0 4px 4px 0;
 }
 
-.quick-link-urgence:hover,
-[data-theme="light"] .quick-link-urgence:hover {
-    background: rgba(239, 68, 68, 0.14);
+@media (hover: hover) {
+    .quick-link-urgence:hover,
+    [data-theme="light"] .quick-link-urgence:hover {
+        background: rgba(239, 68, 68, 0.14);
+    }
 }
 
 .quick-link-urgence .quick-link-name {
@@ -393,8 +413,10 @@
     font-size: 0.92rem;
 }
 
-.quick-link-urgence:hover .quick-link-name {
-    color: var(--danger);
+@media (hover: hover) {
+    .quick-link-urgence:hover .quick-link-name {
+        color: var(--danger);
+    }
 }
 
 .quick-link-urgence .quick-link-icon {
