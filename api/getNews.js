@@ -6,6 +6,65 @@ const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 let cachedArticles = null;
 let lastFetchTime = null;
 
+// Cache des images trouvees sur la page de l'article (cle = lien).
+// Evite de retelecharger la meme page a chaque renouvellement du cache.
+const imageParLien = new Map();
+const MAX_CACHE_IMAGES = 200;
+
+// Lit une balise <meta> quel que soit l'ordre des attributs.
+// Meme logique que api/extract-article.js
+function lireMeta(html, attribut, valeur) {
+    let m = html.match(new RegExp(`<meta[^>]*${attribut}=["']${valeur}["'][^>]*content=(["'])([\\s\\S]*?)\\1`, 'i'));
+    if (m) return m[2];
+    m = html.match(new RegExp(`<meta[^>]*content=(["'])([\\s\\S]*?)\\1[^>]*${attribut}=["']${valeur}["']`, 'i'));
+    if (m) return m[2];
+    return null;
+}
+
+// Va chercher l'illustration sur la page de l'article quand le flux RSS n'en fournit pas.
+// Beaucoup de flux (Le JSL, L'Informateur) omettent l'image alors que la page en a une.
+async function imageDepuisLaPage(lien) {
+    if (!lien) return '';
+    if (imageParLien.has(lien)) return imageParLien.get(lien);
+
+    const controleur = new AbortController();
+    const minuteur = setTimeout(() => controleur.abort(), 2500);
+
+    try {
+        const reponse = await fetch(lien, {
+            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; ActuMedia/2.0)' },
+            signal: controleur.signal
+        });
+        if (!reponse.ok) throw new Error('HTTP ' + reponse.status);
+
+        // og:image vit dans le <head> : inutile d'analyser tout le document
+        const html = (await reponse.text()).slice(0, 150000);
+
+        let src = lireMeta(html, 'property', 'og:image')
+               || lireMeta(html, 'name', 'og:image')
+               || lireMeta(html, 'name', 'twitter:image')
+               || lireMeta(html, 'property', 'twitter:image')
+               || '';
+
+        if (src) {
+            src = src.replace(/&amp;/g, '&').trim();
+            // Rendre l'URL absolue si le site l'a ecrite en relatif
+            try { src = new URL(src, lien).href; } catch (e) { src = ''; }
+        }
+
+        if (imageParLien.size >= MAX_CACHE_IMAGES) imageParLien.clear();
+        imageParLien.set(lien, src);
+        return src;
+
+    } catch (e) {
+        console.log(`\u26A0\uFE0F Pas d'image sur ${lien} : ${e.message}`);
+        imageParLien.set(lien, '');
+        return '';
+    } finally {
+        clearTimeout(minuteur);
+    }
+}
+
 export default async function handler(req, res) {
     // En-têtes CORS
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -210,6 +269,24 @@ export default async function handler(req, res) {
         
         // Limiter à 12 articles
         const finalArticles = sortedArticles.slice(0, 12);
+
+        // Completer les images manquantes depuis la page de l'article.
+        // On ne le fait que s'il reste du temps : Vercel coupe la fonction a 10 s
+        // et la recuperation des flux a deja consomme une partie du budget.
+        const tempsEcoule = Date.now() - now;
+        const sansImage = finalArticles.filter(a => !a.image);
+
+        if (sansImage.length > 0 && tempsEcoule < 5000) {
+            console.log(`\uD83D\uDDBC\uFE0F ${sansImage.length} article(s) sans image, recherche sur la page...`);
+            await Promise.allSettled(sansImage.map(async article => {
+                const trouvee = await imageDepuisLaPage(article.link);
+                if (trouvee) article.image = trouvee;
+            }));
+            const recuperees = sansImage.filter(a => a.image).length;
+            console.log(`\uD83D\uDDBC\uFE0F ${recuperees}/${sansImage.length} image(s) recuperee(s)`);
+        } else if (sansImage.length > 0) {
+            console.log(`\u23F1\uFE0F Budget temps depasse (${tempsEcoule} ms), images non completees`);
+        }
 
         // Mettre à jour le cache
         cachedArticles = finalArticles;
