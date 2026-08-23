@@ -1024,7 +1024,18 @@ async function initCommunity() {
             return true;
         });
 
+        // Le filtrage peut avoir tout retire : c'est le cas quand la seule
+        // info en base est un post epingle que ce visiteur a deja vu. Pour lui
+        // la rubrique est vide, il faut donc l'invitation et non une carte nue.
+        if (filteredData.length === 0) {
+            contentEl.style.display = 'none';
+            emptyEl.style.display = 'block';
+            console.log('\uD83D\uDCED Rien a afficher (epingles deja vus)');
+            return;
+        }
+
         // Afficher les infos
+        contentEl.style.display = '';
         contentEl.innerHTML = filteredData.map(item => {
             const commentCount = commentCounts[item.id] || 0;
             return `

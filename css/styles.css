@@ -2102,6 +2102,18 @@ h2, h3 {
     font-size: 0.8rem;
     margin-top: 0.35rem;
     opacity: 0.7;
+    max-width: 34rem;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+}
+
+/* Le meme bouton qu'en haut de section, repete sous l'invitation :
+   qui vient de lire doit pouvoir cliquer sans remonter. */
+.community-empty-btn {
+    margin: 1.1rem auto 0;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
 }
 
 /* "Voir toutes les infos" : lien */
