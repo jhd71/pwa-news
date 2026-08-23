@@ -9,127 +9,85 @@
          Doit rester en PREMIER pour bloquer le contenu
          ============================================ -->
     <style>
-        html.fb-block, body.fb-block {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            min-height: 100vh;
-            overflow: hidden;
-            background: #1a1a2e !important;
+        /* Bandeau discret pour les visiteurs qui arrivent depuis l'application
+           Facebook, Instagram ou Messenger. Leur navigateur integre affiche le
+           site normalement : on ne bloque plus rien, on signale seulement que
+           l'installation et les notifications demandent un vrai navigateur. */
+        .inapp-banner {
+            display: none;
+            align-items: flex-start;
+            gap: 0.6rem;
+            padding: 0.7rem 0.9rem;
+            background: rgba(99, 102, 241, 0.16);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.35);
+            color: #e6e6f0;
             font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            font-size: 0.82rem;
+            line-height: 1.45;
         }
-        .fb-wrapper {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-            background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 100%);
+
+        html.inapp .inapp-banner { display: flex; }
+
+        .inapp-banner-text { flex: 1; min-width: 0; }
+        .inapp-banner-text strong { color: #a5b4fc; font-weight: 600; }
+
+        .inapp-banner-close {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            margin: -0.2rem -0.3rem 0 0;
+            background: none;
+            border: none;
+            border-radius: 50%;
+            color: inherit;
+            font-size: 1.15rem;
+            line-height: 1;
+            opacity: 0.65;
+            cursor: pointer;
         }
-        .fb-logo {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+
+        [data-theme="light"] .inapp-banner {
+            background: rgba(99, 102, 241, 0.1);
+            color: #1e293b;
         }
-        .fb-wrapper h2 {
-			font-size: 1.8rem;
-			margin: 0 0 0.5rem 0;
-			color: #ffffff;
-			font-weight: 700;
-			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-		}
-		.fb-wrapper p {
-			color: #ffffff;
-			margin: 5px 0;
-			font-size: 1.1rem;
-			text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-		}
-        .fb-arrow {
-            font-size: 2.5rem;
-            margin-top: 1.5rem;
-            animation: arrowMove 1.2s ease-in-out infinite;
-        }
-        @keyframes arrowMove {
-            0%, 100% { transform: translateY(0); opacity: 0.5; }
-            50% { transform: translateY(-8px); opacity: 1; }
-        }
-        .fb-box {
-			margin-top: 1.5rem;
-			padding: 1.25rem 1.5rem;
-			background: rgba(99, 102, 241, 0.35);
-			border: 2px solid rgba(99, 102, 241, 0.7);
-			border-radius: 16px;
-			max-width: 300px;
-			font-size: 1.1rem;
-			line-height: 1.7;
-			color: #ffffff;
-			text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-		}
-        .fb-box strong {
-            color: #a5b4fc;
-            font-weight: 600;
-        }
-        .fb-icon {
-            display: inline-block;
-            background: rgba(99, 102, 241, 0.3);
-            padding: 0.25rem 0.5rem;
-            border-radius: 6px;
-            font-weight: 700;
-            margin: 0 2px;
-        }
-        .fb-footer {
-			margin-top: 2rem;
-			font-size: 0.95rem;
-			color: #ffffff;
-			text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-		}
-        .fb-footer span {
-            font-size: 1.25rem;
-            vertical-align: middle;
-        }
+
+        [data-theme="light"] .inapp-banner-text strong { color: #4f46e5; }
     </style>
     <script>
     (function() {
         var ua = navigator.userAgent || "";
-        // Détection Facebook, Instagram, Messenger, TikTok
-        var isInAppBrowser = ua.includes("FBAN") || ua.includes("FBAV") || ua.includes("Instagram") || ua.includes("Messenger") || ua.includes("BytedanceWebview");
+        var dansUneApp = ua.includes("FBAN") || ua.includes("FBAV") ||
+                         ua.includes("Instagram") || ua.includes("Messenger") ||
+                         ua.includes("BytedanceWebview");
+
+        if (!dansUneApp) return;
+
+        try {
+            if (localStorage.getItem('inappBannerFerme')) return;
+        } catch (e) { /* stockage indisponible : on affiche le bandeau */ }
+
         var isIOS = /iPhone|iPad|iPod/i.test(ua);
-        
-        if (!isInAppBrowser) return;
-        
-        document.documentElement.classList.add("fb-block");
-        
-        document.addEventListener("DOMContentLoaded", function() {
-            document.body.classList.add("fb-block");
-            
-            var message = isIOS
-                ? '<div class="fb-logo">📱</div>' +
-                  '<h2>iPhone / iPad</h2>' +
-                  '<p>Ce site fonctionne mieux dans Safari</p>' +
-                  '<div class="fb-arrow">⬆️</div>' +
-                  '<div class="fb-box">' +
-                  '1. Appuyez sur <strong>Partager</strong> <span class="fb-icon">↑</span><br><br>' +
-                  '2. Puis sur<br>' +
-                  '<strong>« Ouvrir dans Safari »</strong>' +
-                  '</div>'
-                : '<div class="fb-logo">📱</div>' +
-                  '<h2>Android</h2>' +
-                  '<p>Ce site fonctionne mieux dans Chrome</p>' +
-                  '<div class="fb-arrow">⬆️</div>' +
-                  '<div class="fb-box">' +
-                  '1. Appuyez sur <span class="fb-icon">⋮</span> (en haut à droite)<br><br>' +
-                  '2. Puis sur<br>' +
-                  '<strong>« Ouvrir dans le navigateur »</strong>' +
-                  '</div>';
-            
-            document.body.innerHTML = '<div class="fb-wrapper">' +
-                message +
-                '<p class="fb-footer">' +
-                '<span>👍</span> Le site s\'ouvrira ensuite normalement' +
-                '</p>' +
-                '</div>';
+        var chemin = isIOS
+            ? 'le bouton <strong>Partager</strong> puis <strong>&laquo; Ouvrir dans Safari &raquo;</strong>'
+            : 'le menu <strong>&#8942;</strong> puis <strong>&laquo; Ouvrir dans le navigateur &raquo;</strong>';
+
+        document.documentElement.classList.add('inapp');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var banniere = document.createElement('div');
+            banniere.className = 'inapp-banner';
+            banniere.innerHTML =
+                '<div class="inapp-banner-text">Vous naviguez depuis une application. ' +
+                'Pour installer Actu &amp; M\u00e9dia sur votre t\u00e9l\u00e9phone ou recevoir les alertes, ' +
+                'utilisez ' + chemin + '.</div>' +
+                '<button class="inapp-banner-close" aria-label="Fermer">&times;</button>';
+
+            document.body.insertBefore(banniere, document.body.firstChild);
+
+            banniere.querySelector('.inapp-banner-close').addEventListener('click', function() {
+                banniere.remove();
+                try { localStorage.setItem('inappBannerFerme', '1'); } catch (e) {}
+            });
         });
     })();
     </script>
