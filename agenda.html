@@ -445,7 +445,10 @@
         }
         
         .event-card-image {
-            cursor: pointer;
+            /* zoom-in : le curseur devient une loupe au survol. L'indication
+               est portee par le pointeur, pas par une pastille qui masquerait
+               une vignette deja petite. */
+            cursor: zoom-in;
             transition: transform 0.2s, opacity 0.2s;
         }
         
@@ -954,9 +957,12 @@
             }
         }
 
+        /* Vignette en 16/9 et non carree : un cadre carre decoupe une tranche
+           au milieu d'une photo ou d'une affiche en paysage, et on n'y voit
+           plus rien. Le format paysage montre presque toute l'image. */
         .event-card-image {
-            width: 90px;
-            height: 90px;
+            width: 128px;
+            height: 72px;
             min-height: 0;
             align-self: flex-start;
             border-radius: 4px;
@@ -1153,7 +1159,7 @@
 
         /* ---------- Responsive ---------- */
         @media (min-width: 768px) {
-            .event-card-image { width: 130px; height: 130px; }
+            .event-card-image { width: 176px; height: 99px; }
         }
 
         @media (max-width: 480px) {
@@ -1161,7 +1167,7 @@
             .current-month { font-size: 1.15rem; }
             .events-date-day { font-size: 1.7rem; }
             .event-card { padding: 1rem 0; gap: 0.8rem; }
-            .event-card-image { width: 80px; height: 80px; }
+            .event-card-image { width: 104px; height: 59px; }
             .event-card-title { font-size: 0.98rem; }
         }
 		
