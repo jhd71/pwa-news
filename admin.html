@@ -2278,6 +2278,7 @@
                             <option value="brocante">🏷️ Brocante</option>
                             <option value="concert">🎵 Concert</option>
                             <option value="fete">🎉 Fête</option>
+                            <option value="reunion">👥 Réunion</option>
                             <option value="autre">📌 Autre</option>
                         </select>
                     </div>
@@ -2310,10 +2311,15 @@
                     
                     <!-- Date unique -->
                     <div id="eventPubDateGroup">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;">
                             <div class="form-group">
                                 <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">event</span> Date <span class="required">*</span></label>
                                 <input type="date" class="form-input" id="eventPubDate">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">event_repeat</span> Date de fin</label>
+                                <input type="date" class="form-input" id="eventPubEndDate">
+                                <div class="form-hint">Seulement si l'événement dure plusieurs jours</div>
                             </div>
                             <div class="form-group">
                                 <label class="form-label"><span class="material-icons" style="font-size:1.1rem;">schedule</span> Heure début</label>
@@ -5165,8 +5171,16 @@
                     return;
                 }
             } else {
-                if (!document.getElementById('eventPubDate').value) {
+                const debut = document.getElementById('eventPubDate').value;
+                const fin = document.getElementById('eventPubEndDate').value;
+                if (!debut) {
                     alert('Veuillez sélectionner une date');
+                    btn.disabled = false;
+                    btn.innerHTML = originalContent;
+                    return;
+                }
+                if (fin && fin < debut) {
+                    alert('La date de fin ne peut pas précéder la date de début.');
                     btn.disabled = false;
                     btn.innerHTML = originalContent;
                     return;
@@ -5195,6 +5209,9 @@
                     is_recurring: isRecurring,
                     recurrence_days: selectedDays,
                     event_date: isRecurring ? null : document.getElementById('eventPubDate').value,
+                    // Un evenement sur plusieurs jours reste visible jusqu'a cette date :
+                    // c'est ce que lit l'accueil pour le groupe "En ce moment"
+                    event_end_date: isRecurring ? null : (document.getElementById('eventPubEndDate').value || null),
                     event_time: isRecurring 
                         ? (document.getElementById('eventPubTimeRecurring').value || null)
                         : (document.getElementById('eventPubTime').value || null),
