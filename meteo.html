@@ -101,16 +101,19 @@
             }
         }
 		
-		        /* Phase de la Lune */
+        /* Phase de la Lune */
         .meteo-moon {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
             margin: 1rem;
             padding: 1.25rem;
             border-radius: 16px;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
+        }
+
+        .meteo-moon-head {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
         .meteo-moon-icon {
@@ -147,9 +150,62 @@
             color: var(--text-secondary);
         }
 
+        /* Les 4 prochaines phases */
+        .meteo-moon-next {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.6rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .moon-next-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem;
+            background: var(--bg-elevated);
+            border-radius: 12px;
+        }
+
+        .moon-next-item img {
+            width: 34px;
+            height: 34px;
+            flex: 0 0 auto;
+        }
+
+        .moon-next-text {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .moon-next-name {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            line-height: 1.2;
+        }
+
+        .moon-next-date {
+            font-family: var(--font-serif);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .moon-next-hour {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+
         [data-theme="light"] .meteo-moon {
             background: rgba(255, 255, 255, 0.95);
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="light"] .moon-next-item {
+            background: rgba(0, 0, 0, 0.03);
         }
 
         @media (min-width: 768px) {
@@ -157,6 +213,9 @@
                 max-width: 600px;
                 margin-left: auto;
                 margin-right: auto;
+            }
+            .meteo-moon-next {
+                grid-template-columns: repeat(4, 1fr);
             }
         }
 		
@@ -607,14 +666,17 @@
         </div>
     </section>
 	
-	    <!-- Phase de la Lune -->
+	        <!-- Phase de la Lune -->
     <section class="meteo-moon" id="moonBox">
-        <div class="meteo-moon-icon" id="moonIcon"></div>
-        <div class="meteo-moon-info">
-            <span class="meteo-moon-label">Phase de la Lune</span>
-            <span class="meteo-moon-name" id="moonName">--</span>
-            <span class="meteo-moon-detail" id="moonDetail">--</span>
+        <div class="meteo-moon-head">
+            <div class="meteo-moon-icon" id="moonIcon"></div>
+            <div class="meteo-moon-info">
+                <span class="meteo-moon-label">Phase de la Lune</span>
+                <span class="meteo-moon-name" id="moonName">--</span>
+                <span class="meteo-moon-detail" id="moonDetail">--</span>
+            </div>
         </div>
+        <div class="meteo-moon-next" id="moonNext"></div>
     </section>
 	
     <!-- Météo heure par heure -->
@@ -872,14 +934,19 @@
             el.className = 'daylight-value ' + (gagneDuJour ? 'positif' : 'negatif');
         }
 		
-		        // ============================================
-        // PHASE DE LA LUNE
+		                // ============================================
+        // PHASE DE LA LUNE (algorithme de Jean Meeus)
         // ============================================
-        const MOIS_LUNAIRE = 29.530588853; // durée d'une lunaison en jours
+        const RAD = Math.PI / 180;
+        const MOIS_LUNAIRE = 29.530588861; // durée d'une lunaison en jours
 
         function updateMoonPhase() {
             try {
-                const age = getAgeLune(new Date());
+                const maintenant = new Date();
+
+                // --- Phase actuelle ---
+                const derniereNouvelle = dernierePhase(0, maintenant);
+                const age = (maintenant - derniereNouvelle) / 86400000;
                 const illumination = Math.round((1 - Math.cos((2 * Math.PI * age) / MOIS_LUNAIRE)) / 2 * 100);
                 const info = getPhaseLune(age);
                 const jours = Math.floor(age);
@@ -890,6 +957,25 @@
                 document.getElementById('moonDetail').textContent =
                     `${illumination}% éclairée · ${jours} jour${jours > 1 ? 's' : ''} depuis la nouvelle lune`;
 
+                // --- Les 4 prochaines phases, dans l'ordre chronologique ---
+                const prochaines = [
+                    { nom: 'Nouvelle lune',    icone: 'moon-new',           date: prochainePhase(0, maintenant) },
+                    { nom: 'Premier quartier', icone: 'moon-first-quarter', date: prochainePhase(0.25, maintenant) },
+                    { nom: 'Pleine lune',      icone: 'moon-full',          date: prochainePhase(0.5, maintenant) },
+                    { nom: 'Dernier quartier', icone: 'moon-last-quarter',  date: prochainePhase(0.75, maintenant) }
+                ].sort((a, b) => a.date - b.date);
+
+                document.getElementById('moonNext').innerHTML = prochaines.map(p => `
+                    <div class="moon-next-item">
+                        <img src="${METEOCONS_BASE}${p.icone}.svg" alt="${p.nom}">
+                        <div class="moon-next-text">
+                            <span class="moon-next-name">${p.nom}</span>
+                            <span class="moon-next-date">${p.date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}</span>
+                            <span class="moon-next-hour">${p.date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
+                        </div>
+                    </div>
+                `).join('');
+
                 console.log('🌙 Phase de la Lune chargée');
 
             } catch (error) {
@@ -898,25 +984,96 @@
             }
         }
 
-        // Nombre de jours écoulés depuis la dernière nouvelle lune
-        function getAgeLune(date) {
-            const nouvelleLuneRef = Date.UTC(2000, 0, 6, 18, 14); // nouvelle lune du 6 janvier 2000
-            const jours = (date.getTime() - nouvelleLuneRef) / 86400000;
-            let age = jours % MOIS_LUNAIRE;
-            if (age < 0) age += MOIS_LUNAIRE;
-            return age;
+        function getPhaseLune(age) {
+            if (age < 1.84566)  return { nom: 'Nouvelle lune',              icone: 'moon-new' };
+            if (age < 5.53699)  return { nom: 'Premier croissant',          icone: 'moon-waxing-crescent' };
+            if (age < 9.22831)  return { nom: 'Premier quartier',           icone: 'moon-first-quarter' };
+            if (age < 12.91963) return { nom: 'Lune gibbeuse croissante',   icone: 'moon-waxing-gibbous' };
+            if (age < 16.61096) return { nom: 'Pleine lune',                icone: 'moon-full' };
+            if (age < 20.30228) return { nom: 'Lune gibbeuse décroissante', icone: 'moon-waning-gibbous' };
+            if (age < 23.99361) return { nom: 'Dernier quartier',           icone: 'moon-last-quarter' };
+            if (age < 27.68493) return { nom: 'Dernier croissant',          icone: 'moon-waning-crescent' };
+            return { nom: 'Nouvelle lune', icone: 'moon-new' };
         }
 
-        function getPhaseLune(age) {
-            if (age < 1.84566)  return { nom: 'Nouvelle lune',               icone: 'moon-new' };
-            if (age < 5.53699)  return { nom: 'Premier croissant',           icone: 'moon-waxing-crescent' };
-            if (age < 9.22831)  return { nom: 'Premier quartier',            icone: 'moon-first-quarter' };
-            if (age < 12.91963) return { nom: 'Lune gibbeuse croissante',    icone: 'moon-waxing-gibbous' };
-            if (age < 16.61096) return { nom: 'Pleine lune',                 icone: 'moon-full' };
-            if (age < 20.30228) return { nom: 'Lune gibbeuse décroissante',  icone: 'moon-waning-gibbous' };
-            if (age < 23.99361) return { nom: 'Dernier quartier',            icone: 'moon-last-quarter' };
-            if (age < 27.68493) return { nom: 'Dernier croissant',           icone: 'moon-waning-crescent' };
-            return { nom: 'Nouvelle lune', icone: 'moon-new' };
+        // Conversion Jour Julien -> Date JavaScript
+        function jdVersDate(jd) {
+            return new Date((jd - 2440587.5) * 86400000);
+        }
+
+        // Numéro de lunaison approximatif pour une date donnée
+        function kApprox(date) {
+            const an = date.getUTCFullYear();
+            const debut = Date.UTC(an, 0, 1);
+            const fin = Date.UTC(an + 1, 0, 1);
+            const anneeDecimale = an + (date.getTime() - debut) / (fin - debut);
+            return (anneeDecimale - 2000) * 12.3685;
+        }
+
+        // Prochaine occurrence d'une phase (0 = nouvelle, 0.25 = 1er quartier, 0.5 = pleine, 0.75 = dernier)
+        function prochainePhase(phase, apres) {
+            const k = Math.floor(kApprox(apres)) - 2;
+            for (let i = 0; i < 6; i++) {
+                const d = jdVersDate(jdePhase(k + i, phase));
+                if (d.getTime() > apres.getTime()) return d;
+            }
+            return null;
+        }
+
+        // Dernière occurrence d'une phase avant une date
+        function dernierePhase(phase, avant) {
+            const k = Math.floor(kApprox(avant)) + 2;
+            for (let i = 0; i < 6; i++) {
+                const d = jdVersDate(jdePhase(k - i, phase));
+                if (d.getTime() <= avant.getTime()) return d;
+            }
+            return null;
+        }
+
+        // Instant exact d'une phase lunaire, en Jour Julien
+        function jdePhase(k, phase) {
+            k = k + phase;
+            const T = k / 1236.85;
+            const T2 = T * T, T3 = T2 * T, T4 = T3 * T;
+
+            let jde = 2451550.09766 + 29.530588861 * k
+                + 0.00015437 * T2 - 0.000000150 * T3 + 0.00000000073 * T4;
+
+            const E  = 1 - 0.002516 * T - 0.0000074 * T2;
+            const M  = (2.5534 + 29.10535670 * k - 0.0000014 * T2 - 0.00000011 * T3) * RAD;
+            const M1 = (201.5643 + 385.81693528 * k + 0.0107582 * T2 + 0.00001238 * T3 - 0.000000058 * T4) * RAD;
+            const F  = (160.7108 + 390.67050284 * k - 0.0016118 * T2 - 0.00000227 * T3 + 0.000000011 * T4) * RAD;
+            const O  = (124.7746 - 1.56375588 * k + 0.0020672 * T2 + 0.00000215 * T3) * RAD;
+            const s = Math.sin, c = Math.cos;
+
+            if (phase === 0 || phase === 0.5) {
+                const nouvelle = (phase === 0);
+                jde += (nouvelle ? -0.40720 : -0.40614) * s(M1)
+                     + (nouvelle ?  0.17241 :  0.17302) * E * s(M)
+                     + (nouvelle ?  0.01608 :  0.01614) * s(2 * M1)
+                     + (nouvelle ?  0.01039 :  0.01043) * s(2 * F)
+                     + (nouvelle ?  0.00739 :  0.00734) * E * s(M1 - M)
+                     + (nouvelle ? -0.00514 : -0.00515) * E * s(M1 + M)
+                     + (nouvelle ?  0.00208 :  0.00209) * E * E * s(2 * M)
+                     - 0.00111 * s(M1 - 2 * F) - 0.00057 * s(M1 + 2 * F)
+                     + 0.00056 * E * s(2 * M1 + M) - 0.00042 * s(3 * M1)
+                     + 0.00042 * E * s(M + 2 * F) + 0.00038 * E * s(M - 2 * F)
+                     - 0.00024 * E * s(2 * M1 - M) - 0.00017 * s(O)
+                     - 0.00007 * s(M1 + 2 * M);
+            } else {
+                jde += -0.62801 * s(M1) + 0.17172 * E * s(M) - 0.01183 * E * s(M1 + M)
+                     + 0.00862 * s(2 * M1) + 0.00804 * s(2 * F) + 0.00454 * E * s(M1 - M)
+                     + 0.00204 * E * E * s(2 * M) - 0.00180 * s(M1 - 2 * F)
+                     - 0.00070 * s(M1 + 2 * F) - 0.00040 * s(3 * M1)
+                     - 0.00034 * E * s(2 * M1 - M) + 0.00032 * E * s(M + 2 * F)
+                     + 0.00032 * E * s(M - 2 * F) - 0.00028 * E * E * s(M1 + 2 * M)
+                     + 0.00027 * E * s(2 * M1 + M) - 0.00017 * s(O);
+
+                const W = 0.00306 - 0.00038 * E * c(M) + 0.00026 * c(M1)
+                        - 0.00002 * c(M1 - M) + 0.00002 * c(M1 + M) + 0.00002 * c(2 * F);
+                jde += (phase === 0.25) ? W : -W;
+            }
+            return jde;
         }
 		
         function updateHourly(hourly) {
