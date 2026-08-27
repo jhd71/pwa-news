@@ -225,7 +225,7 @@
             background: rgba(0, 0, 0, 0.03);
         }
 
-        @media (min-width: 768px) {
+                @media (min-width: 768px) {
             .meteo-moon {
                 max-width: 600px;
                 margin-left: auto;
@@ -233,6 +233,18 @@
             }
             .meteo-moon-next {
                 grid-template-columns: repeat(4, 1fr);
+            }
+            /* Cartes plus étroites sur PC : on gagne de la place pour tenir sur une ligne */
+            .moon-next-item {
+                gap: 0.5rem;
+            }
+            .moon-next-item svg {
+                width: 30px;
+                height: 30px;
+            }
+            .moon-next-name {
+                font-size: 0.62rem;
+                white-space: nowrap;
             }
         }
 		
