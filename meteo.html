@@ -169,10 +169,15 @@
             border-radius: 12px;
         }
 
-        .moon-next-item img {
+                .moon-next-item svg {
             width: 34px;
             height: 34px;
             flex: 0 0 auto;
+            display: block;
+        }
+
+        .meteo-moon-icon svg {
+            display: block;
         }
 
         .moon-next-text {
@@ -181,10 +186,13 @@
             min-width: 0;
         }
 
-        .moon-next-name {
+                .moon-next-name {
             font-size: 0.7rem;
             color: var(--text-muted);
             line-height: 1.2;
+            min-height: 2.4em;
+            display: flex;
+            align-items: flex-end;
         }
 
         .moon-next-date {
@@ -940,7 +948,7 @@
         const RAD = Math.PI / 180;
         const MOIS_LUNAIRE = 29.530588861; // durée d'une lunaison en jours
 
-        function updateMoonPhase() {
+                function updateMoonPhase() {
             try {
                 const maintenant = new Date();
 
@@ -951,23 +959,22 @@
                 const info = getPhaseLune(age);
                 const jours = Math.floor(age);
 
-                document.getElementById('moonIcon').innerHTML =
-                    `<img src="${METEOCONS_BASE}${info.icone}.svg" width="56" height="56" alt="Lune" style="display:block;">`;
+                document.getElementById('moonIcon').innerHTML = dessinerLune(age, 56);
                 document.getElementById('moonName').textContent = info.nom;
                 document.getElementById('moonDetail').textContent =
                     `${illumination}% éclairée · ${jours} jour${jours > 1 ? 's' : ''} depuis la nouvelle lune`;
 
                 // --- Les 4 prochaines phases, dans l'ordre chronologique ---
                 const prochaines = [
-                    { nom: 'Nouvelle lune',    icone: 'moon-new',           date: prochainePhase(0, maintenant) },
-                    { nom: 'Premier quartier', icone: 'moon-first-quarter', date: prochainePhase(0.25, maintenant) },
-                    { nom: 'Pleine lune',      icone: 'moon-full',          date: prochainePhase(0.5, maintenant) },
-                    { nom: 'Dernier quartier', icone: 'moon-last-quarter',  date: prochainePhase(0.75, maintenant) }
+                    { nom: 'Nouvelle lune',    phase: 0,    date: prochainePhase(0, maintenant) },
+                    { nom: 'Premier quartier', phase: 0.25, date: prochainePhase(0.25, maintenant) },
+                    { nom: 'Pleine lune',      phase: 0.5,  date: prochainePhase(0.5, maintenant) },
+                    { nom: 'Dernier quartier', phase: 0.75, date: prochainePhase(0.75, maintenant) }
                 ].sort((a, b) => a.date - b.date);
 
                 document.getElementById('moonNext').innerHTML = prochaines.map(p => `
                     <div class="moon-next-item">
-                        <img src="${METEOCONS_BASE}${p.icone}.svg" alt="${p.nom}">
+                        ${dessinerLune(p.phase * MOIS_LUNAIRE, 34)}
                         <div class="moon-next-text">
                             <span class="moon-next-name">${p.nom}</span>
                             <span class="moon-next-date">${p.date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}</span>
@@ -984,16 +991,37 @@
             }
         }
 
+        // Dessine la Lune avec sa vraie portion éclairée (aucune image à télécharger)
+        function dessinerLune(age, px) {
+            const r = 50;
+            const p = (((age % MOIS_LUNAIRE) + MOIS_LUNAIRE) % MOIS_LUNAIRE) / MOIS_LUNAIRE;
+            const cos = Math.cos(2 * Math.PI * p);
+            const rx = Math.round(r * Math.abs(cos) * 100) / 100;
+
+            // cos > 0 = moins de la moitié éclairée (croissant) : le terminateur creuse la partie claire
+            const sweep = cos > 0 ? 0 : 1;
+            const d = `M 0,-${r} A ${r},${r} 0 0,1 0,${r} A ${rx},${r} 0 0,${sweep} 0,-${r} Z`;
+
+            // Après la pleine lune, la partie éclairée passe à gauche : on retourne le dessin
+            const miroir = p > 0.5 ? ' transform="scale(-1,1)"' : '';
+
+            return `<svg viewBox="-52 -52 104 104" width="${px}" height="${px}" aria-hidden="true">
+                <circle r="50" fill="#3f4453"></circle>
+                <path d="${d}" fill="#e8eaf0"${miroir}></path>
+                <circle r="50" fill="none" stroke="rgba(148,163,184,0.45)" stroke-width="2"></circle>
+            </svg>`;
+        }
+
         function getPhaseLune(age) {
-            if (age < 1.84566)  return { nom: 'Nouvelle lune',              icone: 'moon-new' };
-            if (age < 5.53699)  return { nom: 'Premier croissant',          icone: 'moon-waxing-crescent' };
-            if (age < 9.22831)  return { nom: 'Premier quartier',           icone: 'moon-first-quarter' };
-            if (age < 12.91963) return { nom: 'Lune gibbeuse croissante',   icone: 'moon-waxing-gibbous' };
-            if (age < 16.61096) return { nom: 'Pleine lune',                icone: 'moon-full' };
-            if (age < 20.30228) return { nom: 'Lune gibbeuse décroissante', icone: 'moon-waning-gibbous' };
-            if (age < 23.99361) return { nom: 'Dernier quartier',           icone: 'moon-last-quarter' };
-            if (age < 27.68493) return { nom: 'Dernier croissant',          icone: 'moon-waning-crescent' };
-            return { nom: 'Nouvelle lune', icone: 'moon-new' };
+            if (age < 1.84566)  return { nom: 'Nouvelle lune' };
+            if (age < 5.53699)  return { nom: 'Premier croissant' };
+            if (age < 9.22831)  return { nom: 'Premier quartier' };
+            if (age < 12.91963) return { nom: 'Lune gibbeuse croissante' };
+            if (age < 16.61096) return { nom: 'Pleine lune' };
+            if (age < 20.30228) return { nom: 'Lune gibbeuse décroissante' };
+            if (age < 23.99361) return { nom: 'Dernier quartier' };
+            if (age < 27.68493) return { nom: 'Dernier croissant' };
+            return { nom: 'Nouvelle lune' };
         }
 
         // Conversion Jour Julien -> Date JavaScript
