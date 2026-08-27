@@ -102,12 +102,21 @@
         }
 		
         /* Phase de la Lune */
-        .meteo-moon {
+                .meteo-moon {
             margin: 1rem;
             padding: 1.25rem;
             border-radius: 16px;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
+            --lune-claire: #e8eaf0;
+            --lune-sombre: #3f4453;
+            --lune-bord: rgba(148, 163, 184, 0.45);
+        }
+
+        [data-theme="light"] .meteo-moon {
+            --lune-claire: #c3cede;
+            --lune-sombre: #414b5c;
+            --lune-bord: rgba(71, 85, 105, 0.4);
         }
 
         .meteo-moon-head {
@@ -160,20 +169,21 @@
             border-top: 1px solid var(--border-color);
         }
 
-        .moon-next-item {
+         .moon-next-item {
             display: flex;
-            align-items: center;
+            align-items: stretch;
             gap: 0.6rem;
             padding: 0.6rem;
             background: var(--bg-elevated);
             border-radius: 12px;
         }
 
-                .moon-next-item svg {
+        .moon-next-item svg {
             width: 34px;
             height: 34px;
             flex: 0 0 auto;
             display: block;
+            align-self: center;
         }
 
         .meteo-moon-icon svg {
@@ -183,16 +193,15 @@
         .moon-next-text {
             display: flex;
             flex-direction: column;
+            justify-content: flex-end;
+            flex: 1;
             min-width: 0;
         }
 
-                .moon-next-name {
+        .moon-next-name {
             font-size: 0.7rem;
             color: var(--text-muted);
             line-height: 1.2;
-            min-height: 2.4em;
-            display: flex;
-            align-items: flex-end;
         }
 
         .moon-next-date {
@@ -965,11 +974,11 @@
                     `${illumination}% éclairée · ${jours} jour${jours > 1 ? 's' : ''} depuis la nouvelle lune`;
 
                 // --- Les 4 prochaines phases, dans l'ordre chronologique ---
-                const prochaines = [
-                    { nom: 'Nouvelle lune',    phase: 0,    date: prochainePhase(0, maintenant) },
-                    { nom: 'Premier quartier', phase: 0.25, date: prochainePhase(0.25, maintenant) },
-                    { nom: 'Pleine lune',      phase: 0.5,  date: prochainePhase(0.5, maintenant) },
-                    { nom: 'Dernier quartier', phase: 0.75, date: prochainePhase(0.75, maintenant) }
+                                const prochaines = [
+                    { nom: 'Nouvelle lune',   phase: 0,    date: prochainePhase(0, maintenant) },
+                    { nom: '1er quartier',    phase: 0.25, date: prochainePhase(0.25, maintenant) },
+                    { nom: 'Pleine lune',     phase: 0.5,  date: prochainePhase(0.5, maintenant) },
+                    { nom: 'Dern. quartier',  phase: 0.75, date: prochainePhase(0.75, maintenant) }
                 ].sort((a, b) => a.date - b.date);
 
                 document.getElementById('moonNext').innerHTML = prochaines.map(p => `
@@ -1006,9 +1015,9 @@
             const miroir = p > 0.5 ? ' transform="scale(-1,1)"' : '';
 
             return `<svg viewBox="-52 -52 104 104" width="${px}" height="${px}" aria-hidden="true">
-                <circle r="50" fill="#3f4453"></circle>
-                <path d="${d}" fill="#e8eaf0"${miroir}></path>
-                <circle r="50" fill="none" stroke="rgba(148,163,184,0.45)" stroke-width="2"></circle>
+                                <circle r="50" fill="var(--lune-sombre)"></circle>
+                <path d="${d}" fill="var(--lune-claire)"${miroir}></path>
+                <circle r="50" fill="none" stroke="var(--lune-bord)" stroke-width="2"></circle>
             </svg>`;
         }
 
