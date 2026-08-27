@@ -257,7 +257,7 @@
             border: 1px solid var(--border-color);
         }
 
-        [data-theme="light"] .meteo-hourly {
+                [data-theme="light"] .meteo-hourly {
             background: rgba(255, 255, 255, 0.95);
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
         }
@@ -268,6 +268,82 @@
                 margin-left: auto;
                 margin-right: auto;
             }
+        }
+
+        /* --- Défilement à la souris + flèches --- */
+        .scroll-wrap {
+            position: relative;
+        }
+
+        /* On masque la barre de défilement : le glissement et les flèches la remplacent */
+        .meteo-hourly-scroll,
+        .forecast-hourly-scroll {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .meteo-hourly-scroll::-webkit-scrollbar,
+        .forecast-hourly-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        @media (hover: hover) {
+            .meteo-hourly-scroll,
+            .forecast-hourly-scroll {
+                cursor: grab;
+            }
+        }
+
+        .meteo-hourly-scroll.glisse,
+        .forecast-hourly-scroll.glisse {
+            cursor: grabbing;
+            user-select: none;
+            scroll-snap-type: none;
+        }
+
+        .scroll-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            cursor: pointer;
+            z-index: 3;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+            transition: background 0.2s ease;
+        }
+
+        .scroll-arrow .material-icons {
+            font-size: 1.2rem;
+        }
+
+        .scroll-arrow.prev { left: -6px; }
+        .scroll-arrow.next { right: -6px; }
+
+        /* Visibles uniquement à la souris, et seulement s'il reste à faire défiler */
+        @media (hover: hover) {
+            .scroll-arrow.visible {
+                display: flex;
+            }
+
+            .scroll-arrow:hover {
+                background: var(--primary-light);
+                border-color: var(--primary-light);
+                color: #ffffff;
+            }
+        }
+
+        [data-theme="light"] .scroll-arrow {
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
         }
 
         .meteo-hourly-scroll {
@@ -1177,6 +1253,7 @@
             }
             
             container.innerHTML = html || '<div class="meteo-loading">Données horaires indisponibles</div>';
+            activerDefilement(container);
             
                         // Scroll automatique vers l'heure actuelle (horizontal uniquement,
             // pour ne pas faire descendre toute la page au chargement)
@@ -1192,6 +1269,88 @@
             }
         }
 
+        // ============================================
+        // DÉFILEMENT HORIZONTAL : glisser à la souris + flèches
+        // ============================================
+        function activerDefilement(zone) {
+            if (!zone || zone.dataset.defilementActif) return;
+            zone.dataset.defilementActif = '1';
+
+            // 1) On enveloppe la bande pour pouvoir poser les flèches par-dessus
+            const enveloppe = document.createElement('div');
+            enveloppe.className = 'scroll-wrap';
+            zone.parentNode.insertBefore(enveloppe, zone);
+            enveloppe.appendChild(zone);
+
+            // 2) Les deux flèches
+            const gauche = creerFleche('prev', 'chevron_left', 'Heures précédentes');
+            const droite = creerFleche('next', 'chevron_right', 'Heures suivantes');
+            enveloppe.appendChild(gauche);
+            enveloppe.appendChild(droite);
+
+            gauche.addEventListener('click', () => {
+                zone.scrollBy({ left: -zone.clientWidth * 0.8, behavior: 'smooth' });
+            });
+            droite.addEventListener('click', () => {
+                zone.scrollBy({ left: zone.clientWidth * 0.8, behavior: 'smooth' });
+            });
+
+            // 3) Glisser-déposer à la souris (le tactile garde son défilement natif)
+            let enCours = false, departX = 0, departScroll = 0, aBouge = false;
+
+            zone.addEventListener('pointerdown', (e) => {
+                if (e.pointerType !== 'mouse') return;
+                enCours = true;
+                aBouge = false;
+                departX = e.clientX;
+                departScroll = zone.scrollLeft;
+                zone.classList.add('glisse');
+            });
+
+            zone.addEventListener('pointermove', (e) => {
+                if (!enCours) return;
+                const delta = e.clientX - departX;
+                if (Math.abs(delta) > 3) aBouge = true;
+                zone.scrollLeft = departScroll - delta;
+                e.preventDefault();
+            });
+
+            const relacher = () => {
+                enCours = false;
+                zone.classList.remove('glisse');
+            };
+            zone.addEventListener('pointerup', relacher);
+            zone.addEventListener('pointerleave', relacher);
+            zone.addEventListener('pointercancel', relacher);
+
+            // Évite qu'un glissement soit interprété comme un clic
+            zone.addEventListener('click', (e) => {
+                if (aBouge) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }, true);
+
+            // 4) On masque la flèche quand on est au bout
+            const majFleches = () => {
+                const max = zone.scrollWidth - zone.clientWidth;
+                gauche.classList.toggle('visible', zone.scrollLeft > 5);
+                droite.classList.toggle('visible', zone.scrollLeft < max - 5);
+            };
+            zone.addEventListener('scroll', majFleches);
+            window.addEventListener('resize', majFleches);
+            setTimeout(majFleches, 100);
+        }
+
+        function creerFleche(sens, icone, libelle) {
+            const bouton = document.createElement('button');
+            bouton.type = 'button';
+            bouton.className = 'scroll-arrow ' + sens;
+            bouton.setAttribute('aria-label', libelle);
+            bouton.innerHTML = `<span class="material-icons">${icone}</span>`;
+            return bouton;
+        }
+		
         function updateForecast(daily) {
             const forecastList = document.getElementById('forecastList');
             const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
@@ -1273,8 +1432,9 @@
                     `;
                 }
                 
-                html += '</div>';
+                                html += '</div>';
                 container.innerHTML = html;
+                activerDefilement(container.querySelector('.forecast-hourly-scroll'));
             }
             
             container.classList.add('open');
