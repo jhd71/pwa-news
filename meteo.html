@@ -695,19 +695,6 @@
         </div>
     </section>
 	
-	        <!-- Phase de la Lune -->
-    <section class="meteo-moon" id="moonBox">
-        <div class="meteo-moon-head">
-            <div class="meteo-moon-icon" id="moonIcon"></div>
-            <div class="meteo-moon-info">
-                <span class="meteo-moon-label">Phase de la Lune</span>
-                <span class="meteo-moon-name" id="moonName">--</span>
-                <span class="meteo-moon-detail" id="moonDetail">--</span>
-            </div>
-        </div>
-        <div class="meteo-moon-next" id="moonNext"></div>
-    </section>
-	
     <!-- Météo heure par heure -->
     <section class="meteo-hourly">
         <h2 class="meteo-section-title">
@@ -780,6 +767,19 @@
         </div>
     </section>
 
+    <!-- Phase de la Lune -->
+    <section class="meteo-moon" id="moonBox">
+        <div class="meteo-moon-head">
+            <div class="meteo-moon-icon" id="moonIcon"></div>
+            <div class="meteo-moon-info">
+                <span class="meteo-moon-label">Phase de la Lune</span>
+                <span class="meteo-moon-name" id="moonName">--</span>
+                <span class="meteo-moon-detail" id="moonDetail">--</span>
+            </div>
+        </div>
+        <div class="meteo-moon-next" id="moonNext"></div>
+    </section>
+	
     <!-- Footer -->
     <footer class="meteo-footer">
         <p>Données <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p>
@@ -1163,11 +1163,16 @@
             
             container.innerHTML = html;
             
-            // Scroll automatique vers l'heure actuelle
+                        // Scroll automatique vers l'heure actuelle (horizontal uniquement,
+            // pour ne pas faire descendre toute la page au chargement)
             const nowEl = container.querySelector('.hourly-item.now');
             if (nowEl) {
                 setTimeout(() => {
-                    nowEl.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    const zoneCase = nowEl.getBoundingClientRect();
+                    const zoneConteneur = container.getBoundingClientRect();
+                    const decalage = zoneCase.left - zoneConteneur.left;
+                    const cible = container.scrollLeft + decalage - (container.clientWidth - zoneCase.width) / 2;
+                    container.scrollTo({ left: cible, behavior: 'smooth' });
                 }, 300);
             }
         }
