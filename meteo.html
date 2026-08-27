@@ -1126,10 +1126,12 @@
         }
 		
         function updateHourly(hourly) {
-            const container = document.getElementById('hourlyScroll');
+                        const container = document.getElementById('hourlyScroll');
             const now = new Date();
             const currentHour = now.getHours();
-            const todayStr = now.toISOString().split('T')[0];
+            // Date locale (et non UTC) : sinon la liste se vide entre minuit et 2h du matin
+            const pad2 = (n) => String(n).padStart(2, '0');
+            const todayStr = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`;
             
             let html = '';
             let firstFutureIndex = -1;
@@ -1161,7 +1163,7 @@
                 `;
             }
             
-            container.innerHTML = html;
+            container.innerHTML = html || '<div class="meteo-loading">Données horaires indisponibles</div>';
             
                         // Scroll automatique vers l'heure actuelle (horizontal uniquement,
             // pour ne pas faire descendre toute la page au chargement)
