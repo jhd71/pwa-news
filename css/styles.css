@@ -214,6 +214,9 @@ body {
     height: clamp(150px, 30vw, 260px);
     object-fit: cover;
     object-position: center 60%;
+    /* La photo est prise au crépuscule : un léger coup de clair
+       lui redonne du relief sans la dénaturer. */
+    filter: brightness(1.12) saturate(1.05);
 }
 
 /* Le dégradé sombre est porté par le bloc de texte lui-même :
@@ -256,6 +259,21 @@ body {
 @media (min-width: 768px) {
     .banniere img {
         height: 280px;
+    }
+}
+
+/* Sur petit écran la bannière ne fait que 150 px : un voile de 3 rem
+   y occuperait un tiers de la hauteur. On le raccourcit. */
+@media (max-width: 767px) {
+    .banniere-texte {
+        padding: 1.6rem 0.75rem 0.7rem;
+        background: linear-gradient(to bottom, rgba(6, 10, 22, 0) 0%, rgba(6, 10, 22, 0.5) 50%, rgba(6, 10, 22, 0.85) 100%);
+    }
+
+    .banniere .banniere-texte .banniere-lieu,
+    [data-theme="light"] .banniere .banniere-texte .banniere-lieu {
+        font-size: 0.68rem;
+        letter-spacing: 0.06em;
     }
 }
 
