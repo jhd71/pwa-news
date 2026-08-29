@@ -193,6 +193,73 @@ body {
 }
 
 /* ============================================
+   BANNIÈRE D'ACCUEIL
+   ============================================ */
+.banniere {
+    position: relative;
+    margin: 0.75rem 1rem;
+    overflow: hidden;
+    border-radius: 16px;
+    background: var(--bg-surface-dark);
+    line-height: 0;
+}
+
+.banniere picture,
+.banniere img {
+    display: block;
+    width: 100%;
+}
+
+.banniere img {
+    height: clamp(150px, 30vw, 260px);
+    object-fit: cover;
+    object-position: center 60%;
+}
+
+/* Le dégradé sombre est porté par le bloc de texte lui-même :
+   plus simple et plus fiable qu'un pseudo-élément séparé. */
+.banniere-texte {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 3rem 1rem 0.85rem;
+    text-align: center;
+    line-height: 1.25;
+    background: linear-gradient(to bottom, rgba(6, 10, 22, 0) 0%, rgba(6, 10, 22, 0.55) 45%, rgba(6, 10, 22, 0.9) 100%);
+    pointer-events: none;
+}
+
+/* Sélecteur volontairement précis, et !important assumé :
+   il faut passer devant la règle générale qui force la couleur
+   de tous les <p> en thème clair (plus bas dans ce fichier). */
+.banniere .banniere-texte .banniere-lieu,
+[data-theme="light"] .banniere .banniere-texte .banniere-lieu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    margin: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #ffffff !important;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+}
+
+.banniere-lieu .material-icons {
+    font-size: 1rem;
+    color: var(--primary-light);
+}
+
+@media (min-width: 768px) {
+    .banniere img {
+        height: 280px;
+    }
+}
+
+/* ============================================
    BARRE DATE & SAINT DU JOUR
    ============================================ */
 .date-bar {
@@ -3108,6 +3175,13 @@ p,
     }
     
     .header {
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    /* La bannière suit la même largeur que le reste du contenu */
+    .banniere {
         max-width: 1200px;
         margin-left: auto;
         margin-right: auto;

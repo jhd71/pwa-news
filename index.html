@@ -235,6 +235,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </a>
     </header>
 
+    <!-- Bannière d'accueil : étang du Plessis -->
+    <section class="banniere">
+        <picture>
+            <source
+                type="image/webp"
+                srcset="images/banniere-plessis-800.webp 800w,
+                        images/banniere-plessis-1200.webp 1200w,
+                        images/banniere-plessis-1600.webp 1600w"
+                sizes="100vw">
+            <img src="images/banniere-plessis-1200.jpg"
+                 alt="L'étang du Plessis à Montceau-les-Mines au crépuscule"
+                 width="1200" height="452"
+                 fetchpriority="high" decoding="async">
+        </picture>
+        <div class="banniere-texte">
+            <p class="banniere-lieu">
+                <span class="material-icons">place</span>
+                Étang du Plessis, Montceau-les-Mines
+            </p>
+        </div>
+    </section>
+
     <!-- Barre Date & Saint du jour -->
     <div class="date-bar" id="dateBar">
 		<span class="date-bar-day" id="dateBarDay"></span>

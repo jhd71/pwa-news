@@ -1,14 +1,15 @@
 // ============================================
-// ACTU & MÉDIA - Service Worker v81
+// ACTU & MÉDIA - Service Worker v96
 // ============================================
 
-const CACHE_NAME = 'actu-media-v94';
+const CACHE_NAME = 'actu-media-v96';
 
 // Assets statiques à mettre en cache à l'installation
 // Ne PAS inclure les pages admin (toujours besoin de données fraîches)
 const STATIC_ASSETS = [
     '/',
     '/index.html',
+    '/manifest.json',
 
     // CSS
     '/css/styles.css',
@@ -43,7 +44,11 @@ const STATIC_ASSETS = [
     // Icônes
     '/icons/icon-72.png',
     '/icons/icon-192.png',
-    '/favicon.png'
+    '/favicon.png',
+
+    // Bannière d'accueil
+    '/images/banniere-plessis-800.webp',
+    '/images/banniere-plessis-1200.webp'
 ];
 
 // Pages/chemins à TOUJOURS chercher sur le réseau (jamais depuis le cache seul)
@@ -54,15 +59,17 @@ const NETWORK_ONLY = [
 
 // Installation
 self.addEventListener('install', event => {
-    console.log('📦 SW v81: Installation');
+    console.log('📦 SW v96: Installation');
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
                 // Mettre en cache chaque fichier individuellement
                 // Un fichier manquant ne bloque pas l'installation
+                // cache: 'reload' court-circuite le cache HTTP du navigateur,
+                // sinon on risque de mettre en cache une ancienne version
                 return Promise.allSettled(
                     STATIC_ASSETS.map(url =>
-                        cache.add(url).catch(err => {
+                        cache.add(new Request(url, { cache: 'reload' })).catch(err => {
                             console.warn('⚠️ Cache échoué pour:', url, err.message);
                         })
                     )
@@ -74,7 +81,7 @@ self.addEventListener('install', event => {
 
 // Activation - supprime les anciens caches
 self.addEventListener('activate', event => {
-    console.log('🚀 SW v81: Activation');
+    console.log('🚀 SW v96: Activation');
     event.waitUntil(
         caches.keys().then(keys => {
             return Promise.all(
@@ -113,7 +120,7 @@ self.addEventListener('fetch', event => {
                     }
                     return response;
                 })
-                .catch(() => caches.match(request))
+                .catch(() => caches.match(request).then(cached => cached || caches.match('/index.html')))
         );
         return;
     }
