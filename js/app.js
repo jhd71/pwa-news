@@ -2518,8 +2518,7 @@ function showStandingsModal() {
     if (!standings || standings.length === 0) {
         body.innerHTML = '<div class="standings-loading" style="flex-direction: column; gap: 0.8rem; padding: 2rem 1rem;">' +
             '<span class="material-icons" style="font-size: 2rem; color: #fbbf24;">emoji_events</span>' +
-            '<div style="text-align: center; font-size: 0.8rem; color: var(--text-secondary);">Le classement complet sera disponible<br>après la prochaine mise à jour du scraper.</div>' +
-            '<a href="https://www.sportcorico.com/championnat/bourgogne-franche-comte-regional-1-herbelin-4/phase-unique/poule-a" target="_blank" rel="noopener" style="color: #818cf8; font-size: 0.75rem; text-decoration: none;">Voir sur SportCorico →</a>' +
+            '<div style="text-align: center; font-size: 0.8rem; color: var(--text-secondary);">Le classement complet sera<br>bientôt disponible.</div>' +
             '</div>';
         return;
     }
