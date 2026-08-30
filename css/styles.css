@@ -3559,6 +3559,24 @@ a.agenda-item {
     align-items: baseline;
 }
 
+/* Marque d'un evenement epingle par la redaction, au-dessus du titre.
+   Ambre, comme la pastille des infos epinglees dans l'admin. */
+.agenda-item-pinned {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.22rem;
+    margin-bottom: 0.3rem;
+    color: #f59e0b;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.agenda-item-pinned .material-icons {
+    font-size: 0.85rem;
+}
+
 .agenda-item-title {
     font-size: 1.02rem;
     font-weight: 600;

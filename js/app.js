@@ -2014,11 +2014,27 @@ async function initAgenda() {
         // que l'autre n'utilise pas : pas de ligne vide s'il n'y a rien a venir.
         const MAX_ACCUEIL = 5;
         const LIGNES_RESERVEES_A_VENIR = 2;   // ce qui arrive garde toujours sa place
+        const JOURS_MAX_EN_COURS = 30;        // au-dela, l'evenement reste dans l'agenda complet
+        const MAX_EPINGLES = 3;               // garde-fou : un accueil entierement epingle n'informe plus
 
-        const enCours = processedRegular.filter(e => e._enCours);
-        const aVenir = processedRegular.filter(e => !e._enCours);
+        // Date limite pour qu'un evenement en cours ait droit a l'accueil.
+        // Une exposition qui court jusqu'en decembre resterait sinon affichee
+        // tous les jours pendant quatre mois, et plus personne ne la verrait.
+        const limite = new Date();
+        limite.setDate(limite.getDate() + JOURS_MAX_EN_COURS);
+        const limiteStr = `${limite.getFullYear()}-${String(limite.getMonth() + 1).padStart(2, '0')}-${String(limite.getDate()).padStart(2, '0')}`;
 
-        const budget = Math.max(0, MAX_ACCUEIL - processedRecurring.length);
+        // Un evenement epingle passe avant tout et echappe a ces regles :
+        // c'est un choix editorial, il prime sur les automatismes.
+        const epingles = processedRegular.filter(e => e.pinned).slice(0, MAX_EPINGLES);
+        const autres = processedRegular.filter(e => !e.pinned);
+
+        const enCours = autres.filter(e =>
+            e._enCours && (e.event_end_date || e.event_date) <= limiteStr
+        );
+        const aVenir = autres.filter(e => !e._enCours);
+
+        const budget = Math.max(0, MAX_ACCUEIL - processedRecurring.length - epingles.length);
 
         // On reserve d'abord les lignes du bas pour les evenements a venir,
         // on remplit le reste avec les evenements en cours, puis les places
@@ -2028,6 +2044,7 @@ async function initAgenda() {
         nbAVenir = Math.min(aVenir.length, budget - nbEnCours);
 
         const allEvents = [
+            ...epingles,
             ...processedRecurring,
             ...enCours.slice(0, nbEnCours),
             ...aVenir.slice(0, nbAVenir)
@@ -2051,6 +2068,7 @@ async function initAgenda() {
                             <span class="agenda-item-month">HEBDO</span>
                         </div>
                         <div class="agenda-item-content">
+                            ${event.pinned ? '<span class="agenda-item-pinned"><span class="material-icons">push_pin</span>Épinglé</span>' : ''}
                             <div class="agenda-item-title">${escapeHtml(event.title)}</div>
                             <div class="agenda-item-info">
                                 <span class="agenda-info-highlight"><span class="material-icons">event_repeat</span>${event._recurrenceLabel}</span>
@@ -2078,6 +2096,7 @@ async function initAgenda() {
                         <span class="agenda-item-month">${event.event_date < todayStr ? 'EN COURS' : month}</span>
                     </div>
                     <div class="agenda-item-content">
+                        ${event.pinned ? '<span class="agenda-item-pinned"><span class="material-icons">push_pin</span>Épinglé</span>' : ''}
                         <div class="agenda-item-title">${escapeHtml(event.title)}</div>
                         <div class="agenda-item-info">
                             ${event.event_time ? `<span><span class="material-icons">schedule</span>${formatAgendaTime(event.event_time)}</span>` : ''}
