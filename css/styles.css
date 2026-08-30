@@ -903,6 +903,27 @@ h2, h3 {
     white-space: nowrap;
 }
 
+/* Flèche ↗ discrète qui apparaît au survol : signale un site externe.
+   Invisible sur mobile (pas de survol), la mise en page ne bouge pas. */
+.tile::after {
+    content: '\2197';
+    margin-left: auto;
+    padding-left: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1;
+    opacity: 0;
+    transform: translate(-3px, 3px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+@media (hover: hover) {
+    .tile:hover::after {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
 @media (max-width: 480px) {
     .news-ticker-header { font-size: 1.2rem; }
     .section-title { font-size: 1.2rem; }
@@ -1301,17 +1322,19 @@ h2, h3 {
     padding: 0.85rem 0 0.2rem;
     background: none;
     border: none;
+    /* Soulignement dessiné, identique aux liens "Voir tout" */
+    border-bottom: 1px solid transparent;
     border-radius: 0;
     color: var(--primary-light);
     font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 @media (hover: hover) {
     .cinema-toggle-btn:hover {
-        text-decoration: underline;
+        border-bottom-color: currentColor;
     }
 }
 
@@ -4062,17 +4085,19 @@ a.agenda-item {
     padding: 0.85rem 0 0.2rem;
     background: none;
     border: none;
+    /* Soulignement dessiné, identique aux liens "Voir tout" */
+    border-bottom: 1px solid transparent;
     border-radius: 0;
     color: var(--primary-light);
     font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 @media (hover: hover) {
     .sport-classement-btn:hover {
-        text-decoration: underline;
+        border-bottom-color: currentColor;
     }
 }
 
@@ -4412,14 +4437,17 @@ a.agenda-item {
     gap: 0.3rem;
     color: var(--primary-light);
     text-decoration: none;
+    /* Soulignement dessiné, identique aux liens "Voir tout" */
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
     font-size: 0.78rem;
     font-weight: 500;
-    transition: color 0.2s;
+    transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 @media (hover: hover) {
     .standings-source-link:hover {
-        text-decoration: underline;
+        border-bottom-color: currentColor;
     }
 }
 
