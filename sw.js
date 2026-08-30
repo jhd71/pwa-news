@@ -4,7 +4,7 @@
 // Les messages de la console la reprennent automatiquement.
 // ============================================
 
-const CACHE_NAME = 'actu-media-v98';
+const CACHE_NAME = 'actu-media-v99';
 const VERSION = CACHE_NAME.split('-').pop();
 
 // Assets statiques à mettre en cache à l'installation

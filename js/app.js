@@ -2005,8 +2005,33 @@ async function initAgenda() {
                 return a._displayDate.localeCompare(b._displayDate);
             });
         
-        // 5. Combiner : récurrents d'abord, puis par date (limité à 3 pour l'accueil)
-        const allEvents = [...processedRecurring, ...processedRegular].slice(0, 5);
+        // 5. Combiner, avec des QUOTAS plutot qu'une simple priorite.
+        //
+        // Certains evenements durent des mois (une exposition jusqu'au 30 decembre).
+        // Si les "en cours" passent devant sans limite, ils occupent les cinq lignes
+        // de l'accueil en permanence et on ne voit plus jamais ce qui arrive.
+        // On plafonne donc les "en cours", et chaque groupe recupere les places
+        // que l'autre n'utilise pas : pas de ligne vide s'il n'y a rien a venir.
+        const MAX_ACCUEIL = 5;
+        const LIGNES_RESERVEES_A_VENIR = 2;   // ce qui arrive garde toujours sa place
+
+        const enCours = processedRegular.filter(e => e._enCours);
+        const aVenir = processedRegular.filter(e => !e._enCours);
+
+        const budget = Math.max(0, MAX_ACCUEIL - processedRecurring.length);
+
+        // On reserve d'abord les lignes du bas pour les evenements a venir,
+        // on remplit le reste avec les evenements en cours, puis les places
+        // laissees libres reviennent a l'autre groupe.
+        let nbAVenir = Math.min(aVenir.length, LIGNES_RESERVEES_A_VENIR);
+        const nbEnCours = Math.min(enCours.length, budget - nbAVenir);
+        nbAVenir = Math.min(aVenir.length, budget - nbEnCours);
+
+        const allEvents = [
+            ...processedRecurring,
+            ...enCours.slice(0, nbEnCours),
+            ...aVenir.slice(0, nbAVenir)
+        ];
         
         if (!allEvents || allEvents.length === 0) {
             contentEl.innerHTML = '';
