@@ -5,16 +5,18 @@
 // === CACHE LOCAL CINÉMA ===
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
-function getCachedData(key) {
+function getCachedData(key, allowStale = false) {
     try {
         const cached = localStorage.getItem(key);
         if (!cached) return null;
         
         const { data, timestamp } = JSON.parse(cached);
-        if (Date.now() - timestamp > CACHE_DURATION) {
+        if (Date.now() - timestamp > CACHE_DURATION && !allowStale) {
             localStorage.removeItem(key);
             return null;
         }
+        // allowStale : on renvoie les données même périmées, pour affichage
+        // immédiat pendant que la version fraîche se charge en arrière-plan
         return data;
     } catch (e) {
         return null;
@@ -474,7 +476,37 @@ let currentFilms = [];
 let cinemaDateLabels = { capitole: "Aujourd'hui", magic: "Aujourd'hui" };
 
 async function initCinema() {
+    initCinemaSwipe();
     await loadCinema(currentCinema);
+}
+
+// Sur mobile : glisser vers la gauche/droite sur le widget cinéma
+// pour passer d'un cinéma à l'autre (Le Capitole ↔ Magic)
+function initCinemaSwipe() {
+    const section = document.querySelector('.cinema-section');
+    if (!section) return;
+    
+    let startX = 0;
+    let startY = 0;
+    
+    section.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+    }, { passive: true });
+    
+    section.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - startX;
+        const dy = e.changedTouches[0].clientY - startY;
+        
+        // Geste franchement horizontal (au moins 60px, et plus large que haut)
+        // pour ne pas confondre avec le défilement vertical de la page
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+            const target = dx < 0 ? 'magic' : 'capitole';
+            if (target !== currentCinema) {
+                switchCinema(target);
+            }
+        }
+    }, { passive: true });
 }
 
 async function loadCinema(cinemaKey) {
@@ -490,7 +522,7 @@ async function loadCinema(cinemaKey) {
     const cacheKey = `cinema_${cinemaKey}`;
     
     // Afficher le cache immédiatement si disponible (pas de flash)
-    const cachedFilms = getCachedData(cacheKey);
+    const cachedFilms = getCachedData(cacheKey, true);
     if (cachedFilms && cachedFilms.length > 0) {
         renderCinema(cachedFilms, cinemaKey);
     } else {
@@ -621,7 +653,9 @@ function renderCinema(films, cinemaKey = 'capitole') {
         ${showTip ? `
             <div class="cinema-tip" id="cinemaTip">
                 <span class="material-icons">touch_app</span>
-                <span>Cliquez sur un film pour voir la bande-annonce et réserver</span>
+                <span>${window.matchMedia('(pointer: coarse)').matches
+                    ? 'Touchez un film pour la bande-annonce \u2022 Glissez \u2190 \u2192 pour changer de cin\u00e9ma'
+                    : 'Cliquez sur un film pour voir la bande-annonce et r\u00e9server'}</span>
                 <button class="cinema-tip-close" onclick="dismissCinemaTip()">
                     <span class="material-icons">close</span>
                 </button>

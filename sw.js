@@ -4,7 +4,7 @@
 // Les messages de la console la reprennent automatiquement.
 // ============================================
 
-const CACHE_NAME = 'actu-media-v102';
+const CACHE_NAME = 'actu-media-v103';
 const VERSION = CACHE_NAME.split('-').pop();
 
 // Assets statiques à mettre en cache à l'installation
@@ -110,37 +110,21 @@ self.addEventListener('fetch', event => {
     // Network Only : API et pages admin (toujours besoin de données fraîches)
     if (NETWORK_ONLY.some(path => url.pathname.startsWith(path))) return;
 
-    // HTML → Network First (essaie le réseau, sinon le cache)
-    if (request.headers.get('accept')?.includes('text/html')) {
-        event.respondWith(
-            fetch(request)
-                .then(response => {
-                    if (response && response.status === 200) {
-                        const clone = response.clone();
-                        caches.open(CACHE_NAME).then(cache => {
-                            cache.put(request, clone).catch(() => {});
-                        });
-                    }
-                    return response;
-                })
-                .catch(() => caches.match(request).then(cached => cached || caches.match('/index.html')))
-        );
-        return;
-    }
-
-    // CSS et JS → Network First, comme le HTML.
+    // HTML, CSS et JS → Cache d'abord, mise à jour en arrière-plan
+    // (stale-while-revalidate).
     //
-    // C'est LE point qui cassait la mise en page a la premiere ouverture apres
-    // une mise a jour : le HTML arrivait du reseau (donc neuf) pendant que le
-    // CSS sortait du cache (donc ancien). Une section nouvelle comme la banniere
-    // se retrouvait sans style, l'image passait a sa taille naturelle et faisait
-    // deborder toute la page. Un rechargement corrigeait, puisque le cache avait
-    // entre-temps ete rafraichi en arriere-plan.
-    // Les deux doivent suivre la meme regle pour rester en phase.
-    if (/\.(css|js)$/i.test(url.pathname)) {
+    // Le site s'affiche INSTANTANÉMENT depuis le cache, pendant que la
+    // version fraîche est téléchargée en arrière-plan pour la prochaine
+    // ouverture. HTML, CSS et JS suivent tous la MÊME règle, donc ils
+    // restent en phase (jamais de HTML neuf avec un CSS ancien — c'était
+    // le bug de mise en page corrigé en v102).
+    // Après une mise à jour du site, les visiteurs la voient à leur
+    // 2e ouverture : c'est le compromis pour un affichage immédiat.
+    const isHTML = request.headers.get('accept')?.includes('text/html');
+    if (isHTML || /\.(css|js)$/i.test(url.pathname)) {
         event.respondWith(
-            fetch(request)
-                .then(response => {
+            caches.match(request).then(cached => {
+                const fetchPromise = fetch(request).then(response => {
                     if (response && response.status === 200) {
                         const clone = response.clone();
                         caches.open(CACHE_NAME).then(cache => {
@@ -148,8 +132,15 @@ self.addEventListener('fetch', event => {
                         });
                     }
                     return response;
-                })
-                .catch(() => caches.match(request))
+                }).catch(() => null);
+
+                // Cache immédiat si dispo, sinon on attend le réseau
+                return cached || fetchPromise.then(resp => {
+                    if (resp) return resp;
+                    // Hors ligne sans cache : page d'accueil pour le HTML
+                    return isHTML ? caches.match('/index.html') : Response.error();
+                });
+            })
         );
         return;
     }
