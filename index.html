@@ -9,6 +9,14 @@
          Doit rester en PREMIER pour bloquer le contenu
          ============================================ -->
     <style>
+        /* FILET DE SECURITE, avant toute feuille de style externe.
+           Si un CSS arrive en retard ou manque a l'appel, aucune image ne peut
+           depasser la largeur de l'ecran et faire deborder la page entiere.
+           C'est ce qui s'etait produit avec la banniere : sans son style, elle
+           s'affichait a sa taille naturelle de 1200 px. */
+        img { max-width: 100%; height: auto; }
+        html, body { overflow-x: hidden; }
+
         /* Bandeau discret pour les visiteurs qui arrivent depuis l'application
            Facebook, Instagram ou Messenger. Leur navigateur integre affiche le
            site normalement : on ne bloque plus rien, on signale seulement que

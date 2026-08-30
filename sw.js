@@ -4,7 +4,7 @@
 // Les messages de la console la reprennent automatiquement.
 // ============================================
 
-const CACHE_NAME = 'actu-media-v101';
+const CACHE_NAME = 'actu-media-v102';
 const VERSION = CACHE_NAME.split('-').pop();
 
 // Assets statiques à mettre en cache à l'installation
@@ -128,7 +128,33 @@ self.addEventListener('fetch', event => {
         return;
     }
 
-    // Assets (CSS, JS, images) → Cache First (rapide, puis met à jour en fond)
+    // CSS et JS → Network First, comme le HTML.
+    //
+    // C'est LE point qui cassait la mise en page a la premiere ouverture apres
+    // une mise a jour : le HTML arrivait du reseau (donc neuf) pendant que le
+    // CSS sortait du cache (donc ancien). Une section nouvelle comme la banniere
+    // se retrouvait sans style, l'image passait a sa taille naturelle et faisait
+    // deborder toute la page. Un rechargement corrigeait, puisque le cache avait
+    // entre-temps ete rafraichi en arriere-plan.
+    // Les deux doivent suivre la meme regle pour rester en phase.
+    if (/\.(css|js)$/i.test(url.pathname)) {
+        event.respondWith(
+            fetch(request)
+                .then(response => {
+                    if (response && response.status === 200) {
+                        const clone = response.clone();
+                        caches.open(CACHE_NAME).then(cache => {
+                            cache.put(request, clone).catch(() => {});
+                        });
+                    }
+                    return response;
+                })
+                .catch(() => caches.match(request))
+        );
+        return;
+    }
+
+    // Images, icones, polices → Cache First (leur nom change quand elles changent)
     event.respondWith(
         caches.match(request).then(cached => {
             // Lancer une mise à jour en arrière-plan
