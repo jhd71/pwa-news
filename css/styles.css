@@ -216,64 +216,12 @@ body {
     object-position: center 60%;
     /* La photo est prise au crépuscule : un léger coup de clair
        lui redonne du relief sans la dénaturer. */
-    filter: brightness(1.12) saturate(1.05);
-}
-
-/* Le dégradé sombre est porté par le bloc de texte lui-même :
-   plus simple et plus fiable qu'un pseudo-élément séparé. */
-.banniere-texte {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 3rem 1rem 0.85rem;
-    text-align: center;
-    line-height: 1.25;
-    background: linear-gradient(to bottom, rgba(6, 10, 22, 0) 0%, rgba(6, 10, 22, 0.55) 45%, rgba(6, 10, 22, 0.9) 100%);
-    pointer-events: none;
-}
-
-/* Sélecteur volontairement précis, et !important assumé :
-   il faut passer devant la règle générale qui force la couleur
-   de tous les <p> en thème clair (plus bas dans ce fichier). */
-.banniere .banniere-texte .banniere-lieu,
-[data-theme="light"] .banniere .banniere-texte .banniere-lieu {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.3rem;
-    margin: 0;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: #ffffff !important;
-    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
-}
-
-.banniere-lieu .material-icons {
-    font-size: 1rem;
-    color: var(--primary-light);
+    filter: brightness(1.08) saturate(1.05);
 }
 
 @media (min-width: 768px) {
     .banniere img {
         height: 280px;
-    }
-}
-
-/* Sur petit écran la bannière ne fait que 150 px : un voile de 3 rem
-   y occuperait un tiers de la hauteur. On le raccourcit. */
-@media (max-width: 767px) {
-    .banniere-texte {
-        padding: 1.6rem 0.75rem 0.7rem;
-        background: linear-gradient(to bottom, rgba(6, 10, 22, 0) 0%, rgba(6, 10, 22, 0.5) 50%, rgba(6, 10, 22, 0.85) 100%);
-    }
-
-    .banniere .banniere-texte .banniere-lieu,
-    [data-theme="light"] .banniere .banniere-texte .banniere-lieu {
-        font-size: 0.68rem;
-        letter-spacing: 0.06em;
     }
 }
 
