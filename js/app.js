@@ -2014,24 +2014,27 @@ async function initAgenda() {
         // que l'autre n'utilise pas : pas de ligne vide s'il n'y a rien a venir.
         const MAX_ACCUEIL = 5;
         const LIGNES_RESERVEES_A_VENIR = 2;   // ce qui arrive garde toujours sa place
-        const JOURS_MAX_EN_COURS = 30;        // au-dela, l'evenement reste dans l'agenda complet
+        const DUREE_MAX_JOURS = 30;           // au-dela, l'evenement vit dans l'agenda complet
         const MAX_EPINGLES = 3;               // garde-fou : un accueil entierement epingle n'informe plus
 
-        // Date limite pour qu'un evenement en cours ait droit a l'accueil.
-        // Une exposition qui court jusqu'en decembre resterait sinon affichee
-        // tous les jours pendant quatre mois, et plus personne ne la verrait.
-        const limite = new Date();
-        limite.setDate(limite.getDate() + JOURS_MAX_EN_COURS);
-        const limiteStr = `${limite.getFullYear()}-${String(limite.getMonth() + 1).padStart(2, '0')}-${String(limite.getDate()).padStart(2, '0')}`;
+        // Un evenement qui s'etale sur des mois n'est pas une actualite, c'est
+        // un decor : une exposition jusqu'au 30 decembre, un marche hebdomadaire
+        // saisi comme un evenement de quatre mois. Affiche tous les jours, il
+        // devient invisible et prend la place de ce qui change vraiment.
+        // On le laisse donc a l'agenda complet, quelle que soit sa categorie.
+        const dureeEnJours = (e) => {
+            if (!e.event_end_date || e.event_end_date === e.event_date) return 1;
+            const debut = new Date(e.event_date + 'T12:00:00');
+            const fin = new Date(e.event_end_date + 'T12:00:00');
+            return Math.round((fin - debut) / 86400000) + 1;
+        };
 
-        // Un evenement epingle passe avant tout et echappe a ces regles :
+        // Un evenement epingle passe avant tout et echappe a cette regle :
         // c'est un choix editorial, il prime sur les automatismes.
         const epingles = processedRegular.filter(e => e.pinned).slice(0, MAX_EPINGLES);
-        const autres = processedRegular.filter(e => !e.pinned);
+        const autres = processedRegular.filter(e => !e.pinned && dureeEnJours(e) <= DUREE_MAX_JOURS);
 
-        const enCours = autres.filter(e =>
-            e._enCours && (e.event_end_date || e.event_date) <= limiteStr
-        );
+        const enCours = autres.filter(e => e._enCours);
         const aVenir = autres.filter(e => !e._enCours);
 
         const budget = Math.max(0, MAX_ACCUEIL - processedRecurring.length - epingles.length);
