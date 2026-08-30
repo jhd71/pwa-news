@@ -1,8 +1,11 @@
 // ============================================
-// ACTU & MÉDIA - Service Worker v97
+// ACTU & MÉDIA - Service Worker
+// La version se change à UN SEUL endroit : CACHE_NAME ci-dessous.
+// Les messages de la console la reprennent automatiquement.
 // ============================================
 
-const CACHE_NAME = 'actu-media-v97';
+const CACHE_NAME = 'actu-media-v98';
+const VERSION = CACHE_NAME.split('-').pop();
 
 // Assets statiques à mettre en cache à l'installation
 // Ne PAS inclure les pages admin (toujours besoin de données fraîches)
@@ -59,7 +62,7 @@ const NETWORK_ONLY = [
 
 // Installation
 self.addEventListener('install', event => {
-    console.log('📦 SW v97: Installation');
+    console.log(`📦 SW ${VERSION}: Installation`);
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
@@ -81,7 +84,7 @@ self.addEventListener('install', event => {
 
 // Activation - supprime les anciens caches
 self.addEventListener('activate', event => {
-    console.log('🚀 SW v97: Activation');
+    console.log(`🚀 SW ${VERSION}: Activation`);
     event.waitUntil(
         caches.keys().then(keys => {
             return Promise.all(

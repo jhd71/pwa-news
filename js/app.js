@@ -1997,7 +1997,11 @@ async function initAgenda() {
                     : event.event_date
             }))
             .sort((a, b) => {
-                if (a._enCours !== b._enCours) return a._enCours ? 1 : -1;
+                // Un evenement EN COURS passe devant ceux a venir : c'est ce qui
+                // se passe aujourd'hui qui interesse le lecteur. L'ancien tri le
+                // renvoyait en fin de liste, ou le slice(0, 5) l'effacait de
+                // l'accueil des le jour de son ouverture.
+                if (a._enCours !== b._enCours) return a._enCours ? -1 : 1;
                 return a._displayDate.localeCompare(b._displayDate);
             });
         
