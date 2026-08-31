@@ -270,7 +270,19 @@ function applyTheme(theme) {
 // ============================================
 async function initNews() {
     const container = document.getElementById('newsTicker');
-    
+
+    // Afficher IMMÉDIATEMENT les articles gardés en cache local (même un peu
+    // anciens) : la rubrique apparaît sans attendre, pendant que la version
+    // fraîche se télécharge en arrière-plan. Même principe que le cinéma.
+    const cachedNews = getCachedData('news_articles', true);
+    if (cachedNews && cachedNews.length > 0) {
+        newsSlides = cachedNews;
+        newsCurrentSlide = 0;
+        renderNewsSlider(cachedNews);
+        initNewsNavigation();
+        startNewsAutoPlay();
+    }
+
     try {
         const response = await fetch(CONFIG.news.apiUrl);
         if (!response.ok) throw new Error('Erreur API');
@@ -278,17 +290,24 @@ async function initNews() {
         const articles = await response.json();
         
         if (articles && articles.length > 0) {
-            newsSlides = articles;
-            renderNewsSlider(articles);
-            initNewsNavigation();
-            startNewsAutoPlay();
+            setCachedData('news_articles', articles);
+            // Ne re-rendre que si le contenu a changé (évite un clignotement)
+            if (!cachedNews || JSON.stringify(articles) !== JSON.stringify(cachedNews)) {
+                newsSlides = articles;
+                newsCurrentSlide = 0;
+                renderNewsSlider(articles);
+                initNewsNavigation();
+                startNewsAutoPlay();
+            }
             console.log(`📰 ${articles.length} articles chargés`);
-        } else {
+        } else if (!cachedNews || cachedNews.length === 0) {
             showNewsError('Aucune actualité disponible');
         }
     } catch (error) {
         console.error('❌ Erreur news:', error);
-        showNewsError('Impossible de charger les actualités');
+        if (!cachedNews || cachedNews.length === 0) {
+            showNewsError('Impossible de charger les actualités');
+        }
     }
 }
 

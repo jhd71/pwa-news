@@ -71,7 +71,14 @@ export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept');
-    
+
+    // Cache CDN Vercel : la réponse est gardée 10 min sur les serveurs de
+    // Vercel et servie instantanément à TOUS les visiteurs, même quand la
+    // fonction est relancée à froid (le cache en mémoire ci-dessous, lui,
+    // est perdu à chaque redémarrage). Passé 10 min, l'ancienne réponse est
+    // encore servie pendant 1 h le temps de se régénérer en arrière-plan.
+    res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=3600');
+
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
