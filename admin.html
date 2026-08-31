@@ -2195,7 +2195,7 @@
                         <input type="file" id="pubAdditionalFile" multiple accept="image/*" style="display:none;">
                         <input type="file" id="pubAdditionalCamera" accept="image/*" capture="environment" style="display:none;">
                         <div id="pubAdditionalPreviews" class="edit-additional-previews"></div>
-                        <div class="form-hint" id="pubAdditionalHint">Jusqu'à 2 images en plus de l'image principale</div>
+                        <div class="form-hint" id="pubAdditionalHint">Jusqu'à 4 images en plus de l'image principale</div>
                     </div>
                     <div class="form-group" style="margin-top:1rem;">
                         <label class="notif-checkbox-label">
@@ -2771,7 +2771,7 @@
                     <div class="edit-additional-previews" id="editAdditionalPreviews"></div>
                     <div class="edit-upload-zone" id="editUploadZone">
                         <span class="material-icons" style="font-size:2rem;color:var(--text-muted);">cloud_upload</span>
-                        <p style="color:var(--text-secondary);font-size:0.85rem;margin:0.25rem 0 0;">Ajouter des images (max 3 au total)</p>
+                        <p style="color:var(--text-secondary);font-size:0.85rem;margin:0.25rem 0 0;">Ajouter des images (max 5 au total)</p>
                         <input type="file" id="editFileInput" multiple accept="image/*" style="display:none;">
                     </div>
                 </div>
@@ -3371,7 +3371,7 @@
         });
         
         async function handlePubAdditionalFiles(files) {
-            const maxAdditional = 2;
+            const maxAdditional = 4;
             const remaining = maxAdditional - pubAdditionalImages.length;
             
             if (remaining <= 0) {
@@ -3454,9 +3454,9 @@
                 </div>
             `).join('');
             
-            hint.textContent = pubAdditionalImages.length >= 2 
-                ? '✅ Maximum atteint (2 images supplémentaires)' 
-                : `Encore ${2 - pubAdditionalImages.length} image(s) possible(s)`;
+            hint.textContent = pubAdditionalImages.length >= 4 
+                ? '✅ Maximum atteint (4 images supplémentaires)' 
+                : `Encore ${4 - pubAdditionalImages.length} image(s) possible(s)`;
         }
         
         function removePubAdditional(index) {
@@ -3594,7 +3594,7 @@
                 removeImage();
                 pubAdditionalImages = [];
                 document.getElementById('pubAdditionalPreviews').innerHTML = '';
-                document.getElementById('pubAdditionalHint').textContent = "Jusqu'à 2 images en plus de l'image principale";
+                document.getElementById('pubAdditionalHint').textContent = "Jusqu'à 4 images en plus de l'image principale";
                 loadPublishedArticles();
             } catch (error) {
                 console.error(error);
@@ -3961,11 +3961,11 @@
         async function handleEditFiles(files) {
             const mainImage = document.getElementById('editImage').value.trim();
             const totalCurrent = (mainImage ? 1 : 0) + editAdditionalImages.length;
-            const maxTotal = 3;
+            const maxTotal = 5;
             const remaining = maxTotal - totalCurrent;
             
             if (remaining <= 0) {
-                showToast('⚠️ Maximum 3 images au total', true);
+                showToast('⚠️ Maximum 5 images au total', true);
                 return;
             }
             
@@ -4057,7 +4057,7 @@
                 </div>
             `).join('');
             
-            uploadZone.style.display = totalImages >= 3 ? 'none' : 'flex';
+            uploadZone.style.display = totalImages >= 5 ? 'none' : 'flex';
         }
         
         function removeEditAdditionalImage(index) {
