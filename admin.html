@@ -1325,8 +1325,10 @@
         }
         
         .article-images-row img {
-            height: 80px;
-            width: auto;
+            /* Vignettes carrées : une photo verticale ne devient plus
+               un filet étroit (avant : height 80px + width auto) */
+            height: 130px;
+            width: 130px;
             border-radius: 6px;
             object-fit: cover;
             cursor: pointer;
