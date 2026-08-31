@@ -798,7 +798,8 @@
             display: none;
             position: fixed;
             inset: 0;
-            z-index: 10001;
+            /* 10002 : doit passer au-dessus du modal d'édition (10001) */
+            z-index: 10002;
             background: rgba(0, 0, 0, 0.95);
             flex-direction: column;
         }
@@ -1382,6 +1383,37 @@
         
         .edit-additional-remove .material-icons {
             font-size: 0.8rem;
+        }
+
+        /* Boutons pivoter / recadrer sous chaque miniature d'image supplémentaire */
+        .edit-additional-tools {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            padding: 4px 0;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .edit-additional-tool {
+            width: 26px;
+            height: 26px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.9);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .edit-additional-tool:hover {
+            background: rgba(99, 102, 241, 1);
+        }
+
+        .edit-additional-tool .material-icons {
+            font-size: 0.9rem;
         }
 		
         /* Mobile */
@@ -3007,12 +3039,24 @@
         let compressedImageBlob = null;
         let cropper = null;
         let pubAdditionalImages = [];
+        // Quand on recadre une image SUPPLÉMENTAIRE, cet index dit laquelle ;
+        // null = on recadre l'image principale (comportement d'origine).
+        // cropAdditionalListe dit de quelle liste elle vient :
+        // 'pub' = onglet Publier, 'edit' = modal de modification d'une actu
+        let cropAdditionalIndex = null;
+        let cropAdditionalListe = 'pub';
         
         // === RECADRAGE ===
-        function openCropModal() {
-            const img = document.getElementById('previewImg');
+        function openCropModal(additionalIndex, liste) {
+            cropAdditionalIndex = (typeof additionalIndex === 'number') ? additionalIndex : null;
+            cropAdditionalListe = liste || 'pub';
             const cropImage = document.getElementById('cropImage');
-            cropImage.src = img.src;
+            // crossOrigin permet de recadrer une image déjà en ligne (Supabase)
+            cropImage.crossOrigin = 'anonymous';
+            const tableau = (cropAdditionalListe === 'edit') ? editAdditionalImages : pubAdditionalImages;
+            cropImage.src = (cropAdditionalIndex !== null)
+                ? tableau[cropAdditionalIndex]
+                : document.getElementById('previewImg').src;
             
             document.getElementById('cropModal').classList.add('show');
             
@@ -3042,6 +3086,7 @@
         
         function closeCropModal() {
             document.getElementById('cropModal').classList.remove('show');
+            cropAdditionalIndex = null;
             if (cropper) {
                 cropper.destroy();
                 cropper = null;
@@ -3066,7 +3111,32 @@
                 imageSmoothingQuality: 'high'
             });
             
-            canvas.toBlob(function(blob) {
+            canvas.toBlob(async function(blob) {
+                // Cas image SUPPLÉMENTAIRE : on renvoie la version recadrée
+                // en ligne et on remplace l'ancienne dans la liste
+                if (cropAdditionalIndex !== null) {
+                    const index = cropAdditionalIndex;
+                    const liste = cropAdditionalListe;
+                    closeCropModal();
+                    try {
+                        showToast('⏳ Enregistrement...');
+                        if (liste === 'edit') {
+                            const url = await uploadEditImage(blob);
+                            editAdditionalImages[index] = url;
+                            renderEditAdditionalPreviews();
+                        } else {
+                            const url = await uploadImage(blob);
+                            pubAdditionalImages[index] = url;
+                            renderPubAdditionalPreviews();
+                        }
+                        showToast('Image recadrée');
+                    } catch (err) {
+                        showToast('❌ Erreur : ' + err.message, true);
+                    }
+                    return;
+                }
+
+                // Cas image principale (comportement d'origine)
                 compressedImageBlob = blob;
                 
                 const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
@@ -3370,6 +3440,17 @@
                     <button type="button" class="edit-additional-remove" onclick="removePubAdditional(${i})">
                         <span class="material-icons">close</span>
                     </button>
+                    <div class="edit-additional-tools">
+                        <button type="button" class="edit-additional-tool" onclick="rotatePubAdditional(${i}, -90)" title="Pivoter à gauche">
+                            <span class="material-icons">rotate_left</span>
+                        </button>
+                        <button type="button" class="edit-additional-tool" onclick="openCropModal(${i})" title="Recadrer">
+                            <span class="material-icons">crop</span>
+                        </button>
+                        <button type="button" class="edit-additional-tool" onclick="rotatePubAdditional(${i}, 90)" title="Pivoter à droite">
+                            <span class="material-icons">rotate_right</span>
+                        </button>
+                    </div>
                 </div>
             `).join('');
             
@@ -3381,6 +3462,59 @@
         function removePubAdditional(index) {
             pubAdditionalImages.splice(index, 1);
             renderPubAdditionalPreviews();
+        }
+
+        // Pivoter une image supplémentaire : on la recharge, on la tourne
+        // sur un canvas, puis on renvoie la nouvelle version en ligne.
+        // liste : 'pub' = onglet Publier, 'edit' = modal de modification
+        function rotateAdditionalImage(liste, index, degrees) {
+            const tableau = (liste === 'edit') ? editAdditionalImages : pubAdditionalImages;
+            const image = new Image();
+            image.crossOrigin = 'anonymous';
+            image.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                if (Math.abs(degrees) === 90) {
+                    canvas.width = image.height;
+                    canvas.height = image.width;
+                } else {
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                }
+
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate((degrees * Math.PI) / 180);
+                ctx.drawImage(image, -image.width / 2, -image.height / 2);
+
+                canvas.toBlob(async function(blob) {
+                    try {
+                        showToast('⏳ Enregistrement...');
+                        if (liste === 'edit') {
+                            const url = await uploadEditImage(blob);
+                            editAdditionalImages[index] = url;
+                            renderEditAdditionalPreviews();
+                        } else {
+                            const url = await uploadImage(blob);
+                            pubAdditionalImages[index] = url;
+                            renderPubAdditionalPreviews();
+                        }
+                        showToast('Image pivotée');
+                    } catch (err) {
+                        showToast('❌ Erreur : ' + err.message, true);
+                    }
+                }, 'image/jpeg', 0.85);
+            };
+            image.onerror = function() {
+                showToast('❌ Impossible de charger cette image', true);
+            };
+            // ?r=... force un rechargement propre (compatible canvas)
+            const url = tableau[index];
+            image.src = url + (url.includes('?') ? '&' : '?') + 'r=' + Date.now();
+        }
+
+        function rotatePubAdditional(index, degrees) {
+            rotateAdditionalImage('pub', index, degrees);
         }
 		
         document.getElementById('publishForm').addEventListener('submit', async (e) => {
@@ -3909,6 +4043,17 @@
                     <button type="button" class="edit-additional-remove" onclick="removeEditAdditionalImage(${i})">
                         <span class="material-icons">close</span>
                     </button>
+                    <div class="edit-additional-tools">
+                        <button type="button" class="edit-additional-tool" onclick="rotateAdditionalImage('edit', ${i}, -90)" title="Pivoter à gauche">
+                            <span class="material-icons">rotate_left</span>
+                        </button>
+                        <button type="button" class="edit-additional-tool" onclick="openCropModal(${i}, 'edit')" title="Recadrer">
+                            <span class="material-icons">crop</span>
+                        </button>
+                        <button type="button" class="edit-additional-tool" onclick="rotateAdditionalImage('edit', ${i}, 90)" title="Pivoter à droite">
+                            <span class="material-icons">rotate_right</span>
+                        </button>
+                    </div>
                 </div>
             `).join('');
             
