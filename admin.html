@@ -1245,9 +1245,25 @@
         
         #editImagePreview img {
             max-width: 100%;
-            max-height: 200px;
+            max-height: 320px;
             border-radius: 8px;
             border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+        }
+
+        /* Barre pivoter / recadrer sous l'aperçu de l'image principale */
+        .edit-main-tools {
+            display: flex;
+            gap: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .edit-main-tools .edit-additional-tool {
+            width: 34px;
+            height: 34px;
+        }
+
+        .edit-main-tools .edit-additional-tool .material-icons {
+            font-size: 1.1rem;
         }
         
         .edit-modal-actions {
@@ -3053,10 +3069,16 @@
             const cropImage = document.getElementById('cropImage');
             // crossOrigin permet de recadrer une image déjà en ligne (Supabase)
             cropImage.crossOrigin = 'anonymous';
-            const tableau = (cropAdditionalListe === 'edit') ? editAdditionalImages : pubAdditionalImages;
-            cropImage.src = (cropAdditionalIndex !== null)
-                ? tableau[cropAdditionalIndex]
-                : document.getElementById('previewImg').src;
+            let source;
+            if (cropAdditionalIndex === null) {
+                source = document.getElementById('previewImg').src;
+            } else if (cropAdditionalListe === 'editMain') {
+                source = document.getElementById('editImage').value.trim();
+            } else {
+                const tableau = (cropAdditionalListe === 'edit') ? editAdditionalImages : pubAdditionalImages;
+                source = tableau[cropAdditionalIndex];
+            }
+            cropImage.src = source;
             
             document.getElementById('cropModal').classList.add('show');
             
@@ -3120,7 +3142,11 @@
                     closeCropModal();
                     try {
                         showToast('⏳ Enregistrement...');
-                        if (liste === 'edit') {
+                        if (liste === 'editMain') {
+                            const url = await uploadEditImage(blob);
+                            document.getElementById('editImage').value = url;
+                            updateEditImagePreview();
+                        } else if (liste === 'edit') {
                             const url = await uploadEditImage(blob);
                             editAdditionalImages[index] = url;
                             renderEditAdditionalPreviews();
@@ -4069,10 +4095,66 @@
             const url = document.getElementById('editImage').value.trim();
             const preview = document.getElementById('editImagePreview');
             if (url) {
-                preview.innerHTML = `<img src="${url}" alt="Aperçu" onerror="this.style.display='none'">`;
+                preview.innerHTML = `
+                    <img src="${url}" alt="Aperçu" onerror="this.style.display='none'">
+                    <div class="edit-main-tools">
+                        <button type="button" class="edit-additional-tool" onclick="rotateEditMainImage(-90)" title="Pivoter à gauche">
+                            <span class="material-icons">rotate_left</span>
+                        </button>
+                        <button type="button" class="edit-additional-tool" onclick="openCropModal(0, 'editMain')" title="Recadrer">
+                            <span class="material-icons">crop</span>
+                        </button>
+                        <button type="button" class="edit-additional-tool" onclick="rotateEditMainImage(90)" title="Pivoter à droite">
+                            <span class="material-icons">rotate_right</span>
+                        </button>
+                    </div>`;
             } else {
                 preview.innerHTML = '';
             }
+        }
+
+        // Pivoter l'image PRINCIPALE de la fenêtre de modification :
+        // même principe que les images supplémentaires, mais la nouvelle
+        // adresse est écrite dans le champ "URL de l'image"
+        function rotateEditMainImage(degrees) {
+            const champ = document.getElementById('editImage');
+            const urlActuelle = champ.value.trim();
+            if (!urlActuelle) return;
+
+            const image = new Image();
+            image.crossOrigin = 'anonymous';
+            image.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                if (Math.abs(degrees) === 90) {
+                    canvas.width = image.height;
+                    canvas.height = image.width;
+                } else {
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                }
+
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate((degrees * Math.PI) / 180);
+                ctx.drawImage(image, -image.width / 2, -image.height / 2);
+
+                canvas.toBlob(async function(blob) {
+                    try {
+                        showToast('⏳ Enregistrement...');
+                        const url = await uploadEditImage(blob);
+                        champ.value = url;
+                        updateEditImagePreview();
+                        showToast('Image pivotée');
+                    } catch (err) {
+                        showToast('❌ Erreur : ' + err.message, true);
+                    }
+                }, 'image/jpeg', 0.85);
+            };
+            image.onerror = function() {
+                showToast('❌ Impossible de charger cette image', true);
+            };
+            image.src = urlActuelle + (urlActuelle.includes('?') ? '&' : '?') + 'r=' + Date.now();
         }
         
         // Mise à jour de l'aperçu quand l'URL change
