@@ -2019,12 +2019,38 @@
 		
 		lightbox.classList.add('show');
 		document.body.style.overflow = 'hidden';
+
+		// On ajoute une entrée dans l'historique : le bouton Retour du téléphone
+		// referme alors l'image au lieu de quitter la page.
+		if (!lightboxDansHistorique) {
+			lightboxDansHistorique = true;
+			history.pushState({ lightbox: true }, '');
+		}
 	}
-        
-        function closeLightbox() {
+
+        // Vrai quand une entrée d'historique a été ajoutée pour l'image ouverte
+        let lightboxDansHistorique = false;
+
+        function fermerLightboxSansHistorique() {
             document.getElementById('imageLightbox').classList.remove('show');
             document.body.style.overflow = '';
         }
+        
+        function closeLightbox() {
+            fermerLightboxSansHistorique();
+            if (lightboxDansHistorique) {
+                lightboxDansHistorique = false;
+                history.back();
+            }
+        }
+
+        // Bouton Retour du téléphone (ou du navigateur)
+        window.addEventListener('popstate', () => {
+            if (lightboxDansHistorique) {
+                lightboxDansHistorique = false;
+                fermerLightboxSansHistorique();
+            }
+        });
         
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeLightbox();

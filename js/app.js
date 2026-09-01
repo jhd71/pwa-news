@@ -1730,7 +1730,17 @@ function openImageModal(imageUrl, sourceName = '') {
     
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
+
+    // On ajoute une entrée dans l'historique : le bouton Retour du téléphone
+    // referme alors l'image au lieu de quitter la page.
+    if (!imageModalDansHistorique) {
+        imageModalDansHistorique = true;
+        history.pushState({ imageModal: true }, '');
+    }
 }
+
+// Vrai quand une entrée d'historique a été ajoutée pour l'image ouverte
+let imageModalDansHistorique = false;
 
 function closeImageModal() {
     const modal = document.getElementById('imageModal');
@@ -1738,7 +1748,32 @@ function closeImageModal() {
         modal.classList.remove('show');
         document.body.style.overflow = '';
     }
+    // Si l'entrée d'historique est encore là, on la retire :
+    // history.back() rappellera popstate, qui ne fera rien de plus.
+    if (imageModalDansHistorique) {
+        imageModalDansHistorique = false;
+        history.back();
+    }
 }
+
+// Bouton Retour du téléphone (ou du navigateur)
+window.addEventListener('popstate', () => {
+    if (imageModalDansHistorique) {
+        imageModalDansHistorique = false;
+        const modal = document.getElementById('imageModal');
+        if (modal) {
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+    }
+});
+
+// Touche Échap sur ordinateur
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const modal = document.getElementById('imageModal');
+    if (modal && modal.classList.contains('show')) closeImageModal();
+});
 
 // ============================================
 // RAFRAÎCHISSEMENT PÉRIODIQUE
