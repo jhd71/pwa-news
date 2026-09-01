@@ -1257,6 +1257,10 @@ function showSimpleToast(message) {
 // ============================================
 // CARROUSEL IMAGES
 // ============================================
+// Registre des galeries : la visionneuse a besoin de toute la série
+// d'images d'une info, pas seulement de celle sur laquelle on a cliqué.
+window.__galeries = window.__galeries || {};
+
 function renderCommunityImages(item) {
     const allImages = [];
     if (item.image_url) allImages.push(item.image_url);
@@ -1264,13 +1268,15 @@ function renderCommunityImages(item) {
         allImages.push(...item.additional_images);
     }
     
+    window.__galeries[item.id] = allImages;
+    
     if (allImages.length === 0) return '';
     
     const sourceName = (item.source_name || '').replace(/'/g, "\\'");
     
     // UNE seule image → affichage simple (comme avant)
     if (allImages.length === 1) {
-        return `<div class="community-image-wrapper"><div class="community-image-inner" onclick="event.stopPropagation(); openImageModal('${allImages[0].replace(/'/g, "\\'")}', '${sourceName}')"><img src="${allImages[0]}" alt="${escapeHtml(item.title)}" class="community-item-image" onerror="this.parentElement.parentElement.style.display='none'"><div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>${item.source_name ? `<div class="community-image-credit">📷 ${escapeHtml(item.source_name)}</div>` : ''}</div></div>`;
+        return `<div class="community-image-wrapper"><div class="community-image-inner" onclick="event.stopPropagation(); openImageModal('${item.id}', 0, '${sourceName}')"><img src="${allImages[0]}" alt="${escapeHtml(item.title)}" class="community-item-image" onerror="this.parentElement.parentElement.style.display='none'"><div class="community-image-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>${item.source_name ? `<div class="community-image-credit">📷 ${escapeHtml(item.source_name)}</div>` : ''}</div></div>`;
     }
     
     // PLUSIEURS images → carrousel
@@ -1278,7 +1284,7 @@ function renderCommunityImages(item) {
         <div class="carousel-slides">
             ${allImages.map((img, i) => `
                 <div class="carousel-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
-                    <div class="carousel-slide-inner" onclick="event.stopPropagation(); openImageModal('${img.replace(/'/g, "\\'")}', '${sourceName}')">
+                    <div class="carousel-slide-inner" onclick="event.stopPropagation(); openImageModal('${item.id}', ${i}, '${sourceName}')">
                         <img src="${img}" alt="Image ${i + 1}">
                         <div class="carousel-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>
                     </div>
@@ -1697,7 +1703,23 @@ async function toggleLike(newsId, btn) {
 }
 
 // Fonction pour ouvrir une image en grand
-function openImageModal(imageUrl, sourceName = '') {
+// État de la visionneuse : la série affichée et l'image en cours
+let modalImages = [];
+let modalIndex = 0;
+
+// ref : identifiant d'une info du registre __galeries, ou directement une URL
+function openImageModal(ref, index = 0, sourceName = '') {
+    // Compatibilité : un appel avec une URL directe reste possible
+    if (typeof ref === 'string' && (ref.startsWith('http') || ref.startsWith('/'))) {
+        modalImages = [ref];
+        modalIndex = 0;
+        if (typeof index === 'string') sourceName = index;
+    } else {
+        modalImages = window.__galeries[ref] || [];
+        modalIndex = index;
+    }
+    if (modalImages.length === 0) return;
+
     // Créer le modal s'il n'existe pas
     let modal = document.getElementById('imageModal');
     if (!modal) {
@@ -1710,15 +1732,21 @@ function openImageModal(imageUrl, sourceName = '') {
                 <button class="image-modal-close" onclick="closeImageModal()">
                     <span class="material-icons">close</span>
                 </button>
+                <button class="image-modal-arrow prev" onclick="event.stopPropagation(); modalNav(-1)">
+                    <span class="material-icons">chevron_left</span>
+                </button>
                 <img id="modalImage" src="" alt="Image">
+                <button class="image-modal-arrow next" onclick="event.stopPropagation(); modalNav(1)">
+                    <span class="material-icons">chevron_right</span>
+                </button>
+                <div id="modalCounter" class="image-modal-counter"></div>
                 <div id="modalImageCredit" class="image-modal-credit"></div>
             </div>
         `;
         document.body.appendChild(modal);
+        activerBalayageModal(modal);
     }
-    
-    document.getElementById('modalImage').src = imageUrl;
-    
+
     // Afficher le crédit si disponible
     const creditEl = document.getElementById('modalImageCredit');
     if (sourceName && sourceName.trim() !== '') {
@@ -1727,7 +1755,9 @@ function openImageModal(imageUrl, sourceName = '') {
     } else {
         creditEl.style.display = 'none';
     }
-    
+
+    majImageModal();
+
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
 
@@ -1737,6 +1767,42 @@ function openImageModal(imageUrl, sourceName = '') {
         imageModalDansHistorique = true;
         history.pushState({ imageModal: true }, '');
     }
+}
+
+// Affiche l'image courante et masque les flèches s'il n'y en a qu'une
+function majImageModal() {
+    const img = document.getElementById('modalImage');
+    if (img) img.src = modalImages[modalIndex];
+
+    const plusieurs = modalImages.length > 1;
+    document.querySelectorAll('.image-modal-arrow').forEach(b => {
+        b.style.display = plusieurs ? 'flex' : 'none';
+    });
+
+    const compteur = document.getElementById('modalCounter');
+    if (compteur) {
+        compteur.textContent = `${modalIndex + 1} / ${modalImages.length}`;
+        compteur.style.display = plusieurs ? 'block' : 'none';
+    }
+}
+
+// Image suivante (1) ou précédente (-1), en boucle
+function modalNav(sens) {
+    if (modalImages.length < 2) return;
+    modalIndex = (modalIndex + sens + modalImages.length) % modalImages.length;
+    majImageModal();
+}
+
+// Balayage horizontal au doigt
+function activerBalayageModal(modal) {
+    let departX = 0;
+    modal.addEventListener('touchstart', e => {
+        departX = e.changedTouches[0].clientX;
+    }, { passive: true });
+    modal.addEventListener('touchend', e => {
+        const delta = e.changedTouches[0].clientX - departX;
+        if (Math.abs(delta) > 50) modalNav(delta < 0 ? 1 : -1);
+    }, { passive: true });
 }
 
 // Vrai quand une entrée d'historique a été ajoutée pour l'image ouverte
@@ -1768,11 +1834,13 @@ window.addEventListener('popstate', () => {
     }
 });
 
-// Touche Échap sur ordinateur
+// Touche Échap et flèches du clavier sur ordinateur
 document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape') return;
     const modal = document.getElementById('imageModal');
-    if (modal && modal.classList.contains('show')) closeImageModal();
+    if (!modal || !modal.classList.contains('show')) return;
+    if (e.key === 'Escape') closeImageModal();
+    if (e.key === 'ArrowRight') modalNav(1);
+    if (e.key === 'ArrowLeft') modalNav(-1);
 });
 
 // ============================================
@@ -2272,6 +2340,7 @@ window.toggleCinemaFilms = toggleCinemaFilms;
 window.openFilmModal = openFilmModal;
 window.closeFilmModal = closeFilmModal;
 window.openImageModal = openImageModal;
+window.modalNav = modalNav;
 window.closeImageModal = closeImageModal;
 
 // ============================================
