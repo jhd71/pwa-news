@@ -3247,6 +3247,23 @@ p,
     color: var(--text-secondary);
 }
 
+/* Étiquette de catégorie : l'émoji seul ne dit rien au lecteur */
+.community-item-type {
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--primary) 16%, transparent);
+    color: var(--primary-light);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+[data-theme="light"] .community-item-type {
+    color: var(--primary);
+}
+
 .community-item-separator {
     color: var(--text-muted);
     font-weight: 300;

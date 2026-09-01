@@ -1094,9 +1094,10 @@ async function initCommunity() {
             return `
             <div class="community-item ${item.pinned ? 'pinned' : ''}" data-id="${item.id}">
                 ${item.pinned ? '<div class="community-pinned-badge"><span class="material-icons">push_pin</span> Épinglé</div>' : ''}
-                <!-- HEADER : Emoji + Auteur + Date -->
+                <!-- HEADER : Emoji + Catégorie + Auteur + Date -->
                 <div class="community-item-header">
                     <span class="community-item-icon">${getCommunityIcon(item.type)}</span>
+                    <span class="community-item-type">${getCommunityLabel(item.type)}</span>
                     <span class="community-item-author">${escapeHtml(item.author || 'Actu & Média')}</span>
                     <span class="community-item-separator">·</span>
                     <span class="community-item-date">${formatCommunityDate(item.created_at)}</span>
@@ -1351,6 +1352,33 @@ function getCommunityIcon(type) {
         'autre': '📋'
     };
     return icons[type] || '📰';
+}
+
+// Le libellé affiché à côté de l'icône : seul l'émoji ne suffit pas
+// à faire comprendre la catégorie au lecteur.
+// ⚠ À garder identique à getInfoLabel() dans infos.html
+function getCommunityLabel(type) {
+    const labels = {
+        'actualite': 'Actualité',
+        'evenement': 'Événement',
+        'sport': 'Sport',
+        'culture': 'Culture',
+        'economie': 'Économie',
+        'solidarite': 'Solidarité',
+        'travaux': 'Travaux',
+        'environnement': 'Environnement',
+        'education': 'Éducation',
+        'pratique': 'Info pratique',
+        'insolite': 'Insolite',
+        'photo': 'Photo / Vidéo',
+        'perdu': 'Perdu / Trouvé',
+        // anciens types encore possibles en base
+        'alerte': 'Alerte',
+        'annonce': 'Annonce',
+        'bon-plan': 'Bon plan',
+        'autre': 'Autre'
+    };
+    return labels[type] || 'Actualité';
 }
 
 function formatCommunityDate(dateStr) {

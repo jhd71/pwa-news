@@ -237,6 +237,23 @@
             font-weight: 600;
             color: var(--text-secondary);
         }
+
+        /* Étiquette de catégorie : l'émoji seul ne dit rien au lecteur */
+        .info-card-type {
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--primary) 16%, transparent);
+            color: var(--primary-light);
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        [data-theme="light"] .info-card-type {
+            color: var(--primary);
+        }
         
         .info-card-date {
             margin-left: auto;
@@ -1542,6 +1559,7 @@
         // ============================================
         function renderInfoCard(item) {
             const icon = getInfoIcon(item.type);
+            const typeLabel = getInfoLabel(item.type);
             const date = formatDate(item.created_at);
             const commentCount = commentCounts[item.id] || 0;
             const likeCount = likeCounts[item.id] || 0;
@@ -1552,6 +1570,7 @@
                     ${item.pinned ? '<div class="pinned-badge"><span class="material-icons">push_pin</span> Épinglé</div>' : ''}
                     <div class="info-card-header">
                         <span class="info-card-icon">${icon}</span>
+                        <span class="info-card-type">${typeLabel}</span>
                         <span class="info-card-author">${escapeHtml(item.author || 'Anonyme')}</span>
                         <span class="info-card-date">${date}</span>
                     </div>
@@ -1643,6 +1662,32 @@
                 'autre': '📋'
             };
             return icons[type] || '📰';
+        }
+
+        // Le libellé affiché à côté de l'icône : seul l'émoji ne suffit pas
+        // à faire comprendre la catégorie au lecteur.
+        function getInfoLabel(type) {
+            const labels = {
+                'actualite': 'Actualité',
+                'evenement': 'Événement',
+                'sport': 'Sport',
+                'culture': 'Culture',
+                'economie': 'Économie',
+                'solidarite': 'Solidarité',
+                'travaux': 'Travaux',
+                'environnement': 'Environnement',
+                'education': 'Éducation',
+                'pratique': 'Info pratique',
+                'insolite': 'Insolite',
+                'photo': 'Photo / Vidéo',
+                'perdu': 'Perdu / Trouvé',
+                // anciens types encore possibles en base
+                'alerte': 'Alerte',
+                'annonce': 'Annonce',
+                'bon-plan': 'Bon plan',
+                'autre': 'Autre'
+            };
+            return labels[type] || 'Actualité';
         }
         
         function formatDate(dateStr) {
