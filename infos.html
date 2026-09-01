@@ -826,12 +826,25 @@
         }
         
         .lightbox-close {
-            position: absolute;
-            top: 1rem;
+            position: fixed;
+            top: calc(1rem + env(safe-area-inset-top, 0px));
             right: 1rem;
-            font-size: 2rem;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Fond opaque : un simple caractère blanc disparaît
+               dès que la photo derrière est claire. */
+            background: rgba(0, 0, 0, 0.75);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            font-size: 1.9rem;
+            line-height: 1;
             color: white;
             cursor: pointer;
+            z-index: 10;
         }
         
         /* Responsive */
