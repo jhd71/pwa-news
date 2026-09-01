@@ -620,7 +620,7 @@
 /* Le numéro doit sauter aux yeux avant le libellé */
 .emergency-info strong {
     display: block;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     letter-spacing: -0.01em;
     margin-bottom: 0.15rem;
