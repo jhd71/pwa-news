@@ -846,6 +846,47 @@
             cursor: pointer;
             z-index: 10;
         }
+
+        /* Flèches de navigation entre les images d'une même info */
+        .lightbox-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .lightbox-arrow.prev { left: 0.5rem; }
+        .lightbox-arrow.next { right: 0.5rem; }
+
+        @media (hover: hover) {
+            .lightbox-arrow:hover {
+                background: rgba(0, 0, 0, 0.85);
+            }
+        }
+
+        .lightbox-counter {
+            position: fixed;
+            top: calc(1.4rem + env(safe-area-inset-top, 0px));
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.2rem 0.7rem;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.65);
+            color: white;
+            font-size: 0.78rem;
+            font-weight: 600;
+            z-index: 10;
+        }
         
         /* Responsive */
         @media (max-width: 480px) {
@@ -1386,7 +1427,14 @@
 	<div id="imageLightbox" class="lightbox" onclick="closeLightbox()">
 		<span class="lightbox-close">&times;</span>
 		<div class="lightbox-image-wrapper" onclick="event.stopPropagation()">
+			<button class="lightbox-arrow prev" onclick="event.stopPropagation(); lightboxNav(-1)">
+				<span class="material-icons">chevron_left</span>
+			</button>
 			<img id="lightboxImage" class="lightbox-image" src="" alt="">
+			<button class="lightbox-arrow next" onclick="event.stopPropagation(); lightboxNav(1)">
+				<span class="material-icons">chevron_right</span>
+			</button>
+			<div id="lightboxCounter" class="lightbox-counter"></div>
 			<div id="lightboxCredit" class="lightbox-credit" style="display: none;"></div>
 		</div>
 	</div>
@@ -1765,12 +1813,18 @@
 		// ============================================
         // CARROUSEL MULTI-IMAGES
         // ============================================
+        // Registre des galeries : la visionneuse a besoin de toute la série
+        // d'images d'une info, pas seulement de celle sur laquelle on a cliqué.
+        window.__galeries = window.__galeries || {};
+
         function renderInfoImages(item) {
             const allImages = [];
             if (item.image_url) allImages.push(item.image_url);
             if (item.additional_images && item.additional_images.length > 0) {
                 allImages.push(...item.additional_images);
             }
+            
+            window.__galeries[item.id] = allImages;
             
             if (allImages.length === 0) return '';
             
@@ -1779,7 +1833,7 @@
             // UNE seule image → affichage classique
             if (allImages.length === 1) {
                 return `<div class="info-card-image-wrapper">
-                    <div class="info-card-image-inner" onclick="openLightbox('${allImages[0].replace(/'/g, "\\'")}', '${sourceName}')">
+                    <div class="info-card-image-inner" onclick="openLightbox('${item.id}', 0, '${sourceName}')">
                         <img src="${allImages[0]}" alt="${escapeHtml(item.title)}" class="info-card-image">
                         <div class="info-card-zoom">
                             <span class="material-icons">zoom_in</span>
@@ -1795,7 +1849,7 @@
                 <div class="carousel-slides">
                     ${allImages.map((img, i) => `
                         <div class="carousel-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
-                            <div class="carousel-slide-inner" onclick="openLightbox('${img.replace(/'/g, "\\'")}', '${sourceName}')">
+                            <div class="carousel-slide-inner" onclick="openLightbox('${item.id}', ${i}, '${sourceName}')">
                                 <img src="${img}" alt="Image ${i + 1}">
                                 <div class="carousel-zoom"><span class="material-icons">zoom_in</span><span>Agrandir</span></div>
                             </div>
@@ -1829,6 +1883,37 @@
             const counter = document.getElementById(`carousel-counter-${id}`);
             if (counter) counter.textContent = newIndex + 1;
         }
+
+        // ============================================
+        // BALAYAGE DANS LES CARROUSELS DE CARTE
+        // ============================================
+        // Écouté au niveau du document : les cartes sont recréées à chaque
+        // rafraîchissement, un écouteur posé sur chacune serait perdu.
+        (function () {
+            let departX = 0, departY = 0, carrouselEnCours = null;
+
+            document.addEventListener('touchstart', e => {
+                const carrousel = e.target.closest('.carousel');
+                carrouselEnCours = carrousel || null;
+                if (!carrousel) return;
+                departX = e.changedTouches[0].clientX;
+                departY = e.changedTouches[0].clientY;
+            }, { passive: true });
+
+            document.addEventListener('touchend', e => {
+                if (!carrouselEnCours) return;
+                const dx = e.changedTouches[0].clientX - departX;
+                const dy = e.changedTouches[0].clientY - departY;
+
+                // Geste horizontal franc uniquement : sinon on laisse
+                // la page défiler normalement de haut en bas.
+                if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                    const id = carrouselEnCours.id.replace('carousel-', '');
+                    carouselNav(id, dx < 0 ? 1 : -1);
+                }
+                carrouselEnCours = null;
+            }, { passive: true });
+        })();
         
         function carouselGoTo(id, index) {
             const carousel = document.getElementById(`carousel-${id}`);
@@ -2017,9 +2102,24 @@
         // ============================================
         // LIGHTBOX
         // ============================================
-        function openLightbox(imageUrl, sourceName = '') {
+        // État de la visionneuse : la série affichée et l'image en cours
+        let lightboxImages = [];
+        let lightboxIndex = 0;
+
+        // ref : identifiant d'une info du registre __galeries, ou directement une URL
+        function openLightbox(ref, index = 0, sourceName = '') {
 		const lightbox = document.getElementById('imageLightbox');
-		document.getElementById('lightboxImage').src = imageUrl;
+
+		// Compatibilité : un appel avec une URL directe reste possible
+		if (typeof ref === 'string' && (ref.startsWith('http') || ref.startsWith('/'))) {
+			lightboxImages = [ref];
+			lightboxIndex = 0;
+			if (typeof index === 'string') sourceName = index;
+		} else {
+			lightboxImages = window.__galeries[ref] || [];
+			lightboxIndex = index;
+		}
+		if (lightboxImages.length === 0) return;
 		
 		// Gérer le crédit photo
 		const creditEl = document.getElementById('lightboxCredit');
@@ -2029,6 +2129,8 @@
 		} else {
 			creditEl.style.display = 'none';
 		}
+
+		majLightbox();
 		
 		lightbox.classList.add('show');
 		document.body.style.overflow = 'hidden';
@@ -2043,6 +2145,44 @@
 
         // Vrai quand une entrée d'historique a été ajoutée pour l'image ouverte
         let lightboxDansHistorique = false;
+
+        // Affiche l'image courante et masque les flèches s'il n'y en a qu'une
+        function majLightbox() {
+            const img = document.getElementById('lightboxImage');
+            if (img) img.src = lightboxImages[lightboxIndex];
+
+            const plusieurs = lightboxImages.length > 1;
+            document.querySelectorAll('.lightbox-arrow').forEach(b => {
+                b.style.display = plusieurs ? 'flex' : 'none';
+            });
+
+            const compteur = document.getElementById('lightboxCounter');
+            if (compteur) {
+                compteur.textContent = `${lightboxIndex + 1} / ${lightboxImages.length}`;
+                compteur.style.display = plusieurs ? 'block' : 'none';
+            }
+        }
+
+        // Image suivante (1) ou précédente (-1), en boucle
+        function lightboxNav(sens) {
+            if (lightboxImages.length < 2) return;
+            lightboxIndex = (lightboxIndex + sens + lightboxImages.length) % lightboxImages.length;
+            majLightbox();
+        }
+
+        // Balayage horizontal au doigt dans l'image agrandie
+        (function () {
+            const lightbox = document.getElementById('imageLightbox');
+            if (!lightbox) return;
+            let departX = 0;
+            lightbox.addEventListener('touchstart', e => {
+                departX = e.changedTouches[0].clientX;
+            }, { passive: true });
+            lightbox.addEventListener('touchend', e => {
+                const delta = e.changedTouches[0].clientX - departX;
+                if (Math.abs(delta) > 50) lightboxNav(delta < 0 ? 1 : -1);
+            }, { passive: true });
+        })();
 
         function fermerLightboxSansHistorique() {
             document.getElementById('imageLightbox').classList.remove('show');
@@ -2066,7 +2206,11 @@
         });
         
         document.addEventListener('keydown', (e) => {
+            const lightbox = document.getElementById('imageLightbox');
+            if (!lightbox || !lightbox.classList.contains('show')) return;
             if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') lightboxNav(1);
+            if (e.key === 'ArrowLeft') lightboxNav(-1);
         });
     </script>
 </body>
