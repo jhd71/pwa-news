@@ -1902,6 +1902,9 @@ h2, h3 {
     max-width: 75ch;
     margin-left: 0;
     margin-right: auto;
+    /* Respecte les retours à la ligne saisis dans l'admin,
+       tout en repliant normalement les lignes trop longues. */
+    white-space: pre-line;
 }
 
 .community-item-desc.expanded {
