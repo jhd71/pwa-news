@@ -36,7 +36,6 @@ const STATIC_ASSETS = [
     // Pages publiques
     '/radio.html',
     '/meteo.html',
-    '/urgences.html',
     '/agenda.html',
     '/contact.html',
     '/infos.html',
