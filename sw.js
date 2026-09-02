@@ -4,7 +4,7 @@
 // Les messages de la console la reprennent automatiquement.
 // ============================================
 
-const CACHE_NAME = 'actu-media-v106';
+const CACHE_NAME = 'actu-media-v107';
 const VERSION = CACHE_NAME.split('-').pop();
 
 // Assets statiques à mettre en cache à l'installation
@@ -36,6 +36,7 @@ const STATIC_ASSETS = [
     // Pages publiques
     '/radio.html',
     '/meteo.html',
+    '/urgences.html',
     '/agenda.html',
     '/contact.html',
     '/infos.html',
