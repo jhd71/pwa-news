@@ -840,8 +840,14 @@
             max-width: 600px;
             margin: 0 auto;
             padding: 1.1rem 1rem 0.9rem;
-            background: none;
+            /* Cet en-tête est collant : sans fond opaque, le formulaire
+               défile par-dessus et devient illisible. */
+            background: var(--bg-body);
             border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-theme="light"] .page-header {
+            background: #f0f4f8;
         }
 
         .page-title h1 {
