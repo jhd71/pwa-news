@@ -1362,6 +1362,22 @@
         @media (max-width: 480px) {
             .propose-title { font-size: 1.6rem; }
         }
+        /* ---------- Bouton retour : comportement mobile ----------
+           En position fixe, il flotte au-dessus du texte pendant le
+           défilement et vient coller au titre. Sur petit écran, on le
+           replace simplement dans le flux de la page. */
+        @media (max-width: 767px) {
+            .propose-back {
+                position: static;
+                display: inline-flex;
+                margin: 0.9rem 0 0 0.75rem;
+                padding: 0.4rem 0.25rem;
+            }
+
+            .propose-page {
+                padding-top: 0.75rem;
+            }
+        }
     </style>
 </head>
 <body>
