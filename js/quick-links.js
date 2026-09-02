@@ -101,7 +101,7 @@ function showEmergencyNumbers() {
         <div class="emergency-content">
             <div class="emergency-header">
                 <h3>Numéros d'urgence</h3>
-                <button class="emergency-close" onclick="this.closest('.emergency-modal').remove()">
+                <button class="emergency-close" onclick="fermerModaleUrgence(this.closest('.emergency-modal'))">
                     <span class="material-icons">close</span>
                 </button>
             </div>
@@ -181,22 +181,32 @@ function showEmergencyNumbers() {
     `;
     
     document.body.appendChild(modal);
+
+    // Bloquer le défilement de la page derrière la modale :
+    // sinon, sur mobile, le doigt fait bouger le site au lieu de la liste.
+    document.body.style.overflow = 'hidden';
     
     // Fermer en cliquant à l'extérieur
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
-            modal.remove();
+            fermerModaleUrgence(modal);
         }
     });
     
     // Fermer avec Escape
     const escHandler = (e) => {
         if (e.key === 'Escape') {
-            modal.remove();
+            fermerModaleUrgence(modal);
             document.removeEventListener('keydown', escHandler);
         }
     };
     document.addEventListener('keydown', escHandler);
+}
+
+// Ferme la modale et rend son défilement à la page
+function fermerModaleUrgence(modal) {
+    if (modal) modal.remove();
+    document.body.style.overflow = '';
 }
 
 // Initialisation

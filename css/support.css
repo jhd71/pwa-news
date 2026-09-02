@@ -535,6 +535,9 @@
     align-items: center;
     justify-content: center;
     padding: 1rem;
+    /* Le doigt posé sur le fond noir ne doit pas faire défiler le site */
+    overscroll-behavior: contain;
+    touch-action: none;
 }
 
 .emergency-content {
@@ -546,6 +549,10 @@
     width: 100%;
     max-height: 80vh;
     overflow-y: auto;
+    /* Arrivé en bas de la liste, le défilement ne se propage pas à la page */
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
 }
 
 [data-theme="light"] .emergency-content {
