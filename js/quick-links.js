@@ -134,11 +134,11 @@ function showEmergencyNumbers() {
                         <span>Numéro européen</span>
                     </div>
                 </a>
-                <a href="tel:114" class="emergency-item">
+                <a href="sms:114" class="emergency-item">
                     <span class="emergency-icon">🦻</span>
                     <div class="emergency-info">
                         <strong>114 - Malentendants</strong>
-                        <span>Sourds et malentendants · par SMS</span>
+                        <span>Sourds et malentendants · par SMS uniquement</span>
                     </div>
                 </a>
                 <a href="tel:116117" class="emergency-item">
@@ -146,13 +146,6 @@ function showEmergencyNumbers() {
                     <div class="emergency-info">
                         <strong>116 117 - Médecin de garde</strong>
                         <span>Soirs, week-ends et jours fériés</span>
-                    </div>
-                </a>
-                <a href="tel:3237" class="emergency-item">
-                    <span class="emergency-icon">💊</span>
-                    <div class="emergency-info">
-                        <strong>3237 - Pharmacie de garde</strong>
-                        <span>Service payant</span>
                     </div>
                 </a>
                 <a href="tel:119" class="emergency-item">

@@ -591,6 +591,20 @@
     gap: 0.5rem;
 }
 
+/* Sur ordinateur, la modale s'élargit et passe en deux colonnes :
+   toute la liste tient alors à l'écran, sans défilement. */
+@media (min-width: 768px) {
+    .emergency-content {
+        max-width: 720px;
+    }
+
+    .emergency-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
+    }
+}
+
 .emergency-item {
     display: flex;
     align-items: center;
