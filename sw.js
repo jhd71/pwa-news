@@ -4,7 +4,7 @@
 // Les messages de la console la reprennent automatiquement.
 // ============================================
 
-const CACHE_NAME = 'actu-media-v107';
+const CACHE_NAME = 'actu-media-v108';
 const VERSION = CACHE_NAME.split('-').pop();
 
 // Assets statiques à mettre en cache à l'installation
@@ -126,6 +126,15 @@ self.addEventListener('fetch', event => {
         event.respondWith(
             caches.match(request).then(cached => {
                 const fetchPromise = fetch(request).then(response => {
+                    // Une réponse redirigée est refusée par le navigateur pour une
+                    // navigation : on la recopie dans une réponse normale.
+                    if (response && response.redirected) {
+                        return response.blob().then(corps => new Response(corps, {
+                            status: response.status,
+                            statusText: response.statusText,
+                            headers: response.headers
+                        }));
+                    }
                     if (response && response.status === 200) {
                         const clone = response.clone();
                         caches.open(CACHE_NAME).then(cache => {
