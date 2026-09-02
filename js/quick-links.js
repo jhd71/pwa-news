@@ -141,6 +141,13 @@ function showEmergencyNumbers() {
                         <span>Sourds et malentendants · par SMS uniquement</span>
                     </div>
                 </a>
+                <a href="https://www.appel.urgence114.fr/" target="_blank" rel="noopener" class="emergency-item">
+                    <span class="emergency-icon">🫲</span>
+                    <div class="emergency-info">
+                        <strong>114 en visio ou tchat</strong>
+                        <span>Langue des signes, tchat, texte-voix</span>
+                    </div>
+                </a>
                 <a href="tel:116117" class="emergency-item">
                     <span class="emergency-icon">🩺</span>
                     <div class="emergency-info">
