@@ -137,8 +137,43 @@ function showEmergencyNumbers() {
                 <a href="tel:114" class="emergency-item">
                     <span class="emergency-icon">🦻</span>
                     <div class="emergency-info">
-                        <strong>114 - Sourds/Malentendants</strong>
-                        <span>SMS / Fax</span>
+                        <strong>114 - Malentendants</strong>
+                        <span>Sourds et malentendants · par SMS</span>
+                    </div>
+                </a>
+                <a href="tel:116117" class="emergency-item">
+                    <span class="emergency-icon">🩺</span>
+                    <div class="emergency-info">
+                        <strong>116 117 - Médecin de garde</strong>
+                        <span>Soirs, week-ends et jours fériés</span>
+                    </div>
+                </a>
+                <a href="tel:3237" class="emergency-item">
+                    <span class="emergency-icon">💊</span>
+                    <div class="emergency-info">
+                        <strong>3237 - Pharmacie de garde</strong>
+                        <span>Service payant</span>
+                    </div>
+                </a>
+                <a href="tel:119" class="emergency-item">
+                    <span class="emergency-icon">👶</span>
+                    <div class="emergency-info">
+                        <strong>119 - Enfance en danger</strong>
+                        <span>Gratuit, 24h/24</span>
+                    </div>
+                </a>
+                <a href="tel:3919" class="emergency-item">
+                    <span class="emergency-icon">🛡️</span>
+                    <div class="emergency-info">
+                        <strong>3919 - Violences femmes</strong>
+                        <span>Gratuit et anonyme</span>
+                    </div>
+                </a>
+                <a href="tel:3114" class="emergency-item">
+                    <span class="emergency-icon">💚</span>
+                    <div class="emergency-info">
+                        <strong>3114 - Souffrance psychique</strong>
+                        <span>Écoute, gratuit, 24h/24</span>
                     </div>
                 </a>
                 <a href="https://www.ch-montceau71.fr/" target="_blank" class="emergency-item">
