@@ -105,6 +105,7 @@ function showEmergencyNumbers() {
                     <span class="material-icons">close</span>
                 </button>
             </div>
+            <div class="emergency-group-title">Secours</div>
             <div class="emergency-list">
                 <a href="tel:15" class="emergency-item">
                     <span class="emergency-icon">🏥</span>
@@ -142,11 +143,15 @@ function showEmergencyNumbers() {
                     </div>
                     <span class="material-icons emergency-chevron">chevron_right</span>
                 </button>
-                <a href="tel:116117" class="emergency-item">
-                    <span class="emergency-icon">🩺</span>
+            </div>
+
+            <div class="emergency-group-title">Écoute et protection</div>
+            <div class="emergency-list">
+                <a href="tel:3114" class="emergency-item">
+                    <span class="emergency-icon">💚</span>
                     <div class="emergency-info">
-                        <strong>116 117 - Médecin de garde</strong>
-                        <span>Soirs, week-ends et jours fériés</span>
+                        <strong>3114 - Souffrance psychique</strong>
+                        <span>Écoute, gratuit, 24h/24</span>
                     </div>
                 </a>
                 <a href="tel:119" class="emergency-item">
@@ -163,13 +168,17 @@ function showEmergencyNumbers() {
                         <span>Gratuit et anonyme</span>
                     </div>
                 </a>
-                <a href="tel:3114" class="emergency-item">
-                    <span class="emergency-icon">💚</span>
+                <a href="tel:116117" class="emergency-item">
+                    <span class="emergency-icon">🩺</span>
                     <div class="emergency-info">
-                        <strong>3114 - Souffrance psychique</strong>
-                        <span>Écoute, gratuit, 24h/24</span>
+                        <strong>116 117 - Médecin de garde</strong>
+                        <span>Soirs, week-ends et jours fériés</span>
                     </div>
                 </a>
+            </div>
+
+            <div class="emergency-group-title">Santé locale</div>
+            <div class="emergency-list">
                 <a href="https://www.ch-montceau71.fr/" target="_blank" class="emergency-item">
                     <span class="emergency-icon">🏨</span>
                     <div class="emergency-info">

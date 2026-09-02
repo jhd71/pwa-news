@@ -612,6 +612,20 @@
     }
 }
 
+/* Intertitres de groupe : distinguer les secours de l'écoute */
+.emergency-group-title {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin: 1.1rem 0 0.5rem;
+}
+
+.emergency-group-title:first-of-type {
+    margin-top: 0;
+}
+
 .emergency-item {
     display: flex;
     align-items: center;
