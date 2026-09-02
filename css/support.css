@@ -624,6 +624,54 @@
     transition: background 0.2s ease;
 }
 
+/* La tuile 114 est un bouton : il faut annuler le style natif */
+button.emergency-item {
+    width: 100%;
+    border: none;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.emergency-chevron {
+    font-size: 1.3rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+/* La sous-modale du 114 n'a que deux choix : une seule colonne,
+   même sur ordinateur, avec des descriptions plus longues. */
+.emergency-list-simple {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .emergency-list.emergency-list-simple {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.emergency-list-simple .emergency-item {
+    align-items: flex-start;
+}
+
+.emergency-list-simple .emergency-info span {
+    line-height: 1.45;
+}
+
+.emergency-note {
+    margin-top: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--primary) 10%, transparent);
+    border-left: 3px solid var(--primary-light);
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
 @media (hover: hover) {
     .emergency-item:hover {
         background: rgba(239, 68, 68, 0.15);

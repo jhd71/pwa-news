@@ -134,20 +134,14 @@ function showEmergencyNumbers() {
                         <span>Numéro européen</span>
                     </div>
                 </a>
-                <a href="sms:114" class="emergency-item">
+                <button type="button" class="emergency-item" onclick="showModale114()">
                     <span class="emergency-icon">🦻</span>
                     <div class="emergency-info">
                         <strong>114 - Malentendants</strong>
-                        <span>Sourds et malentendants · par SMS uniquement</span>
+                        <span>Sourds, malentendants et aphasiques</span>
                     </div>
-                </a>
-                <a href="https://www.appel.urgence114.fr/" target="_blank" rel="noopener" class="emergency-item">
-                    <span class="emergency-icon">🫲</span>
-                    <div class="emergency-info">
-                        <strong>114 en visio ou tchat</strong>
-                        <span>Langue des signes, tchat, texte-voix</span>
-                    </div>
-                </a>
+                    <span class="material-icons emergency-chevron">chevron_right</span>
+                </button>
                 <a href="tel:116117" class="emergency-item">
                     <span class="emergency-icon">🩺</span>
                     <div class="emergency-info">
@@ -213,7 +207,65 @@ function showEmergencyNumbers() {
 // Ferme la modale et rend son défilement à la page
 function fermerModaleUrgence(modal) {
     if (modal) modal.remove();
-    document.body.style.overflow = '';
+    // Une autre modale peut rester ouverte derrière (le 114, par exemple) :
+    // on ne rend le défilement que lorsqu'il n'en reste aucune.
+    if (!document.querySelector('.emergency-modal')) {
+        document.body.style.overflow = '';
+    }
+}
+
+// ============================================
+// SOUS-MODALE : LES DEUX FAÇONS D'APPELER LE 114
+// ============================================
+function showModale114() {
+    const modal = document.createElement('div');
+    modal.className = 'emergency-modal';
+    modal.innerHTML = `
+        <div class="emergency-content">
+            <div class="emergency-header">
+                <h3>Contacter le 114</h3>
+                <button class="emergency-close" onclick="fermerModaleUrgence(this.closest('.emergency-modal'))">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="emergency-list emergency-list-simple">
+                <a href="sms:114" class="emergency-item">
+                    <span class="emergency-icon">💬</span>
+                    <div class="emergency-info">
+                        <strong>Par SMS</strong>
+                        <span>Le plus rapide. Envoyez votre message au 114, un accusé de réception arrive dans la minute.</span>
+                    </div>
+                </a>
+                <a href="https://www.appel.urgence114.fr/" target="_blank" rel="noopener" class="emergency-item">
+                    <span class="emergency-icon">📹</span>
+                    <div class="emergency-info">
+                        <strong>En visio ou en tchat</strong>
+                        <span>Langue des signes française, tchat écrit ou texte-voix, avec un agent formé.</span>
+                    </div>
+                </a>
+            </div>
+            <p class="emergency-note">
+                À préparer à l'avance : le 114 recommande d'installer et de configurer son
+                application avant d'en avoir besoin — profil, adresse, autorisations de
+                localisation et de caméra. En pleine urgence, personne ne remplit un formulaire.
+            </p>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) fermerModaleUrgence(modal);
+    });
+
+    const escHandler = (e) => {
+        if (e.key === 'Escape') {
+            fermerModaleUrgence(modal);
+            document.removeEventListener('keydown', escHandler);
+        }
+    };
+    document.addEventListener('keydown', escHandler);
 }
 
 // Initialisation
