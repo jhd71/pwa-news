@@ -3896,6 +3896,18 @@ a.agenda-item {
     border-bottom: 1px solid var(--border-color);
 }
 
+/* Les deux liens de droite : "Suivre le club" (Facebook) et "Détails" */
+.sport-header-links {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+    .sport-header-links { gap: 0.7rem; }
+}
+
 .sport-title {
     display: flex;
     align-items: center;
