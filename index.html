@@ -786,30 +786,29 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     
     <!-- Script Admin Notifications -->
     <script>
-        const ADMIN_SESSION_KEY = 'admin_session';
         
         async function checkAdminNotifications() {
+            // La session admin est désormais celle de Supabase Auth. On la lit
+            // avec le client déjà présent sur la page : en créer un second
+            // déclencherait l'avertissement « Multiple GoTrueClient instances ».
+            const supabaseClient = window.getSupabaseClient ? window.getSupabaseClient() : null;
+            if (!supabaseClient) return;
+
             let session = null;
             try {
-                session = JSON.parse(localStorage.getItem(ADMIN_SESSION_KEY));
+                const r = await supabaseClient.auth.getSession();
+                session = (r && r.data) ? r.data.session : null;
             } catch (e) {
-                localStorage.removeItem(ADMIN_SESSION_KEY);
                 return;
             }
-            
-            if (!session || !session.logged || session.expires < Date.now()) {
-                return;
-            }
-            
+            if (!session) return;
+
             const adminSection = document.getElementById('adminSection');
             if (adminSection) {
                 adminSection.style.display = 'block';
             }
             
             try {
-                const supabaseClient = window.getSupabaseClient ? window.getSupabaseClient() : null;
-                if (!supabaseClient) return;
-                
                 const { data: contactData } = await supabaseClient
                     .from('contact_messages')
                     .select('id', { count: 'exact' })
