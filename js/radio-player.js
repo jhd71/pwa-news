@@ -339,6 +339,7 @@ class RadioPlayerApp {
         // === ADMIN ===
         this.isAdmin = false;
         this.adminUsername = null;
+        this.adminToken = null;
 
         // === PWA ===
         this.deferredPrompt = null;
@@ -2752,21 +2753,43 @@ class RadioPlayerApp {
             return;
         }
 
-        // Utiliser le nom admin si connecté en admin, sinon le username normal
-        const displayUsername = this.isAdmin ? 'Admin_ActuMedia' : this.username;
-
         try {
-            const { error } = await supabaseClient
-                .from('radio_chat_messages')
-                .insert([
-                    {
-                        radio_id: this.currentStation.id,
-                        radio_name: this.currentStation.name,
-                        username: displayUsername,
-                        message: message,
-                        user_id: this.getUserId()
-                    }
-                ]);
+            let error = null;
+
+            if (this.isAdmin && this.adminToken) {
+                // Le pseudo Admin_ActuMedia est reserve : la base le refuse aux
+                // envois ordinaires. Seul le serveur peut l'attribuer, apres
+                // verification du jeton de moderation.
+                const { data, error: err } = await supabaseClient
+                    .rpc('radio_chat_envoyer_admin', {
+                        p_jeton:      this.adminToken,
+                        p_radio_id:   String(this.currentStation.id),
+                        p_radio_name: this.currentStation.name,
+                        p_message:    message,
+                        p_user_id:    this.getUserId()
+                    });
+
+                if (err) {
+                    error = err;
+                } else if (data !== true) {
+                    this.showToast('Session de moderation expiree, reconnectez-vous');
+                    this.logoutAdmin();
+                    return;
+                }
+            } else {
+                const res = await supabaseClient
+                    .from('radio_chat_messages')
+                    .insert([
+                        {
+                            radio_id: this.currentStation.id,
+                            radio_name: this.currentStation.name,
+                            username: this.username,
+                            message: message,
+                            user_id: this.getUserId()
+                        }
+                    ]);
+                error = res.error;
+            }
 
             if (error) throw error;
 
@@ -2789,7 +2812,7 @@ class RadioPlayerApp {
     // CHAT EN DIRECT - deleteMessage()
     // =====================================================
     async deleteMessage(messageId) {
-        if (!this.isAdmin) {
+        if (!this.isAdmin || !this.adminToken) {
             this.showToast('Action non autorisée');
             return;
         }
@@ -2799,12 +2822,21 @@ class RadioPlayerApp {
         }
 
         try {
-            const { error } = await supabaseClient
-                .from('radio_chat_messages')
-                .delete()
-                .eq('id', messageId);
+            // La suppression directe est desormais refusee par la base : seule
+            // cette fonction, qui verifie le jeton de moderation, peut supprimer.
+            const { data, error } = await supabaseClient
+                .rpc('radio_chat_supprimer', {
+                    p_jeton:      this.adminToken,
+                    p_message_id: String(messageId)
+                });
 
             if (error) throw error;
+
+            if (data !== true) {
+                this.showToast('Session de moderation expiree, reconnectez-vous');
+                this.logoutAdmin();
+                return;
+            }
 
             this.chatMessages = this.chatMessages.filter(m => m.id !== messageId);
             this.renderChatMessages();
@@ -2882,19 +2914,41 @@ class RadioPlayerApp {
     // =====================================================
     // ADMIN - checkAdminSession()
     // =====================================================
-    checkAdminSession() {
+    async checkAdminSession() {
         const adminSession = localStorage.getItem('radio_admin_session');
+        if (!adminSession) return;
 
-        if (adminSession) {
-            try {
-                const session = JSON.parse(adminSession);
-                this.isAdmin = true;
-                this.adminUsername = session.username;
-                this.updateAdminUI();
-                console.log('👑 Session admin active:', session.username);
-            } catch (e) {
+        let jeton = null;
+        try {
+            jeton = JSON.parse(adminSession).jeton || null;
+        } catch (e) {
+            jeton = null;
+        }
+
+        // Ancienne session (d'avant le jeton), ou session illisible : on repart de zero.
+        if (!jeton) {
+            localStorage.removeItem('radio_admin_session');
+            return;
+        }
+
+        // C'est Postgres qui dit si le jeton est encore valable, pas le navigateur.
+        try {
+            const { data, error } = await supabaseClient
+                .rpc('radio_admin_session_active', { p_jeton: jeton });
+
+            if (error || !data) {
                 localStorage.removeItem('radio_admin_session');
+                console.log('🔒 Session admin expiree');
+                return;
             }
+
+            this.isAdmin = true;
+            this.adminUsername = data;
+            this.adminToken = jeton;
+            this.updateAdminUI();
+            console.log('👑 Session admin active:', data);
+        } catch (e) {
+            localStorage.removeItem('radio_admin_session');
         }
     }
 
@@ -2917,12 +2971,14 @@ class RadioPlayerApp {
 
         try {
             // La table radio_admins n'est plus lisible depuis le navigateur.
-            // C'est Postgres qui compare le mot de passe (bcrypt) et se contente
-            // de répondre oui ou non.
-            const { data, error } = await supabaseClient
-                .rpc('radio_admin_login', { p_username: username, p_password: password });
+            // Postgres compare le mot de passe (bcrypt) et, si c'est le bon,
+            // delivre un jeton de session. Sans ce jeton, aucune action de
+            // moderation n'est possible : l'ecrire soi-meme dans le navigateur
+            // ne sert a rien, la base ne le reconnaitra pas.
+            const { data: jeton, error } = await supabaseClient
+                .rpc('radio_admin_connexion', { p_username: username, p_password: password });
 
-            if (error || data !== true) {
+            if (error || !jeton) {
                 this.showToast('Identifiants incorrects');
                 passwordInput.value = '';
                 return;
@@ -2930,9 +2986,11 @@ class RadioPlayerApp {
 
             this.isAdmin = true;
             this.adminUsername = username;
+            this.adminToken = jeton;
 
             localStorage.setItem('radio_admin_session', JSON.stringify({
                 username: username,
+                jeton: jeton,
                 loginTime: Date.now()
             }));
 
@@ -2951,9 +3009,19 @@ class RadioPlayerApp {
     // =====================================================
     // ADMIN - logoutAdmin()
     // =====================================================
-    logoutAdmin() {
+    async logoutAdmin() {
+        // On detruit le jeton cote serveur, pas seulement dans le navigateur.
+        if (this.adminToken) {
+            try {
+                await supabaseClient.rpc('radio_admin_deconnexion', { p_jeton: this.adminToken });
+            } catch (e) {
+                console.warn('Deconnexion serveur impossible:', e);
+            }
+        }
+
         this.isAdmin = false;
         this.adminUsername = null;
+        this.adminToken = null;
         localStorage.removeItem('radio_admin_session');
         this.updateAdminUI();
         this.showToast('Déconnecté');
