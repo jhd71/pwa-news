@@ -5035,6 +5035,7 @@
                     .from('events')
                     .select('*')
                     .eq('status', 'approved')
+                    .order('pinned', { ascending: false, nullsFirst: false })
                     .order('created_at', { ascending: false })
                     .limit(50);
                 
