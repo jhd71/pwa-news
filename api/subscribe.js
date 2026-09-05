@@ -2,7 +2,13 @@
 import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://ekjgfiyhkythqcnmhzea.supabase.co';
-const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
+// Cette route s'exécute sur le serveur Vercel, jamais dans le navigateur.
+// On utilise donc la clé service_role, qui ignore les règles RLS : la table
+// push_subscriptions peut ainsi être fermée au public sans rien casser ici.
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
+if (!SUPABASE_KEY) {
+    console.error('SUPABASE_SERVICE_ROLE_KEY absente des variables Vercel.');
+}
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 

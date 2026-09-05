@@ -2916,16 +2916,13 @@ class RadioPlayerApp {
         }
 
         try {
-            const passwordHash = await this.hashPassword(password);
-
+            // La table radio_admins n'est plus lisible depuis le navigateur.
+            // C'est Postgres qui compare le mot de passe (bcrypt) et se contente
+            // de répondre oui ou non.
             const { data, error } = await supabaseClient
-                .from('radio_admins')
-                .select('*')
-                .eq('username', username)
-                .eq('password', passwordHash)
-                .single();
+                .rpc('radio_admin_login', { p_username: username, p_password: password });
 
-            if (error || !data) {
+            if (error || data !== true) {
                 this.showToast('Identifiants incorrects');
                 passwordInput.value = '';
                 return;
