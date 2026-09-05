@@ -2094,6 +2094,7 @@
             <h1 class="login-title">Administration</h1>
             <p class="login-subtitle">Actu & Média - Espace réservé</p>
             <form id="loginForm">
+                <input type="email" class="login-input" id="loginEmail" placeholder="Adresse e-mail" autocomplete="username" required>
                 <input type="password" class="login-input" id="passwordInput" placeholder="••••••••" autocomplete="current-password" required>
                 <button type="submit" class="login-btn">
                     <span class="material-icons" style="vertical-align: middle; margin-right: 0.5rem;">login</span>
@@ -2940,63 +2941,46 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/admin-auth.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <script>
         const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
-        const ADMIN_SESSION_KEY = 'admin_session';
-        const SESSION_DURATION = 24 * 60 * 60 * 1000;
-        
         let supabaseClient;
+        // Contient désormais le jeton de session Supabase, plus le mot de passe.
+        // Il est tenu à jour automatiquement, y compris à chaque renouvellement.
         let adminKey = null;
         let selectedImageFile = null;
         
         // === AUTH ===
-        function checkSession() {
-            const session = JSON.parse(localStorage.getItem(ADMIN_SESSION_KEY));
-            if (session && session.logged && session.expires > Date.now()) {
-                // 🔑 Récupérer la clé admin sauvegardée
-                adminKey = session.adminKey || null;
+        AdminAuth.surChangement(function (session) {
+            adminKey = session ? session.access_token : null;
+        });
+
+        async function checkSession() {
+            const session = await AdminAuth.session();
+            if (session) {
+                adminKey = session.access_token;
                 showDashboard();
-            } else {
-                localStorage.removeItem(ADMIN_SESSION_KEY);
             }
         }
         
-        async function login(password) {
-            try {
-                const response = await fetch('/api/verifyAdmin', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password: password })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    adminKey = password;
-                    localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({ 
-                        logged: true, 
-                        expires: Date.now() + SESSION_DURATION,
-                        adminKey: password // 🔑 Sauvegarder la clé
-                    }));
-                    showDashboard();
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (error) {
-                console.error('Erreur vérification:', error);
-                return false;
-            }
+        async function login(email, password) {
+            const r = await AdminAuth.connexion(email, password);
+            if (!r.ok) return r;
+            adminKey = r.session.access_token;
+            showDashboard();
+            return r;
         }
         
-        function logout() { localStorage.removeItem(ADMIN_SESSION_KEY); location.reload(); }
+        async function logout() { await AdminAuth.deconnexion(); location.reload(); }
         
         function showDashboard() {
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('dashboard').classList.add('show');
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            // Le même client que celui d'AdminAuth : il porte donc la session,
+            // et chaque requête part signée au nom de l'administrateur.
+            supabaseClient = AdminAuth.client();
             loadMessages();
             loadPropositions();
             loadPublishedArticles();
@@ -3024,10 +3008,15 @@
             btn.disabled = true;
             btn.innerHTML = '<span class="material-icons" style="animation: spin 1s linear infinite;">refresh</span> Vérification...';
             
-            const success = await login(document.getElementById('passwordInput').value);
+            const r = await login(
+                document.getElementById('loginEmail').value.trim(),
+                document.getElementById('passwordInput').value
+            );
             
-            if (!success) {
-                document.getElementById('loginError').style.display = 'block';
+            if (!r.ok) {
+                const err = document.getElementById('loginError');
+                err.textContent = r.message;
+                err.style.display = 'block';
                 document.getElementById('passwordInput').value = '';
             }
             

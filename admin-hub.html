@@ -466,6 +466,10 @@
 
             <form id="loginForm">
                 <div class="login-field">
+                    <span class="material-icons">mail</span>
+                    <input type="email" id="loginEmail" placeholder="Adresse e-mail" autocomplete="username">
+                </div>
+                <div class="login-field">
                     <span class="material-icons">key</span>
                     <input type="password" id="loginPassword" placeholder="Mot de passe" autocomplete="current-password">
                 </div>
@@ -609,25 +613,15 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/admin-auth.js"></script>
     <script>
         // ====== AUTHENTIFICATION ======
-        const ADMIN_PASSWORD_HASH = 'cbf9b2262208b861889d115988760153fab34a144a926b0ab394ef8ecbaf4d70';
-        const SESSION_KEY = 'adminHubAuth';
+        // La vérification du mot de passe est faite par Supabase, plus par
+        // cette page : il n'y a donc plus aucune empreinte à publier ici.
 
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        // Vérifier la session au chargement
-        function checkSession() {
-            const saved = localStorage.getItem(SESSION_KEY);
-            if (saved === ADMIN_PASSWORD_HASH) {
-                showHub();
-            }
+        async function checkSession() {
+            if (await AdminAuth.connecte()) showHub();
         }
 
         function showHub() {
@@ -637,34 +631,37 @@
             setInterval(updateClock, 30000);
         }
 
-        function logout() {
-            localStorage.removeItem(SESSION_KEY);
+        async function logout() {
+            await AdminAuth.deconnexion();
             location.reload();
         }
 
         // Login
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const password = document.getElementById('loginPassword').value;
+            const emailEl = document.getElementById('loginEmail');
+            const passEl = document.getElementById('loginPassword');
             const errorEl = document.getElementById('loginError');
+            const btn = e.target.querySelector('button[type="submit"]');
 
-            if (!password) {
+            if (!emailEl.value || !passEl.value) {
+                errorEl.textContent = 'Adresse et mot de passe requis';
                 errorEl.style.display = 'block';
                 return;
             }
 
-            const hash = await hashPassword(password);
+            errorEl.style.display = 'none';
+            if (btn) btn.disabled = true;
+            const r = await AdminAuth.connexion(emailEl.value.trim(), passEl.value);
+            if (btn) btn.disabled = false;
 
-            if (hash === ADMIN_PASSWORD_HASH) {
-                localStorage.setItem(SESSION_KEY, hash);
-                // 🔑 Sauvegarder aussi pour admin-news.html
-                localStorage.setItem('adminNewsKey', password);
-                localStorage.setItem('adminNewsAuth', hash);
+            if (r.ok) {
                 showHub();
             } else {
+                errorEl.textContent = r.message;
                 errorEl.style.display = 'block';
-                document.getElementById('loginPassword').value = '';
-                document.getElementById('loginPassword').focus();
+                passEl.value = '';
+                passEl.focus();
             }
         });
 
@@ -706,7 +703,10 @@
         // ====== INIT ======
         initTheme();
         checkSession();
-        document.getElementById('loginPassword').focus();
+        document.getElementById('loginEmail').value = AdminAuth.emailMemorise();
+        document.getElementById(
+            AdminAuth.emailMemorise() ? 'loginPassword' : 'loginEmail'
+        ).focus();
     </script>
 </body>
 </html>

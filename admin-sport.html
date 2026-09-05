@@ -509,6 +509,10 @@
             <p>Actu <span style="color:#f59e0b;font-style:italic;">&</span> Média — FC Montceau Bourgogne</p>
             <form id="loginForm">
                 <div class="login-field">
+                    <span class="material-icons">mail</span>
+                    <input type="email" id="loginEmail" placeholder="Adresse e-mail" autocomplete="username">
+                </div>
+                <div class="login-field">
                     <span class="material-icons">key</span>
                     <input type="password" id="loginPassword" placeholder="Mot de passe" autocomplete="current-password">
                 </div>
@@ -699,26 +703,14 @@
 
     <!-- SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/admin-auth.js"></script>
     <script>
         // ====== AUTHENTIFICATION ======
-        const ADMIN_PASSWORD_HASH = 'cbf9b2262208b861889d115988760153fab34a144a926b0ab394ef8ecbaf4d70';
-        const SESSION_KEY = 'adminSportAuth';
+        // Plus d'empreinte de mot de passe dans cette page : Supabase vérifie
+        // les identifiants et la session est commune à toutes les pages admin.
 
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        function checkSession() {
-            // Vérifier session sport OU session hub (même mot de passe)
-            const saved = localStorage.getItem(SESSION_KEY);
-            const hubSaved = localStorage.getItem('adminHubAuth');
-            if (saved === ADMIN_PASSWORD_HASH || hubSaved === ADMIN_PASSWORD_HASH) {
-                showAdmin();
-            }
+        async function checkSession() {
+            if (await AdminAuth.connecte()) showAdmin();
         }
 
         function showAdmin() {
@@ -729,19 +721,36 @@
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const password = document.getElementById('loginPassword').value;
+            const emailEl = document.getElementById('loginEmail');
+            const passEl = document.getElementById('loginPassword');
             const errorEl = document.getElementById('loginError');
-            if (!password) { errorEl.style.display = 'block'; return; }
-            const hash = await hashPassword(password);
-            if (hash === ADMIN_PASSWORD_HASH) {
-                localStorage.setItem(SESSION_KEY, hash);
+            const btn = e.target.querySelector('button[type="submit"]');
+
+            if (!emailEl.value || !passEl.value) {
+                errorEl.textContent = 'Adresse et mot de passe requis';
+                errorEl.style.display = 'block';
+                return;
+            }
+            errorEl.style.display = 'none';
+            if (btn) btn.disabled = true;
+            const r = await AdminAuth.connexion(emailEl.value.trim(), passEl.value);
+            if (btn) btn.disabled = false;
+
+            if (r.ok) {
                 showAdmin();
             } else {
+                errorEl.textContent = r.message;
                 errorEl.style.display = 'block';
-                document.getElementById('loginPassword').value = '';
-                document.getElementById('loginPassword').focus();
+                passEl.value = '';
+                passEl.focus();
             }
         });
+
+        // L'adresse est retenue par appareil : seul le mot de passe est à retaper.
+        (function () {
+            const e = document.getElementById('loginEmail');
+            if (e) e.value = AdminAuth.emailMemorise();
+        })();
 
         const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';

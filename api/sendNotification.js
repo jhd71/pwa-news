@@ -42,14 +42,15 @@ export default async function handler(req, res) {
     try {
         const { title, body, url, adminKey } = req.body;
 
-        // Vérifier la clé admin
-        const ADMIN_PASSWORD = process.env.ADMIN_NOTIFICATION_KEY;
-        if (!ADMIN_PASSWORD) {
-            console.error('Variable ADMIN_NOTIFICATION_KEY non configurée');
-            return res.status(500).json({ error: 'Configuration serveur manquante' });
+        // adminKey contient désormais le jeton de session Supabase de
+        // l'administrateur, et non plus son mot de passe. On le fait valider
+        // par Supabase : un jeton faux ou périmé est refusé ici.
+        if (!adminKey) {
+            return res.status(401).json({ error: 'Session administrateur absente' });
         }
-        if (adminKey !== ADMIN_PASSWORD) {
-            return res.status(401).json({ error: 'Clé admin invalide' });
+        const { data: utilisateur, error: erreurAuth } = await supabase.auth.getUser(adminKey);
+        if (erreurAuth || !utilisateur || !utilisateur.user) {
+            return res.status(401).json({ error: 'Session administrateur invalide ou expirée' });
         }
 
         if (!title || !body) {
