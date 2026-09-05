@@ -915,10 +915,12 @@
 			document.addEventListener('DOMContentLoaded', checkAuth);
 		
         // Configuration Supabase
-        const SUPABASE_URL = 'https://ekjgfiyhkythqcnmhzea.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVramdmaXloa3l0aHFjbm1oemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NzYxNDIsImV4cCI6MjA1ODI1MjE0Mn0.V0j_drb6GiTojgwxC6ydjnyJDRRT9lUbSc1E7bFE2Z4';
+        // L'URL et la clé publique sont dans js/admin-auth.js.
         
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Un seul client pour toute la page, celui qui porte la session :
+        // en créer un second déclenche l'avertissement « Multiple GoTrueClient
+        // instances » et deux sessions concurrentes sur la même clé de stockage.
+        const supabaseClient = AdminAuth.client();
 
         // Éléments DOM
         const articleUrl = document.getElementById('articleUrl');
