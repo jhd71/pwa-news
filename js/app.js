@@ -987,32 +987,23 @@ async function initCommunity() {
             return;
         }
         
-        // *** COMPTEUR DE VUES AU CHARGEMENT (vérification serveur) ***
-        const today = new Date().toISOString().split('T')[0];
+        // *** COMPTEUR DE VUES AU CHARGEMENT (tout est decide par le serveur) ***
+        // Le navigateur ne transmet plus que son empreinte. C'est Postgres qui
+        // regarde s'il a deja compte cette info pour cette empreinte aujourd'hui.
+        // La table des empreintes n'est plus lisible depuis le navigateur.
         const fingerprint = getUserFingerprint();
-        
+
         for (const item of data) {
             try {
-                // Vérifier CÔTÉ SERVEUR si ce fingerprint a déjà vu cet article aujourd'hui
-                const { data: existingView } = await supabaseClient
-                    .from('submission_view_logs')
-                    .select('id')
-                    .eq('submission_id', item.id)
-                    .eq('fingerprint', fingerprint)
-                    .eq('view_date', today)
-                    .maybeSingle();
-                
-                if (!existingView) {
-                    // Pas encore vu → incrémenter
-                    const { error: viewError } = await supabaseClient.rpc('increment_submission_views', { submission_id: item.id });
-                    if (!viewError) {
-                        // Enregistrer la vue côté serveur
-                        await supabaseClient
-                            .from('submission_view_logs')
-                            .insert({ submission_id: item.id, fingerprint: fingerprint, view_date: today });
-                        item.views = (item.views || 0) + 1;
-                        console.log(`👁️ Vue comptée pour info #${item.id} (vérifié serveur)`);
-                    }
+                const { data: compte, error: viewError } = await supabaseClient
+                    .rpc('enregistrer_vue_info', {
+                        p_submission_id: String(item.id),
+                        p_fingerprint:   fingerprint
+                    });
+
+                if (!viewError && compte === true) {
+                    item.views = (item.views || 0) + 1;
+                    console.log(`👁️ Vue comptee pour info #${item.id} (verifie serveur)`);
                 }
             } catch (e) {
                 console.log('⚠️ Erreur compteur vue:', e);
@@ -2381,32 +2372,20 @@ async function recordVisit() {
     try {
         const supabase = getSupabaseClient();
         if (!supabase) return;
-        
-        const fingerprint = getUserFingerprint();
-        const today = new Date().toISOString().split('T')[0];
-        
-        // Vérifier CÔTÉ SERVEUR si ce fingerprint a déjà visité aujourd'hui
-        const { data: existing } = await supabase
-            .from('visitor_logs')
-            .select('id')
-            .eq('fingerprint', fingerprint)
-            .eq('visit_date', today)
-            .maybeSingle();
-        
-        const isNewVisitor = !existing;
-        
-        const { error } = await supabase.rpc('record_visit', { is_new_visitor: isNewVisitor });
-        
-        if (!error) {
-            if (isNewVisitor) {
-                await supabase
-                    .from('visitor_logs')
-                    .insert({ fingerprint: fingerprint, visit_date: today });
-                console.log('👤 Nouveau visiteur enregistré (vérifié serveur)');
-            } else {
-                console.log('📄 Page vue enregistrée (visiteur déjà connu)');
-            }
+
+        // Le navigateur ne transmet que son empreinte : c'est le serveur qui
+        // decide si c'est un nouveau visiteur, et lui seul ecrit dans les logs.
+        const { data: nouveauVisiteur, error } = await supabase
+            .rpc('enregistrer_visite', { p_fingerprint: getUserFingerprint() });
+
+        if (error) {
+            console.error('Erreur compteur visites:', error);
+            return;
         }
+
+        console.log(nouveauVisiteur === true
+            ? '👤 Nouveau visiteur enregistre (verifie serveur)'
+            : '📄 Page vue enregistree (visiteur deja connu)');
     } catch (err) {
         console.error('Erreur compteur visites:', err);
     }
