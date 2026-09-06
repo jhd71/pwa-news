@@ -605,14 +605,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
     <!-- fin rangée 2 colonnes -->
 	
-<!-- Section Sport - FC Montceau Bourgogne -->
+<!-- Section Sport - FC Montceau + Basket Montceau Bourgogne -->
     <section class="sport-section glass" id="sportSection">
+        <!-- Les onglets (Foot / Basket M / Basket F) sont construits par js/app.js
+             à partir des lignes de la table sport_data. Un onglet sans aucune
+             donnée n'est pas affiché. -->
+        <div class="sport-tabs" id="sportTabs" role="tablist"></div>
+
         <div class="sport-header">
                         <div class="sport-title">
-                <span>FC Montceau</span>
-                <span class="sport-badge">R1 Herbelin</span>
+                <span id="sportTeamName">FC Montceau</span>
+                <span class="sport-badge" id="sportCompetition">R1 Herbelin</span>
             </div>
-            <a href="https://www.sportcorico.com/clubs/fc-montceau-bourgogne/montceau-fc-bourgogn" target="_blank" rel="noopener" class="sport-link">
+            <a href="https://www.sportcorico.com/clubs/fc-montceau-bourgogne/montceau-fc-bourgogn" target="_blank" rel="noopener" class="sport-link" id="sportDetailsLink">
                 Détails
                 <span class="material-icons">arrow_forward</span>
             </a>
@@ -622,7 +627,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             Chargement...
         </div>
         <div id="sportContent" style="display: none;">
-            <div class="sport-matches">
+            <div class="sport-matches" id="sportMatches">
                 <div class="sport-match-card" id="sportLastMatch">
                     <div class="sport-result-indicator" id="sportResultIndicator">
                         <span class="sport-result-letter" id="sportResultLetter"></span>
@@ -663,6 +668,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <span class="material-icons">leaderboard</span>
                 Voir le classement complet
             </button>
+            <div class="sport-empty" id="sportEmpty" style="display: none;">
+                <span class="material-icons">event_busy</span>
+                <span id="sportEmptyText">Pas encore de match au calendrier.</span>
+            </div>
+
+            <div class="sport-source" id="sportSource"></div>
+
             <div class="sport-teams-row">
                 <a href="https://scorenco.com/basket/clubs/elan-chalon-basket-2m40/1-4xe3" target="_blank" rel="noopener" class="sport-team-pill">
                     <span class="material-icons sport-team-pill-icon">sports_basketball</span>
@@ -684,12 +696,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
     </section>
 
-    <!-- Modal Classement R1 Herbelin -->
+    <!-- Modal Classement (le titre et le lien changent selon l'onglet actif) -->
     <div class="standings-modal-overlay" id="standingsModalOverlay" onclick="closeStandingsModal()"></div>
     <div class="standings-modal" id="standingsModal">
         <div class="standings-modal-header">
-                        <div class="standings-modal-title">
-                R1 Herbelin · Poule A
+                        <div class="standings-modal-title" id="standingsModalTitle">
+                Classement
             </div>
             <button class="standings-modal-close" onclick="closeStandingsModal()">
                 <span class="material-icons">close</span>
@@ -701,9 +713,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
         </div>
         <div class="standings-modal-footer">
-            <a href="https://www.sportcorico.com/championnat/bourgogne-franche-comte-regional-1-herbelin-4/phase-unique/poule-a" target="_blank" rel="noopener" class="standings-source-link">
+            <a href="https://www.sportcorico.com/championnat/bourgogne-franche-comte-regional-1-herbelin-4/phase-unique/poule-a" target="_blank" rel="noopener" class="standings-source-link" id="standingsSourceLink">
                 <span class="material-icons">open_in_new</span>
-                Voir sur SportCorico
+                <span id="standingsSourceLabel">Voir sur SportCorico</span>
             </a>
         </div>
     </div>

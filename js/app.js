@@ -2481,17 +2481,38 @@ function initDateBar() {
 }
 
 // ============================================
-// SECTION SPORT - FC MONTCEAU BOURGOGNE
+// SECTION SPORT - FOOT + BASKET (onglets)
+// Les données viennent de la table sport_data, une ligne par équipe
+// (team_key = 'foot', 'basket_m', 'basket_f'), écrites par les scrapers
+// update-sport.js (SportCorico) et update-basket.js (Score'n'co).
 // ============================================
+
+// Les équipes chargées au démarrage, et celle qui est affichée
+var sportEquipes = [];
+var sportEquipeActive = null;
+
+// Libellé d'onglet et icône par équipe (repli sur team_label si inconnu)
+var SPORT_ONGLETS = {
+    'foot':     { onglet: 'Foot',     icone: 'sports_soccer' },
+    'basket_m': { onglet: 'Basket M', icone: 'sports_basketball' },
+    'basket_f': { onglet: 'Basket F', icone: 'sports_basketball' }
+};
 
 function initSport() {
     loadSportData();
 }
 
+// Une équipe n'a d'intérêt que si elle a au moins un match ou un classement.
+// C'est ce qui évite d'afficher un onglet vide (cas des féminines tant que
+// leurs résultats ne remontent pas sur Score'n'co).
+function sportAQuelqueChose(d) {
+    return !!(d.last_match_date || d.next_match_date || d.standing_position);
+}
+
 async function loadSportData() {
     const loading = document.getElementById('sportLoading');
     const content = document.getElementById('sportContent');
-    
+
     if (!loading || !content) return;
 
     try {
@@ -2504,136 +2525,232 @@ async function loadSportData() {
         const { data, error } = await supabaseClient
             .from('sport_data')
             .select('*')
-            .order('updated_at', { ascending: false })
-            .limit(1)
-            .single();
+            .not('team_key', 'is', null)
+            .order('display_order', { ascending: true });
 
-        if (error || !data) {
+        if (error || !data || data.length === 0) {
             console.warn('Sport: pas de données', error);
             loading.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.8rem;">Données sport indisponibles</span>';
             return;
         }
 
-        // === DERNIER MATCH ===
-        const lastDate = document.getElementById('sportLastDate');
-        const lastHome = document.getElementById('sportLastHome');
-        const lastAway = document.getElementById('sportLastAway');
-        const lastHomeScore = document.getElementById('sportLastHomeScore');
-        const lastAwayScore = document.getElementById('sportLastAwayScore');
-        const resultIndicator = document.getElementById('sportResultIndicator');
-        const resultLetter = document.getElementById('sportResultLetter');
+        sportEquipes = data.filter(sportAQuelqueChose);
 
+        // Si rien nulle part (début de saison partout), on garde quand même
+        // la première équipe pour ne pas afficher une section vide
+        if (sportEquipes.length === 0) sportEquipes = data.slice(0, 1);
+
+        construireOngletsSport();
+        afficherEquipeSport(sportEquipes[0].team_key);
+
+        loading.style.display = 'none';
+        content.style.display = 'block';
+
+        console.log('🏅 Sport: ' + sportEquipes.length + ' équipe(s) chargée(s)');
+
+    } catch (err) {
+        console.error('Sport: erreur chargement', err);
+        loading.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.8rem;">Erreur de chargement</span>';
+    }
+}
+
+// ============================================
+// LES ONGLETS
+// ============================================
+function construireOngletsSport() {
+    const barre = document.getElementById('sportTabs');
+    if (!barre) return;
+
+    // Une seule équipe : pas la peine d'afficher des onglets
+    if (sportEquipes.length < 2) {
+        barre.style.display = 'none';
+        barre.innerHTML = '';
+        return;
+    }
+
+    barre.style.display = '';
+    barre.innerHTML = sportEquipes.map(function(eq) {
+        const conf = SPORT_ONGLETS[eq.team_key] || {};
+        const libelle = conf.onglet || eq.team_label || eq.team_key;
+        const icone = conf.icone || 'sports';
+        return '<button type="button" class="sport-tab" role="tab" data-team="' + eq.team_key + '" ' +
+               'onclick="afficherEquipeSport(\'' + eq.team_key + '\')">' +
+               '<span class="material-icons">' + icone + '</span>' + libelle +
+               '</button>';
+    }).join('');
+}
+
+// ============================================
+// AFFICHAGE D'UNE ÉQUIPE
+// ============================================
+function afficherEquipeSport(teamKey) {
+    const data = sportEquipes.find(function(e) { return e.team_key === teamKey; });
+    if (!data) return;
+
+    sportEquipeActive = data;
+    const estBasket = data.sport === 'basket';
+
+    // --- Onglet actif ---
+    document.querySelectorAll('#sportTabs .sport-tab').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.team === teamKey);
+    });
+
+    // --- Titre, compétition, lien "Détails" ---
+    const nomEl = document.getElementById('sportTeamName');
+    const compEl = document.getElementById('sportCompetition');
+    const lienEl = document.getElementById('sportDetailsLink');
+    if (nomEl) nomEl.textContent = data.team_label || '';
+    if (compEl) compEl.textContent = data.competition_label || '';
+    if (lienEl && data.source_url) lienEl.href = data.source_url;
+
+    // --- DERNIER MATCH ---
+    const lastCard = document.getElementById('sportLastMatch');
+    const lastDate = document.getElementById('sportLastDate');
+    const lastHome = document.getElementById('sportLastHome');
+    const lastAway = document.getElementById('sportLastAway');
+    const lastHomeScore = document.getElementById('sportLastHomeScore');
+    const lastAwayScore = document.getElementById('sportLastAwayScore');
+    const resultIndicator = document.getElementById('sportResultIndicator');
+    const resultLetter = document.getElementById('sportResultLetter');
+
+    resultIndicator.classList.remove('win', 'loss', 'draw');
+    lastHome.classList.remove('is-fcmb');
+    lastAway.classList.remove('is-fcmb');
+
+    if (data.last_match_date) {
+        lastCard.style.display = '';
+        const matchDate = new Date(data.last_match_date + 'T00:00:00');
+
+        // Match vieux de plus de 2 mois : on précise la saison pour ne pas induire en erreur
+        const deuxMois = new Date();
+        deuxMois.setMonth(deuxMois.getMonth() - 2);
+        let prefixe = data.last_match_matchday || '';
+
+        if (matchDate < deuxMois) {
+            const an = matchDate.getFullYear();
+            const saison = matchDate.getMonth() < 6 ? `${an - 1}-${an}` : `${an}-${an + 1}`;
+            prefixe = `Saison ${saison}` + (prefixe ? ` · ${prefixe}` : '');
+        }
+
+        lastDate.textContent = (prefixe ? prefixe + ' · ' : '') + matchDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+
+        lastHome.textContent = data.last_match_home_team;
+        lastAway.textContent = data.last_match_away_team;
+        lastHomeScore.textContent = data.last_match_home_score;
+        lastAwayScore.textContent = data.last_match_away_score;
+
+        if (data.last_match_is_home) {
+            lastHome.classList.add('is-fcmb');
+        } else {
+            lastAway.classList.add('is-fcmb');
+        }
+
+        const nosPoints = data.last_match_is_home ? data.last_match_home_score : data.last_match_away_score;
+        const leursPoints = data.last_match_is_home ? data.last_match_away_score : data.last_match_home_score;
+
+        if (nosPoints > leursPoints) {
+            resultIndicator.classList.add('win');
+            resultLetter.textContent = 'V';
+        } else if (nosPoints < leursPoints) {
+            resultIndicator.classList.add('loss');
+            resultLetter.textContent = 'D';
+        } else {
+            resultIndicator.classList.add('draw');
+            resultLetter.textContent = 'N';
+        }
+    } else {
+        lastCard.style.display = 'none';
+    }
+
+    // --- PROCHAIN MATCH ---
+    const nextCard = document.getElementById('sportNextMatch');
+    const nextDate = document.getElementById('sportNextDate');
+    const nextHome = document.getElementById('sportNextHome');
+    const nextAway = document.getElementById('sportNextAway');
+    const nextTime = document.getElementById('sportNextTime');
+    const nextLabel = document.getElementById('sportNextLabel');
+
+    nextHome.classList.remove('is-fcmb');
+    nextAway.classList.remove('is-fcmb');
+    nextLabel.textContent = 'Prochain match';
+
+    if (data.next_match_date) {
+        nextCard.style.display = '';
+        const nDate = new Date(data.next_match_date + 'T00:00:00');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const matchDay = new Date(nDate);
+        matchDay.setHours(0, 0, 0, 0);
+
+        const isToday = matchDay.getTime() === today.getTime();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const isTomorrow = matchDay.getTime() === tomorrow.getTime();
+
+        let dateStr = data.next_match_matchday ? data.next_match_matchday + ' · ' : '';
+        if (isToday) {
+            dateStr += '<span class="sport-today-badge">Aujourd\'hui !</span>';
+            nextLabel.innerHTML = '🔴 Ce soir !';
+        } else if (isTomorrow) {
+            dateStr += '<span class="sport-today-badge">Demain</span>';
+        } else {
+            dateStr += nDate.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+        }
+        nextDate.innerHTML = dateStr;
+
+        nextHome.textContent = data.next_match_home_team;
+        nextAway.textContent = data.next_match_away_team;
+        nextTime.textContent = data.next_match_time || '';
+
+        if (data.next_match_is_home) {
+            nextHome.classList.add('is-fcmb');
+        } else {
+            nextAway.classList.add('is-fcmb');
+        }
+    } else {
+        nextCard.style.display = 'none';
+    }
+
+    // --- CLASSEMENT (résumé) ---
+    const standingRow = document.getElementById('sportStanding');
+    const posEl = document.getElementById('sportPosition');
+    const statsEl = document.getElementById('sportStats');
+
+    posEl.classList.remove('top3', 'mid');
+
+    if (data.standing_position) {
+        standingRow.style.display = '';
+        posEl.textContent = data.standing_position + (data.standing_position === 1 ? 'er' : 'e');
+        posEl.classList.add(data.standing_position <= 3 ? 'top3' : 'mid');
+
+        const diff = (data.standing_goals_for || 0) - (data.standing_goals_against || 0);
+        const diffStr = diff > 0 ? '+' + diff : diff.toString();
+
+        // Classement périmé si le dernier match remonte à plus de 2 mois
+        let mention = '';
         if (data.last_match_date) {
-            const matchDate = new Date(data.last_match_date + 'T00:00:00');
-
-            // Match vieux de plus de 2 mois : on précise la saison pour ne pas induire en erreur
-            const deuxMois = new Date();
-            deuxMois.setMonth(deuxMois.getMonth() - 2);
-            let prefixe = data.last_match_matchday || '';
-
-            if (matchDate < deuxMois) {
-                const an = matchDate.getFullYear();
-                const saison = matchDate.getMonth() < 6 ? `${an - 1}-${an}` : `${an}-${an + 1}`;
-                prefixe = `Saison ${saison}` + (prefixe ? ` · ${prefixe}` : '');
-            }
-
-            lastDate.textContent = (prefixe ? prefixe + ' · ' : '') + matchDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-            
-            lastHome.textContent = data.last_match_home_team;
-            lastAway.textContent = data.last_match_away_team;
-            lastHomeScore.textContent = data.last_match_home_score;
-            lastAwayScore.textContent = data.last_match_away_score;
-
-            if (data.last_match_is_home) {
-                lastHome.classList.add('is-fcmb');
-            } else {
-                lastAway.classList.add('is-fcmb');
-            }
-
-            const fcmbScore = data.last_match_is_home ? data.last_match_home_score : data.last_match_away_score;
-            const oppScore = data.last_match_is_home ? data.last_match_away_score : data.last_match_home_score;
-            
-            if (fcmbScore > oppScore) {
-                resultIndicator.classList.add('win');
-                resultLetter.textContent = 'V';
-            } else if (fcmbScore < oppScore) {
-                resultIndicator.classList.add('loss');
-                resultLetter.textContent = 'D';
-            } else {
-                resultIndicator.classList.add('draw');
-                resultLetter.textContent = 'N';
+            const limite = new Date();
+            limite.setMonth(limite.getMonth() - 2);
+            const dernier = new Date(data.last_match_date + 'T00:00:00');
+            if (dernier < limite) {
+                const an = dernier.getFullYear();
+                mention = ' <em>(saison ' + (dernier.getMonth() < 6 ? (an - 1) + '-' + an : an + '-' + (an + 1)) + ')</em>';
             }
         }
 
-        // === PROCHAIN MATCH ===
-        const nextDate = document.getElementById('sportNextDate');
-        const nextHome = document.getElementById('sportNextHome');
-        const nextAway = document.getElementById('sportNextAway');
-        const nextTime = document.getElementById('sportNextTime');
-        const nextLabel = document.getElementById('sportNextLabel');
+        // Au basket il n'y a pas de match nul : on n'affiche pas la colonne N
+        const bilan = estBasket
+            ? data.standing_won + 'V ' + data.standing_lost + 'D'
+            : data.standing_won + 'V ' + data.standing_drawn + 'N ' + data.standing_lost + 'D';
 
-        if (data.next_match_date) {
-            const nDate = new Date(data.next_match_date + 'T00:00:00');
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const matchDay = new Date(nDate);
-            matchDay.setHours(0, 0, 0, 0);
-            
-            const isToday = matchDay.getTime() === today.getTime();
-            const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const isTomorrow = matchDay.getTime() === tomorrow.getTime();
+        statsEl.innerHTML = '<strong>' + data.standing_points + ' pts</strong> · ' + data.standing_played + 'J · ' + bilan + ' · ' + diffStr + mention;
+    } else {
+        standingRow.style.display = 'none';
+    }
 
-            let dateStr = data.next_match_matchday ? data.next_match_matchday + ' · ' : '';
-            if (isToday) {
-                dateStr += '<span class="sport-today-badge">Aujourd\'hui !</span>';
-                nextLabel.innerHTML = '🔴 Ce soir !';
-            } else if (isTomorrow) {
-                dateStr += '<span class="sport-today-badge">Demain</span>';
-            } else {
-                dateStr += nDate.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
-            }
-            nextDate.innerHTML = dateStr;
-
-            nextHome.textContent = data.next_match_home_team;
-            nextAway.textContent = data.next_match_away_team;
-            nextTime.textContent = data.next_match_time || '';
-
-            if (data.next_match_is_home) {
-                nextHome.classList.add('is-fcmb');
-            } else {
-                nextAway.classList.add('is-fcmb');
-            }
-        }
-
-        // === CLASSEMENT ===
-        const posEl = document.getElementById('sportPosition');
-        const statsEl = document.getElementById('sportStats');
-
-        if (data.standing_position) {
-            posEl.textContent = data.standing_position + (data.standing_position === 1 ? 'er' : 'e');
-            posEl.classList.add(data.standing_position <= 3 ? 'top3' : 'mid');
-
-            const diff = data.standing_goals_for - data.standing_goals_against;
-            const diffStr = diff > 0 ? '+' + diff : diff.toString();
-
-            // Classement périmé si le dernier match remonte à plus de 2 mois
-            let mention = '';
-            if (data.last_match_date) {
-                const limite = new Date();
-                limite.setMonth(limite.getMonth() - 2);
-                const dernier = new Date(data.last_match_date + 'T00:00:00');
-                if (dernier < limite) {
-                    const an = dernier.getFullYear();
-                    mention = ' <em>(saison ' + (dernier.getMonth() < 6 ? (an - 1) + '-' + an : an + '-' + (an + 1)) + ')</em>';
-                }
-            }
-
-            statsEl.innerHTML = '<strong>' + data.standing_points + ' pts</strong> · ' + data.standing_played + 'J · ' + data.standing_won + 'V ' + data.standing_drawn + 'N ' + data.standing_lost + 'D · ' + diffStr + mention;
-        }
-
-        // === FORME ===
-        const formEl = document.getElementById('sportForm');
+    // --- FORME ---
+    const formEl = document.getElementById('sportForm');
+    if (formEl) {
         if (data.form) {
             const formArr = data.form.split(',');
             formEl.innerHTML = formArr.map(function(f) {
@@ -2644,26 +2761,45 @@ async function loadSportData() {
                 else if (letter === 'D') cls = 'loss';
                 return '<div class="sport-form-dot ' + cls + '">' + letter + '</div>';
             }).join('');
+        } else {
+            formEl.innerHTML = '';
         }
+    }
 
-        // === CLASSEMENT COMPLET ===
-        if (data.standings_json && data.standings_json.length > 0) {
-            window._standingsData = data.standings_json;
+    // --- BOUTON CLASSEMENT COMPLET ---
+    const btn = document.getElementById('sportClassementBtn');
+    if (btn) {
+        const aUnClassement = data.standings_json && data.standings_json.length > 0;
+        btn.style.display = aUnClassement ? '' : 'none';
+    }
+
+    // --- MESSAGE QUAND IL N'Y A RIEN ---
+    const empty = document.getElementById('sportEmpty');
+    const emptyText = document.getElementById('sportEmptyText');
+    if (empty) {
+        if (!data.last_match_date && !data.next_match_date && !data.standing_position) {
+            empty.style.display = '';
+            if (emptyText) {
+                emptyText.textContent = 'Pas encore de match au calendrier pour ' + (data.team_label || 'cette équipe') + '.';
+            }
+        } else {
+            empty.style.display = 'none';
         }
+    }
 
-        loading.style.display = 'none';
-        content.style.display = 'block';
-
-        console.log('⚽ Sport: données chargées');
-
-    } catch (err) {
-        console.error('Sport: erreur chargement', err);
-        loading.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.8rem;">Erreur de chargement</span>';
+    // --- SOURCE ---
+    const source = document.getElementById('sportSource');
+    if (source) {
+        if (data.source_name) {
+            source.innerHTML = 'Source : <a href="' + (data.source_url || '#') + '" target="_blank" rel="noopener">' + data.source_name + '</a>';
+        } else {
+            source.innerHTML = '';
+        }
     }
 }
 
 // ============================================
-// MODAL CLASSEMENT R1 HERBELIN
+// MODAL CLASSEMENT COMPLET
 // ============================================
 function showStandingsModal() {
     var overlay = document.getElementById('standingsModalOverlay');
@@ -2675,7 +2811,21 @@ function showStandingsModal() {
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 
-    var standings = window._standingsData;
+    var equipe = sportEquipeActive || sportEquipes[0];
+    if (!equipe) return;
+
+    var estBasket = equipe.sport === 'basket';
+
+    // Titre et lien de source du modal, selon l'onglet ouvert
+    var titre = document.getElementById('standingsModalTitle');
+    if (titre) titre.textContent = equipe.competition_label || 'Classement';
+
+    var lien = document.getElementById('standingsSourceLink');
+    var lienTexte = document.getElementById('standingsSourceLabel');
+    if (lien && equipe.source_url) lien.href = equipe.source_url;
+    if (lienTexte && equipe.source_name) lienTexte.textContent = 'Voir sur ' + equipe.source_name;
+
+    var standings = equipe.standings_json;
     if (!standings || standings.length === 0) {
         body.innerHTML = '<div class="standings-loading" style="flex-direction: column; gap: 0.8rem; padding: 2rem 1rem;">' +
             '<span class="material-icons" style="font-size: 2rem; color: #fbbf24;">emoji_events</span>' +
@@ -2684,12 +2834,16 @@ function showStandingsModal() {
         return;
     }
 
-    // Trier par position
-    standings.sort(function(a, b) { return a.position - b.position; });
+    // Trier par position (on travaille sur une copie)
+    standings = standings.slice().sort(function(a, b) { return a.position - b.position; });
     var totalTeams = standings.length;
 
     var html = '<table class="standings-table">';
-    html += '<thead><tr><th>#</th><th>Équipe</th><th>Pts</th><th>J</th><th>V</th><th>N</th><th>D</th><th>BP</th><th>BC</th><th>Diff</th></tr></thead>';
+    html += '<thead><tr><th>#</th><th>Équipe</th><th>Pts</th><th>J</th><th>V</th>' +
+            (estBasket ? '' : '<th>N</th>') +
+            '<th>D</th>' +
+            (estBasket ? '<th>Pts+</th><th>Pts-</th>' : '<th>BP</th><th>BC</th>') +
+            '<th>Diff</th></tr></thead>';
     html += '<tbody>';
 
     standings.forEach(function(team) {
@@ -2697,22 +2851,27 @@ function showStandingsModal() {
         var isTop3 = team.position <= 3;
         var isBottom3 = team.position > totalTeams - 3;
         var posClass = isTop3 ? 'top3' : (isBottom3 ? 'bottom3' : '');
-        var diff = team.diff || (team.goalsFor - team.goalsAgainst);
+        var diff = (team.diff !== null && team.diff !== undefined) ? team.diff : (team.goalsFor - team.goalsAgainst);
         var diffStr = diff > 0 ? '+' + diff : diff.toString();
         var diffClass = diff > 0 ? 'standings-diff-pos' : (diff < 0 ? 'standings-diff-neg' : '');
 
-        // Raccourcir les noms longs
-        var displayName = team.team
-            .replace(/\s*\d+$/, '')
-            .replace('A.S.A.', 'ASA')
-            .replace('JURA DOLOIS FOOTBALL', 'Jura Dolois')
-            .replace('FAUVERNEY ROUVRES', 'Fauverney R.');
+        var displayName = team.team;
 
-        // Capitaliser proprement
-        displayName = displayName.split(' ').map(function(w) {
-            if (w.length <= 2) return w;
-            return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
-        }).join(' ');
+        // Les noms du foot arrivent en majuscules et parfois très longs :
+        // on les raccourcit et on les recapitalise. Ceux du basket
+        // (Score'n'co) arrivent déjà propres, on n'y touche pas.
+        if (!estBasket) {
+            displayName = displayName
+                .replace(/\s*\d+$/, '')
+                .replace('A.S.A.', 'ASA')
+                .replace('JURA DOLOIS FOOTBALL', 'Jura Dolois')
+                .replace('FAUVERNEY ROUVRES', 'Fauverney R.');
+
+            displayName = displayName.split(' ').map(function(w) {
+                if (w.length <= 2) return w;
+                return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+            }).join(' ');
+        }
 
         html += '<tr class="' + (isMontceau ? 'is-montceau' : '') + '">';
         html += '<td><span class="standings-pos ' + posClass + '">' + team.position + '</span></td>';
@@ -2720,7 +2879,7 @@ function showStandingsModal() {
         html += '<td class="standings-pts">' + team.points + '</td>';
         html += '<td>' + team.played + '</td>';
         html += '<td>' + team.won + '</td>';
-        html += '<td>' + team.drawn + '</td>';
+        if (!estBasket) html += '<td>' + team.drawn + '</td>';
         html += '<td>' + team.lost + '</td>';
         html += '<td>' + team.goalsFor + '</td>';
         html += '<td>' + team.goalsAgainst + '</td>';
