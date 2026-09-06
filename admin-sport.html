@@ -763,12 +763,12 @@
         // Charger les données existantes
         async function loadExistingData() {
             try {
-                const { data, error } = await supabaseClient
+                  const { data, error } = await supabaseClient
                     .from('sport_data')
                     .select('*')
-                    .order('updated_at', { ascending: false })
+                    .eq('team_key', 'foot')
                     .limit(1)
-                    .single();
+                    .maybeSingle();
 
                 if (error || !data) {
                     showStatus('Aucune donnée existante. Remplissez le formulaire.', 'info');
@@ -839,7 +839,8 @@
                 const isHome = document.getElementById('nextIsHome').checked;
                 const adversaire = document.getElementById('nextAwayTeam').value.trim();
 
-                const payload = {
+                                const payload = {
+                    team_key: 'foot',
                     // Dernier match
                     last_match_date: document.getElementById('lastMatchDate').value || null,
                     last_match_time: '18:00',
