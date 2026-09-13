@@ -3974,6 +3974,7 @@ a.agenda-item {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    gap: 0.75rem;
     margin-bottom: 0.75rem;
     padding-bottom: 0.6rem;
     border-bottom: 1px solid var(--border-color);
@@ -3988,7 +3989,16 @@ a.agenda-item {
     font-weight: 600;
     letter-spacing: -0.01em;
     color: var(--text-primary);
-    flex-wrap: nowrap;
+    /* Les noms d'équipe basket sont plus longs que « FC Montceau » : on
+       laisse le badge de compétition passer à la ligne plutôt que de
+       pousser le lien « Détails » hors de l'écran sur mobile. */
+    flex-wrap: wrap;
+    min-width: 0;
+    white-space: normal;
+}
+
+/* Le nom de l'équipe, lui, ne se coupe jamais en deux */
+#sportTeamName {
     white-space: nowrap;
 }
 
