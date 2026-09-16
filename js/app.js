@@ -2494,9 +2494,22 @@ var sportEquipeActive = null;
 // Libellé d'onglet et icône par équipe (repli sur team_label si inconnu)
 var SPORT_ONGLETS = {
     'foot':     { onglet: 'Foot',     icone: 'sports_soccer' },
-    'basket_m': { onglet: 'Basket M', icone: 'sports_basketball' },
+    'basket_m': { onglet: 'Basket',   icone: 'sports_basketball' },
     'basket_f': { onglet: 'Basket F', icone: 'sports_basketball' }
 };
+
+// Tant qu'il n'y a qu'une équipe de basket, son onglet s'appelle simplement
+// « Basket ». Le jour où les féminines auront des données, les deux onglets
+// deviennent « Basket M » et « Basket F » pour qu'on puisse les distinguer.
+function libelleOngletSport(equipe, toutes) {
+    const conf = SPORT_ONGLETS[equipe.team_key];
+    const base = (conf && conf.onglet) || equipe.team_label || equipe.team_key;
+    if (equipe.team_key === 'basket_m') {
+        const feminines = toutes.some(function(e) { return e.team_key === 'basket_f'; });
+        return feminines ? 'Basket M' : base;
+    }
+    return base;
+}
 
 function initSport() {
     loadSportData();
@@ -2571,7 +2584,7 @@ function construireOngletsSport() {
     barre.style.display = '';
     barre.innerHTML = sportEquipes.map(function(eq) {
         const conf = SPORT_ONGLETS[eq.team_key] || {};
-        const libelle = conf.onglet || eq.team_label || eq.team_key;
+        const libelle = libelleOngletSport(eq, sportEquipes);
         const icone = conf.icone || 'sports';
         return '<button type="button" class="sport-tab" role="tab" data-team="' + eq.team_key + '" ' +
                'onclick="afficherEquipeSport(\'' + eq.team_key + '\')">' +
