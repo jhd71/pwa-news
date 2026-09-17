@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initWeather();
     initNews();
+    initTrafic();
     initCinema();
     initCommunity();
     initServiceWorker();
@@ -2916,3 +2917,89 @@ function closeStandingsModal() {
 document.querySelectorAll('.tile[data-color]').forEach(tile => {
     tile.style.setProperty('--tile-color', tile.dataset.color);
 });
+
+// ============================================
+// CIRCULATION (Bison Futé, via api/getTrafic)
+// Le bloc reste caché tant qu'il n'y a rien à signaler.
+// ============================================
+let traficTimer = null;
+
+async function initTrafic() {
+    await chargerTrafic();
+    // Nouvelle lecture toutes les 10 minutes
+    if (!traficTimer) {
+        traficTimer = setInterval(chargerTrafic, 10 * 60 * 1000);
+    }
+}
+
+async function chargerTrafic() {
+    const section = document.getElementById('traficSection');
+    const contenu = document.getElementById('traficContent');
+    if (!section || !contenu) return;
+
+    try {
+        const reponse = await fetch('/api/getTrafic');
+        if (!reponse.ok) throw new Error('HTTP ' + reponse.status);
+        const data = await reponse.json();
+
+        const evenements = (data && data.ok && Array.isArray(data.evenements)) ? data.evenements : [];
+
+        // Rien à signaler : pas de bloc du tout
+        if (evenements.length === 0) {
+            section.style.display = 'none';
+            return;
+        }
+
+        const recents = evenements.filter(e => !e.long);
+        const longs = evenements.filter(e => e.long);
+
+        let html = '';
+
+        if (recents.length > 0) {
+            html += '<ul class="trafic-list">' + recents.map(ligneTrafic).join('') + '</ul>';
+        }
+
+        // Les chantiers de plus d'un mois sont repliés pour ne pas encombrer
+        if (longs.length > 0) {
+            html += '<details class="trafic-longs">'
+                  + '<summary>Travaux de longue durée (' + longs.length + ')</summary>'
+                  + '<ul class="trafic-list">' + longs.map(ligneTrafic).join('') + '</ul>'
+                  + '</details>';
+        }
+
+        const origines = [...new Set(evenements.map(e => e.origine).filter(Boolean))];
+        html += '<div class="trafic-source">Source : '
+              + '<a href="https://www.bison-fute.gouv.fr" target="_blank" rel="noopener">Bison Futé</a>'
+              + (origines.length ? ' (' + escapeHtml(origines.join(', ')) + ')' : '')
+              + (data.miseAJour ? ' · mis à jour le ' + escapeHtml(data.miseAJour) : '')
+              + '</div>';
+
+        contenu.innerHTML = html;
+        section.style.display = '';
+
+    } catch (err) {
+        // En cas de panne, on ne touche à rien : le bloc garde son dernier état
+        console.log('⚠️ Circulation indisponible :', err.message);
+    }
+}
+
+function ligneTrafic(e) {
+    const niveau = [1, 2, 3].includes(e.niveau) ? e.niveau : 1;
+    const libelles = { 1: 'Gêne légère', 2: 'Gêne moyenne', 3: 'Gêne importante' };
+
+    let quand = '';
+    if (e.debut) quand = 'À partir du ' + e.debut;
+    else if (e.fin) quand = "Jusqu'au " + e.fin;
+    else if (e.heure) quand = 'Signalé à ' + e.heure;
+
+    const detail = (e.detail || '').replace(/\s+/g, ' ').trim();
+
+    return '<li class="trafic-item niveau-' + niveau + '">'
+         +   '<span class="trafic-dot" title="' + libelles[niveau] + '"></span>'
+         +   '<div class="trafic-body">'
+         +     '<div class="trafic-type">' + escapeHtml(e.type || 'Événement') + '</div>'
+         +     (detail ? '<div class="trafic-detail">' + escapeHtml(detail) + '</div>' : '')
+         +     (quand ? '<div class="trafic-when">' + escapeHtml(quand) + '</div>' : '')
+         +   '</div>'
+         + '</li>';
+}

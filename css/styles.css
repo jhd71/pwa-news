@@ -4859,5 +4859,163 @@ a.agenda-item {
     .footer-social { gap: 1.25rem; }
 }
 
+/* ============================================
+   BLOC CIRCULATION (Bison Futé)
+   Caché par défaut, affiché par initTrafic() dans app.js
+   ============================================ */
+.trafic-section {
+    margin: 1.5rem 1rem;
+    padding: 1.25rem;
+    border-radius: 20px;
+    box-sizing: border-box;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .trafic-section {
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (min-width: 1025px) {
+    .trafic-section {
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.trafic-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.trafic-zone {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: normal;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.trafic-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.trafic-item {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.trafic-list .trafic-item:last-child {
+    border-bottom: none;
+}
+
+/* Pastille : gris = léger, orange = moyen, rouge = important */
+.trafic-dot {
+    flex: 0 0 10px;
+    width: 10px;
+    height: 10px;
+    margin-top: 0.4rem;
+    border-radius: 50%;
+    background: var(--text-muted);
+}
+
+.trafic-item.niveau-2 .trafic-dot {
+    background: #f59e0b;
+}
+
+.trafic-item.niveau-3 .trafic-dot {
+    background: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.trafic-body {
+    min-width: 0;
+}
+
+.trafic-type {
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text-primary);
+}
+
+.trafic-detail {
+    margin-top: 0.15rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+    overflow-wrap: anywhere;
+}
+
+.trafic-when {
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Travaux de longue durée, repliés */
+.trafic-longs {
+    padding-top: 0.5rem;
+}
+
+.trafic-list + .trafic-longs {
+    border-top: 1px solid var(--border-color);
+}
+
+.trafic-longs summary {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    list-style: none;
+}
+
+.trafic-longs summary::-webkit-details-marker {
+    display: none;
+}
+
+.trafic-longs summary::before {
+    content: '▸';
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.trafic-longs[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.trafic-source {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.trafic-source a {
+    color: inherit;
+    text-decoration: underline;
+}
+
 
 
