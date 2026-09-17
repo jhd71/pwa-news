@@ -2990,6 +2990,7 @@ function ligneTrafic(e) {
     let quand = '';
     if (e.debut) quand = 'À partir du ' + e.debut;
     else if (e.fin) quand = "Jusqu'au " + e.fin;
+    else if (e.finHeure) quand = "Jusqu'à " + e.finHeure;
     else if (e.heure) quand = 'Signalé à ' + e.heure;
 
     const detail = (e.detail || '').replace(/\s+/g, ' ').trim();

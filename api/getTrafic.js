@@ -7,8 +7,10 @@ const SOURCE_URL = 'https://tipi.bison-fute.gouv.fr/bison-fute-ouvert/publicatio
 const CACHE_MS = 10 * 60 * 1000;   // 10 minutes
 const LONG_JOURS = 30;             // au-delà : chantier long (affiché en second)
 
-// Routes surveillées : N70 et N80 (RCEA)
-const ROUTES = /\b(?:R?N)\s?(?:70|80)\b/;
+// N70 (RCEA) : toujours gardée, elle traverse tout le secteur.
+// Les autres routes (N80, A6…) ne sont gardées que si l'événement
+// cite une des communes ci-dessous.
+const ROUTE_N70 = /\b(?:R?N)\s?70\b/;
 
 // Communes surveillées (en minuscules, SANS accents)
 const COMMUNES = [
@@ -69,8 +71,11 @@ function extraireSection71(texte) {
 }
 
 function concerneLeSecteur(brut) {
-  if (ROUTES.test(brut)) return true;
-  const norm = sansAccents(brut);
+  if (ROUTE_N70.test(brut)) return true;
+  // On ignore le sens de circulation (« de Chalon-sur-Saône vers Le Creusot ») :
+  // seul le lieu de l'événement compte.
+  const lieu = brut.replace(/\bde [^,;]+? vers [^,;]+/g, ' ');
+  const norm = sansAccents(lieu);
   return COMMUNES.some(c => new RegExp('(^|[^a-z-])' + c + '([^a-z-]|$)').test(norm));
 }
 
@@ -81,6 +86,7 @@ function nettoyer(t) {
     .replace(/entre les PR [\d+\-]+ et [\d+\-]+\s*/g, '')
     .replace(/au PR [\d+\-]+,?\s*/g, '')
     .replace(/prévu jusqu[’']au \d{2}\/\d{2}\/\d{4}( à \d{1,2}h\d{0,2})?,?\s*/g, '')
+    .replace(/prévu jusqu[’']à \d{1,2}h\d{0,2},?\s*/g, '')
     .replace(/\s*\(sens [^)]+\)/g, '')
     .replace(/,\s*\(sur/g, ' (sur')
     .replace(/\s+,/g, ',')
@@ -128,6 +134,11 @@ function analyserEvenement(brut, origine, maintenant) {
     long = jours > LONG_JOURS;
   }
 
+  // Fin dans la journée : « prévu jusqu'à 21h »
+  let finHeure = null;
+  const fh = texte.match(/jusqu[’']à (\d{1,2}h\d{0,2})/);
+  if (fh) finHeure = fh[1];
+
   // Événement pas encore commencé : « du 05/10/2026 »
   let debut = null;
   const d = texte.match(/\bdu\s+(\d{2})\/(\d{2})\/(\d{4})/);
@@ -135,7 +146,7 @@ function analyserEvenement(brut, origine, maintenant) {
     debut = `${d[1]}/${d[2]}/${d[3]}`;
   }
 
-  return { niveau, heure, type, detail, fin, debut, long, origine };
+  return { niveau, heure, type, detail, fin, finHeure, debut, long, origine };
 }
 
 function analyserPage(html, maintenant = new Date()) {
