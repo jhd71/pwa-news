@@ -3715,6 +3715,7 @@
                 
                 if (fetchError) throw fetchError;
                 
+				                let imageSupprimee = false;
                 // 2. Si une image existe, la supprimer du Storage
                 if (prop && prop.image_url) {
                     // Extraire le chemin de l'image depuis l'URL
@@ -3733,6 +3734,7 @@
                             console.warn('⚠️ Erreur suppression image:', storageError);
                         } else {
                             console.log('✅ Image supprimée du Storage');
+                            imageSupprimee = true;
                         }
                     }
                 }
@@ -3745,7 +3747,7 @@
                 
                 if (deleteError) throw deleteError;
                 
-                showToast('Publication et image supprimées ✅');
+                showToast(imageSupprimee ? 'Publication et image supprimées ✅' : 'Publication supprimée ✅');
                 loadPropositions();
                 loadPublishedArticles();
                 
