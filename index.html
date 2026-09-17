@@ -786,9 +786,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     
     <!-- Notification toast pour admin -->
     <div class="notification-toast" id="adminNotification">
-        <span class="notification-toast-icon">📬</span>
+                <span class="material-icons notification-toast-icon">inbox</span>
         <div class="notification-toast-content">
-            <div class="notification-toast-title">Nouveaux messages !</div>
+            <div class="notification-toast-title">À modérer</div>
             <div class="notification-toast-text" id="notificationText">Vous avez des messages non lus</div>
         </div>
         <button class="notification-toast-close" onclick="closeAdminNotification()" aria-label="Fermer">
@@ -915,7 +915,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             
             setTimeout(() => {
                 notification.classList.remove('show');
-            }, 60000);
+                        }, 12000);
             
             notification.onclick = (e) => {
                 if (!e.target.closest('.notification-toast-close')) {
@@ -924,13 +924,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             };
         }
         
-		// Vérification automatique toutes les 2 minutes
-        setInterval(() => {
-            if (localStorage.getItem('admin_session')) {
-                checkAdminNotifications();
-                console.log('🔄 Vérification automatique admin...');
-            }
-        }, 2 * 60 * 1000);
+		        setInterval(checkAdminNotifications, 2 * 60 * 1000);
 		
         function closeAdminNotification() {
             document.getElementById('adminNotification').classList.remove('show');
