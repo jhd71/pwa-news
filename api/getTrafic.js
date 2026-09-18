@@ -82,6 +82,14 @@ function concerneLeSecteur(brut) {
 function nettoyer(t) {
   return t
     .replace(/,?\s*applicable à tous les véhicules/gi, '')
+    .replace(/,?\s*uniquement de (jour|nuit)/gi, '')
+    // Jargon routier : PL = poids lourd, VL = véhicule léger
+    .replace(/\s*-\s*PL\b/g, ' (poids lourd)')
+    .replace(/\s*-\s*VL\b/g, ' (véhicule léger)')
+    .replace(/(\d+)\s+PL\b/g, (m, n) => n + (Number(n) > 1 ? ' poids lourds' : ' poids lourd'))
+    .replace(/(\d+)\s+VL\b/g, (m, n) => n + (Number(n) > 1 ? ' véhicules légers' : ' véhicule léger'))
+    .replace(/\bPL\b/g, 'poids lourd')
+    .replace(/\bVL\b/g, 'véhicule léger')
     .replace(/,?\s*La mesure est (obligatoire|conseillée)/gi, '')
     .replace(/entre les PR [\d+\-]+ et [\d+\-]+\s*/g, '')
     .replace(/au PR [\d+\-]+,?\s*/g, '')
@@ -134,6 +142,11 @@ function analyserEvenement(brut, origine, maintenant) {
     long = jours > LONG_JOURS;
   }
 
+  // Précision horaire : « uniquement de jour »
+  let precision = null;
+  const pj = texte.match(/uniquement de (jour|nuit)/i);
+  if (pj) precision = 'de ' + pj[1].toLowerCase() + ' seulement';
+
   // Fin dans la journée : « prévu jusqu'à 21h »
   let finHeure = null;
   const fh = texte.match(/jusqu[’']à (\d{1,2}h\d{0,2})/);
@@ -146,7 +159,7 @@ function analyserEvenement(brut, origine, maintenant) {
     debut = `${d[1]}/${d[2]}/${d[3]}`;
   }
 
-  return { niveau, heure, type, detail, fin, finHeure, debut, long, origine };
+  return { niveau, heure, type, detail, fin, finHeure, debut, long, precision, origine };
 }
 
 function analyserPage(html, maintenant = new Date()) {

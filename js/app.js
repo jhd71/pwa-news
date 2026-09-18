@@ -2993,6 +2993,13 @@ function ligneTrafic(e) {
     else if (e.finHeure) quand = "Jusqu'à " + e.finHeure;
     else if (e.heure) quand = 'Signalé à ' + e.heure;
 
+    // « de jour seulement » vient s'ajouter à l'heure plutôt qu'au début du texte
+    if (e.precision) {
+        quand = quand
+            ? quand + ', ' + e.precision
+            : e.precision.charAt(0).toUpperCase() + e.precision.slice(1);
+    }
+
     const detail = (e.detail || '').replace(/\s+/g, ' ').trim();
 
     return '<li class="trafic-item niveau-' + niveau + '">'
