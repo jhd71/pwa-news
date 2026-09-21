@@ -12,14 +12,27 @@ const LONG_JOURS = 30;             // au-delà : chantier long (affiché en seco
 // cite une des communes ci-dessous.
 const ROUTE_N70 = /\b(?:R?N)\s?70\b/;
 
-// Communes surveillées (en minuscules, SANS accents)
+// Communes surveillées : les 34 de la communauté urbaine Creusot Montceau.
+// À écrire sans accents. Les tirets et les apostrophes sont neutralisés
+// par normaliserNom(), donc « Le Creusot » et « le-creusot » se valent.
+// Les articles sont volontairement omis ('creusot', 'breuil', 'bizots')
+// pour attraper aussi « au Creusot », « du Creusot », « aux Bizots ».
 const COMMUNES = [
-  'montceau-les-mines', 'le creusot', 'blanzy', 'saint-vallier',
+  'montceau-les-mines', 'creusot', 'blanzy', 'saint-vallier',
   'sanvignes-les-mines', 'ciry-le-noble', 'torcy', 'montchanin',
   'ecuisses', 'genelard', 'perrecy-les-forges', 'saint-eusebe',
-  'pouilloux', 'gourdon', 'le breuil', 'saint-firmin', 'marmagne',
-  'saint-sernin-du-bois', 'saint-berain-sous-sanvignes'
+  'pouilloux', 'gourdon', 'breuil', 'saint-firmin', 'marmagne',
+  'saint-sernin-du-bois', 'saint-berain-sous-sanvignes',
+  // Les 15 autres communes de la communauté urbaine
+  'montcenis', 'mont-saint-vincent', 'saint-romain-sous-gourdon',
+  'saint-symphorien-de-marmagne', 'saint-pierre-de-varennes',
+  'saint-julien-sur-dheune', "saint-laurent-d'andenay", 'saint-micaud',
+  'charmoy', 'essertenne', 'bizots', 'marigny', 'mary',
+  'morey', 'perreuil'
 ];
+
+// Préparées une seule fois au démarrage
+const COMMUNES_NORM = COMMUNES.map(normaliserNom);
 
 let cache = { data: null, time: 0 };
 
@@ -27,6 +40,17 @@ let cache = { data: null, time: 0 };
 
 function sansAccents(t) {
   return t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+// Uniformise l'écriture des noms de lieux : pas d'accents, et les tirets
+// comme les apostrophes deviennent des espaces. « Saint-Laurent-d'Andenay »
+// et « Saint Laurent d Andenay » donnent alors le même résultat.
+function normaliserNom(t) {
+  return sansAccents(t)
+    .replace(/[\u2019']/g, ' ')
+    .replace(/-/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 const ENTITES = {
@@ -75,8 +99,8 @@ function concerneLeSecteur(brut) {
   // On ignore le sens de circulation (« de Chalon-sur-Saône vers Le Creusot ») :
   // seul le lieu de l'événement compte.
   const lieu = brut.replace(/\bde [^,;]+? vers [^,;]+/g, ' ');
-  const norm = sansAccents(lieu);
-  return COMMUNES.some(c => new RegExp('(^|[^a-z-])' + c + '([^a-z-]|$)').test(norm));
+  const norm = normaliserNom(lieu);
+  return COMMUNES_NORM.some(c => new RegExp('(^|[^a-z])' + c + '([^a-z]|$)').test(norm));
 }
 
 function nettoyer(t) {
