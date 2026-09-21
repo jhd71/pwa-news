@@ -801,7 +801,15 @@ body {
    PRESSE LOCALE
    ============================================ */
 .tiles-section {
-    padding: 0.75rem 1rem;
+    margin: 1.5rem 1rem;
+    padding: 1.25rem;
+    border-radius: 20px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+}
+
+.tiles-section .section-title {
+    margin-bottom: 0.5rem;
 }
 
 .section-title {
@@ -842,13 +850,13 @@ h2, h3 {
     padding: 0.7rem 0;
     text-decoration: none;
     color: inherit;
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    border-top: 1px solid var(--border-color);
     transition: color 0.2s ease;
     min-width: 0;
 }
 
 [data-theme="light"] .tile {
-    border-top-color: rgba(0, 0, 0, 0.07);
+    border-top-color: rgba(0, 0, 0, 0.12);
 }
 
 /* Pas de trait sur la première ligne : le titre en a déjà un */
