@@ -117,7 +117,7 @@ class RadioPlayerApp {
             {
                 id: 'Fun-Radio',
                 name: 'Fun Radio',
-                url: 'https://streamer-02.rtl.fr/fun-1-44-128',
+                url: 'https://icecast.funradio.fr/fun-1-44-128',
                 logo: 'images/radios-logos/Fun-Radio.png',
                 description: 'Le son dancefloor',
                 category: 'generaliste'
@@ -141,7 +141,7 @@ class RadioPlayerApp {
 			{
                 id: 'RTL2',
                 name: 'RTL2',
-                url: 'https://streamer-02.rtl.fr/rtl2-1-44-128',
+                url: 'https://icecast.funradio.fr/rtl2-1-44-128',
                 logo: 'images/radios-logos/RTL2.png',
                 description: 'Le Son Pop-Rock',
                 category: 'rock'
@@ -249,7 +249,7 @@ class RadioPlayerApp {
             {
                 id: 'RTL',
                 name: 'RTL',
-                url: 'https://streamer-03.rtl.fr/rtl-1-44-128',
+                url: 'https://icecast.funradio.fr/rtl-1-44-128',
                 logo: 'images/radios-logos/rtl.png',
                 description: 'Info & divertissement',
                 category: 'info'
