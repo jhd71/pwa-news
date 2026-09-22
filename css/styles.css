@@ -90,13 +90,13 @@
 
     /* Fonds */
     --bg-body: #670d00;
-    --bg-card: rgba(255, 255, 255, 0.06);
-    --bg-elevated: rgba(255, 255, 255, 0.10);
+    --bg-card: rgba(0, 0, 0, .1);
+    --bg-elevated: rgba(0, 0, 0, .1);
     --bg-surface-dark: #4a0900;
 
     /* Bordures et ombres */
     --border-color: rgba(255, 255, 255, 0.14);
-    --shadow-color: rgba(0, 0, 0, 0.45);
+    --shadow-color: rgba(0, 0, 0, .1);
 
     /* Textes */
     --text-primary: #ffffff;
