@@ -1,6 +1,6 @@
 /* ============================================
    ACTU & MÉDIA - Styles Optimisés v4
-   2 Thèmes : Sombre (défaut) + Clair
+   3 Thèmes : Sombre (défaut) + Clair + Bordeaux
    Nettoyé et sans duplications
    ============================================ */
 
@@ -60,6 +60,39 @@
     --text-primary: #1e293b;
     --text-secondary: #475569;
     --text-muted: #94a3b8;
+}
+
+/* ============================================
+   THÈME BORDEAUX - VARIABLES
+   Thème sombre : il hérite de toutes les règles
+   du thème sombre par défaut et ne redéfinit
+   que les couleurs.
+   ============================================ */
+[data-theme="bordeaux"] {
+    /* Couleurs principales : or / ambre à la place du violet */
+    --primary: #e0a458;
+    --primary-light: #f2c078;
+    --primary-dark: #c98a3c;
+    --accent: #ff9b85;
+
+    /* Fonds */
+    --bg-body: #670d00;
+    --bg-card: rgba(255, 255, 255, 0.06);
+    --bg-elevated: rgba(255, 255, 255, 0.10);
+    --bg-surface-dark: #4a0900;
+
+    /* Bordures et ombres */
+    --border-color: rgba(255, 255, 255, 0.14);
+    --shadow-color: rgba(0, 0, 0, 0.45);
+
+    /* Textes */
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.82);
+    --text-muted: rgba(255, 255, 255, 0.58);
+
+    /* États : réchauffés pour rester lisibles sur le bordeaux */
+    --danger: #ff8080;
+    --success: #4ade80;
 }
 
 /* ============================================
