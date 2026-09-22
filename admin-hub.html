@@ -683,7 +683,7 @@
             const current = html.getAttribute('data-theme');
             const next = current === 'light' ? 'dark' : 'light';
             html.setAttribute('data-theme', next);
-            localStorage.setItem('admin_hub_theme', next);
+            localStorage.setItem('admin_theme', next);
             updateThemeIcon(next);
         }
 
@@ -693,7 +693,7 @@
         }
 
         function initTheme() {
-            const saved = localStorage.getItem('admin_hub_theme') || localStorage.getItem('admin_theme') || 'dark';
+            const saved = localStorage.getItem('admin_theme') || localStorage.getItem('admin_hub_theme') || 'dark';
             if (saved === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
             }
