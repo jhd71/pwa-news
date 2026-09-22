@@ -1041,11 +1041,23 @@ class RadioPlayerApp {
         const themeToggleBtn = document.getElementById('themeToggleBtn');
         const themeIcon = themeToggleBtn?.querySelector('.material-icons');
 
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-theme');
-            if (themeIcon) themeIcon.textContent = 'light_mode';
-        }
+        const THEMES = ['dark', 'light', 'bordeaux'];
+        const THEME_ICONS = { dark: 'dark_mode', light: 'light_mode', bordeaux: 'palette' };
+        const LIBELLES_THEME = {
+            dark: '🌙 Thème sombre activé',
+            light: '☀️ Thème clair activé',
+            bordeaux: '🎨 Thème bordeaux activé'
+        };
+
+        const appliquerTheme = (theme) => {
+            document.body.classList.toggle('dark-theme', theme === 'dark');
+            document.body.classList.toggle('bordeaux-theme', theme === 'bordeaux');
+            if (themeIcon) themeIcon.textContent = THEME_ICONS[theme] || 'dark_mode';
+        };
+
+        let themeActuel = localStorage.getItem('theme') || 'light';
+        if (!THEMES.includes(themeActuel)) themeActuel = 'light';
+        appliquerTheme(themeActuel);
 
         if (themeToggleBtn) {
             themeToggleBtn.addEventListener('click', () => {
@@ -1056,20 +1068,16 @@ class RadioPlayerApp {
                 const allElements = document.querySelectorAll('*');
                 allElements.forEach(el => el.style.transition = 'none');
 
-                document.body.classList.toggle('dark-theme');
-                const isDark = document.body.classList.contains('dark-theme');
+                themeActuel = THEMES[(THEMES.indexOf(themeActuel) + 1) % THEMES.length];
+                appliquerTheme(themeActuel);
 
                 setTimeout(() => {
                     document.body.style.transition = '';
                     allElements.forEach(el => el.style.transition = '');
                 }, 50);
 
-                if (themeIcon) {
-                    themeIcon.textContent = isDark ? 'light_mode' : 'dark_mode';
-                }
-
-                localStorage.setItem('theme', isDark ? 'dark' : 'light');
-                this.showToast(isDark ? '🌙 Thème sombre activé' : '☀️ Thème clair activé');
+                localStorage.setItem('theme', themeActuel);
+                this.showToast(LIBELLES_THEME[themeActuel]);
             });
         }
     }
