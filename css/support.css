@@ -52,7 +52,7 @@
     align-items: center;
     padding: 1.25rem 1rem;
     border-bottom: 1px solid var(--border-color);
-    background: rgb(22 22 32);
+    background: var(--bg-surface-dark, rgb(22 22 32));
     position: sticky;
     top: 0;
     z-index: 1;
@@ -87,7 +87,7 @@
 
 @media (hover: hover) {
     .support-close:hover {
-        background: rgba(99, 102, 241, 0.2);
+        background: rgba(var(--ui-accent-rgb, 99, 102, 241), 0.2);
         color: var(--text-primary);
     }
 }
@@ -440,7 +440,7 @@
 
 @media (hover: hover) {
     .support-action:hover {
-        background: rgba(99, 102, 241, 0.15);
+        background: rgba(var(--ui-accent-rgb, 99, 102, 241), 0.15);
         transform: translateX(4px);
     }
 }
@@ -1065,4 +1065,17 @@ button.emergency-item {
 .support-logo .material-icons {
     font-size: 1.75rem;
     color: var(--text-muted);
+}
+
+/* ============================================
+   THÈME BORDEAUX
+   Seuls ces deux fonds étaient écrits en dur ; tout le reste
+   du panneau suit déjà les variables du thème.
+   ============================================ */
+[data-theme="bordeaux"] .donation-popup {
+    background: rgba(74, 9, 0, 0.96);
+}
+
+[data-theme="bordeaux"] .donation-icon-wrapper {
+    background: #6b1a08;
 }

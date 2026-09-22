@@ -88,15 +88,17 @@
     --primary-dark: #c98a3c;
     --accent: #ff9b85;
 
-    /* Fonds */
+    /* Fonds : voile NOIR et non blanc, les cartes sont donc plus
+       sombres que le fond de page. Le rouge vif ne subsiste que
+       dans les marges, où il encadre le contenu. */
     --bg-body: #670d00;
-    --bg-card: rgba(255, 255, 255, 0.06);
-    --bg-elevated: rgba(255, 255, 255, 0.10);
+    --bg-card: rgba(0, 0, 0, 0.1);
+    --bg-elevated: rgba(0, 0, 0, 0.1);
     --bg-surface-dark: #4a0900;
 
     /* Bordures et ombres */
     --border-color: rgba(255, 255, 255, 0.14);
-    --shadow-color: rgba(0, 0, 0, 0.45);
+    --shadow-color: rgba(0, 0, 0, 0.1);
 
     /* Textes */
     --text-primary: #ffffff;
@@ -511,6 +513,16 @@ body {
         margin-left: auto;
         margin-right: auto;
     }
+}
+
+/* En bordeaux, le pied de page n'a aucun fond : il se confond avec
+   le rouge vif du corps de page. On lui donne le même traitement
+   de carte que les autres blocs. */
+[data-theme="bordeaux"] .footer {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 1.75rem 1rem 1rem;
 }
 
 .footer a {
