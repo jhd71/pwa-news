@@ -27,6 +27,15 @@
         :root {
             --primary: #6366f1;
             --primary-light: #818cf8;
+            /* Teinte d'interface (badges, survols, dégradés) : valeurs
+               identiques en sombre et en clair, remplacées en bordeaux */
+            --ui-accent: #6366f1;
+            --ui-accent-light: #818cf8;
+            --ui-accent-pale: #a5b4fc;
+            --ui-accent-2: #8b5cf6;
+            --ui-accent-rgb: 99, 102, 241;
+            --ui-accent-2-rgb: 139, 92, 246;
+            --ui-accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             --bg-primary: #0a0a0f;
             --bg-secondary: #12121a;
             --bg-card: rgba(255, 255, 255, 0.05);
@@ -96,9 +105,9 @@
             text-align: center;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            background: linear-gradient(135deg, rgba(var(--ui-accent-rgb), 0.1) 0%, rgba(var(--ui-accent-2-rgb), 0.1) 100%);
             border-radius: 16px;
-            border: 1px solid rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(var(--ui-accent-rgb), 0.2);
         }
         
         .form-intro-icon { font-size: 3rem; margin-bottom: 0.5rem; }
@@ -133,7 +142,7 @@
         .form-input:focus, .form-select:focus, .form-textarea:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            box-shadow: 0 0 0 3px rgba(var(--ui-accent-rgb), 0.1);
         }
         
         .form-input::placeholder, .form-textarea::placeholder { color: var(--text-muted); }
@@ -213,7 +222,7 @@
         @media (hover: hover) {
             .category-option:hover { border-color: var(--primary-light); transform: translateY(-1px); }
         }
-        .category-option.selected { border-color: var(--primary); background: rgba(99, 102, 241, 0.15); box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.3); transform: scale(1.02); }
+        .category-option.selected { border-color: var(--primary); background: rgba(var(--ui-accent-rgb), 0.15); box-shadow: 0 0 0 1px rgba(var(--ui-accent-rgb), 0.3); transform: scale(1.02); }
         .category-option input { display: none; }
         .category-option-icon { font-size: 1.35rem; line-height: 1; }
         .category-option-name { font-size: 0.65rem; font-weight: 600; color: var(--text-secondary); text-align: center; line-height: 1.2; }
@@ -238,7 +247,7 @@
         @media (hover: hover) {
             .recurrence-toggle:hover { border-color: var(--primary-light); }
         }
-        .recurrence-toggle.active { border-color: var(--primary); background: rgba(99, 102, 241, 0.1); }
+        .recurrence-toggle.active { border-color: var(--primary); background: rgba(var(--ui-accent-rgb), 0.1); }
         .recurrence-toggle input { display: none; }
         
         .recurrence-checkbox {
@@ -292,7 +301,7 @@
         @media (hover: hover) {
             .recurrence-day:hover { 
                 border-color: var(--primary-light); 
-                background: rgba(99, 102, 241, 0.1);
+                background: rgba(var(--ui-accent-rgb), 0.1);
             }
         }
         
@@ -301,7 +310,7 @@
             border-color: var(--primary) !important; 
             color: white !important;
             transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 4px 12px rgba(var(--ui-accent-rgb), 0.4);
         }
         
         .recurrence-day input { display: none; }
@@ -326,7 +335,7 @@
             align-items: center;
             gap: 0.5rem;
             padding: 1rem;
-            background: rgba(99, 102, 241, 0.1);
+            background: rgba(var(--ui-accent-rgb), 0.1);
             border: 2px solid var(--primary);
             border-radius: 12px;
             color: var(--primary-light);
@@ -339,7 +348,7 @@
         
         @media (hover: hover) {
             .photo-btn:hover {
-                background: rgba(99, 102, 241, 0.2);
+                background: rgba(var(--ui-accent-rgb), 0.2);
                 transform: translateY(-2px);
             }
         }
@@ -414,7 +423,7 @@
         .photo-rotate-btn {
             width: 40px;
             height: 40px;
-            background: rgba(99, 102, 241, 0.9);
+            background: rgba(var(--ui-accent-rgb), 0.9);
             border: none;
             border-radius: 50%;
             color: white;
@@ -426,7 +435,7 @@
         }
         
         @media (hover: hover) {
-            .photo-rotate-btn:hover { background: #6366f1; transform: scale(1.1); }
+            .photo-rotate-btn:hover { background: var(--ui-accent); transform: scale(1.1); }
         }
         .photo-rotate-btn .material-icons { font-size: 1.25rem; }
         
@@ -436,7 +445,7 @@
             top: 0.5rem;
             left: 0.5rem;
             padding: 0.4rem 0.75rem;
-            background: rgba(99, 102, 241, 0.9);
+            background: rgba(var(--ui-accent-rgb), 0.9);
             border: none;
             border-radius: 8px;
             color: white;
@@ -450,7 +459,7 @@
         }
         
         @media (hover: hover) {
-            .photo-crop-btn:hover { background: #6366f1; transform: scale(1.05); }
+            .photo-crop-btn:hover { background: var(--ui-accent); transform: scale(1.05); }
         }
         .photo-crop-btn .material-icons { font-size: 1rem; }
         
@@ -534,14 +543,14 @@
         }
         
         .crop-ratio-btn.active {
-            background: rgba(99, 102, 241, 0.5);
-            border-color: #6366f1;
+            background: rgba(var(--ui-accent-rgb), 0.5);
+            border-color: var(--ui-accent);
         }
 
         @media (hover: hover) {
             .crop-ratio-btn:hover {
-                background: rgba(99, 102, 241, 0.5);
-                border-color: #6366f1;
+                background: rgba(var(--ui-accent-rgb), 0.5);
+                border-color: var(--ui-accent);
             }
         }
         
@@ -835,6 +844,13 @@
         [data-theme="bordeaux"] {
             --primary: #e0a458;
             --primary-light: #f2c078;
+            --ui-accent: #e0a458;
+            --ui-accent-light: #f2c078;
+            --ui-accent-pale: #f7d9a8;
+            --ui-accent-2: #c2703a;
+            --ui-accent-rgb: 224, 164, 88;
+            --ui-accent-2-rgb: 194, 112, 58;
+            --ui-accent-gradient: linear-gradient(135deg, #e0a458 0%, #c2703a 100%);
             --bg-primary: #670d00;
             --bg-secondary: #670d00;
             --bg-card: rgba(255, 255, 255, 0.06);
@@ -941,7 +957,7 @@
         .form-input:focus,
         .form-select:focus,
         .form-textarea:focus {
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+            box-shadow: 0 0 0 2px rgba(var(--ui-accent-rgb), 0.25);
         }
 
         .draft-banner,

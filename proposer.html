@@ -172,7 +172,7 @@
             outline: none;
             border-color: var(--primary);
             background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 0 0 3px rgba(var(--ui-accent-rgb), 0.2);
         }
         
         .form-input::placeholder,
@@ -266,7 +266,7 @@
             justify-content: center;
             width: 22px;
             height: 22px;
-            background: linear-gradient(135deg, var(--primary, #6366f1), #8b5cf6);
+            background: linear-gradient(135deg, var(--primary, var(--ui-accent)), var(--ui-accent-2));
             border-radius: 50%;
             color: white;
             font-size: 0.7rem;
@@ -303,8 +303,8 @@
         
         .type-option.selected {
             border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.15) !important;
-            box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.3);
+            background: rgba(var(--ui-accent-rgb), 0.15) !important;
+            box-shadow: 0 0 0 1px rgba(var(--ui-accent-rgb), 0.3);
             transform: scale(1.02);
         }
         
@@ -326,7 +326,7 @@
         }
         
         .type-option.selected .type-label {
-            color: var(--primary-light, #818cf8);
+            color: var(--primary-light, var(--ui-accent-light));
         }
         
         /* === BOUTONS PHOTO === */
@@ -343,7 +343,7 @@
             align-items: center;
             gap: 0.5rem;
             padding: 1rem;
-            background: rgba(99, 102, 241, 0.1);
+            background: rgba(var(--ui-accent-rgb), 0.1);
             border: 2px solid var(--primary);
             border-radius: 12px;
             color: var(--primary-light);
@@ -356,7 +356,7 @@
         
         @media (hover: hover) {
             .photo-btn:hover {
-                background: rgba(99, 102, 241, 0.2);
+                background: rgba(var(--ui-accent-rgb), 0.2);
                 transform: translateY(-2px);
             }
         }
@@ -450,7 +450,7 @@
         .photo-rotate-btn {
             width: 40px;
             height: 40px;
-            background: rgba(99, 102, 241, 0.9);
+            background: rgba(var(--ui-accent-rgb), 0.9);
             border: none;
             border-radius: 50%;
             color: white;
@@ -463,7 +463,7 @@
         
         @media (hover: hover) {
             .photo-rotate-btn:hover {
-                background: #6366f1;
+                background: var(--ui-accent);
                 transform: scale(1.1);
             }
         }
@@ -478,7 +478,7 @@
             top: 0.5rem;
             left: 0.5rem;
             padding: 0.4rem 0.75rem;
-            background: rgba(99, 102, 241, 0.9);
+            background: rgba(var(--ui-accent-rgb), 0.9);
             border: none;
             border-radius: 8px;
             color: white;
@@ -493,7 +493,7 @@
         
         @media (hover: hover) {
             .photo-crop-btn:hover {
-                background: #6366f1;
+                background: var(--ui-accent);
                 transform: scale(1.05);
             }
         }
@@ -587,14 +587,14 @@
         }
         
         .crop-ratio-btn.active {
-            background: rgba(99, 102, 241, 0.5);
-            border-color: #6366f1;
+            background: rgba(var(--ui-accent-rgb), 0.5);
+            border-color: var(--ui-accent);
         }
 
         @media (hover: hover) {
             .crop-ratio-btn:hover {
-                background: rgba(99, 102, 241, 0.5);
-                border-color: #6366f1;
+                background: rgba(var(--ui-accent-rgb), 0.5);
+                border-color: var(--ui-accent);
             }
         }
         
@@ -915,7 +915,7 @@
         @media (hover: hover) {
             .submit-btn:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+                box-shadow: 0 8px 25px rgba(var(--ui-accent-rgb), 0.4);
             }
         }
         
@@ -1195,7 +1195,7 @@
         .form-input:focus,
         .form-textarea:focus,
         .form-select:focus {
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+            box-shadow: 0 0 0 2px rgba(var(--ui-accent-rgb), 0.25);
         }
 
         .form-label {
@@ -1208,7 +1208,7 @@
 
         /* Numéros d'étape : violet uni */
         .form-step-badge {
-            background: var(--primary, #6366f1);
+            background: var(--primary, var(--ui-accent));
         }
 
         /* ---------- Choix du type ---------- */

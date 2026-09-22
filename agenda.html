@@ -27,6 +27,15 @@
         :root {
             --primary: #6366f1;
             --primary-light: #818cf8;
+            /* Teinte d'interface (badges, survols, dégradés) : valeurs
+               identiques en sombre et en clair, remplacées en bordeaux */
+            --ui-accent: #6366f1;
+            --ui-accent-light: #818cf8;
+            --ui-accent-pale: #a5b4fc;
+            --ui-accent-2: #8b5cf6;
+            --ui-accent-rgb: 99, 102, 241;
+            --ui-accent-2-rgb: 139, 92, 246;
+            --ui-accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             --bg-primary: #0a0a0f;
             --bg-secondary: #12121a;
             --bg-card: rgba(255, 255, 255, 0.05);
@@ -293,7 +302,7 @@
         .event-card-category.concert { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
         .event-card-category.fete { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
         .event-card-category.reunion { background: rgba(107, 114, 128, 0.15); color: #6b7280; }
-        .event-card-category.autre { background: rgba(99, 102, 241, 0.15); color: #6366f1; }
+        .event-card-category.autre { background: rgba(var(--ui-accent-rgb), 0.15); color: var(--ui-accent); }
         
         .recurring-badge {
             display: inline-flex;
@@ -511,8 +520,8 @@
         }
         
         .fab-home {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            background: var(--ui-accent-gradient);
+            box-shadow: 0 4px 15px rgba(var(--ui-accent-rgb), 0.4);
         }
         
         @media (hover: hover) {
@@ -530,7 +539,7 @@
         
         @media (hover: hover) {
             .fab-home:hover {
-                box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+                box-shadow: 0 6px 20px rgba(var(--ui-accent-rgb), 0.5);
             }
         }
         
@@ -564,8 +573,8 @@
             justify-content: space-between;
             width: 100%;
             padding: 0.6rem 0.75rem;
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.2);
+            background: rgba(var(--ui-accent-rgb), 0.1);
+            border: 1px solid rgba(var(--ui-accent-rgb), 0.2);
             border-radius: 10px;
             color: var(--primary-light);
             font-size: 0.85rem;
@@ -576,7 +585,7 @@
         
         @media (hover: hover) {
             .comments-toggle:hover {
-                background: rgba(99, 102, 241, 0.2);
+                background: rgba(var(--ui-accent-rgb), 0.2);
             }
         }
         
@@ -653,9 +662,9 @@
             flex-direction: column;
             gap: 0.6rem;
             padding: 0.75rem;
-            background: rgba(99, 102, 241, 0.05);
+            background: rgba(var(--ui-accent-rgb), 0.05);
             border-radius: 10px;
-            border: 1px solid rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(var(--ui-accent-rgb), 0.1);
         }
         
         .comment-form input,
@@ -711,7 +720,7 @@
         @media (hover: hover) {
             .comment-submit-btn:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+                box-shadow: 0 4px 12px rgba(var(--ui-accent-rgb), 0.4);
             }
         }
         
@@ -757,6 +766,13 @@
         [data-theme="bordeaux"] {
             --primary: #e0a458;
             --primary-light: #f2c078;
+            --ui-accent: #e0a458;
+            --ui-accent-light: #f2c078;
+            --ui-accent-pale: #f7d9a8;
+            --ui-accent-2: #c2703a;
+            --ui-accent-rgb: 224, 164, 88;
+            --ui-accent-2-rgb: 194, 112, 58;
+            --ui-accent-gradient: linear-gradient(135deg, #e0a458 0%, #c2703a 100%);
             --bg-primary: #670d00;
             --bg-secondary: #670d00;
             --bg-card: rgba(255, 255, 255, 0.06);

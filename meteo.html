@@ -375,9 +375,9 @@
         }
 
         .hourly-item.now {
-            background: rgba(99, 102, 241, 0.2);
-            border-color: rgba(99, 102, 241, 0.4);
-            box-shadow: 0 0 12px rgba(99, 102, 241, 0.2);
+            background: rgba(var(--ui-accent-rgb), 0.2);
+            border-color: rgba(var(--ui-accent-rgb), 0.4);
+            box-shadow: 0 0 12px rgba(var(--ui-accent-rgb), 0.2);
         }
 
         .hourly-item.past {
@@ -448,7 +448,7 @@
             width: 100%;
             padding: 0.5rem;
             margin-top: 0.6rem;
-            background: rgba(99, 102, 241, 0.15);
+            background: rgba(var(--ui-accent-rgb), 0.15);
             border: none;
             border-radius: 10px;
             color: var(--primary-light);
@@ -460,7 +460,7 @@
 
         @media (hover: hover) {
             .forecast-hourly-btn:hover {
-                background: rgba(99, 102, 241, 0.25);
+                background: rgba(var(--ui-accent-rgb), 0.25);
             }
         }
 
@@ -558,6 +558,10 @@
             background: #4f46e5;
         }
 
+        [data-theme="bordeaux"] .meteo-current {
+            background: #8a3a12;
+        }
+
         .meteo-current::before {
             display: none;
         }
@@ -586,7 +590,7 @@
         .meteo-location-icon {
             width: 40px;
             height: 40px;
-            background: rgba(99, 102, 241, 0.15);
+            background: rgba(var(--ui-accent-rgb), 0.15);
             border-radius: 10px;
             color: var(--primary-light);
         }
@@ -601,12 +605,12 @@
         }
 
         .meteo-sun-icon.sunset {
-            background: rgba(99, 102, 241, 0.18);
+            background: rgba(var(--ui-accent-rgb), 0.18);
             color: var(--primary-light);
         }
 
         .meteo-extra-icon {
-            background: rgba(99, 102, 241, 0.15);
+            background: rgba(var(--ui-accent-rgb), 0.15);
             border-radius: 10px;
         }
 

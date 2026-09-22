@@ -20,6 +20,15 @@
         :root {
             --primary: #6366f1;
             --primary-light: #818cf8;
+            /* Teinte d'interface (badges, survols, dégradés) : valeurs
+               identiques en sombre et en clair, remplacées en bordeaux */
+            --ui-accent: #6366f1;
+            --ui-accent-light: #818cf8;
+            --ui-accent-pale: #a5b4fc;
+            --ui-accent-2: #8b5cf6;
+            --ui-accent-rgb: 99, 102, 241;
+            --ui-accent-2-rgb: 139, 92, 246;
+            --ui-accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             --bg-body: #000000;
             --bg-card: rgba(255, 255, 255, 0.08);
             --text-primary: #ffffff;
@@ -110,7 +119,7 @@
         }
         
         .theme-toggle:hover {
-            background: rgba(99, 102, 241, 0.2);
+            background: rgba(var(--ui-accent-rgb), 0.2);
         }
         
         .container {
@@ -185,7 +194,7 @@
         }
         
         .info-box {
-            background: rgba(99, 102, 241, 0.1);
+            background: rgba(var(--ui-accent-rgb), 0.1);
             border: 1px solid var(--primary);
             border-radius: 12px;
             padding: 1rem;
@@ -257,6 +266,13 @@
         [data-theme="bordeaux"] {
             --primary: #e0a458;
             --primary-light: #f2c078;
+            --ui-accent: #e0a458;
+            --ui-accent-light: #f2c078;
+            --ui-accent-pale: #f7d9a8;
+            --ui-accent-2: #c2703a;
+            --ui-accent-rgb: 224, 164, 88;
+            --ui-accent-2-rgb: 194, 112, 58;
+            --ui-accent-gradient: linear-gradient(135deg, #e0a458 0%, #c2703a 100%);
             --bg-body: #670d00;
             --bg-card: rgba(255, 255, 255, 0.08);
             --text-primary: #ffffff;
