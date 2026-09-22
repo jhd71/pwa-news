@@ -134,14 +134,14 @@
 .mini-radio-btn.play-btn {
     width: 44px;
     height: 44px;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    box-shadow: 0 2px 10px rgba(99, 102, 241, 0.4);
+    background: var(--ui-accent-gradient, linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%));
+    box-shadow: 0 2px 10px rgba(var(--ui-accent-rgb, 99, 102, 241), 0.4);
 }
 
 @media (hover: hover) {
     .mini-radio-btn.play-btn:hover {
-        background: linear-gradient(135deg, #7c7ff2 0%, #9d78f7 100%);
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.5);
+        background: var(--ui-accent-gradient-hover, linear-gradient(135deg, #7c7ff2 0%, #9d78f7 100%));
+        box-shadow: 0 4px 15px rgba(var(--ui-accent-rgb, 99, 102, 241), 0.5);
     }
 }
 
@@ -163,13 +163,13 @@
 
 /* Bouton expand (ouvrir player complet) */
 .mini-radio-btn.expand-btn {
-    background: rgba(99, 102, 241, 0.2);
-    color: #a5b4fc;
+    background: rgba(var(--ui-accent-rgb, 99, 102, 241), 0.2);
+    color: var(--ui-accent-pale, #a5b4fc);
 }
 
 @media (hover: hover) {
     .mini-radio-btn.expand-btn:hover {
-        background: rgba(99, 102, 241, 0.3);
+        background: rgba(var(--ui-accent-rgb, 99, 102, 241), 0.3);
     }
 }
 
@@ -210,7 +210,7 @@
     appearance: none;
     width: 16px;
     height: 16px;
-    background: #6366f1;
+    background: var(--ui-accent, #6366f1);
     border-radius: 50%;
     cursor: pointer;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
@@ -219,7 +219,7 @@
 .mini-radio-volume-slider::-moz-range-thumb {
     width: 16px;
     height: 16px;
-    background: #6366f1;
+    background: var(--ui-accent, #6366f1);
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -253,7 +253,7 @@
 .mini-radio-visualizer .bar {
     width: 3px;
     height: 30%;
-    background: #6366f1;
+    background: var(--ui-accent, #6366f1);
     border-radius: 2px;
     transition: height 0.1s ease;
 }

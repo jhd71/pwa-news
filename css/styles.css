@@ -44,6 +44,7 @@
     --ui-accent-rgb: 99, 102, 241;
     --ui-accent-2-rgb: 139, 92, 246;
     --ui-accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    --ui-accent-gradient-hover: linear-gradient(135deg, #7c7ff2 0%, #9d78f7 100%);
 
     /* Typographie */
     --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
@@ -115,6 +116,7 @@
     --ui-accent-rgb: 224, 164, 88;
     --ui-accent-2-rgb: 194, 112, 58;
     --ui-accent-gradient: linear-gradient(135deg, #e0a458 0%, #c2703a 100%);
+    --ui-accent-gradient-hover: linear-gradient(135deg, #eab877 0%, #d08450 100%);
 }
 
 /* ============================================
