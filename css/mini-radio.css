@@ -161,6 +161,21 @@
     }
 }
 
+/* Thème bordeaux : le rouge sur fond rouge ne se voit plus.
+   Fond neutre + rouge clair pour que le stop reste la commande
+   la plus lisible de la barre. */
+[data-theme="bordeaux"] .mini-radio-btn.stop-btn {
+    background: rgba(0, 0, 0, 0.25);
+    color: #ff8080;
+}
+
+@media (hover: hover) {
+    [data-theme="bordeaux"] .mini-radio-btn.stop-btn:hover {
+        background: rgba(0, 0, 0, 0.4);
+        color: #ff9999;
+    }
+}
+
 /* Bouton expand (ouvrir player complet) */
 .mini-radio-btn.expand-btn {
     background: rgba(var(--ui-accent-rgb, 99, 102, 241), 0.2);
