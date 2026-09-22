@@ -253,6 +253,17 @@
             --border-color: rgba(0, 0, 0, 0.10);
         }
 
+        /* Thème bordeaux */
+        [data-theme="bordeaux"] {
+            --primary: #e0a458;
+            --primary-light: #f2c078;
+            --bg-body: #670d00;
+            --bg-card: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.82);
+            --border-color: rgba(255, 255, 255, 0.14);
+        }
+
         /* ---------- Barre du haut ---------- */
         .header,
         [data-theme="light"] .header {
@@ -511,9 +522,13 @@
             updateThemeIcon(savedTheme);
         }
         
+        const THEMES = ['dark', 'light', 'bordeaux'];
+        const THEME_ICONS = { 'dark': 'dark_mode', 'light': 'light_mode', 'bordeaux': 'palette' };
+
         function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            const i = THEMES.indexOf(currentTheme);
+            const newTheme = THEMES[(i + 1) % THEMES.length];
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             updateThemeIcon(newTheme);
@@ -521,7 +536,7 @@
         
         function updateThemeIcon(theme) {
             const icon = document.getElementById('themeIcon');
-            icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+            icon.textContent = THEME_ICONS[theme] || 'dark_mode';
         }
         
         initTheme();

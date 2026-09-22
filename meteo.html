@@ -23,7 +23,7 @@
     <script>
         (function () {
             var t = localStorage.getItem('theme') || 'light';
-            if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+            if (t !== 'dark') document.documentElement.setAttribute('data-theme', t);
         })();
     </script>
     <!-- Les icônes météo utilisent maintenant les Meteocons SVG (pas besoin de CSS) -->
@@ -891,8 +891,8 @@
         let SUNSET_HOUR = 20;
 
         // Thème
-        const THEMES = ['dark', 'light'];
-        const THEME_ICONS = { 'dark': 'dark_mode', 'light': 'light_mode' };
+        const THEMES = ['dark', 'light', 'bordeaux'];
+        const THEME_ICONS = { 'dark': 'dark_mode', 'light': 'light_mode', 'bordeaux': 'palette' };
 
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
@@ -905,7 +905,7 @@
             
             document.getElementById('themeToggle').addEventListener('click', () => {
                 const current = document.documentElement.getAttribute('data-theme') || 'dark';
-                const next = current === 'dark' ? 'light' : 'dark';
+                const next = THEMES[(THEMES.indexOf(current) + 1) % THEMES.length];
                 applyTheme(next);
                 localStorage.setItem('theme', next);
             });
