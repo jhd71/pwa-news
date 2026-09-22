@@ -502,8 +502,10 @@ body {
    ============================================ */
 .footer {
     margin: 2rem 1rem;
-    padding: 1.75rem 0 0;
-    border-top: 1px solid var(--border-color);
+    padding: 1.75rem 1rem 1rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
     text-align: center;
     box-sizing: border-box;
 }
@@ -513,16 +515,6 @@ body {
         margin-left: auto;
         margin-right: auto;
     }
-}
-
-/* En bordeaux, le pied de page n'a aucun fond : il se confond avec
-   le rouge vif du corps de page. On lui donne le même traitement
-   de carte que les autres blocs. */
-[data-theme="bordeaux"] .footer {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 1.75rem 1rem 1rem;
 }
 
 .footer a {
