@@ -903,6 +903,32 @@
             loadWeatherData();
         });
 
+        // ============================================
+        // RAFRAÎCHISSEMENT AUTOMATIQUE
+        // Open-Meteo actualise ses conditions courantes environ tous les
+        // quarts d'heure : inutile d'interroger l'API plus souvent.
+        // ============================================
+        const INTERVALLE_METEO = 15 * 60 * 1000;
+        let dernierChargement = Date.now();
+
+        function rafraichirMeteo() {
+            loadWeatherData();
+            dernierChargement = Date.now();
+        }
+
+        // Onglet en arrière-plan : on ne consomme rien
+        setInterval(() => {
+            if (document.hidden) return;
+            rafraichirMeteo();
+        }, INTERVALLE_METEO);
+
+        // Retour sur l'onglet après une absence : on remet à jour tout de suite
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && Date.now() - dernierChargement > INTERVALLE_METEO) {
+                rafraichirMeteo();
+            }
+        });
+
         function initTheme() {
             const saved = localStorage.getItem('theme') || 'light';
             applyTheme(saved);
@@ -1262,7 +1288,11 @@
                         // Scroll automatique vers l'heure actuelle (horizontal uniquement,
             // pour ne pas faire descendre toute la page au chargement)
             const nowEl = container.querySelector('.hourly-item.now');
-            if (nowEl) {
+            // Uniquement au premier rendu : sinon chaque rafraîchissement
+            // ramènerait l'utilisateur en arrière alors qu'il consulte
+            // une autre heure de la journée.
+            if (nowEl && !container.dataset.recentrageFait) {
+                container.dataset.recentrageFait = '1';
                 setTimeout(() => {
                     const zoneCase = nowEl.getBoundingClientRect();
                     const zoneConteneur = container.getBoundingClientRect();
