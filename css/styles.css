@@ -33,6 +33,16 @@
     --danger: #ef4444;
     --success: #10b981;
 
+    /* Teinte d'interface : badges, survols, dégradés, ombres.
+       Ces couleurs étaient écrites en dur partout dans le fichier.
+       Le thème sombre ET le thème clair gardent exactement les mêmes
+       valeurs qu'avant : seul le thème bordeaux les remplace. */
+    --ui-accent: #6366f1;
+    --ui-accent-light: #818cf8;
+    --ui-accent-pale: #a5b4fc;
+    --ui-accent-rgb: 99, 102, 241;
+    --ui-accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+
     /* Typographie */
     --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
 }
@@ -93,6 +103,14 @@
     /* États : réchauffés pour rester lisibles sur le bordeaux */
     --danger: #ff8080;
     --success: #4ade80;
+
+    /* Teinte d'interface en or : remplace le violet des badges,
+       survols, dégradés et ombres */
+    --ui-accent: #e0a458;
+    --ui-accent-light: #f2c078;
+    --ui-accent-pale: #f7d9a8;
+    --ui-accent-rgb: 224, 164, 88;
+    --ui-accent-gradient: linear-gradient(135deg, #e0a458 0%, #c2703a 100%);
 }
 
 /* ============================================
@@ -208,7 +226,7 @@ body {
 
 @media (hover: hover) {
     .header-btn:hover {
-        background: rgba(99, 102, 241, 0.2);
+        background: rgba(var(--ui-accent-rgb), 0.2);
         transform: scale(1.05);
     }
 }
@@ -320,7 +338,7 @@ body {
 
 @media (hover: hover) {
     .theme-toggle:hover {
-        background: rgba(99, 102, 241, 0.2);
+        background: rgba(var(--ui-accent-rgb), 0.2);
     }
 }
 
@@ -1152,7 +1170,7 @@ h2, h3 {
 
 .cinema-tip .material-icons:first-child {
     font-size: 18px;
-    color: #818cf8;
+    color: var(--ui-accent-light);
     flex-shrink: 0;
 }
 
@@ -1315,8 +1333,8 @@ h2, h3 {
     border-radius: 4px;
     font-size: 0.72rem;
     font-weight: 600;
-    background: rgba(99, 102, 241, 0.16);
-    color: #a5b4fc;
+    background: rgba(var(--ui-accent-rgb), 0.16);
+    color: var(--ui-accent-pale);
 }
 
 [data-theme="light"] .cinema-time {
@@ -1593,8 +1611,8 @@ h2, h3 {
     border-radius: 4px;
     font-size: 0.85rem;
     font-weight: 600;
-    background: rgba(99, 102, 241, 0.16);
-    color: #a5b4fc;
+    background: rgba(var(--ui-accent-rgb), 0.16);
+    color: var(--ui-accent-pale);
 }
 
 [data-theme="light"] .film-modal-time {
@@ -2624,7 +2642,7 @@ h2, h3 {
 
 .comment-item {
     padding: 0.75rem;
-    background: rgba(99, 102, 241, 0.15);
+    background: rgba(var(--ui-accent-rgb), 0.15);
     border-radius: 8px;
     border-left: 3px solid var(--primary);
 }
@@ -2669,8 +2687,8 @@ h2, h3 {
     flex-direction: column;
     gap: 0.5rem;
     padding: 0.75rem;
-    background: rgba(99, 102, 241, 0.05);
-    border: 1px solid rgba(99, 102, 241, 0.15);
+    background: rgba(var(--ui-accent-rgb), 0.05);
+    border: 1px solid rgba(var(--ui-accent-rgb), 0.15);
     border-radius: 10px;
 }
 
@@ -2723,7 +2741,7 @@ h2, h3 {
 @media (hover: hover) {
     .comment-submit-btn:hover:not(:disabled) {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        box-shadow: 0 4px 12px rgba(var(--ui-accent-rgb), 0.3);
     }
 }
 
@@ -2854,8 +2872,8 @@ h2, h3 {
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: rgba(var(--ui-accent-rgb), 0.1);
+    border: 1px solid rgba(var(--ui-accent-rgb), 0.3);
     border-radius: 10px;
     color: var(--primary-light);
     text-decoration: none;
@@ -2866,7 +2884,7 @@ h2, h3 {
 
 @media (hover: hover) {
     .admin-link:hover {
-        background: rgba(99, 102, 241, 0.2);
+        background: rgba(var(--ui-accent-rgb), 0.2);
     }
 }
 
@@ -3096,14 +3114,14 @@ h2, h3 {
 }
 
 .notif-prompt-btn.primary {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    background: var(--ui-accent-gradient);
     color: white;
 }
 
 @media (hover: hover) {
     .notif-prompt-btn.primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        box-shadow: 0 8px 25px rgba(var(--ui-accent-rgb), 0.4);
     }
 }
 
@@ -3114,7 +3132,7 @@ h2, h3 {
 
 @media (hover: hover) {
     .notif-prompt-btn.secondary:hover {
-        background: rgba(99, 102, 241, 0.1);
+        background: rgba(var(--ui-accent-rgb), 0.1);
         color: var(--text-primary);
     }
 }
@@ -3454,7 +3472,7 @@ p,
 }
 
 .seo-section a {
-    color: #a5b4fc !important;
+    color: var(--ui-accent-pale) !important;
     text-decoration: none;
 }
 
@@ -3521,7 +3539,7 @@ p,
 
 @media (hover: hover) {
     .font-size-btn:hover {
-        background: rgba(99, 102, 241, 0.1);
+        background: rgba(var(--ui-accent-rgb), 0.1);
         border-color: var(--primary-light);
     }
 }
@@ -3843,7 +3861,7 @@ a.agenda-item {
 .agenda-item-category.brocante { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
 .agenda-item-category.concert  { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
 .agenda-item-category.fete     { background: rgba(239, 68, 68, 0.2);  color: #f87171; }
-.agenda-item-category.autre    { background: rgba(99, 102, 241, 0.2); color: #a5b4fc; }
+.agenda-item-category.autre    { background: rgba(var(--ui-accent-rgb), 0.2); color: var(--ui-accent-pale); }
 
 /* Catégories - thème clair */
 [data-theme="light"] .agenda-item-category.sport    { background: rgba(34, 197, 94, 0.12);  color: #16a34a; }
@@ -4619,16 +4637,16 @@ a.agenda-item {
 
 /* Ligne Montceau mise en avant */
 .standings-table tr.is-montceau {
-    background: rgba(99, 102, 241, 0.10);
+    background: rgba(var(--ui-accent-rgb), 0.10);
 }
 
 .standings-table tr.is-montceau td {
     font-weight: 700;
-    color: #818cf8;
+    color: var(--ui-accent-light);
 }
 
 .standings-table tr.is-montceau td:nth-child(2) {
-    color: #a5b4fc;
+    color: var(--ui-accent-pale);
 }
 
 [data-theme="light"] .standings-table tr.is-montceau td {
@@ -4669,7 +4687,7 @@ a.agenda-item {
 }
 
 .standings-table tr.is-montceau .standings-pts {
-    color: #a5b4fc !important;
+    color: var(--ui-accent-pale) !important;
 }
 
 [data-theme="light"] .standings-table tr.is-montceau .standings-pts {
@@ -4729,7 +4747,7 @@ a.agenda-item {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 15px rgba(var(--ui-accent-rgb), 0.4);
     opacity: 0;
     visibility: hidden;
     transform: translateY(10px);
@@ -4746,7 +4764,7 @@ a.agenda-item {
 @media (hover: hover) {
     .scroll-top-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        box-shadow: 0 6px 20px rgba(var(--ui-accent-rgb), 0.5);
     }
 }
 
