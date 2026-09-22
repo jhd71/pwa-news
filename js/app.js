@@ -211,11 +211,19 @@ function getMeteoconName(code) {
 // ============================================
 // THÈME (Multi-thèmes)
 // ============================================
-const THEMES = ['dark', 'light'];
+const THEMES = ['dark', 'light', 'bordeaux'];
 
 const THEME_ICONS = {
     'dark': 'dark_mode',
-    'light': 'light_mode'
+    'light': 'light_mode',
+    'bordeaux': 'palette'
+};
+
+// Couleur de la barre d'état du téléphone, thème par thème
+const THEME_COLORS = {
+    'dark': '#1a1a2e',
+    'light': '#e8ecf1',
+    'bordeaux': '#670d00'
 };
 
 function initTheme() {
@@ -257,6 +265,12 @@ function applyTheme(theme) {
     const themeIcon = document.getElementById('themeIcon');
     if (themeIcon) {
         themeIcon.textContent = THEME_ICONS[theme] || 'dark_mode';
+    }
+
+    // Barre d'état du téléphone (mode application installée)
+    const metaCouleur = document.querySelector('meta[name="theme-color"]');
+    if (metaCouleur && THEME_COLORS[theme]) {
+        metaCouleur.setAttribute('content', THEME_COLORS[theme]);
     }
     
     // Mettre à jour le bouton actif dans le sélecteur
