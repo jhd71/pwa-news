@@ -424,6 +424,10 @@ body.mini-player-visible.mini-player-expanded {
     background: rgba(0, 0, 0, 0.1);
 }
 
+[data-theme="bordeaux"] .mini-radio-volume-slider {
+    background: rgba(255, 255, 255, 0.14);
+}
+
 [data-theme="light"] .mini-radio-volume-value {
     color: #475569;
 }

@@ -564,6 +564,12 @@
     background: rgba(0, 0, 0, 0.08);
 }
 
+/* En bordeaux, --bg-elevated est un voile NOIR : la piste deviendrait
+   une tache sombre sur sa propre carte. Il lui faut un sillon clair. */
+[data-theme="bordeaux"] .meteo-sun-bar {
+    background: rgba(255, 255, 255, 0.14);
+}
+
 /* Bouton Accueil */
 .home-btn {
     display: flex;
