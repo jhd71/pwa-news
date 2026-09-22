@@ -22,24 +22,27 @@
         :root {
 			--primary: #6366f1;
 			--primary-light: #818cf8;
-			--bg-dark: #0f0f1a;
+			--primary-dark: #4f46e5;
+			--bg-body: #0f0f1a;
 			--bg-card: #1a1a2e;
+			--bg-elevated: #232338;
+			--border-color: rgba(255, 255, 255, 0.12);
 			--text-primary: #ffffff;
 			--text-secondary: rgba(255, 255, 255, 0.7);
 			--text-muted: rgba(255, 255, 255, 0.5);
-			--danger: #ef4444;
 			--success: #10b981;
 			--warning: #f59e0b;
-			--glass-border: rgba(255, 255, 255, 0.1);
+			--danger: #ef4444;
 		}
 
 		[data-theme="light"] {
-			--bg-dark: #f1f5f9;
+			--bg-body: #f1f5f9;
 			--bg-card: #ffffff;
+			--bg-elevated: #f8fafc;
+			--border-color: #e2e8f0;
 			--text-primary: #1e293b;
 			--text-secondary: #475569;
 			--text-muted: #94a3b8;
-			--glass-border: #e2e8f0;
 		}
         
         * {
@@ -50,7 +53,7 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--bg-dark);
+            background: var(--bg-body);
             color: var(--text-primary);
             min-height: 100vh;
         }
@@ -66,7 +69,7 @@
         
         .login-box {
             background: var(--bg-card);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-color);
             border-radius: 24px;
             padding: 2rem;
             width: 100%;
@@ -82,7 +85,7 @@
             width: 100%;
             padding: 1rem;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             color: var(--text-primary);
             font-size: 1rem;
@@ -115,7 +118,7 @@
         
         .admin-header {
             background: var(--bg-card);
-            border-bottom: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--border-color);
             padding: 1rem 1.5rem;
             display: flex;
             justify-content: space-between;
@@ -171,7 +174,7 @@
         
         .stat-card {
             background: var(--bg-card);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 1rem;
             text-align: center;
@@ -187,7 +190,7 @@
             display: flex;
             gap: 0.25rem;
             padding: 0 1rem;
-            border-bottom: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--border-color);
             overflow-x: auto;
         }
         
@@ -222,7 +225,7 @@
 		.sub-tab {
 			padding: 0.5rem 1rem;
 			background: rgba(255, 255, 255, 0.05);
-			border: 1px solid var(--glass-border);
+			border: 1px solid var(--border-color);
 			border-radius: 8px;
 			color: var(--text-muted);
 			font-size: 0.85rem;
@@ -259,7 +262,7 @@
             width: 48px;
             height: 48px;
             background: rgba(255, 255, 255, 0.05);
-            border: 2px solid var(--glass-border);
+            border: 2px solid var(--border-color);
             border-radius: 10px;
             font-size: 0.85rem;
             font-weight: 600;
@@ -302,7 +305,7 @@
         
         .message-card {
             background: var(--bg-card);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 1.25rem;
             transition: all 0.3s ease;
@@ -457,7 +460,7 @@
             width: 100%;
             padding: 0.875rem 1rem;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             color: var(--text-primary);
             font-size: 1rem;
@@ -485,12 +488,12 @@
             padding-right: 3rem;
         }
         
-        .form-select option { background: var(--bg-dark); color: var(--text-primary); }
+        .form-select option { background: var(--bg-body); color: var(--text-primary); }
         .form-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem; }
         
         /* Image Upload */
         .image-upload-zone {
-            border: 2px dashed var(--glass-border);
+            border: 2px dashed var(--border-color);
             border-radius: 16px;
             padding: 2rem;
             text-align: center;
@@ -521,7 +524,7 @@
             gap: 0.5rem;
             padding: 1.5rem 1rem;
             background: rgba(255, 255, 255, 0.05);
-            border: 2px dashed var(--glass-border);
+            border: 2px dashed var(--border-color);
             border-radius: 12px;
             color: var(--text-secondary);
             cursor: pointer;
@@ -974,7 +977,7 @@
             transform: translateX(-50%) translateY(100px);
             padding: 1rem 1.5rem;
             background: var(--bg-card);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -991,7 +994,7 @@
         /* Article Card */
         .article-card {
             background: var(--bg-card);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             overflow: hidden;
             margin-bottom: 1rem;
@@ -1566,7 +1569,7 @@
         .comment-tab {
             padding: 0.5rem 1rem;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text-secondary);
             font-size: 0.85rem;
@@ -1587,7 +1590,7 @@
         
         .comment-card {
             background: var(--bg-card);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 1rem;
             margin-bottom: 1rem;
@@ -1729,7 +1732,7 @@
             width: 48px;
             height: 48px;
             background: rgba(255, 255, 255, 0.05);
-            border: 2px solid var(--glass-border);
+            border: 2px solid var(--border-color);
             border-radius: 10px;
             font-size: 0.85rem;
             font-weight: 600;
@@ -1897,7 +1900,7 @@
         
         .sport-card {
             background: var(--bg-card);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 1.25rem;
             margin-bottom: 1rem;
@@ -1937,7 +1940,7 @@
             width: 100%;
             padding: 0.6rem 0.75rem;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-color);
             border-radius: 10px;
             color: var(--text-primary);
             font-size: 0.9rem;
@@ -1990,7 +1993,7 @@
             width: 100%;
             padding: 0.55rem 0.4rem;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text-primary);
             font-size: 0.8rem;
@@ -2253,7 +2256,7 @@
             <div style="display:grid;gap:1.5rem;">
                 
                 <!-- Section Commentaires d'événements -->
-                <div style="background:var(--bg-card);border:1px solid var(--glass-border);border-radius:12px;padding:1rem;">
+                <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:1rem;">
                     <h4 style="margin-bottom:1rem;color:#60a5fa;display:flex;align-items:center;gap:0.5rem;">
                         <span class="material-icons">event</span>
                         Commentaires d'événements
@@ -2270,7 +2273,7 @@
                 </div>
                 
                 <!-- Section Commentaires d'infos communauté -->
-                <div style="background:var(--bg-card);border:1px solid var(--glass-border);border-radius:12px;padding:1rem;">
+                <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:1rem;">
                     <h4 style="margin-bottom:1rem;color:#10b981;display:flex;align-items:center;gap:0.5rem;">
                         <span class="material-icons">article</span>
                         Commentaires d'infos communauté
@@ -2496,7 +2499,7 @@
             <div style="display:grid;gap:1rem;max-width:100%;overflow:hidden;">
                 
                 <!-- Section Visites du site -->
-                <div style="background:var(--bg-card);border:1px solid var(--glass-border);border-radius:12px;padding:1rem;overflow:hidden;">
+                <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:1rem;overflow:hidden;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
 					<h4 style="margin:0;color:#60a5fa;">👥 Visites du site</h4>
 				</div>
@@ -2560,7 +2563,7 @@
                 </div>
                 
                 <!-- Section Événements -->
-                <div style="background:var(--bg-card);border:1px solid var(--glass-border);border-radius:12px;padding:1rem;overflow:hidden;">
+                <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:1rem;overflow:hidden;">
                     <h4 style="margin-bottom:1rem;color:var(--primary-light);">📅 Événements (Agenda)</h4>
                     <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">
                         <button onclick="resetAllEventViews()" class="action-btn" style="background:var(--warning);border-color:var(--warning);font-size:0.75rem;padding:0.5rem 0.75rem;">
@@ -2576,7 +2579,7 @@
                 </div>
                 
                 <!-- Section Infos Communauté -->
-                <div style="background:var(--bg-card);border:1px solid var(--glass-border);border-radius:12px;padding:1rem;overflow:hidden;">
+                <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:1rem;overflow:hidden;">
                     <h4 style="margin-bottom:1rem;color:var(--success);">📰 Infos de la communauté</h4>
                     <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">
                         <button onclick="resetAllSubmissionViews()" class="action-btn" style="background:var(--warning);border-color:var(--warning);font-size:0.75rem;padding:0.5rem 0.75rem;">
@@ -2592,7 +2595,7 @@
                 </div>
                 
                 <!-- Section Likes Communauté -->
-                <div style="background:var(--bg-card);border:1px solid var(--glass-border);border-radius:12px;padding:1rem;overflow:hidden;">
+                <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:1rem;overflow:hidden;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
                         <h4 style="margin:0;color:#f472b6;">❤️ Likes des infos</h4>
                     </div>
@@ -5734,7 +5737,7 @@
                 container.innerHTML = `
                     <table style="width:100%;font-size:0.75rem;border-collapse:collapse;">
                         <thead>
-                            <tr style="border-bottom:1px solid var(--glass-border);">
+                            <tr style="border-bottom:1px solid var(--border-color);">
                                 <th style="text-align:left;padding:0.5rem;color:var(--text-muted);">Date</th>
                                 <th style="text-align:right;padding:0.5rem;color:var(--text-muted);">Visiteurs</th>
                                 <th style="text-align:right;padding:0.5rem;color:var(--text-muted);">Pages</th>
@@ -5745,7 +5748,7 @@
                                 const date = new Date(row.visit_date + 'T12:00:00');
                                 const dateStr = date.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
                                 return `
-                                    <tr style="border-bottom:1px solid var(--glass-border);">
+                                    <tr style="border-bottom:1px solid var(--border-color);">
                                         <td style="padding:0.5rem;">${dateStr}</td>
                                         <td style="padding:0.5rem;text-align:right;font-weight:600;color:#60a5fa;">${row.unique_visitors || 0}</td>
                                         <td style="padding:0.5rem;text-align:right;color:var(--text-secondary);">${row.page_views || 0}</td>
@@ -5792,7 +5795,7 @@
                     <p style="margin-bottom:0.5rem;font-weight:600;font-size:0.9rem;">Total : ${totalViews} vues</p>
                     <div style="max-height:250px;overflow-y:auto;overflow-x:hidden;">
                         ${data.map(e => `
-                            <div style="display:flex;align-items:center;padding:0.4rem 0;border-bottom:1px solid var(--glass-border);gap:0.5rem;overflow:hidden;">
+                            <div style="display:flex;align-items:center;padding:0.4rem 0;border-bottom:1px solid var(--border-color);gap:0.5rem;overflow:hidden;">
                                 <span style="font-size:0.75rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:calc(100% - 80px);">${escapeHtml(e.title)}</span>
                                 <span style="font-weight:600;color:var(--primary-light);flex-shrink:0;min-width:20px;text-align:right;">${e.views || 0}</span>
                                 <button onclick="resetSingleEventView(${e.id})" style="padding:0.2rem 0.4rem;background:var(--danger);border:none;border-radius:4px;color:white;font-size:0.65rem;cursor:pointer;flex-shrink:0;">Reset</button>
@@ -5832,7 +5835,7 @@
                     <p style="margin-bottom:0.5rem;font-weight:600;font-size:0.9rem;">Total : ${totalViews} vues</p>
                     <div style="max-height:250px;overflow-y:auto;overflow-x:hidden;">
                         ${data.map(e => `
-                            <div style="display:flex;align-items:center;padding:0.4rem 0;border-bottom:1px solid var(--glass-border);gap:0.5rem;overflow:hidden;">
+                            <div style="display:flex;align-items:center;padding:0.4rem 0;border-bottom:1px solid var(--border-color);gap:0.5rem;overflow:hidden;">
                                 <span style="font-size:0.75rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:calc(100% - 80px);">${escapeHtml(e.title)}</span>
                                 <span style="font-weight:600;color:var(--success);flex-shrink:0;min-width:20px;text-align:right;">${e.views || 0}</span>
                                 <button onclick="resetSingleSubmissionView(${e.id})" style="padding:0.2rem 0.4rem;background:var(--danger);border:none;border-radius:4px;color:white;font-size:0.65rem;cursor:pointer;flex-shrink:0;">Reset</button>
@@ -5939,7 +5942,7 @@
                     </div>
                     <div style="max-height:250px;overflow-y:auto;overflow-x:hidden;">
                         ${sorted.map(e => `
-                            <div style="display:flex;align-items:center;padding:0.4rem 0;border-bottom:1px solid var(--glass-border);gap:0.5rem;overflow:hidden;">
+                            <div style="display:flex;align-items:center;padding:0.4rem 0;border-bottom:1px solid var(--border-color);gap:0.5rem;overflow:hidden;">
                                 <span style="font-size:0.75rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:calc(100% - 100px);">${escapeHtml(e.title)}</span>
                                 <span style="font-weight:600;color:#f472b6;flex-shrink:0;min-width:20px;text-align:right;">❤️ ${e.likes}</span>
                                 <button onclick="resetSingleArticleLikes(${e.id})" style="padding:0.2rem 0.4rem;background:var(--danger);border:none;border-radius:4px;color:white;font-size:0.65rem;cursor:pointer;flex-shrink:0;">Reset</button>

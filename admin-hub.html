@@ -22,13 +22,14 @@
         :root {
             --primary: #6366f1;
             --primary-light: #818cf8;
-            --bg-body: #0a0a14;
-            --bg-card: rgba(255, 255, 255, 0.06);
-            --bg-elevated: rgba(255, 255, 255, 0.10);
-            --border: rgba(255, 255, 255, 0.12);
-            --text: #ffffff;
+            --primary-dark: #4f46e5;
+            --bg-body: #0f0f1a;
+            --bg-card: #1a1a2e;
+            --bg-elevated: #232338;
+            --border-color: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.7);
-            --text-muted: rgba(255, 255, 255, 0.45);
+            --text-muted: rgba(255, 255, 255, 0.5);
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
@@ -38,8 +39,8 @@
             --bg-body: #f1f5f9;
             --bg-card: #ffffff;
             --bg-elevated: #f8fafc;
-            --border: #e2e8f0;
-            --text: #1e293b;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
             --text-secondary: #475569;
             --text-muted: #94a3b8;
         }
@@ -49,7 +50,7 @@
         body {
             font-family: 'Inter', -apple-system, sans-serif;
             background: var(--bg-body);
-            color: var(--text);
+            color: var(--text-primary);
             min-height: 100vh;
             min-height: 100dvh;
             overflow-x: hidden;
@@ -120,9 +121,9 @@
             width: 100%;
             padding: 16px 16px 16px 52px;
             background: var(--bg-elevated);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
             border-radius: 14px;
-            color: var(--text);
+            color: var(--text-primary);
             font-size: 1rem;
             font-family: inherit;
             outline: none;
@@ -233,7 +234,7 @@
             align-items: center;
             justify-content: center;
             background: var(--bg-card);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
             border-radius: 50%;
             color: var(--text-muted);
             cursor: pointer;
@@ -261,7 +262,7 @@
             gap: 6px;
             padding: 8px 14px;
             background: var(--bg-card);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
             border-radius: 50px;
             font-size: 0.75rem;
             color: var(--text-secondary);
@@ -300,10 +301,10 @@
             gap: 16px;
             padding: 18px;
             background: var(--bg-card);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             text-decoration: none;
-            color: var(--text);
+            color: var(--text-primary);
             margin-bottom: 12px;
             transition: all 0.25s ease;
             -webkit-tap-highlight-color: transparent;
@@ -380,7 +381,7 @@
             gap: 8px;
             padding: 18px 12px;
             background: var(--bg-card);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
             border-radius: 14px;
             text-decoration: none;
             color: var(--text-secondary);
@@ -393,7 +394,7 @@
         .quick-btn:hover {
             background: var(--bg-elevated);
             border-color: var(--primary);
-            color: var(--text);
+            color: var(--text-primary);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
@@ -407,7 +408,7 @@
         .hub-footer {
             text-align: center;
             padding: 24px 0;
-            border-top: 1px solid var(--border);
+            border-top: 1px solid var(--border-color);
             margin-top: 20px;
         }
 
