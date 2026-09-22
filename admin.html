@@ -2539,7 +2539,7 @@
                     <!-- Graphique des 7 derniers jours -->
                     <div style="margin-bottom:1rem;">
                         <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem;">📈 7 derniers jours</div>
-                        <div id="visitsChart" style="display:flex;align-items:flex-end;gap:4px;height:100px;padding:0.5rem;background:rgba(0,0,0,0.2);border-radius:8px;"></div>
+                        <div id="visitsChart" style="display:flex;align-items:flex-end;gap:4px;height:100px;padding:0.5rem;background:var(--bg-elevated);border-radius:8px;"></div>
                     </div>
                     
                     <!-- Boutons -->
@@ -2650,14 +2650,14 @@
                     </div>
                     
                     <!-- Aperçu -->
-                    <div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:1rem;margin-bottom:1.5rem;">
-                        <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.75rem;text-transform:uppercase;">Aperçu</div>
+                    <div style="background:var(--bg-elevated);border-radius:12px;padding:1rem;margin-bottom:1.5rem;">
+                        <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.75rem;text-transform:uppercase;">Aperçu</div>
                         <div style="display:flex;gap:0.75rem;background:#2d2d2d;padding:0.75rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);">
                             <img src="/icons/icon-72.png" alt="icon" style="width:40px;height:40px;border-radius:8px;">
                             <div style="flex:1;min-width:0;">
-                                <div style="font-weight:600;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="previewNotifTitle">Titre de la notification</div>
-                                <div style="font-size:0.8rem;color:var(--text-secondary);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;" id="previewNotifBody">Message de la notification...</div>
-                                <div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.25rem;">actuetmedia.fr</div>
+                                <div style="font-weight:600;font-size:0.9rem;color:#ffffff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="previewNotifTitle">Titre de la notification</div>
+                                <div style="font-size:0.8rem;color:rgba(255,255,255,0.75);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;" id="previewNotifBody">Message de la notification...</div>
+                                <div style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:0.25rem;">actuetmedia.fr</div>
                             </div>
                         </div>
                     </div>
@@ -5698,9 +5698,9 @@
                 const isToday = day.date === new Date().toISOString().split('T')[0];
                 return `
                     <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
-                        <div style="font-size:0.7rem;font-weight:600;color:${isToday ? '#60a5fa' : 'var(--text-muted)'};">${day.visitors}</div>
-                        <div style="width:100%;height:${height}px;background:${isToday ? 'linear-gradient(to top, #3b82f6, #60a5fa)' : 'linear-gradient(to top, #4b5563, #6b7280)'};border-radius:4px;transition:height 0.3s;"></div>
-                        <div style="font-size:0.6rem;color:var(--text-muted);text-transform:capitalize;">${day.dayName}</div>
+                        <div style="font-size:0.7rem;font-weight:600;color:${isToday ? '#3b82f6' : 'var(--text-secondary)'};">${day.visitors}</div>
+                        <div style="width:100%;height:${height}px;background:${isToday ? 'linear-gradient(to top, #2563eb, #3b82f6)' : 'linear-gradient(to top, #64748b, #94a3b8)'};border-radius:4px;transition:height 0.3s;"></div>
+                        <div style="font-size:0.6rem;color:var(--text-secondary);text-transform:capitalize;">${day.dayName}</div>
                     </div>
                 `;
             }).join('');
