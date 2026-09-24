@@ -27,7 +27,7 @@
     /* Textes - Valeurs optimisées pour lisibilité */
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.8);
-    --text-muted: rgba(255, 255, 255, 0.5);
+    --text-muted: rgba(255, 255, 255, 0.62);
     
     /* États */
     --danger: #ef4444;
@@ -72,7 +72,7 @@
     /* Textes */
     --text-primary: #1e293b;
     --text-secondary: #475569;
-    --text-muted: #94a3b8;
+    --text-muted: #5b6b82;
 }
 
 /* ============================================
@@ -103,7 +103,7 @@
     /* Textes */
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.82);
-    --text-muted: rgba(255, 255, 255, 0.58);
+    --text-muted: rgba(255, 255, 255, 0.7);
 
     /* États : réchauffés pour rester lisibles sur le bordeaux */
     --danger: #ff8080;
@@ -3806,7 +3806,7 @@ a.agenda-item {
     flex-wrap: wrap;
     gap: 0.65rem;
     font-size: 0.78rem;
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--text-muted);
 }
 
 .agenda-item-info span {
