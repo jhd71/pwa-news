@@ -1996,11 +1996,8 @@
             try {
                 if (isLiked) {
                     // Retirer le like
-                    await supabaseClient
-                        .from('news_likes')
-                        .delete()
-                        .eq('news_id', newsId)
-                        .eq('user_fingerprint', userFingerprint);
+                                        await supabaseClient
+                        .rpc('retirer_like', { p_news_id: newsId, p_fingerprint: userFingerprint });
                     
                     btn.classList.remove('liked');
                     btn.querySelector('.material-icons').textContent = 'favorite_border';

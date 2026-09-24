@@ -1705,11 +1705,8 @@ async function toggleLike(newsId, btn) {
         
         if (existingLike) {
             // Le like existe → le retirer
-            const { error } = await supabaseClient
-                .from('news_likes')
-                .delete()
-                .eq('news_id', newsId)
-                .eq('user_fingerprint', userFingerprint);
+                        const { error } = await supabaseClient
+                .rpc('retirer_like', { p_news_id: newsId, p_fingerprint: userFingerprint });
             
             if (error) throw error;
             
