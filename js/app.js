@@ -326,6 +326,25 @@ async function initNews() {
     }
 }
 
+// Les titres et résumés viennent de flux RSS extérieurs : on les échappe
+// avant de les insérer dans la page (24 septembre 2026).
+// escapeHtml() ne protège pas les guillemets, d'où cette version pour
+// les attributs (href, src), qui n'accepte en plus que http(s).
+function urlSure(adresse) {
+    const texte = String(adresse || '').trim();
+    if (!/^https?:\/\//i.test(texte)) return '';
+    return texte.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// Certains titres RSS arrivent avec des entités (&#8217; pour ’) :
+// on les décode en texte brut avant de les échapper. Un <textarea> ne
+// crée aucun élément HTML, le décodage est donc sans danger.
+function texteDecode(texte) {
+    const zone = document.createElement('textarea');
+    zone.innerHTML = String(texte || '');
+    return zone.value;
+}
+
 function renderNewsSlider(articles) {
     const container = document.getElementById('newsTicker');
     const dotsContainer = document.getElementById('tickerDots');
@@ -334,19 +353,19 @@ function renderNewsSlider(articles) {
         <div class="news-slides" id="newsSlides">
             ${articles.map((article, index) => `
                 <div class="news-slide">
-                    <a href="${article.link}" target="_blank" rel="noopener" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
+                    <a href="${urlSure(article.link)}" target="_blank" rel="noopener" class="news-item fade-in" style="animation-delay: ${index * 0.1}s">
                         <div class="news-item-content">
-                            <div class="news-item-title">${article.title}</div>
-                            ${article.excerpt ? `<div class="news-item-excerpt">${article.excerpt}</div>` : ''}
+                            <div class="news-item-title">${escapeHtml(texteDecode(article.title))}</div>
+                            ${article.excerpt ? `<div class="news-item-excerpt">${escapeHtml(article.excerpt)}</div>` : ''}
                             <div class="news-item-meta">
                                 <span class="news-item-date">${formatDate(article.date)}</span>
-                                <span class="news-item-read">Lire la suite sur ${article.source} →</span>
+                                <span class="news-item-read">Lire la suite sur ${escapeHtml(article.source)} →</span>
                             </div>
                         </div>
-                        ${article.image ? `
+                        ${urlSure(article.image) ? `
                         <div class="news-item-figure">
-                            <img src="${article.image}" alt="" class="news-item-image" loading="lazy" onerror="this.closest('.news-item-figure').remove()">
-                            <span class="news-item-credit">${article.source}</span>
+                            <img src="${urlSure(article.image)}" alt="" class="news-item-image" loading="lazy" onerror="this.closest('.news-item-figure').remove()">
+                            <span class="news-item-credit">${escapeHtml(article.source)}</span>
                         </div>` : ''}
                     </a>
                 </div>

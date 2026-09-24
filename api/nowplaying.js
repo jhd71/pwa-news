@@ -4,6 +4,33 @@ export const config = {
     runtime: 'edge',
 };
 
+// Hôtes des flux radio de js/radio-player.js.
+// Si tu ajoutes une radio dont l'adresse est sur un autre serveur,
+// ajoute son hôte ici, sinon le titre en cours ne s'affichera pas.
+const HOTES_AUTORISES = [
+    'icecast.radiofrance.fr',
+    'vps.cbad.fr',
+    'live1.jupinfo.fr',
+    'rfm.lmn.fm',
+    'europe1.lmn.fm',
+    'stream.rcs.revma.com',
+    'streaming.nrjaudio.fm',
+    'icecast.skyrock.net',
+    'icecast.funradio.fr',
+    'audio.bfmtv.com',
+    'live.sudradio.fr'
+];
+// Tous les sous-domaines de ces serveurs sont acceptés
+const SUFFIXES_AUTORISES = ['.ice.infomaniak.ch'];
+
+function fluxAutorise(adresse) {
+    let u;
+    try { u = new URL(adresse); } catch (e) { return false; }
+    if (u.protocol !== 'https:' && u.protocol !== 'http:') return false;
+    const hote = u.hostname.toLowerCase();
+    return HOTES_AUTORISES.includes(hote) || SUFFIXES_AUTORISES.some(s => hote.endsWith(s));
+}
+
 export default async function handler(req) {
     const { searchParams } = new URL(req.url);
     const url = searchParams.get('url');
@@ -17,6 +44,16 @@ export default async function handler(req) {
     if (!url) {
         return new Response(JSON.stringify({ error: 'URL manquante' }), {
             status: 400,
+            headers,
+        });
+    }
+
+    // Seuls les flux des radios du site sont acceptés (24 septembre 2026) :
+    // sinon n'importe qui pourrait se servir de cette route comme relais
+    // pour aller chercher n'importe quelle adresse.
+    if (!fluxAutorise(url)) {
+        return new Response(JSON.stringify({ error: 'Flux non autorisé' }), {
+            status: 403,
             headers,
         });
     }

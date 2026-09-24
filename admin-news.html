@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
     <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1"></script>
     <script src="js/admin-auth.js"></script>
     
     <style>
@@ -964,9 +964,13 @@
             extractBtn.disabled = true;
 
             try {
+                const jetonAdmin = await AdminAuth.jeton();
                 const response = await fetch('/api/extract-article', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + (jetonAdmin || '')
+                    },
                     body: JSON.stringify({ url })
                 });
 

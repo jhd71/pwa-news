@@ -1,11 +1,20 @@
 // API pour extraire les meta-données Open Graph d'une URL
 // Déployer dans /api/extract-article.js sur Vercel
 
+// Réservée à l'admin (24 septembre 2026) : la page admin-news.html envoie le
+// jeton de session Supabase dans l'en-tête Authorization. Sans jeton valide,
+// la route refuse de servir de relais pour aller chercher une page web.
+import { createClient } from '@supabase/supabase-js';
+
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://ekjgfiyhkythqcnmhzea.supabase.co';
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
 export default async function handler(req, res) {
     // CORS headers
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Origin', 'https://actuetmedia.fr');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
@@ -15,10 +24,25 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { url } = req.body;
+    // Vérifier la session administrateur
+    const jeton = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+    if (!jeton) {
+        return res.status(401).json({ error: 'Session administrateur absente' });
+    }
+    const { data: utilisateur, error: erreurAuth } = await supabase.auth.getUser(jeton);
+    if (erreurAuth || !utilisateur || !utilisateur.user) {
+        return res.status(401).json({ error: 'Session administrateur invalide ou expirée' });
+    }
+
+    const { url } = req.body || {};
 
     if (!url) {
         return res.status(400).json({ error: 'URL requise' });
+    }
+
+    // Seules les adresses web classiques sont acceptées
+    if (!/^https?:\/\//i.test(url)) {
+        return res.status(400).json({ error: 'Adresse invalide' });
     }
 
     try {
