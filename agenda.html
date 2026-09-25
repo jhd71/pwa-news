@@ -782,8 +782,10 @@
             --ui-accent-gradient: linear-gradient(135deg, #e0a458 0%, #c2703a 100%);
             --bg-primary: #670d00;
             --bg-secondary: #670d00;
-            --bg-card: rgba(255, 255, 255, 0.06);
-            --bg-elevated: rgba(255, 255, 255, 0.10);
+            /* Voile NOIR comme dans styles.css : les cartes sont
+               plus sombres que le fond, le rouge vif reste dans les marges */
+            --bg-card: rgba(0, 0, 0, 0.1);
+            --bg-elevated: rgba(0, 0, 0, 0.1);
             --text-primary: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.82);
             --text-muted: rgba(255, 255, 255, 0.58);
@@ -1242,10 +1244,14 @@
         .choix-agenda-boite {
             width: 100%;
             max-width: 420px;
-            background: var(--bg-elevated);
+            /* Fond OPAQUE : --bg-elevated est un voile translucide,
+               parfait posé sur une carte, mais il laisse tout passer
+               au travers sur une fenêtre flottante. */
+            background: var(--bg-primary, #12121a);
             border: 1px solid var(--border-color);
             border-radius: 18px;
             padding: 1.1rem;
+            box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5);
         }
 
         .choix-agenda-titre {

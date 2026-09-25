@@ -9,7 +9,13 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: var(--bg-card, linear-gradient(135deg, rgba(30, 30, 50, 0.98) 0%, rgba(20, 20, 35, 0.98) 100%));
+    /* Fond OPAQUE : la barre est fixée au-dessus de la page, un voile
+       translucide (--bg-card) laissait le contenu défiler en transparence
+       derrière les boutons. --bg-surface-dark est une couleur pleine, et
+       elle se détache légèrement du fond dans chaque thème :
+       sombre rgb(22 22 32), bordeaux #4a0900. Le thème clair a sa
+       propre règle plus bas. */
+    background: var(--bg-surface-dark, #12121a);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid var(--border-color, rgba(99, 102, 241, 0.3));
@@ -339,7 +345,7 @@ body.mini-player-visible.mini-player-expanded {
    THÈME CLAIR
    ============================================ */
 [data-theme="light"] .mini-radio-player {
-    background: rgba(255, 255, 255, 0.95);
+    background: #ffffff;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
 }
