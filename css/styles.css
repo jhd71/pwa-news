@@ -154,7 +154,7 @@ body {
     padding: 0.75rem 1rem;
     border-radius: 0 0 20px 20px;
     gap: 0.6rem;
-    background: var(--bg-surface-dark);
+    background: background: #531604 !important;
     border: 1px solid var(--border-color);
     border-top: none;
 }
@@ -4798,7 +4798,7 @@ a.agenda-item {
 
     /* --- THÈME SOMBRE (par défaut) --- */
     .header {
-        background: rgba(22, 22, 32, 0.6);
+        background: rgba(22, 22, 32, 0.6) !important;
         backdrop-filter: blur(18px) saturate(160%);
         -webkit-backdrop-filter: blur(18px) saturate(160%);
         border-bottom: 1px solid rgba(255, 255, 255, 0.10);
@@ -4808,7 +4808,7 @@ a.agenda-item {
 
     /* --- THÈME CLAIR --- */
     [data-theme="light"] .header {
-        background: rgba(255, 255, 255, 0.62);
+        background: rgba(255, 255, 255, 0.62) !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.65);
         box-shadow: 0 6px 24px rgba(0, 0, 0, 0.07),
                     inset 0 1px 0 rgba(255, 255, 255, 0.90);
