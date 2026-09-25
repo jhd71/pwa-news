@@ -1194,9 +1194,43 @@
             font-weight: 600;
         }
 
+        /* Bouton « Ajouter à mon agenda » : même allure sobre que
+           « Plus d'infos », mais c'est un <button>, il faut donc
+           neutraliser le style par défaut du navigateur. */
+        .event-card-ics {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--primary-light);
+            transition: color 0.2s;
+        }
+
+        .event-card-ics .material-icons { font-size: 1.05rem; }
+
+        @media (hover: hover) {
+            .event-card-ics:hover { text-decoration: underline; }
+        }
+
+        /* Deux boutons dans le pied de carte : on autorise le retour
+           à la ligne sur les écrans étroits */
+        .event-card-footer {
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
         /* ---------- Responsive ---------- */
         @media (min-width: 768px) {
-            .event-card-image { width: 176px; height: 99px; }
+            /* Sur grand écran, le bloc de texte est bien plus haut que
+               la vignette : on profite de cette place libre sans
+               allonger la carte ni changer le cadrage (toujours du 16/9). */
+            .event-card-image { width: 220px; height: 124px; }
         }
 
         @media (max-width: 480px) {
@@ -1750,6 +1784,9 @@
                                 ${views} vue${views > 1 ? 's' : ''}
                             </span>
                             ${event.link ? `<a href="${event.link}" target="_blank" class="event-card-link"><span class="material-icons">open_in_new</span>Plus d'infos</a>` : ''}
+                            <button type="button" class="event-card-ics" onclick="ajouterAMonAgenda(${event.id})" title="Enregistrer dans l'agenda de votre téléphone">
+                                <span class="material-icons">event_available</span>Ajouter à mon agenda
+                            </button>
                         </div>
                         
                         <!-- Section commentaires -->
@@ -1851,6 +1888,136 @@
             }
         }
         
+        // ============================================
+        // « AJOUTER À MON AGENDA » — génération d'un fichier .ics
+        // Format iCalendar (RFC 5545), lu par Google Agenda,
+        // Apple Calendrier, Outlook et les agendas Android.
+        // ============================================
+
+        // Dans un fichier .ics, ces quatre caractères doivent être protégés
+        function echapperIcs(texte) {
+            return String(texte || '')
+                .replace(/\\/g, '\\\\')
+                .replace(/;/g, '\;')
+                .replace(/,/g, '\\,')
+                .replace(/\r?\n/g, '\\n');
+        }
+
+        // Le format impose des lignes courtes, les suivantes commençant
+        // par une espace. On découpe par caractère et non par octet :
+        // un emoji dans un titre ne sera jamais coupé en deux.
+        function plierLigneIcs(ligne) {
+            const car = Array.from(ligne);
+            if (car.length <= 70) return ligne;
+            const morceaux = [car.slice(0, 70).join('')];
+            for (let i = 70; i < car.length; i += 69) {
+                morceaux.push(' ' + car.slice(i, i + 69).join(''));
+            }
+            return morceaux.join('\r\n');
+        }
+
+        function dateIcs(dateStr) {                 // 2026-10-02 -> 20261002
+            return String(dateStr).replace(/-/g, '');
+        }
+
+        // Pour un évènement sans horaire, la date de fin est EXCLUSIVE :
+        // une journée entière du 2 octobre va du 2 au 3.
+        function jourSuivantIcs(dateStr) {
+            const d = new Date(dateStr + 'T12:00:00');
+            d.setDate(d.getDate() + 1);
+            return d.getFullYear()
+                 + String(d.getMonth() + 1).padStart(2, '0')
+                 + String(d.getDate()).padStart(2, '0');
+        }
+
+        function heureIcs(dateStr, timeStr) {       // + 09:00 -> 20261002T090000
+            const parts = String(timeStr).split(':');
+            const h = (parts[0] || '00').padStart(2, '0');
+            const m = (parts[1] || '00').padStart(2, '0');
+            return dateIcs(dateStr) + 'T' + h + m + '00';
+        }
+
+        const JOURS_ICS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+
+        function nomFichierIcs(titre) {
+            const base = String(titre || 'evenement')
+                .toLowerCase()
+                .normalize('NFD').replace(/[̀-ͯ]/g, '')
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .slice(0, 60);
+            return (base || 'evenement') + '.ics';
+        }
+
+        function ajouterAMonAgenda(id) {
+            const ev = allEvents.find(e => String(e.id) === String(id));
+            if (!ev) return;
+
+            const debut = ev.event_date;
+            const fin = ev.event_end_date || ev.event_date;
+
+            let lignesDate;
+            if (ev.event_time) {
+                // Heure locale sans suffixe Z : l'agenda du lecteur
+                // l'interprète dans son propre fuseau, ce qui est le
+                // comportement voulu pour un évènement local.
+                lignesDate = [
+                    'DTSTART:' + heureIcs(debut, ev.event_time),
+                    'DTEND:' + heureIcs(fin, ev.end_time || ev.event_time)
+                ];
+            } else {
+                lignesDate = [
+                    'DTSTART;VALUE=DATE:' + dateIcs(debut),
+                    'DTEND;VALUE=DATE:' + jourSuivantIcs(fin)
+                ];
+            }
+
+            // Évènement récurrent : on transmet la règle de répétition
+            // plutôt qu'une seule date
+            let regleRepetition = null;
+            if (ev._isRecurringDisplay && ev.recurrence_days) {
+                const jours = String(ev.recurrence_days).split(',')
+                    .map(d => JOURS_ICS[parseInt(d, 10)])
+                    .filter(Boolean);
+                if (jours.length) regleRepetition = 'RRULE:FREQ=WEEKLY;BYDAY=' + jours.join(',');
+            }
+
+            let description = ev.description || '';
+            if (ev.link) description += (description ? '\n\n' : '') + ev.link;
+            description += (description ? '\n\n' : '') + 'Via actuetmedia.fr';
+
+            const horodatage = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+            const lignes = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//Actu & Media//Agenda//FR',
+                'CALSCALE:GREGORIAN',
+                'BEGIN:VEVENT',
+                'UID:evenement-' + ev.id + '@actuetmedia.fr',
+                'DTSTAMP:' + horodatage
+            ].concat(lignesDate);
+
+            if (regleRepetition) lignes.push(regleRepetition);
+            lignes.push('SUMMARY:' + echapperIcs(ev.title));
+            if (ev.location) lignes.push('LOCATION:' + echapperIcs(ev.location));
+            lignes.push('DESCRIPTION:' + echapperIcs(description));
+            if (ev.link) lignes.push('URL:' + ev.link);
+            lignes.push('END:VEVENT', 'END:VCALENDAR');
+
+            const contenu = lignes.map(plierLigneIcs).join('\r\n') + '\r\n';
+            const blob = new Blob([contenu], { type: 'text/calendar;charset=utf-8' });
+            const adresse = URL.createObjectURL(blob);
+
+            const lien = document.createElement('a');
+            lien.href = adresse;
+            lien.download = nomFichierIcs(ev.title);
+            document.body.appendChild(lien);
+            lien.click();
+            document.body.removeChild(lien);
+            setTimeout(() => URL.revokeObjectURL(adresse), 1000);
+        }
+
         function formatTime(timeStr) {
             if (!timeStr) return '';
             const [h, m] = timeStr.split(':');
