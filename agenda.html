@@ -1225,6 +1225,78 @@
             gap: 0.75rem;
         }
 
+        /* ---------- Choix de l'agenda ---------- */
+        .choix-agenda-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 3000;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .choix-agenda-overlay.show { display: flex; }
+
+        .choix-agenda-boite {
+            width: 100%;
+            max-width: 420px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 1.1rem;
+        }
+
+        .choix-agenda-titre {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--text-primary);
+        }
+
+        .choix-agenda-evenement {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0.2rem 0 0.9rem;
+        }
+
+        .choix-agenda-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.8rem 0.9rem;
+            margin-bottom: 0.5rem;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .choix-agenda-option .material-icons { color: var(--primary-light); }
+        .choix-agenda-option strong { display: block; font-size: 0.92rem; font-weight: 600; }
+        .choix-agenda-option small { display: block; font-size: 0.75rem; color: var(--text-muted); }
+
+        @media (hover: hover) {
+            .choix-agenda-option:hover { border-color: var(--primary-light); }
+        }
+
+        .choix-agenda-annuler {
+            width: 100%;
+            padding: 0.7rem;
+            margin-top: 0.3rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        @media (min-width: 600px) {
+            .choix-agenda-overlay { align-items: center; }
+        }
+
         /* ---------- Responsive ---------- */
         @media (min-width: 768px) {
             /* Sur grand écran, le bloc de texte est bien plus haut que
@@ -1325,6 +1397,27 @@
         </div>
     </div>
     
+	<!-- Choix de l'agenda de destination -->
+    <div id="choixAgenda" class="choix-agenda-overlay" onclick="fermerChoixAgenda(event)">
+        <div class="choix-agenda-boite" onclick="event.stopPropagation()">
+            <div class="choix-agenda-titre">Ajouter à mon agenda</div>
+            <div class="choix-agenda-evenement" id="choixAgendaTitre"></div>
+            <a id="choixAgendaGoogle" class="choix-agenda-option" href="#" target="_blank" rel="noopener">
+                <span class="material-icons">event</span>
+                <span><strong>Google Agenda</strong><small>Android, Gmail</small></span>
+            </a>
+            <a id="choixAgendaOutlook" class="choix-agenda-option" href="#" target="_blank" rel="noopener">
+                <span class="material-icons">mail</span>
+                <span><strong>Outlook</strong><small>Hotmail, Live, Office</small></span>
+            </a>
+            <a id="choixAgendaIcs" class="choix-agenda-option" href="#">
+                <span class="material-icons">download</span>
+                <span><strong>Autre agenda</strong><small>iPhone, Apple, Thunderbird</small></span>
+            </a>
+            <button type="button" class="choix-agenda-annuler" onclick="fermerChoixAgenda()">Annuler</button>
+        </div>
+    </div>
+
 	<!-- Lightbox pour agrandir les images -->
     <div id="imageLightbox" class="lightbox" onclick="closeLightbox()">
         <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
@@ -1784,7 +1877,7 @@
                                 ${views} vue${views > 1 ? 's' : ''}
                             </span>
                             ${event.link ? `<a href="${event.link}" target="_blank" class="event-card-link"><span class="material-icons">open_in_new</span>Plus d'infos</a>` : ''}
-                            <button type="button" class="event-card-ics" onclick="ajouterAMonAgenda(${event.id})" title="Enregistrer dans l'agenda de votre téléphone">
+                            <button type="button" class="event-card-ics" onclick="ouvrirChoixAgenda(${event.id})" title="Enregistrer dans l'agenda de votre téléphone">
                                 <span class="material-icons">event_available</span>Ajouter à mon agenda
                             </button>
                         </div>
@@ -1949,74 +2042,83 @@
             return (base || 'evenement') + '.ics';
         }
 
-        function ajouterAMonAgenda(id) {
+        // Les trois destinations possibles. Google et Outlook reçoivent
+        // un lien pré-rempli : rien n'est téléchargé, l'application
+        // s'ouvre directement. Le troisième choix passe par /api/ics,
+        // servi en « text/calendar », ce qui ouvre la fiche Calendrier
+        // sur iPhone au lieu de déposer un fichier dans Téléchargements.
+        function ouvrirChoixAgenda(id) {
             const ev = allEvents.find(e => String(e.id) === String(id));
             if (!ev) return;
 
             const debut = ev.event_date;
             const fin = ev.event_end_date || ev.event_date;
-
-            let lignesDate;
-            if (ev.event_time) {
-                // Heure locale sans suffixe Z : l'agenda du lecteur
-                // l'interprète dans son propre fuseau, ce qui est le
-                // comportement voulu pour un évènement local.
-                lignesDate = [
-                    'DTSTART:' + heureIcs(debut, ev.event_time),
-                    'DTEND:' + heureIcs(fin, ev.end_time || ev.event_time)
-                ];
-            } else {
-                lignesDate = [
-                    'DTSTART;VALUE=DATE:' + dateIcs(debut),
-                    'DTEND;VALUE=DATE:' + jourSuivantIcs(fin)
-                ];
-            }
-
-            // Évènement récurrent : on transmet la règle de répétition
-            // plutôt qu'une seule date
-            let regleRepetition = null;
-            if (ev._isRecurringDisplay && ev.recurrence_days) {
-                const jours = String(ev.recurrence_days).split(',')
-                    .map(d => JOURS_ICS[parseInt(d, 10)])
-                    .filter(Boolean);
-                if (jours.length) regleRepetition = 'RRULE:FREQ=WEEKLY;BYDAY=' + jours.join(',');
-            }
+            const avecHeure = !!ev.event_time;
 
             let description = ev.description || '';
             if (ev.link) description += (description ? '\n\n' : '') + ev.link;
             description += (description ? '\n\n' : '') + 'Via actuetmedia.fr';
 
-            const horodatage = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+            // --- Google Agenda ---
+            const datesGoogle = avecHeure
+                ? heureIcs(debut, ev.event_time) + '/' + heureIcs(fin, ev.end_time || ev.event_time)
+                : dateIcs(debut) + '/' + jourSuivantIcs(fin);
 
-            const lignes = [
-                'BEGIN:VCALENDAR',
-                'VERSION:2.0',
-                'PRODID:-//Actu & Media//Agenda//FR',
-                'CALSCALE:GREGORIAN',
-                'BEGIN:VEVENT',
-                'UID:evenement-' + ev.id + '@actuetmedia.fr',
-                'DTSTAMP:' + horodatage
-            ].concat(lignesDate);
+            const google = new URL('https://calendar.google.com/calendar/render');
+            google.searchParams.set('action', 'TEMPLATE');
+            google.searchParams.set('text', ev.title || '');
+            google.searchParams.set('dates', datesGoogle);
+            google.searchParams.set('details', description);
+            if (ev.location) google.searchParams.set('location', ev.location);
+            // Sans fuseau explicite, Google interpréterait l'heure en GMT
+            if (avecHeure) google.searchParams.set('ctz', 'Europe/Paris');
 
-            if (regleRepetition) lignes.push(regleRepetition);
-            lignes.push('SUMMARY:' + echapperIcs(ev.title));
-            if (ev.location) lignes.push('LOCATION:' + echapperIcs(ev.location));
-            lignes.push('DESCRIPTION:' + echapperIcs(description));
-            if (ev.link) lignes.push('URL:' + ev.link);
-            lignes.push('END:VEVENT', 'END:VCALENDAR');
+            if (ev._isRecurringDisplay && ev.recurrence_days) {
+                const jours = String(ev.recurrence_days).split(',')
+                    .map(d => JOURS_ICS[parseInt(d, 10)])
+                    .filter(Boolean);
+                if (jours.length) google.searchParams.set('recur', 'RRULE:FREQ=WEEKLY;BYDAY=' + jours.join(','));
+            }
 
-            const contenu = lignes.map(plierLigneIcs).join('\r\n') + '\r\n';
-            const blob = new Blob([contenu], { type: 'text/calendar;charset=utf-8' });
-            const adresse = URL.createObjectURL(blob);
+            // --- Outlook ---
+            const outlook = new URL('https://outlook.live.com/calendar/0/deeplink/compose');
+            outlook.searchParams.set('path', '/calendar/action/compose');
+            outlook.searchParams.set('rru', 'addevent');
+            outlook.searchParams.set('subject', ev.title || '');
+            outlook.searchParams.set('body', description);
+            if (ev.location) outlook.searchParams.set('location', ev.location);
+            if (avecHeure) {
+                const hDeb = String(ev.event_time).slice(0, 5);
+                const hFin = String(ev.end_time || ev.event_time).slice(0, 5);
+                outlook.searchParams.set('startdt', debut + 'T' + hDeb + ':00');
+                outlook.searchParams.set('enddt', fin + 'T' + hFin + ':00');
+            } else {
+                outlook.searchParams.set('allday', 'true');
+                outlook.searchParams.set('startdt', debut);
+                outlook.searchParams.set('enddt', fin);
+            }
 
-            const lien = document.createElement('a');
-            lien.href = adresse;
-            lien.download = nomFichierIcs(ev.title);
-            document.body.appendChild(lien);
-            lien.click();
-            document.body.removeChild(lien);
-            setTimeout(() => URL.revokeObjectURL(adresse), 1000);
+            document.getElementById('choixAgendaTitre').textContent = ev.title || '';
+            document.getElementById('choixAgendaGoogle').href = google.toString();
+            document.getElementById('choixAgendaOutlook').href = outlook.toString();
+            document.getElementById('choixAgendaIcs').href = '/api/ics?id=' + encodeURIComponent(ev.id);
+
+            document.getElementById('choixAgenda').classList.add('show');
         }
+
+        function fermerChoixAgenda(e) {
+            if (e && e.target !== e.currentTarget) return;
+            document.getElementById('choixAgenda').classList.remove('show');
+        }
+
+        // Une fois le choix fait, la fenêtre n'a plus lieu d'être
+        document.querySelectorAll('.choix-agenda-option').forEach(function(lien) {
+            lien.addEventListener('click', function() {
+                setTimeout(function() {
+                    document.getElementById('choixAgenda').classList.remove('show');
+                }, 300);
+            });
+        });
 
         function formatTime(timeStr) {
             if (!timeStr) return '';
