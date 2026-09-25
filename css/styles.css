@@ -92,8 +92,11 @@
        sombres que le fond de page. Le rouge vif ne subsiste que
        dans les marges, où il encadre le contenu. */
     --bg-body: #670d00;
-    --bg-card: rgba(0, 0, 0, 0.1);
-    --bg-elevated: rgba(0, 0, 0, 0.1);
+    /* Cartes nettement plus sombres que le fond (25 sept. 2026) :
+       0.28 de noir sur #670d00 donne #4a0900, la même teinte que le
+       header. Avant (0.1), les rubriques se confondaient avec le fond. */
+    --bg-card: rgba(0, 0, 0, 0.28);
+    --bg-elevated: rgba(0, 0, 0, 0.18);
     --bg-surface-dark: #4a0900;
 
     /* Bordures et ombres */
@@ -4806,6 +4809,16 @@ a.agenda-item {
                     inset 0 1px 0 rgba(255, 255, 255, 0.10);
     }
 
+    /* --- THÈME BORDEAUX --- */
+    /* Verre teinté bordeaux : le voile bleu nuit du thème sombre
+       donnait un header brun violacé, d'une autre couleur que les rubriques */
+    [data-theme="bordeaux"] .header {
+        background: rgba(74, 9, 0, 0.78);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
     /* --- THÈME CLAIR --- */
     [data-theme="light"] .header {
         background: rgba(255, 255, 255, 0.62);
@@ -5086,5 +5099,32 @@ a.agenda-item {
     text-decoration: underline;
 }
 
+/* ============================================
+   THÈME BORDEAUX - RUBRIQUES EN RELIEF (25 sept. 2026)
+   Une ombre légère détache chaque rubrique du fond rouge
+   quand on fait défiler sur mobile. Le footer prend la
+   même teinte que les rubriques.
+   ============================================ */
+[data-theme="bordeaux"] .section,
+[data-theme="bordeaux"] .card,
+[data-theme="bordeaux"] .cinema-section,
+[data-theme="bordeaux"] .sport-section,
+[data-theme="bordeaux"] .community-section,
+[data-theme="bordeaux"] .news-ticker-section,
+[data-theme="bordeaux"] .agenda-section,
+[data-theme="bordeaux"] .trafic-section,
+[data-theme="bordeaux"] .seo-section,
+[data-theme="bordeaux"] .tiles-section,
+[data-theme="bordeaux"] .footer {
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
+}
 
-
+/* Toutes les rubriques sur la même teinte : Agenda, Cinémas, Sport
+   et Presse locale utilisaient --bg-elevated, un cran plus clair */
+[data-theme="bordeaux"] .agenda-section,
+[data-theme="bordeaux"] .cinema-section,
+[data-theme="bordeaux"] .sport-section,
+[data-theme="bordeaux"] .tiles-section,
+[data-theme="bordeaux"] .footer {
+    background: var(--bg-card);
+}
