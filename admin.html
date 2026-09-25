@@ -1246,7 +1246,8 @@
             font-family: inherit;
         }
         
-        #editImagePreview img {
+        #editImagePreview img,
+        #editEventImagePreview img {
             max-width: 100%;
             max-height: 320px;
             border-radius: 8px;
@@ -2785,6 +2786,7 @@
                 <div class="edit-field">
                     <label>URL de l'image</label>
                     <input type="url" id="editImage" placeholder="https://...">
+                    <input type="file" id="editMainImageInput" accept="image/*" style="display:none;">
                     <div id="editImagePreview" style="margin-top:0.5rem;"></div>
                 </div>
                 
@@ -2895,6 +2897,7 @@
                 <div class="edit-field">
                     <label>Image (URL)</label>
                     <input type="url" id="editEventImage" placeholder="https://...">
+                    <input type="file" id="editEventImageInput" accept="image/*" style="display:none;">
                     <div id="editEventImagePreview" style="margin-top:0.5rem;"></div>
                 </div>
 
@@ -3067,6 +3070,8 @@
                 source = document.getElementById('previewImg').src;
             } else if (cropAdditionalListe === 'editMain') {
                 source = document.getElementById('editImage').value.trim();
+            } else if (cropAdditionalListe === 'editEventMain') {
+                source = document.getElementById('editEventImage').value.trim();
             } else {
                 const tableau = (cropAdditionalListe === 'edit') ? editAdditionalImages : pubAdditionalImages;
                 source = tableau[cropAdditionalIndex];
@@ -3139,6 +3144,10 @@
                             const url = await uploadEditImage(blob);
                             document.getElementById('editImage').value = url;
                             updateEditImagePreview();
+                        } else if (liste === 'editEventMain') {
+                            const url = await uploadEditEventImage(blob);
+                            document.getElementById('editEventImage').value = url;
+                            updateEditEventImagePreview();
                         } else if (liste === 'edit') {
                             const url = await uploadEditImage(blob);
                             editAdditionalImages[index] = url;
@@ -4102,11 +4111,68 @@
                         <button type="button" class="edit-additional-tool" onclick="rotateEditMainImage(90)" title="Pivoter à droite">
                             <span class="material-icons">rotate_right</span>
                         </button>
+                        <button type="button" class="edit-additional-tool" onclick="choisirImagePrincipale()" title="Remplacer l'image">
+                            <span class="material-icons">swap_horiz</span>
+                        </button>
+                        <button type="button" class="edit-additional-tool" onclick="supprimerImagePrincipale()" title="Supprimer l'image">
+                            <span class="material-icons">delete</span>
+                        </button>
                     </div>`;
             } else {
-                preview.innerHTML = '';
+                // Pas d'image : on propose quand même d'en ajouter une
+                preview.innerHTML = `
+                    <div class="edit-main-tools">
+                        <button type="button" class="edit-additional-tool" onclick="choisirImagePrincipale()" title="Ajouter une image">
+                            <span class="material-icons">add_photo_alternate</span>
+                        </button>
+                    </div>`;
             }
         }
+
+        // ============================================
+        // IMAGE PRINCIPALE : remplacer / supprimer
+        // (fenêtre de modification d'une actualité)
+        // ============================================
+        function choisirImagePrincipale() {
+            document.getElementById('editMainImageInput').click();
+        }
+
+        function supprimerImagePrincipale() {
+            document.getElementById('editImage').value = '';
+            updateEditImagePreview();
+            renderEditAdditionalPreviews();
+            showToast('Image retirée — pensez à enregistrer');
+        }
+
+        document.getElementById('editMainImageInput').addEventListener('change', async function(e) {
+            const fichier = e.target.files[0];
+            if (!fichier) return;
+            e.target.value = '';
+
+            if (fichier.size > 20 * 1024 * 1024) {
+                showToast('\u26A0\uFE0F Image trop lourde (max 20 Mo)', true);
+                return;
+            }
+            // Le total principale + supplémentaires est plafonné à 5
+            const dejaLa = document.getElementById('editImage').value.trim();
+            if (!dejaLa && editAdditionalImages.length >= 5) {
+                showToast('\u26A0\uFE0F Maximum 5 images au total', true);
+                return;
+            }
+
+            try {
+                showToast('\u23F3 Envoi de l\'image...');
+                const blob = await compressEditImage(fichier, 1200, 0.8);
+                const url = await uploadEditImage(blob);
+                document.getElementById('editImage').value = url;
+                updateEditImagePreview();
+                renderEditAdditionalPreviews();
+                showToast(dejaLa ? 'Image remplacée — pensez à enregistrer'
+                                 : 'Image ajoutée — pensez à enregistrer');
+            } catch (err) {
+                showToast('\u274C Erreur : ' + err.message, true);
+            }
+        });
 
         // Pivoter l'image PRINCIPALE de la fenêtre de modification :
         // même principe que les images supplémentaires, mais la nouvelle
@@ -5283,10 +5349,128 @@
         function updateEditEventImagePreview() {
             const url = document.getElementById('editEventImage').value.trim();
             const zone = document.getElementById('editEventImagePreview');
-            zone.innerHTML = url
-                ? '<img src="' + url + '" style="max-width:100%;max-height:180px;border-radius:8px;" onerror="this.remove()">'
-                : '';
+            if (url) {
+                zone.innerHTML = `
+                    <img src="${url}" alt="Aperçu" onerror="this.style.display='none'">
+                    <div class="edit-main-tools">
+                        <button type="button" class="edit-additional-tool" onclick="rotateEditEventImage(-90)" title="Pivoter à gauche">
+                            <span class="material-icons">rotate_left</span>
+                        </button>
+                        <button type="button" class="edit-additional-tool" onclick="openCropModal(0, 'editEventMain')" title="Recadrer">
+                            <span class="material-icons">crop</span>
+                        </button>
+                        <button type="button" class="edit-additional-tool" onclick="rotateEditEventImage(90)" title="Pivoter à droite">
+                            <span class="material-icons">rotate_right</span>
+                        </button>
+                        <button type="button" class="edit-additional-tool" onclick="choisirImageEvenement()" title="Remplacer l'image">
+                            <span class="material-icons">swap_horiz</span>
+                        </button>
+                        <button type="button" class="edit-additional-tool" onclick="supprimerImageEvenement()" title="Supprimer l'image">
+                            <span class="material-icons">delete</span>
+                        </button>
+                    </div>`;
+            } else {
+                zone.innerHTML = `
+                    <div class="edit-main-tools">
+                        <button type="button" class="edit-additional-tool" onclick="choisirImageEvenement()" title="Ajouter une image">
+                            <span class="material-icons">add_photo_alternate</span>
+                        </button>
+                    </div>`;
+            }
         }
+
+        // ============================================
+        // IMAGE D'UN ÉVÉNEMENT : envoyer / pivoter /
+        // remplacer / supprimer (fenêtre de modification)
+        // Les images d'événements vivent dans le bucket
+        // « event-images », pas dans « images ».
+        // ============================================
+        async function uploadEditEventImage(blob) {
+            const fileName = `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.jpg`;
+            const { error } = await supabaseClient.storage
+                .from('event-images')
+                .upload(fileName, blob, { contentType: 'image/jpeg', cacheControl: '3600', upsert: false });
+            if (error) throw error;
+            return supabaseClient.storage.from('event-images').getPublicUrl(fileName).data.publicUrl;
+        }
+
+        function choisirImageEvenement() {
+            document.getElementById('editEventImageInput').click();
+        }
+
+        function supprimerImageEvenement() {
+            document.getElementById('editEventImage').value = '';
+            updateEditEventImagePreview();
+            showToast('Image retirée — pensez à enregistrer');
+        }
+
+        // Pivoter l'image d'un événement : on redessine sur un canvas,
+        // on renvoie la version pivotée en ligne, et la nouvelle adresse
+        // remplace l'ancienne dans le champ.
+        function rotateEditEventImage(degrees) {
+            const champ = document.getElementById('editEventImage');
+            const urlActuelle = champ.value.trim();
+            if (!urlActuelle) return;
+
+            const image = new Image();
+            image.crossOrigin = 'anonymous';
+            image.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                if (Math.abs(degrees) === 90) {
+                    canvas.width = image.height;
+                    canvas.height = image.width;
+                } else {
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                }
+
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate((degrees * Math.PI) / 180);
+                ctx.drawImage(image, -image.width / 2, -image.height / 2);
+
+                canvas.toBlob(async function(blob) {
+                    try {
+                        showToast('\u23F3 Enregistrement...');
+                        const url = await uploadEditEventImage(blob);
+                        champ.value = url;
+                        updateEditEventImagePreview();
+                        showToast('Image pivotée — pensez à enregistrer');
+                    } catch (err) {
+                        showToast('\u274C Erreur : ' + err.message, true);
+                    }
+                }, 'image/jpeg', 0.85);
+            };
+            image.onerror = function() {
+                showToast('\u274C Image illisible (rotation impossible)', true);
+            };
+            image.src = urlActuelle;
+        }
+
+        document.getElementById('editEventImageInput').addEventListener('change', async function(e) {
+            const fichier = e.target.files[0];
+            if (!fichier) return;
+            e.target.value = '';
+
+            if (fichier.size > 20 * 1024 * 1024) {
+                showToast('\u26A0\uFE0F Image trop lourde (max 20 Mo)', true);
+                return;
+            }
+
+            const dejaLa = document.getElementById('editEventImage').value.trim();
+            try {
+                showToast('\u23F3 Envoi de l\'image...');
+                const blob = await compressEditImage(fichier, 1200, 0.8);
+                const url = await uploadEditEventImage(blob);
+                document.getElementById('editEventImage').value = url;
+                updateEditEventImagePreview();
+                showToast(dejaLa ? 'Image remplacée — pensez à enregistrer'
+                                 : 'Image ajoutée — pensez à enregistrer');
+            } catch (err) {
+                showToast('\u274C Erreur : ' + err.message, true);
+            }
+        });
 
         async function saveEditedEvent(e) {
             if (e) e.preventDefault();
