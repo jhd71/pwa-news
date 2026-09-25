@@ -976,28 +976,53 @@
 
     <script>
     // === POPUP DON ===
+    // Déclenchée par l'ENGAGEMENT, pas par le temps passé.
+    //
+    // L'ancienne version attendait 60 secondes sur cette page. Problème :
+    // le minuteur mourait dès que le visiteur cliquait vers l'agenda ou la
+    // météo. Le lecteur le plus intéressé — celui qui navigue — ne la
+    // voyait donc jamais, alors que c'est le seul susceptible de donner.
+    //
+    // Désormais on compte les ouvertures de la page d'accueil : la fenêtre
+    // n'apparaît qu'à la 3e, donc chez quelqu'un qui revient.
     (function() {
-        const POPUP_DELAY = 60000; // 60 secondes après chargement
-        const POPUP_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 jours entre chaque affichage
-        
-        function shouldShowPopup() {
+        const POPUP_DELAY = 15000; // 15 s, le temps de voir la page
+        const VISITES_MINIMUM = 3;
+        const POPUP_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 jours entre deux affichages
+
+        // Compteur incrémenté à chaque ouverture de l'accueil
+        function compterVisite() {
+            try {
+                const n = parseInt(localStorage.getItem('donation_visites') || '0', 10) + 1;
+                localStorage.setItem('donation_visites', String(n));
+                return n;
+            } catch (e) {
+                return 0; // navigation privée : on ne montrera rien, tant mieux
+            }
+        }
+
+        function shouldShowPopup(visites) {
             const lastShown = localStorage.getItem('donation_popup_last');
             const dismissed = localStorage.getItem('donation_popup_dismissed');
-            
+
+            // Si déjà donné ou fermé définitivement
+            if (dismissed === 'permanent') return false;
+
+            // Pas avant la 3e visite : on ne demande rien à quelqu'un
+            // qui n'a encore rien reçu
+            if (visites < VISITES_MINIMUM) return false;
+
             // Si l'utilisateur a cliqué "Plus tard", attendre 7 jours
             if (lastShown) {
                 const elapsed = Date.now() - parseInt(lastShown);
                 if (elapsed < POPUP_INTERVAL) return false;
             }
-            
-            // Si déjà donné ou fermé définitivement
-            if (dismissed === 'permanent') return false;
-            
+
             return true;
         }
         
-        function showDonationPopup() {
-            if (!shouldShowPopup()) return;
+        function showDonationPopup(visites) {
+            if (!shouldShowPopup(visites)) return;
             
             const popup = document.getElementById('donationPopup');
             if (popup) {
@@ -1020,7 +1045,8 @@
             }
         };
         
-            setTimeout(showDonationPopup, POPUP_DELAY);
+        const visites = compterVisite();
+        setTimeout(function() { showDonationPopup(visites); }, POPUP_DELAY);
     })();
     </script>
     <script>
@@ -1033,7 +1059,7 @@
         try {
             // Sauvegarder les préférences importantes
             const keysToKeep = ['theme', 'push_subscription', 'adminHubAuth', 'adminSportAuth', 
-                'donation_popup_last', 'donation_popup_dismissed', 'font_size', 'notif_permission',
+                'donation_popup_last', 'donation_popup_dismissed', 'donation_visites', 'font_size', 'notif_permission',
                 'tilesExpanded', 'mediaRegionalExpanded', 'mediaNationalExpanded',
                 'admin_session', 'admin_last_total'];
             const saved = {};
