@@ -2730,9 +2730,15 @@ function afficherEquipeSport(teamKey) {
         const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
         const isTomorrow = matchDay.getTime() === tomorrow.getTime();
+        // Match déjà joué mais dont le score n'est pas encore connu (le
+        // scraper basket le garde jusqu'à 3 jours en attendant le résultat)
+        const isPast = matchDay.getTime() < today.getTime();
 
         let dateStr = data.next_match_matchday ? data.next_match_matchday + ' · ' : '';
-        if (isToday) {
+        if (isPast) {
+            dateStr += nDate.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+            nextLabel.textContent = 'Résultat en attente';
+        } else if (isToday) {
             dateStr += '<span class="sport-today-badge">Aujourd\'hui !</span>';
             nextLabel.innerHTML = '🔴 Ce soir !';
         } else if (isTomorrow) {
