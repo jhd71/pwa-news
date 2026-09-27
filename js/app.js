@@ -2587,6 +2587,15 @@ async function loadSportData() {
         construireOngletsSport();
         afficherEquipeSport(sportEquipes[0].team_key);
 
+        // Compteur : clic sur « Détails » (l'équipe est celle de l'onglet ouvert)
+        const lienDetails = document.getElementById('sportDetailsLink');
+        if (lienDetails && !lienDetails.dataset.compteur) {
+            lienDetails.dataset.compteur = '1';
+            lienDetails.addEventListener('click', function() {
+                if (sportEquipeActive) compterClicSport('details', sportEquipeActive.team_key);
+            });
+        }
+
         loading.style.display = 'none';
         content.style.display = 'block';
 
@@ -2618,10 +2627,44 @@ function construireOngletsSport() {
         const libelle = libelleOngletSport(eq, sportEquipes);
         const icone = conf.icone || 'sports';
         return '<button type="button" class="sport-tab" role="tab" data-team="' + eq.team_key + '" ' +
-               'onclick="afficherEquipeSport(\'' + eq.team_key + '\')">' +
+               'onclick="cliquerOngletSport(\'' + eq.team_key + '\')">' +
                '<span class="material-icons">' + icone + '</span>' + libelle +
                '</button>';
     }).join('');
+}
+
+// ============================================
+// COMPTEUR DE CLICS DU BLOC SPORT
+// Sert à savoir si les lecteurs utilisent vraiment l'onglet Basket.
+// Le serveur compte des VISITEURS par jour (empreinte du navigateur),
+// pas des clics bruts : 10 clics de la même personne = 1.
+// Lecture des chiffres : requête SQL sur la table sport_clicks_logs.
+// ============================================
+var sportClicsEnvoyes = {};
+
+function compterClicSport(action, teamKey) {
+    const cible = action + '_' + teamKey;
+    if (sportClicsEnvoyes[cible]) return;   // déjà envoyé pendant cette visite
+    sportClicsEnvoyes[cible] = true;
+
+    try {
+        const supabase = getSupabaseClient();
+        if (!supabase) return;
+        supabase
+            .rpc('enregistrer_clic_sport', { p_cible: cible, p_fingerprint: getUserFingerprint() })
+            .then(function(res) {
+                if (res.error) console.warn('Compteur sport:', res.error.message);
+            });
+    } catch (e) {
+        // Un compteur ne doit jamais casser l'affichage
+    }
+}
+
+// Clic d'un lecteur sur un onglet (l'affichage automatique au chargement
+// de la page n'appelle pas cette fonction, il n'est donc pas compté)
+function cliquerOngletSport(teamKey) {
+    compterClicSport('onglet', teamKey);
+    afficherEquipeSport(teamKey);
 }
 
 // ============================================
@@ -2863,6 +2906,8 @@ function showStandingsModal() {
 
     var equipe = sportEquipeActive || sportEquipes[0];
     if (!equipe) return;
+
+    compterClicSport('classement', equipe.team_key);
 
     var estBasket = equipe.sport === 'basket';
 
