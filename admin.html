@@ -2565,13 +2565,18 @@
                 
                 <!-- Section Bloc Sport : utilisation des onglets (27/09/2026) -->
                 <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:1rem;overflow:hidden;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:0.5rem;">
-                        <h4 style="margin:0;color:#f97316;">🏀 Bloc Sport — qui clique ?</h4>
-                        <button onclick="loadSportClicksStats()" class="action-btn approve" style="font-size:0.75rem;padding:0.4rem 0.6rem;">
-                            <span class="material-icons" style="font-size:1rem;">refresh</span>
+                    <h4 style="margin-bottom:1rem;color:#f97316;">🏀 Bloc Sport — qui clique ?</h4>
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">
+                        <button onclick="resetAllSportClicks()" class="action-btn" style="background:var(--warning);border-color:var(--warning);font-size:0.75rem;padding:0.5rem 0.75rem;">
+                            <span class="material-icons" style="font-size:1rem;">restart_alt</span>
+                            Reset tout
+                        </button>
+                        <button onclick="loadSportClicksStats()" class="action-btn approve" style="font-size:0.75rem;padding:0.5rem 0.75rem;">
+                            <span class="material-icons" style="font-size:1rem;">visibility</span>
+                            Voir les stats
                         </button>
                     </div>
-                    <div id="sportClicksStats"><p style="color:var(--text-muted);font-size:0.8rem;">Chargement...</p></div>
+                    <div id="sportClicksStats" style="margin-top:0.5rem;display:none;overflow:hidden;"></div>
                 </div>
 
                 <!-- Section Événements -->
@@ -5962,7 +5967,6 @@
         // Charger les stats de visites quand on affiche l'onglet Stats
         document.querySelector('[data-tab="stats"]')?.addEventListener('click', () => {
             loadVisitsStats();
-            loadSportClicksStats();
         });
 
         // ============================================
@@ -5971,9 +5975,32 @@
         // répond qu'au compte connecté. « Personnes » = visiteurs différents
         // (empreinte du navigateur) : 10 clics de la même personne = 1.
         // ============================================
+        // Vider le compteur de clics du bloc Sport (réservé au compte connecté)
+        async function resetAllSportClicks() {
+            if (!confirm('⚠️ Remettre TOUS les clics du bloc Sport à 0 ?')) return;
+
+            try {
+                // count: 'exact' pour savoir combien de lignes ont vraiment été
+                // supprimées — une suppression refusée par RLS ne renvoie pas
+                // d'erreur, elle supprime juste 0 ligne
+                const { error, count } = await supabaseClient
+                    .from('sport_clicks_logs')
+                    .delete({ count: 'exact' })
+                    .gte('jour', '2000-01-01');
+
+                if (error) throw error;
+                showToast('Clics du bloc Sport remis à 0 (' + (count || 0) + ' ligne' + ((count || 0) > 1 ? 's' : '') + ' supprimée' + ((count || 0) > 1 ? 's' : '') + ')');
+                loadSportClicksStats();
+            } catch (err) {
+                console.error('Erreur reset clics sport:', err);
+                showToast('❌ Erreur: ' + err.message, true);
+            }
+        }
+
         async function loadSportClicksStats() {
             const zone = document.getElementById('sportClicksStats');
             if (!zone) return;
+            zone.style.display = 'block';
             zone.innerHTML = '<p style="color:var(--text-muted);font-size:0.8rem;">Chargement...</p>';
 
             try {
