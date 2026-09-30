@@ -34,14 +34,6 @@ class RadioPlayerApp {
                 description: 'Info locale Bourgogne',
                 category: 'locale'
             },
-            {
-                id: 'Radio-Prevert',
-                name: 'Radio Prevert',
-                url: 'https://vps.cbad.fr:8443/prevert',
-                logo: 'images/radios-logos/Radio-Prevert.png',
-                description: 'Chalon Sur Saône',
-                category: 'locale'
-            },
 			{
                 id: 'La-Radio-Sans-pub',
                 name: 'La Radio Sans pub',
@@ -239,14 +231,6 @@ class RadioPlayerApp {
             // INFO / TALK
             // =====================================================
             {
-                id: 'France-Inter',
-                name: 'France Inter',
-                url: 'https://icecast.radiofrance.fr/franceinter-midfi.mp3',
-                logo: 'images/radios-logos/France-Inter.png',
-                description: 'Service public radio',
-                category: 'info'
-            },
-            {
                 id: 'RTL',
                 name: 'RTL',
                 url: 'https://icecast.funradio.fr/rtl-1-44-128',
@@ -284,14 +268,6 @@ class RadioPlayerApp {
                 url: 'https://audio.bfmtv.com/bfmradio_128.mp3',
                 logo: 'images/radios-logos/BFM-Radio.png',
                 description: 'Info en continu',
-                category: 'info'
-            },
-            {
-                id: 'Sud-Radio',
-                name: 'Sud Radio',
-                url: 'https://live.sudradio.fr/sudradio-mp3-128',
-                logo: 'images/radios-logos/Sud-Radio.png',
-                description: 'Talk & débats',
                 category: 'info'
             }
         ];
