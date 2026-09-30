@@ -292,7 +292,9 @@ body {
    ============================================ */
 .date-bar {
     display: flex;
-    align-items: center;
+    /* baseline : le bas des lettres de la date et du saint tombe au même
+       niveau, malgré leurs tailles différentes (center les décalait) */
+    align-items: baseline;
     justify-content: center;
     gap: 0.55rem;
     padding: 0.6rem 1rem 0.8rem;
@@ -1983,15 +1985,12 @@ h2, h3 {
     max-height: 2000px;
 }
 
-.community-item-desc:not(.expanded).truncated::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 40px;
-    background: linear-gradient(transparent, var(--bg-card));
-    pointer-events: none;
+/* Fondu en bas du texte coupé : c'est le texte lui-même qui s'efface.
+   Une bande peinte par-dessus (ancienne méthode) ne se fondait pas avec
+   le fond réel de la rubrique en thème clair et en bordeaux. */
+.community-item-desc:not(.expanded).truncated {
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
 }
 
 .community-item.expanded .community-item-desc {
@@ -4248,10 +4247,39 @@ a.agenda-item {
 }
 
 .sport-match-vs {
-    text-align: center;
+    text-align: left;
     font-size: 0.6rem;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     font-weight: 600;
+    text-transform: lowercase;
+}
+
+/* Prochain match : l'heure se place en haut à droite, en miroir du carré
+   V / N / D du dernier match. Les noms restent alignés à gauche. */
+#sportNextMatch .sport-match-time {
+    position: absolute;
+    top: 0.75rem;
+    right: 0;
+    padding: 0.1rem 0.45rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.15);
+}
+
+#sportNextMatch .sport-match-time:empty {
+    display: none;
+}
+
+/* Sur téléphone, la colonne est trop étroite pour loger l'heure à côté de
+   « Prochain match » : elle passe sous les équipes, alignée à gauche */
+@media (max-width: 480px) {
+    #sportNextMatch .sport-match-time {
+        position: static;
+        display: inline-block;
+        margin-top: 0.4rem;
+    }
 }
 
 /* Résultat du dernier match : petit carré coloré */
@@ -4850,7 +4878,8 @@ a.agenda-item {
     .row-2 {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        align-items: start;
+        /* stretch : Agenda et Cinémas finissent à la même hauteur */
+        align-items: stretch;
         max-width: 1200px;
         margin-left: auto;
         margin-right: auto;
