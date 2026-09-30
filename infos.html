@@ -1620,6 +1620,11 @@
         function displayMoreInfos() {
             const listEl = document.getElementById('infosList');
             const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+            // Clics réels (chiffre privé, visible seulement dans l'admin)
+            if (typeof suivreClicsInfos === 'function') {
+                suivreClicsInfos(listEl, '.info-card', supabaseClient);
+            }
             
             const start = displayedCount;
             const end = Math.min(displayedCount + ITEMS_PER_PAGE, allInfos.length);

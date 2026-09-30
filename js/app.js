@@ -1113,6 +1113,9 @@ async function initCommunity() {
 
         // Afficher les infos
         contentEl.style.display = '';
+        if (typeof suivreClicsInfos === 'function') {
+            suivreClicsInfos(contentEl, '.community-item', supabaseClient);
+        }
         contentEl.innerHTML = filteredData.map(item => {
             const commentCount = commentCounts[item.id] || 0;
             return `

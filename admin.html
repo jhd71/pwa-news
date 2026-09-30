@@ -5738,7 +5738,7 @@
         
         // Remettre toutes les vues des infos communauté à 0
         async function resetAllSubmissionViews() {
-            if (!confirm('⚠️ Remettre TOUTES les vues des infos communauté à 0 ?')) return;
+            if (!confirm('⚠️ Remettre TOUTES les vues et tous les clics des infos communauté à 0 ?')) return;
             
             try {
                 // Mettre toutes les vues à 0 directement (sans RPC)
@@ -5753,6 +5753,9 @@
                 try {
                     await supabaseClient.from('submission_view_logs').delete().gt('id', 0);
                 } catch (e) { console.log('Info: nettoyage logs vues optionnel:', e); }
+                try {
+                    await supabaseClient.from('info_clicks_logs').delete().gt('submission_id', 0);
+                } catch (e) { console.log('Info: nettoyage clics optionnel:', e); }
                 
                 showToast('Vues des infos remises à 0');
                 showSubmissionViewsStats();
@@ -6146,14 +6149,30 @@
                 }
                 
                 const totalViews = data.reduce((sum, e) => sum + (e.views || 0), 0);
+
+                // Clics réels (Voir plus, lien, photo, commenter, partager, like).
+                // Chiffre PRIVÉ : la table n'est lisible que par l'admin connecté.
+                const clics = {};
+                try {
+                    const { data: logs } = await supabaseClient
+                        .from('info_clicks_logs')
+                        .select('submission_id')
+                        .in('submission_id', data.map(e => e.id));
+                    (logs || []).forEach(l => { clics[l.submission_id] = (clics[l.submission_id] || 0) + 1; });
+                } catch (e) {
+                    console.log('Info: clics non disponibles', e);
+                }
+                const totalClics = Object.values(clics).reduce((a, b) => a + b, 0);
                 
                 container.innerHTML = `
-                    <p style="margin-bottom:0.5rem;font-weight:600;font-size:0.9rem;">Total : ${totalViews} vues</p>
+                    <p style="margin-bottom:0.25rem;font-weight:600;font-size:0.9rem;">Total : ${totalViews} vues · <span style="color:var(--warning);">${totalClics} clics</span></p>
+                    <p style="margin-bottom:0.5rem;font-size:0.7rem;color:var(--text-muted);">Vues = visiteurs qui ont vu l'info passer (chiffre public). Clics = visiteurs qui ont vraiment interagi (visible ici seulement).</p>
                     <div style="max-height:250px;overflow-y:auto;overflow-x:hidden;">
                         ${data.map(e => `
                             <div style="display:flex;align-items:center;padding:0.4rem 0;border-bottom:1px solid var(--border-color);gap:0.5rem;overflow:hidden;">
-                                <span style="font-size:0.75rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:calc(100% - 80px);">${escapeHtml(e.title)}</span>
-                                <span style="font-weight:600;color:var(--success);flex-shrink:0;min-width:20px;text-align:right;">${e.views || 0}</span>
+                                <span style="font-size:0.75rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(e.title)}</span>
+                                <span style="font-weight:600;color:var(--success);flex-shrink:0;min-width:20px;text-align:right;" title="Vues">${e.views || 0}</span>
+                                <span style="font-weight:600;color:var(--warning);flex-shrink:0;min-width:48px;text-align:right;font-size:0.8rem;" title="Clics réels">${clics[e.id] || 0} clic${(clics[e.id] || 0) > 1 ? 's' : ''}</span>
                                 <button onclick="resetSingleSubmissionView(${e.id})" style="padding:0.2rem 0.4rem;background:var(--danger);border:none;border-radius:4px;color:white;font-size:0.65rem;cursor:pointer;flex-shrink:0;">Reset</button>
                             </div>
                         `).join('')}
@@ -6186,6 +6205,9 @@
                 try {
                     await supabaseClient.from('submission_view_logs').delete().eq('submission_id', id);
                 } catch (e) { console.log('Info: nettoyage log vue optionnel:', e); }
+                try {
+                    await supabaseClient.from('info_clicks_logs').delete().eq('submission_id', id);
+                } catch (e) { console.log('Info: nettoyage clics optionnel:', e); }
                 
                 showToast('Vue remise à 0');
                 showSubmissionViewsStats();
