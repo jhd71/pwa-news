@@ -53,7 +53,7 @@ class RadioPlayerApp {
             {
                 id: 'Frequence-Plus',
                 name: 'Fréquence Plus',
-                url: 'https://fplus-chalonsursaone.ice.infomaniak.ch/fplus-chalonsursaone-128.mp3',
+                url: 'https://frequenceplus71.ice.infomaniak.ch/frequenceplus71-128.mp3',
                 logo: 'images/radios-logos/Frequence-Plus.png',
                 description: 'A plein tubes, Chalon',
                 category: 'locale'
@@ -93,7 +93,7 @@ class RadioPlayerApp {
             {
                 id: 'NRJ',
                 name: 'NRJ',
-                url: 'https://streaming.nrjaudio.fm/oumvmk8fnozc?origine=fluxurlradio',
+                url: 'https://streaming.nrjaudio.fm/ouam5sw2dqao?origine=fluxradios',
                 logo: 'images/radios-logos/nrj.png',
                 description: 'Hits & musique',
                 category: 'generaliste'
@@ -173,7 +173,7 @@ class RadioPlayerApp {
             {
                 id: 'Voltage-80s',
                 name: 'Voltage 80s',
-                url: 'https://voltage80s.ice.infomaniak.ch/voltage80s-128.mp3',
+                url: 'https://streaming.nrjaudio.fm/oumr948fnozc?origine=fluxradios',
                 logo: 'images/radios-logos/Voltage-80s.png',
                 description: 'Hits années 80',
                 category: 'thematique'
