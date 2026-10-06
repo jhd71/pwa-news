@@ -5130,3 +5130,59 @@ a.agenda-item {
     color: #ef4444;
 }
 
+/* Après un vote « Une autre… » : liens pour dire laquelle */
+.sondage-autre {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin: 0.25rem 0 0.75rem;
+    padding: 0.7rem 0.8rem;
+    border: 1px dashed var(--border-color);
+    border-radius: 10px;
+}
+
+.sondage-autre-texte {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.sondage-autre-liens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.sondage-autre-lien {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.sondage-autre-lien svg {
+    width: 15px;
+    height: 15px;
+}
+
+.sondage-autre-lien .material-icons {
+    font-size: 16px;
+}
+
+.sondage-autre-facebook svg {
+    color: #1877f2;
+}
+
+@media (hover: hover) {
+    .sondage-autre-lien:hover {
+        border-color: var(--primary);
+    }
+}
