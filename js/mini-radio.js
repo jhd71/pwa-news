@@ -42,7 +42,7 @@ class MiniRadioPlayer {
         const playerHTML = `
             <div class="mini-radio-player" id="miniRadioPlayer">
                 <div class="mini-radio-content">
-                    <img class="mini-radio-logo" id="miniRadioLogo" src="images/radios-logos/Radio-Prevert.png" alt="Radio">
+                    <img class="mini-radio-logo" id="miniRadioLogo" src="images/radios-logos/default.png" alt="Radio" onerror="this.onerror=null;this.src='images/radios-logos/default.png'">
                     
                     <div class="mini-radio-info" id="miniRadioInfo" title="Ouvrir le player complet">
                         <div class="mini-radio-name" id="miniRadioName">Aucune radio</div>
@@ -334,7 +334,9 @@ class MiniRadioPlayer {
         const visualizer = document.getElementById('miniRadioVisualizer');
 
         if (this.currentStation) {
-            logo.src = this.currentStation.logo;
+            // Logo absent (radio retirée depuis) : on retombe sur le logo par défaut
+            logo.onerror = () => { logo.onerror = null; logo.src = 'images/radios-logos/default.png'; };
+            logo.src = this.currentStation.logo || 'images/radios-logos/default.png';
             logo.alt = this.currentStation.name;
             name.textContent = this.currentStation.name;
         } else {
