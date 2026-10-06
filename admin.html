@@ -2233,6 +2233,18 @@
                             </span>
                         </label>
                     </div>
+                    <div class="form-group">
+                        <label class="notif-checkbox-label">
+                            <input type="checkbox" id="pubPinned">
+                            <span class="notif-checkbox-box">
+                                <span class="material-icons">push_pin</span>
+                            </span>
+                            <span class="notif-checkbox-text">
+                                <strong>Épingler en tête de « Vos infos »</strong>
+                                <small>Reste en premier à chaque visite, jusqu'à ce que vous la désépingliez (onglet Publiées)</small>
+                            </span>
+                        </label>
+                    </div>
                     <button type="submit" class="submit-btn" id="publishBtn"><span class="material-icons">publish</span> Publier maintenant</button>
                 </form>
             </div>
@@ -3619,6 +3631,7 @@
                     author: 'Actu & Média',
                     contact_email: 'admin@actuetmedia.fr',
                     status: 'approved',
+                    pinned: document.getElementById('pubPinned').checked,
                     created_at: new Date().toISOString()
                 }]);
                 

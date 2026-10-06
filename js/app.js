@@ -1090,17 +1090,10 @@ async function initCommunity() {
         window.userLikes = userLikes;
         window.likeCounts = likeCounts;
         
-        // Masquer les articles épinglés pour les visiteurs qui les ont déjà vus
-        const filteredData = data.filter(item => {
-            if (item.pinned) {
-                const seenKey = `pinned_seen_${item.id}`;
-                if (localStorage.getItem(seenKey)) {
-                    return false; // Déjà vu, on ne l'affiche pas
-                }
-                localStorage.setItem(seenKey, 'true'); // Marquer comme vu
-            }
-            return true;
-        });
+        // Une info épinglée reste en tête à CHAQUE visite, jusqu'à ce qu'elle
+        // soit désépinglée dans l'admin (avant le 06/10/2026, elle n'était
+        // montrée qu'une seule fois par visiteur).
+        const filteredData = data;
 
         // Le filtrage peut avoir tout retire : c'est le cas quand la seule
         // info en base est un post epingle que ce visiteur a deja vu. Pour lui
