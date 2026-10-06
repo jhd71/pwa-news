@@ -198,30 +198,6 @@ class RadioPlayerApp {
                 category: 'thematique'
             },
             {
-                id: 'Voltage-80s',
-                name: 'Voltage 80s',
-                url: 'https://voltage80s.ice.infomaniak.ch/voltage80s-128.mp3',
-                logo: 'images/radios-logos/Voltage-80s.png',
-                description: 'Hits années 80',
-                category: 'thematique'
-            },
-            {
-                id: 'Voltage-90s',
-                name: 'Voltage 90s',
-                url: 'https://voltage90s.ice.infomaniak.ch/voltage90s-128.mp3',
-                logo: 'images/radios-logos/Voltage-90s.png',
-                description: 'Hits années 90',
-                category: 'thematique'
-            },
-            {
-                id: 'Voltage-2000',
-                name: 'Voltage 2000',
-                url: 'https://voltage2000.ice.infomaniak.ch/voltage2000-128.mp3',
-                logo: 'images/radios-logos/Voltage-2000.png',
-                description: 'Hits années 2000',
-                category: 'thematique'
-            },
-            {
                 id: 'Kiss-FM',
                 name: 'Kiss FM',
                 url: 'https://kissfm2.ice.infomaniak.ch/kissfm2-128.mp3',
