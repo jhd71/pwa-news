@@ -5186,3 +5186,30 @@ a.agenda-item {
         border-color: var(--primary);
     }
 }
+
+/* ============================================
+   VOS INFOS : séparation plus nette entre deux publications (06/10/2026)
+   Avant, le trait entre deux infos avait le même poids que les traits
+   internes (lieu/vues, j'aime/commenter) : on ne voyait pas où une info
+   finissait. Maintenant : plus d'espace et un trait plus marqué entre
+   deux infos, traits internes en pointillés discrets.
+   ============================================ */
+.community-item {
+    padding: 1.6rem 0;
+}
+
+.community-item + .community-item {
+    border-top: 1px solid color-mix(in srgb, var(--text-primary) 35%, transparent);
+}
+
+.community-item-footer,
+.community-item-actions {
+    border-top: 1px dashed color-mix(in srgb, var(--border-color) 70%, transparent);
+}
+
+/* L'info épinglée garde son liseré à gauche, sans être collée au trait */
+.community-item.pinned {
+    padding-top: 1.2rem;
+    padding-bottom: 1.6rem;
+}
+
