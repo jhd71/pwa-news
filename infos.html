@@ -1404,6 +1404,34 @@
             margin: 0.45rem 0 0;
         }
 		
+
+        /* ---------- Séparation plus nette entre deux infos (06/10/2026) ----------
+           Même traitement que « Vos infos » sur l'accueil : plus d'espace et
+           un trait marqué entre deux infos, trait interne en pointillés. */
+        .info-card-header {
+            padding-top: 1.6rem;
+        }
+
+        .info-card-actions {
+            padding-bottom: 1.6rem;
+        }
+
+        .info-card + .info-card,
+        [data-theme="light"] .info-card + .info-card {
+            border-top: 1px solid color-mix(in srgb, var(--text-primary) 35%, transparent);
+        }
+
+        .info-card-footer {
+            border-top: 1px dashed color-mix(in srgb, var(--border-color) 70%, transparent);
+        }
+
+        .info-card.pinned .pinned-badge {
+            margin-top: 1.6rem;
+        }
+
+        .info-card.pinned .info-card-header {
+            padding-top: 0.5rem;
+        }
     </style>
 </head>
 <body>
