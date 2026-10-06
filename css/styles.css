@@ -4998,3 +4998,135 @@ a.agenda-item {
 [data-theme="bordeaux"] .footer {
     background: var(--bg-card);
 }
+
+/* ============================================
+   SONDAGE DE L'ACCUEIL
+   La section reprend le cadre de « Vos infos » (classe community-section)
+   ============================================ */
+.sondage-note {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.sondage-question {
+    margin: 0 0 0.85rem;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text-primary);
+}
+
+.sondage-choix {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.9rem;
+}
+
+.sondage-option {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 0.92rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.sondage-option input {
+    accent-color: var(--primary);
+    width: 1.05rem;
+    height: 1.05rem;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.sondage-option:has(input:checked) {
+    border-color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+@media (hover: hover) {
+    .sondage-option:hover {
+        border-color: var(--primary);
+    }
+}
+
+.sondage-voter-btn {
+    padding: 0.5rem 1.1rem;
+    font-size: 0.9rem;
+}
+
+.sondage-voter-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.sondage-resultats {
+    list-style: none;
+    margin: 0 0 0.6rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+.sondage-resultat-ligne {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.sondage-resultat-pct {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.sondage-mon-choix {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--primary-light);
+}
+
+[data-theme="light"] .sondage-mon-choix {
+    color: var(--primary);
+}
+
+.sondage-barre {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--border-color);
+    overflow: hidden;
+}
+
+.sondage-barre-remplie {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--text-muted);
+    transition: width 0.6s ease;
+}
+
+.sondage-resultat.est-mon-choix .sondage-barre-remplie {
+    background: var(--primary);
+}
+
+.sondage-merci {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.sondage-erreur {
+    margin: 0 0 0.6rem;
+    font-size: 0.82rem;
+    color: #ef4444;
+}
+

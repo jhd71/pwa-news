@@ -2138,6 +2138,7 @@
             <button class="tab" data-tab="published">✅ Publiées</button>
             <button class="tab" data-tab="notifications">🔔 Notifications</button>
             <button class="tab" data-tab="stats">📊 Statistiques</button>
+            <button class="tab" data-tab="sondages">🗳️ Sondages</button>
 			<a href="/admin-sport.html" class="tab" style="text-decoration:none;">⚽ Sport ↗</a>
         </div>
         
@@ -2237,6 +2238,37 @@
             </div>
         </div>
         
+        <!-- SONDAGES (accueil) -->
+        <div class="tab-content" id="tabSondages">
+            <div class="publish-form">
+                <h2 style="margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem;">
+                    <span class="material-icons" style="color:var(--success);">how_to_vote</span> Nouveau sondage
+                </h2>
+                <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:1.25rem;">
+                    Un seul sondage est affiché à la fois sur l'accueil. Les visiteurs ne voient que des pourcentages, après avoir voté ; le nombre de votants n'apparaît qu'ici.
+                </p>
+                <div class="form-group">
+                    <label class="form-label" for="sondageQuestion">Question <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="sondageQuestion" maxlength="200" placeholder="Ex. : Quelle radio aimeriez-vous retrouver sur Actu & Média ?">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="sondageChoix">Réponses possibles <span class="required">*</span></label>
+                    <textarea class="form-textarea" id="sondageChoix" style="min-height:140px;" placeholder="Une réponse par ligne (2 à 8 réponses)&#10;RTL&#10;Radio Classique&#10;Une autre"></textarea>
+                </div>
+                <label style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1.25rem;font-size:0.9rem;cursor:pointer;">
+                    <input type="checkbox" id="sondageOuvrir" checked>
+                    Le mettre en ligne tout de suite (ferme le sondage en cours s'il y en a un)
+                </label>
+                <button type="button" class="submit-btn" id="sondageCreerBtn" onclick="creerSondage()">
+                    <span class="material-icons">add_circle</span> Créer le sondage
+                </button>
+            </div>
+
+            <h3 style="margin:2rem 0 1rem;">Vos sondages</h3>
+            <button class="refresh-btn" onclick="chargerSondagesAdmin()"><span class="material-icons">refresh</span> Actualiser</button>
+            <div class="messages-list" id="sondagesListe"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
+        </div>
+
         <!-- MESSAGES -->
         <div class="tab-content" id="tabMessages">
             <button class="refresh-btn" onclick="loadMessages()"><span class="material-icons">refresh</span> Actualiser</button>
@@ -6357,6 +6389,174 @@
         
         initTheme();
         checkSession();
+
+        // ============================================
+        // SONDAGES DE L'ACCUEIL (06/10/2026)
+        // Tables sondages / sondage_choix / sondage_votes, réservées au
+        // compte connecté. Les visiteurs passent par les fonctions
+        // sondage_accueil() et voter_sondage() côté Supabase.
+        // ============================================
+        document.querySelector('[data-tab="sondages"]')?.addEventListener('click', () => {
+            chargerSondagesAdmin();
+        });
+
+        async function creerSondage() {
+            const question = document.getElementById('sondageQuestion').value.trim();
+            const choix = document.getElementById('sondageChoix').value
+                .split('\n').map(l => l.trim()).filter(Boolean);
+            const ouvrir = document.getElementById('sondageOuvrir').checked;
+            const bouton = document.getElementById('sondageCreerBtn');
+
+            if (question.length < 3) { showToast('Écrivez une question', true); return; }
+            if (choix.length < 2 || choix.length > 8) { showToast('Il faut entre 2 et 8 réponses, une par ligne', true); return; }
+            if (choix.some(c => c.length > 80)) { showToast('Une réponse dépasse 80 caractères', true); return; }
+
+            bouton.disabled = true;
+            try {
+                // Un seul sondage ouvert à la fois : on ferme l'ancien d'abord
+                if (ouvrir) {
+                    const { error: errFermer } = await supabaseClient
+                        .from('sondages')
+                        .update({ statut: 'ferme', ferme_le: new Date().toISOString() })
+                        .eq('statut', 'ouvert');
+                    if (errFermer) throw errFermer;
+                }
+
+                const { data: sondage, error } = await supabaseClient
+                    .from('sondages')
+                    .insert({
+                        question,
+                        statut: ouvrir ? 'ouvert' : 'brouillon',
+                        ouvert_le: ouvrir ? new Date().toISOString() : null
+                    })
+                    .select()
+                    .single();
+                if (error) throw error;
+
+                const { error: errChoix } = await supabaseClient
+                    .from('sondage_choix')
+                    .insert(choix.map((libelle, i) => ({ sondage_id: sondage.id, libelle, ordre: i + 1 })));
+                if (errChoix) {
+                    // pas de sondage sans réponses : on annule
+                    await supabaseClient.from('sondages').delete().eq('id', sondage.id);
+                    throw errChoix;
+                }
+
+                document.getElementById('sondageQuestion').value = '';
+                document.getElementById('sondageChoix').value = '';
+                showToast(ouvrir ? 'Sondage en ligne sur l\'accueil' : 'Sondage enregistré en brouillon');
+                chargerSondagesAdmin();
+            } catch (err) {
+                console.error('Erreur création sondage:', err);
+                showToast('Erreur : ' + err.message, true);
+            } finally {
+                bouton.disabled = false;
+            }
+        }
+
+        async function chargerSondagesAdmin() {
+            const liste = document.getElementById('sondagesListe');
+            if (!liste) return;
+            liste.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
+
+            try {
+                const [{ data: sondages, error: e1 }, { data: choix, error: e2 }, { data: votes, error: e3 }] = await Promise.all([
+                    supabaseClient.from('sondages').select('*').order('created_at', { ascending: false }),
+                    supabaseClient.from('sondage_choix').select('*').order('ordre'),
+                    supabaseClient.from('sondage_votes').select('sondage_id, choix_id')
+                ]);
+                if (e1 || e2 || e3) throw (e1 || e2 || e3);
+
+                if (!sondages || sondages.length === 0) {
+                    liste.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:2rem;">Aucun sondage pour le moment.</p>';
+                    return;
+                }
+
+                const statuts = {
+                    ouvert:    { texte: 'En ligne',  couleur: 'var(--success)' },
+                    brouillon: { texte: 'Brouillon', couleur: 'var(--warning)' },
+                    ferme:     { texte: 'Terminé',   couleur: 'var(--text-muted)' }
+                };
+
+                liste.innerHTML = sondages.map(s => {
+                    const sesChoix = (choix || []).filter(c => c.sondage_id === s.id);
+                    const sesVotes = (votes || []).filter(v => v.sondage_id === s.id);
+                    const total = sesVotes.length;
+                    const st = statuts[s.statut] || statuts.brouillon;
+
+                    const lignes = sesChoix.map(c => {
+                        const n = sesVotes.filter(v => v.choix_id === c.id).length;
+                        const pct = total ? Math.round(100 * n / total) : 0;
+                        return `<div style="margin-bottom:0.6rem;">
+                                    <div style="display:flex;justify-content:space-between;gap:0.5rem;font-size:0.85rem;margin-bottom:0.25rem;">
+                                        <span>${escapeHtml(c.libelle)}</span>
+                                        <span style="font-weight:600;white-space:nowrap;">${n} vote${n > 1 ? 's' : ''} · ${pct} %</span>
+                                    </div>
+                                    <div style="height:6px;border-radius:3px;background:var(--border-color);overflow:hidden;">
+                                        <div style="height:100%;width:${pct}%;background:var(--primary);"></div>
+                                    </div>
+                                </div>`;
+                    }).join('');
+
+                    const boutons = [];
+                    if (s.statut !== 'ouvert') {
+                        boutons.push(`<button class="action-btn mark-read" onclick="changerStatutSondage(${s.id}, 'ouvert')"><span class="material-icons">play_arrow</span> Mettre en ligne</button>`);
+                    } else {
+                        boutons.push(`<button class="action-btn reply" onclick="changerStatutSondage(${s.id}, 'ferme')"><span class="material-icons">stop</span> Terminer</button>`);
+                    }
+                    boutons.push(`<button class="action-btn delete" onclick="supprimerSondage(${s.id})"><span class="material-icons">delete</span> Supprimer</button>`);
+
+                    return `<div class="message-card" style="${s.statut === 'ouvert' ? 'border-left:4px solid var(--success);' : ''}">
+                                <div class="message-header">
+                                    <strong style="font-size:1rem;">${escapeHtml(s.question)}</strong>
+                                    <span style="font-size:0.75rem;font-weight:600;color:${st.couleur};white-space:nowrap;">● ${st.texte}</span>
+                                </div>
+                                <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.9rem;">
+                                    <strong style="color:var(--text-primary);">${total} votant${total > 1 ? 's' : ''}</strong>
+                                    · créé le ${new Date(s.created_at).toLocaleDateString('fr-FR')}
+                                </p>
+                                ${lignes}
+                                <div class="message-actions" style="margin-top:1rem;">${boutons.join('')}</div>
+                            </div>`;
+                }).join('');
+            } catch (err) {
+                console.error('Erreur sondages:', err);
+                liste.innerHTML = `<p style="color:var(--danger);">Erreur : ${escapeHtml(err.message)}</p>`;
+            }
+        }
+
+        async function changerStatutSondage(id, statut) {
+            try {
+                const maintenant = new Date().toISOString();
+                if (statut === 'ouvert') {
+                    // ferme d'abord celui qui est en ligne
+                    const { error: e } = await supabaseClient.from('sondages')
+                        .update({ statut: 'ferme', ferme_le: maintenant }).eq('statut', 'ouvert');
+                    if (e) throw e;
+                }
+                const champs = statut === 'ouvert'
+                    ? { statut, ouvert_le: maintenant, ferme_le: null }
+                    : { statut, ferme_le: maintenant };
+                const { error } = await supabaseClient.from('sondages').update(champs).eq('id', id);
+                if (error) throw error;
+                showToast(statut === 'ouvert' ? 'Sondage en ligne sur l\'accueil' : 'Sondage terminé, il disparaît de l\'accueil');
+                chargerSondagesAdmin();
+            } catch (err) {
+                showToast('Erreur : ' + err.message, true);
+            }
+        }
+
+        async function supprimerSondage(id) {
+            if (!confirm('Supprimer ce sondage et tous ses votes ? C\'est définitif.')) return;
+            try {
+                const { error } = await supabaseClient.from('sondages').delete().eq('id', id);
+                if (error) throw error;
+                showToast('Sondage supprimé');
+                chargerSondagesAdmin();
+            } catch (err) {
+                showToast('Erreur : ' + err.message, true);
+            }
+        }
     </script>
 </body>
 </html>

@@ -91,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initNews();
     initCinema();
     initCommunity();
+    initSondage();
     initServiceWorker();
     initInstallPrompt();
     initPushNotifications();
@@ -3000,3 +3001,121 @@ function closeStandingsModal() {
 document.querySelectorAll('.tile[data-color]').forEach(tile => {
     tile.style.setProperty('--tile-color', tile.dataset.color);
 });
+
+// ============================================
+// SONDAGE DE L'ACCUEIL
+// Tout passe par deux fonctions Supabase (sondage_accueil, voter_sondage) :
+// le visiteur ne voit que des pourcentages, jamais le nombre de votants.
+// Un seul vote par appareil et par sondage, vérifié par le serveur.
+// ============================================
+let sondageCourant = null;
+
+async function initSondage() {
+    const section = document.getElementById('sondageSection');
+    if (!section) return;
+
+    const client = getSupabaseClient();
+    if (!client) return;
+
+    try {
+        const { data, error } = await client.rpc('sondage_accueil', {
+            p_fingerprint: getUserFingerprint()
+        });
+        if (error) throw error;
+
+        // Aucun sondage ouvert : le bloc reste caché
+        if (!data) {
+            section.style.display = 'none';
+            return;
+        }
+
+        sondageCourant = data;
+        afficherSondage();
+        section.style.display = '';
+    } catch (err) {
+        console.log('⚠️ Sondage indisponible :', err.message || err);
+    }
+}
+
+function afficherSondage(messageErreur) {
+    const contenu = document.getElementById('sondageContent');
+    const s = sondageCourant;
+    if (!contenu || !s) return;
+
+    let html = '<div class="sondage-question">' + escapeHtml(s.question) + '</div>';
+
+    if (s.a_vote) {
+        // Résultats en pourcentages
+        html += '<ul class="sondage-resultats">';
+        s.choix.forEach(c => {
+            const pct = c.pourcentage || 0;
+            const estLeMien = c.id === s.mon_choix;
+            html += '<li class="sondage-resultat' + (estLeMien ? ' est-mon-choix' : '') + '">'
+                  +   '<div class="sondage-resultat-ligne">'
+                  +     '<span class="sondage-resultat-libelle">' + escapeHtml(c.libelle)
+                  +       (estLeMien ? ' <span class="sondage-mon-choix">· votre choix</span>' : '')
+                  +     '</span>'
+                  +     '<span class="sondage-resultat-pct">' + pct + ' %</span>'
+                  +   '</div>'
+                  +   '<div class="sondage-barre"><div class="sondage-barre-remplie" style="width:' + pct + '%"></div></div>'
+                  + '</li>';
+        });
+        html += '</ul>';
+        html += '<p class="sondage-merci">Merci pour votre vote !</p>';
+    } else {
+        // Choix à cocher, puis bouton Voter
+        html += '<div class="sondage-choix" role="radiogroup" aria-label="' + escapeHtml(s.question) + '">';
+        s.choix.forEach(c => {
+            html += '<label class="sondage-option">'
+                  +   '<input type="radio" name="sondageChoix" value="' + c.id + '">'
+                  +   '<span>' + escapeHtml(c.libelle) + '</span>'
+                  + '</label>';
+        });
+        html += '</div>';
+        if (messageErreur) {
+            html += '<p class="sondage-erreur">' + escapeHtml(messageErreur) + '</p>';
+        }
+        html += '<button class="community-propose-btn sondage-voter-btn" id="sondageVoterBtn" disabled>'
+              +   '<span class="material-icons">how_to_vote</span>Voter'
+              + '</button>';
+    }
+
+    contenu.innerHTML = html;
+
+    if (!s.a_vote) {
+        const bouton = document.getElementById('sondageVoterBtn');
+        contenu.querySelectorAll('input[name="sondageChoix"]').forEach(radio => {
+            radio.addEventListener('change', () => { bouton.disabled = false; });
+        });
+        bouton.addEventListener('click', voterSondage);
+    }
+}
+
+async function voterSondage() {
+    const coche = document.querySelector('input[name="sondageChoix"]:checked');
+    const bouton = document.getElementById('sondageVoterBtn');
+    if (!coche || !sondageCourant) return;
+
+    bouton.disabled = true;
+    bouton.lastChild.textContent = 'Envoi…';
+
+    try {
+        const { data, error } = await getSupabaseClient().rpc('voter_sondage', {
+            p_sondage_id: sondageCourant.id,
+            p_choix_id: Number(coche.value),
+            p_fingerprint: getUserFingerprint()
+        });
+        if (error) throw error;
+
+        if (!data) {
+            // Le sondage vient d'être fermé entre-temps
+            afficherSondage('Ce sondage vient de se terminer.');
+            return;
+        }
+        sondageCourant = data;
+        afficherSondage();
+    } catch (err) {
+        console.log('⚠️ Vote non enregistré :', err.message || err);
+        afficherSondage('Le vote n\'a pas pu être envoyé. Réessayez dans un instant.');
+    }
+}
