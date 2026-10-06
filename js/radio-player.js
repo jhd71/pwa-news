@@ -24,9 +24,9 @@ class RadioPlayerApp {
         // === LISTE DES RADIOS ===
         this.stations = [
             // =====================================================
-            // LOCALES / RÉGIONALES
+            // LOCALES / RÉGIONALES (en tête de liste)
             // =====================================================
-			{
+            {
                 id: 'Ici-Bourgogne',
                 name: 'Ici-Bourgogne',
                 url: 'https://icecast.radiofrance.fr/fbbourgogne-midfi.mp3',
@@ -34,7 +34,50 @@ class RadioPlayerApp {
                 description: 'Info locale Bourgogne',
                 category: 'locale'
             },
-			{
+            {
+                id: 'Frequence-Plus',
+                name: 'Fréquence Plus Le Creusot / Montceau',
+                url: 'https://frequenceplus71.ice.infomaniak.ch/frequenceplus71-128.mp3',
+                logo: 'images/radios-logos/Frequence-Plus.png',
+                description: 'À plein tubes, Saône-et-Loire',
+                category: 'locale'
+            },
+            {
+                id: 'NRJ',
+                name: 'NRJ Montceau',
+                url: 'https://streaming.nrjaudio.fm/ouam5sw2dqao?origine=fluxradios',
+                logo: 'images/radios-logos/nrj.png',
+                description: 'Hit Music Only, édition Montceau',
+                category: 'locale'
+            },
+            {
+                id: 'Cherie-FM-Montceau',
+                name: 'Chérie FM Montceau',
+                url: 'https://streaming.nrjaudio.fm/oumr948fnozc?origine=fluxradios',
+                logo: 'images/radios-logos/cherie-fm.png',
+                description: 'La plus belle musique, édition Montceau',
+                category: 'locale'
+            },
+            {
+                id: 'Radio-Star',
+                name: 'Radio Star',
+                url: 'https://radiostar.ice.infomaniak.ch/radiostar-128.mp3',
+                logo: 'images/radios-logos/Radio-Star.png',
+                description: 'Radio régionale de Bourgogne',
+                category: 'locale'
+            },
+            {
+                id: 'Radio-Scoop-Macon',
+                name: 'Radio Scoop Mâcon',
+                url: 'https://radioscoopmacon.ice.infomaniak.ch/radioscoop-macon-128.mp3',
+                logo: 'images/radios-logos/Radio-Scoop-Macon.png',
+                description: 'Hits et infos, édition Mâcon',
+                category: 'locale'
+            },
+            // =====================================================
+            // GÉNÉRALISTES ET THÉMATIQUES
+            // =====================================================
+            {
                 id: 'La-Radio-Sans-pub',
                 name: 'La Radio Sans pub',
                 url: 'https://live1.jupinfo.fr:8443/play',
@@ -42,7 +85,7 @@ class RadioPlayerApp {
                 description: '100% Hits 24/24',
                 category: 'generaliste'
             },
-			{
+            {
                 id: 'M-Radio',
                 name: 'M Radio',
                 url: 'https://mradio-lyon.ice.infomaniak.ch/mradio-lyon.mp3',
@@ -51,14 +94,6 @@ class RadioPlayerApp {
                 category: 'thematique'
             },
             {
-                id: 'Frequence-Plus',
-                name: 'Fréquence Plus',
-                url: 'https://frequenceplus71.ice.infomaniak.ch/frequenceplus71-128.mp3',
-                logo: 'images/radios-logos/Frequence-Plus.png',
-                description: 'A plein tubes, Chalon',
-                category: 'locale'
-            },
-			{
                 id: 'RFM',
                 name: 'RFM',
                 url: 'https://rfm.lmn.fm/rfm.mp3',
@@ -72,7 +107,7 @@ class RadioPlayerApp {
                 url: 'https://stream.rcs.revma.com/q90fb3dwnwzuv.mp3',
                 logo: 'images/radios-logos/Cerise-FM.png',
                 description: 'Les tubes d\'hier, les hits d\'aujourd\'hui',
-                category: 'locale'
+                category: 'generaliste'
             },
             {
                 id: 'Alouette-FM',
@@ -80,7 +115,7 @@ class RadioPlayerApp {
                 url: 'https://alouette-poitiers.ice.infomaniak.ch/alouette-poitiers-128.mp3',
                 logo: 'images/radios-logos/Alouette-FM.png',
                 description: 'Toujours plus de Hits',
-                category: 'locale'
+                category: 'generaliste'
             },
             {
                 id: 'Alouette-Nouveaux-Talents',
@@ -88,17 +123,9 @@ class RadioPlayerApp {
                 url: 'https://alouettenouveauxtalents.ice.infomaniak.ch/alouettenouveauxtalents-128.mp3',
                 logo: 'images/radios-logos/Alouette-Nouveaux-Talents.png',
                 description: '1ère Radio Régionale de France',
-                category: 'locale'
-            },
-            {
-                id: 'NRJ',
-                name: 'NRJ',
-                url: 'https://streaming.nrjaudio.fm/ouam5sw2dqao?origine=fluxradios',
-                logo: 'images/radios-logos/nrj.png',
-                description: 'Hits & musique',
                 category: 'generaliste'
             },
-			{
+            {
                 id: 'Skyrock',
                 name: 'Skyrock',
                 url: 'https://icecast.skyrock.net/s/natio_aac_128k?tvr_name=tunein16&tvr_section1=64aac',
@@ -130,7 +157,7 @@ class RadioPlayerApp {
                 description: 'Pop-rock français',
                 category: 'generaliste'
             },
-			{
+            {
                 id: 'RTL2',
                 name: 'RTL2',
                 url: 'https://icecast.funradio.fr/rtl2-1-44-128',
@@ -173,7 +200,7 @@ class RadioPlayerApp {
             {
                 id: 'Voltage-80s',
                 name: 'Voltage 80s',
-                url: 'https://streaming.nrjaudio.fm/oumr948fnozc?origine=fluxradios',
+                url: 'https://voltage80s.ice.infomaniak.ch/voltage80s-128.mp3',
                 logo: 'images/radios-logos/Voltage-80s.png',
                 description: 'Hits années 80',
                 category: 'thematique'
@@ -226,7 +253,6 @@ class RadioPlayerApp {
                 description: 'Soul Funk World',
                 category: 'thematique'
             },
-
             // =====================================================
             // INFO / TALK
             // =====================================================
@@ -254,7 +280,7 @@ class RadioPlayerApp {
                 description: 'Sport & info',
                 category: 'info'
             },
-			{
+            {
                 id: 'France-Info',
                 name: 'France Info',
                 url: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3',
