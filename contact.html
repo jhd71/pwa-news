@@ -651,6 +651,15 @@
         @media (max-width: 480px) {
             .contact-title { font-size: 1.6rem; }
         }
+
+        /* Piège anti-robots : champ sorti de l'écran, invisible pour les humains */
+        .champ-piege {
+            position: absolute;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
@@ -718,6 +727,12 @@
                     <div class="form-hint">Maximum 2000 caractères</div>
                 </div>
                 
+                <!-- Piège anti-robots : invisible, seuls les robots le remplissent -->
+                <div class="champ-piege" aria-hidden="true">
+                    <label for="site_web">Ne pas remplir ce champ</label>
+                    <input type="text" name="site_web" id="site_web" tabindex="-1" autocomplete="off">
+                </div>
+                
                 <!-- Bouton -->
                 <button type="submit" class="submit-btn" id="submitBtn">
                     <span class="material-icons">send</span>
@@ -776,6 +791,9 @@
         
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
+        // Heure d'ouverture de la page (sert au piège anti-robots)
+        const pageChargeeA = Date.now();
+        
         // Fonction pour afficher le toast
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
@@ -803,6 +821,16 @@
         // Gestion du formulaire
         document.getElementById('contactForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Piège anti-robots : champ caché rempli, ou envoi moins de 3 secondes après l'ouverture
+            const piegeRempli = document.getElementById('site_web').value.trim() !== '';
+            const tropRapide = (Date.now() - pageChargeeA) < 3000;
+            if (piegeRempli || tropRapide) {
+                // On fait croire au robot que c'est envoyé, sans rien enregistrer
+                document.getElementById('contactForm').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+                return;
+            }
             
             const submitBtn = document.getElementById('submitBtn');
             const originalContent = submitBtn.innerHTML;
