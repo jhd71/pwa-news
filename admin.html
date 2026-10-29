@@ -3794,7 +3794,19 @@
                     // Extraire le chemin de l'image depuis l'URL
                     // Format: https://xxx.supabase.co/storage/v1/object/public/images/submissions/xxx.jpg
                     const urlParts = prop.image_url.split('/storage/v1/object/public/images/');
-                    if (urlParts.length > 1) {
+                    // L'image est-elle utilisée ailleurs ? (29 octobre 2026 : une proposition
+                    // piégée réutilisait la photo d'une info publiée, et la supprimer
+                    // effaçait la photo de l'info publiée)
+                    const [dejaPrincipale, dejaSupp, dejaEvenement] = await Promise.all([
+                        supabaseClient.from('news_submissions').select('id', { count: 'exact', head: true }).eq('image_url', prop.image_url).neq('id', id),
+                        supabaseClient.from('news_submissions').select('id', { count: 'exact', head: true }).contains('additional_images', [prop.image_url]).neq('id', id),
+                        supabaseClient.from('events').select('id', { count: 'exact', head: true }).eq('image_url', prop.image_url)
+                    ]);
+                    const utiliseeAilleurs = [dejaPrincipale, dejaSupp, dejaEvenement]
+                        .some(r => r.error || (r.count || 0) > 0);
+                    if (utiliseeAilleurs) console.log('ℹ️ Image gardée : utilisée par une autre publication');
+
+                    if (urlParts.length > 1 && !utiliseeAilleurs) {
                         const imagePath = urlParts[1];
                         console.log('🗑️ Suppression image:', imagePath);
                         
