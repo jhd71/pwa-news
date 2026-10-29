@@ -328,13 +328,7 @@ async function initNews() {
 
 // Les titres et résumés viennent de flux RSS extérieurs : on les échappe
 // avant de les insérer dans la page (24 septembre 2026).
-// escapeHtml() ne protège pas les guillemets, d'où cette version pour
-// les attributs (href, src), qui n'accepte en plus que http(s).
-function urlSure(adresse) {
-    const texte = String(adresse || '').trim();
-    if (!/^https?:\/\//i.test(texte)) return '';
-    return texte.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
+// urlSure() est désormais dans js/utils.js (29 octobre 2026).
 
 // Certains titres RSS arrivent avec des entités (&#8217; pour ’) :
 // on les décode en texte brut avant de les échapper. Un <textarea> ne
@@ -1133,7 +1127,7 @@ async function initCommunity() {
                             <span>Voir plus</span>
                             <span class="material-icons">expand_more</span>
                         </button>
-                        ${item.link ? `<a href="${item.link}" target="_blank" class="community-item-link" onclick="event.stopPropagation()"><span class="material-icons">link</span>Voir le lien</a>` : ''}
+                        ${urlSure(item.link) ? `<a href="${urlSure(item.link)}" target="_blank" rel="noopener" class="community-item-link" onclick="event.stopPropagation()"><span class="material-icons">link</span>Voir le lien</a>` : ''}
                     </div>
                     
                     <!-- FOOTER : Lieu + Vues -->
@@ -1283,17 +1277,16 @@ function showSimpleToast(message) {
 window.__galeries = window.__galeries || {};
 
 function renderCommunityImages(item) {
-    const allImages = [];
-    if (item.image_url) allImages.push(item.image_url);
-    if (item.additional_images && item.additional_images.length > 0) {
-        allImages.push(...item.additional_images);
-    }
+    // Seules les vraies adresses http(s) sont gardées, encodées pour l'attribut
+    const allImages = [item.image_url, ...(item.additional_images || [])]
+        .map(urlSure)
+        .filter(Boolean);
     
     window.__galeries[item.id] = allImages;
     
     if (allImages.length === 0) return '';
     
-    const sourceName = (item.source_name || '').replace(/'/g, "\\'");
+    const sourceName = texteJs(item.source_name);
     
     // UNE seule image → affichage simple (comme avant)
     if (allImages.length === 1) {
@@ -2314,7 +2307,7 @@ async function initAgenda() {
                                 ${event.location ? `<span><span class="material-icons">place</span>${escapeHtml(event.location)}</span>` : ''}
                                 <span class="agenda-views"><span class="material-icons">visibility</span>${event.views || 0}</span>
                             </div>
-                            <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
+                            <span class="agenda-item-category ${motCle(event.category)}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
                         </div>
                     </a>
                 `;
@@ -2340,7 +2333,7 @@ async function initAgenda() {
                             ${event.event_end_date && event.event_end_date !== event.event_date ? `<span><span class="material-icons">event_available</span>Jusqu'au ${new Date(event.event_end_date + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace('.', '')}</span>` : ''}
                             <span class="agenda-views"><span class="material-icons">visibility</span>${event.views || 0}</span>
                         </div>
-                        <span class="agenda-item-category ${event.category}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
+                        <span class="agenda-item-category ${motCle(event.category)}">${getAgendaCategoryIcon(event.category)} ${getAgendaCategoryLabel(event.category)}</span>
                     </div>
                 </a>
             `;

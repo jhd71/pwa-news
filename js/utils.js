@@ -16,9 +16,34 @@
  */
 function escapeHtml(text) {
     if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+/**
+ * Rend une adresse sûre pour un attribut (href, src) ou un appel
+ * onclick('...'). N'accepte que http(s) ; les caractères qui
+ * pourraient casser l'attribut ou la chaîne JS sont encodés en %XX,
+ * ce qui garde l'adresse valide (29 octobre 2026, suite à l'audit).
+ */
+function urlSure(adresse) {
+    const texte = String(adresse || '').trim();
+    if (!/^https?:\/\//i.test(texte)) return '';
+    return texte.replace(/[\s"'<>`\\]/g, c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0').toUpperCase());
+}
+
+/** Mot-clé sûr pour une classe CSS (type, catégorie). */
+function motCle(texte) {
+    return String(texte || '').toLowerCase().replace(/[^a-z0-9_-]/g, '');
+}
+
+/** Texte court passé dans un onclick('...') : lettres, chiffres, espaces et . , - _ seulement. */
+function texteJs(texte) {
+    return String(texte || '').replace(/[^\p{L}\p{N} .,_-]/gu, '');
 }
 
 /**

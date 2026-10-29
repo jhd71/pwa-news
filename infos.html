@@ -1719,8 +1719,8 @@
                                 <span>Voir plus</span>
                                 <span class="material-icons">expand_more</span>
                             </button>
-                            ${item.link ? `
-                                <a href="${item.link}" target="_blank" class="info-card-link">
+                            ${urlSure(item.link) ? `
+                                <a href="${urlSure(item.link)}" target="_blank" rel="noopener" class="info-card-link">
                                     <span class="material-icons">link</span>
                                     Voir le lien
                                 </a>
@@ -1890,17 +1890,16 @@
         window.__galeries = window.__galeries || {};
 
         function renderInfoImages(item) {
-            const allImages = [];
-            if (item.image_url) allImages.push(item.image_url);
-            if (item.additional_images && item.additional_images.length > 0) {
-                allImages.push(...item.additional_images);
-            }
+            // Seules les vraies adresses http(s) sont gardées, encodées pour l'attribut
+            const allImages = [item.image_url, ...(item.additional_images || [])]
+                .map(urlSure)
+                .filter(Boolean);
             
             window.__galeries[item.id] = allImages;
             
             if (allImages.length === 0) return '';
             
-            const sourceName = (item.source_name || '').replace(/'/g, "\\'");
+            const sourceName = texteJs(item.source_name);
             
             // UNE seule image → affichage classique
             if (allImages.length === 1) {

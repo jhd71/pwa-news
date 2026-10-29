@@ -1854,12 +1854,12 @@
             
             return `
                 <div class="event-card" data-event-id="${event.id}">
-                    ${event.image_url ? `<img src="${event.image_url}" alt="${escapeHtml(event.title)}" class="event-card-image" onclick="openLightbox('${event.image_url}', event)">` : ''}
+                    ${urlSure(event.image_url) ? `<img src="${urlSure(event.image_url)}" alt="${escapeHtml(event.title)}" class="event-card-image" onclick="openLightbox('${urlSure(event.image_url)}', event)">` : ''}
                     <div class="event-card-content">
                         <div class="event-card-header">
                             <h3 class="event-card-title">${escapeHtml(event.title)}</h3>
                             <div class="event-card-badges">
-                                <span class="event-card-category ${event.category}">${icon} ${label}</span>
+                                <span class="event-card-category ${motCle(event.category)}">${icon} ${label}</span>
                                 ${recurringBadge}
                             </div>
                         </div>
@@ -1882,7 +1882,7 @@
                                 <span class="material-icons" style="font-size:1rem;">visibility</span>
                                 ${views} vue${views > 1 ? 's' : ''}
                             </span>
-                            ${event.link ? `<a href="${event.link}" target="_blank" class="event-card-link"><span class="material-icons">open_in_new</span>Plus d'infos</a>` : ''}
+                            ${urlSure(event.link) ? `<a href="${urlSure(event.link)}" target="_blank" rel="noopener" class="event-card-link"><span class="material-icons">open_in_new</span>Plus d'infos</a>` : ''}
                             <button type="button" class="event-card-ics" onclick="ouvrirChoixAgenda(${event.id})" title="Enregistrer dans l'agenda de votre téléphone">
                                 <span class="material-icons">event_available</span>Ajouter à mon agenda
                             </button>

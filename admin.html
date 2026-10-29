@@ -3721,7 +3721,7 @@
                         <div class="message-text">${escapeHtml(msg.message)}</div>
                         <div class="message-actions">
                             ${!msg.is_read ? `<button class="action-btn mark-read" onclick="markAsRead(${msg.id})"><span class="material-icons">done</span>Lu</button>` : ''}
-                            <a href="mailto:${msg.email}?subject=Re: ${msg.subject}" class="action-btn reply"><span class="material-icons">reply</span>Répondre</a>
+                            <a href="mailto:${encodeURIComponent(msg.email || '')}?subject=${encodeURIComponent('Re: ' + (msg.subject || ''))}" class="action-btn reply"><span class="material-icons">reply</span>Répondre</a>
                             <button class="action-btn delete" onclick="deleteMessage(${msg.id})"><span class="material-icons">delete</span>Suppr</button>
                         </div>
                     </div>
@@ -3749,7 +3749,7 @@
                 container.innerHTML = data.map(prop => `
                     <div class="message-card unread">
                         <div class="message-header">
-                            <div><span class="proposition-type ${prop.type}">${getTypeLabel(prop.type)}</span><span class="message-subject">⏳ En attente</span></div>
+                            <div><span class="proposition-type ${motCle(prop.type)}">${getTypeLabel(prop.type)}</span><span class="message-subject">⏳ En attente</span></div>
                             <span class="message-date">${formatDate(prop.created_at)}</span>
                         </div>
                         <div class="proposition-title">${escapeHtml(prop.title)}</div>
@@ -3757,8 +3757,8 @@
                         <div class="message-from">De: ${escapeHtml(prop.author || 'Anonyme')}</div>
                         <div class="message-email">${escapeHtml(prop.contact_email)}</div>
                         <div class="message-text">${escapeHtml(prop.content)}</div>
-                        ${prop.image_url ? `<div class="image-container" id="imgContainer_${prop.id}"><img src="${prop.image_url}" onclick="openImageModal('${prop.image_url}')" title="Cliquez pour agrandir"><div class="image-rotate-buttons"><button class="rotate-btn" onclick="rotateImage(${prop.id}, '${prop.image_url}', -90)"><span class="material-icons">rotate_left</span>Gauche</button><button class="rotate-btn" onclick="rotateImage(${prop.id}, '${prop.image_url}', 90)"><span class="material-icons">rotate_right</span>Droite</button></div></div>` : ''}
-                        ${prop.link ? `<a href="${prop.link}" target="_blank" class="proposition-file"><span class="material-icons" style="font-size:1rem;">link</span> Voir le lien</a>` : ''}
+                        ${urlSure(prop.image_url) ? `<div class="image-container" id="imgContainer_${prop.id}"><img src="${urlSure(prop.image_url)}" onclick="openImageModal('${urlSure(prop.image_url)}')" title="Cliquez pour agrandir"><div class="image-rotate-buttons"><button class="rotate-btn" onclick="rotateImage(${prop.id}, '${urlSure(prop.image_url)}', -90)"><span class="material-icons">rotate_left</span>Gauche</button><button class="rotate-btn" onclick="rotateImage(${prop.id}, '${urlSure(prop.image_url)}', 90)"><span class="material-icons">rotate_right</span>Droite</button></div></div>` : ''}
+                        ${urlSure(prop.link) ? `<a href="${urlSure(prop.link)}" target="_blank" rel="noopener" class="proposition-file"><span class="material-icons" style="font-size:1rem;">link</span> Voir le lien</a>` : ''}
                         <div class="message-actions" style="margin-top:1rem;">
                                 <button class="action-btn" style="background:rgba(16,185,129,0.2);color:#10b981;" onclick="updateStatus(${prop.id},'approved')"><span class="material-icons">check_circle</span>Approuver</button>
                                 <button class="action-btn delete" onclick="deleteProp(${prop.id})"><span class="material-icons">delete</span>Suppr</button>
@@ -3947,13 +3947,13 @@
                 container.innerHTML = data.map(a => `
                     <div class="article-card published ${a.pinned ? 'pinned-article' : ''}">
                         ${a.pinned ? '<div style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;padding:0.3rem 0.75rem;border-radius:20px;font-size:0.75rem;font-weight:600;display:inline-flex;align-items:center;gap:0.25rem;margin-bottom:0.5rem;"><span class="material-icons" style="font-size:0.9rem;">push_pin</span> Épinglé</div>' : ''}
-                        ${(a.image_url || (a.additional_images && a.additional_images.length > 0)) ? `<div class="article-images-row">${a.image_url ? `<img src="${a.image_url}" onclick="openImageModal('${a.image_url}')" title="Image principale">` : ''}${(a.additional_images || []).map(img => `<img src="${img}" onclick="openImageModal('${img}')" title="Image supplémentaire">`).join('')}</div>` : ''}
+                        ${(urlSure(a.image_url) || (a.additional_images || []).some(urlSure)) ? `<div class="article-images-row">${urlSure(a.image_url) ? `<img src="${urlSure(a.image_url)}" onclick="openImageModal('${urlSure(a.image_url)}')" title="Image principale">` : ''}${(a.additional_images || []).map(urlSure).filter(Boolean).map(img => `<img src="${img}" onclick="openImageModal('${img}')" title="Image supplémentaire">`).join('')}</div>` : ''}
                         <div class="article-content">
-                            <div style="margin-bottom:0.5rem;"><span class="proposition-type ${a.type}">${getTypeLabel(a.type)}</span></div>
+                            <div style="margin-bottom:0.5rem;"><span class="proposition-type ${motCle(a.type)}">${getTypeLabel(a.type)}</span></div>
                             <div class="article-title">${escapeHtml(a.title)}</div>
                             <div class="article-excerpt">${escapeHtml(a.content)}</div>
                             ${a.location ? `<div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem;"><span class="material-icons" style="font-size:1rem;vertical-align:middle;">location_on</span> ${escapeHtml(a.location)}</div>` : ''}
-                            ${a.link ? `<a href="${a.link}" target="_blank" class="proposition-file" style="margin-bottom:0.75rem;"><span class="material-icons" style="font-size:1rem;">link</span> Voir le lien</a>` : ''}
+                            ${urlSure(a.link) ? `<a href="${urlSure(a.link)}" target="_blank" rel="noopener" class="proposition-file" style="margin-bottom:0.75rem;"><span class="material-icons" style="font-size:1rem;">link</span> Voir le lien</a>` : ''}
                             <div class="article-meta"><span>${formatDate(a.created_at)}</span><span>👁️ ${a.views || 0} vues</span><span>${escapeHtml(a.author || 'Actu & Média')}</span></div>
                             <div class="message-actions" style="margin-top:1rem;">
                                 <button class="action-btn ${a.pinned ? 'pinned' : ''}" style="background:${a.pinned ? 'rgba(245,158,11,0.3)' : 'rgba(99,102,241,0.2)'};color:${a.pinned ? '#f59e0b' : '#818cf8'};" onclick="togglePin(${a.id}, ${a.pinned ? 'true' : 'false'})"><span class="material-icons">${a.pinned ? 'push_pin' : 'push_pin'}</span>${a.pinned ? 'Désépingler' : 'Épingler'}</button>
@@ -4363,9 +4363,32 @@
         
         // === HELPERS ===
         function getSubjectLabel(s) { return { question:'❓ Question', suggestion:'💡 Suggestion', bug:'🐛 Problème', partenariat:'🤝 Partenariat', presse:'📰 Presse', autre:'📋 Autre' }[s] || s; }
-        function getTypeLabel(t) { return { actualite:'📰 Actualité', evenement:'🎪 Événement', sport:'⚽ Sport', culture:'🎭 Culture', economie:'💼 Économie', pratique:'💡 Info pratique', insolite:'🤔 Insolite', photo:'📸 Photo/Vidéo', autre:'📋 Autre' }[t] || t; }
+        function getTypeLabel(t) { return { actualite:'📰 Actualité', evenement:'🎪 Événement', sport:'⚽ Sport', culture:'🎭 Culture', economie:'💼 Économie', pratique:'💡 Info pratique', insolite:'🤔 Insolite', photo:'📸 Photo/Vidéo', autre:'📋 Autre' }[t] || escapeHtml(t); }
         function formatDate(d) { const date = new Date(d), diff = Date.now() - date; if (diff < 3600000) return `Il y a ${Math.floor(diff/60000)} min`; if (diff < 86400000) return `Il y a ${Math.floor(diff/3600000)}h`; return date.toLocaleDateString('fr-FR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }); }
-        function escapeHtml(t) { if (!t) return ''; const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+        // Échappe aussi les guillemets (29 octobre 2026, suite à l'audit)
+        function escapeHtml(t) { if (!t) return ''; return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+
+        /**
+         * Rend une adresse sûre pour un attribut (href, src) ou un appel
+         * onclick('...'). N'accepte que http(s) ; les caractères qui
+         * pourraient casser l'attribut ou la chaîne JS sont encodés en %XX,
+         * ce qui garde l'adresse valide (29 octobre 2026, suite à l'audit).
+         */
+        function urlSure(adresse) {
+            const texte = String(adresse || '').trim();
+            if (!/^https?:\/\//i.test(texte)) return '';
+            return texte.replace(/[\s"'<>`\\]/g, c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0').toUpperCase());
+        }
+        
+        /** Mot-clé sûr pour une classe CSS (type, catégorie). */
+        function motCle(texte) {
+            return String(texte || '').toLowerCase().replace(/[^a-z0-9_-]/g, '');
+        }
+        
+        /** Texte court passé dans un onclick('...') : lettres, chiffres, espaces et . , - _ seulement. */
+        function texteJs(texte) {
+            return String(texte || '').replace(/[^\p{L}\p{N} .,_-]/gu, '');
+        }
         
         // === IMAGE MODAL ===
         function openImageModal(imageUrl) {
@@ -5271,7 +5294,7 @@
             return `
                 <div class="message-card ${status === 'pending' ? 'unread' : ''}">
                     <div class="message-header">
-                        <span class="proposition-type evenement">${icon} ${event.category || 'Événement'}${recurringBadge}</span>
+                        <span class="proposition-type evenement">${icon} ${escapeHtml(event.category || 'Événement')}${recurringBadge}</span>
                         <span class="message-date">${formatDate(event.created_at)} ${viewsDisplay}</span>
                     </div>
                     ${event.pinned ? '<div style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;padding:0.3rem 0.75rem;border-radius:20px;font-size:0.75rem;font-weight:600;display:inline-flex;align-items:center;gap:0.25rem;margin-bottom:0.5rem;"><span class="material-icons" style="font-size:0.9rem;">push_pin</span> Épinglé</div>' : ''}
@@ -5296,8 +5319,8 @@
                     </div>
                     ${event.description ? `<div class="message-text" style="max-height:100px;">${escapeHtml(event.description)}</div>` : ''}
                     <div class="message-from" style="margin-top:0.5rem;">Proposé par : ${escapeHtml(event.author || 'Anonyme')}</div>
-                    ${event.link ? `<a href="${event.link}" target="_blank" class="proposition-file"><span class="material-icons">link</span> Lien</a>` : ''}
-                    ${event.image_url ? `<img src="${event.image_url}" style="max-width:200px;max-height:150px;border-radius:8px;margin-top:0.5rem;cursor:pointer;" onclick="window.open('${event.image_url}', '_blank')">` : ''}
+                    ${urlSure(event.link) ? `<a href="${urlSure(event.link)}" target="_blank" rel="noopener" class="proposition-file"><span class="material-icons">link</span> Lien</a>` : ''}
+                    ${urlSure(event.image_url) ? `<img src="${urlSure(event.image_url)}" style="max-width:200px;max-height:150px;border-radius:8px;margin-top:0.5rem;cursor:pointer;" onclick="window.open('${urlSure(event.image_url)}', '_blank')">` : ''}
                     <div class="message-actions" style="margin-top:1rem;">
                         ${actions}
                     </div>
