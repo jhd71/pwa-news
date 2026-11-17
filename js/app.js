@@ -1394,6 +1394,7 @@ function getCommunityIcon(type) {
         'education': '🎓',
         'pratique': 'ℹ️',
         'insolite': '😮',
+        'histoire': '📜',
         'photo': '📸',
         'perdu': '🐾',
         // anciens types encore possibles en base
@@ -1421,6 +1422,7 @@ function getCommunityLabel(type) {
         'education': 'Éducation',
         'pratique': 'Info pratique',
         'insolite': 'Insolite',
+        'histoire': 'Histoire',
         'photo': 'Photo / Vidéo',
         'perdu': 'Perdu / Trouvé',
         // anciens types encore possibles en base
