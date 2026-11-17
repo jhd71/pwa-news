@@ -1002,6 +1002,10 @@
         }
         
         .article-card.published { border-left: 4px solid var(--success); }
+        /* Infos dépubliées : retirées du site mais conservées */
+        .article-card.unpublished { border-left: 4px solid var(--warning, #f59e0b); opacity: 0.8; }
+        .unpublished-heading { display: flex; align-items: center; gap: 0.5rem; margin: 2rem 0 0.25rem; font-size: 1.05rem; }
+        .unpublished-note { font-size: 0.82rem; color: var(--text-muted); margin: 0 0 1rem; }
         /* === IMAGES RESPONSIVE === */
         .article-image {
             width: 100%;
@@ -2534,6 +2538,12 @@
         <div class="tab-content" id="tabPublished">
             <button class="refresh-btn" onclick="loadPublishedArticles()"><span class="material-icons">refresh</span> Actualiser</button>
             <div class="messages-list" id="publishedList"><div class="loading"><div class="spinner"></div><p>Chargement...</p></div></div>
+            <!-- Infos dépubliées : retirées du site mais gardées, « Republier » les remet en ligne -->
+            <div id="unpublishedNewsSection" style="display:none;">
+                <h3 class="unpublished-heading">📦 Dépubliées <span id="countUnpublishedNews">0</span></h3>
+                <p class="unpublished-note">Retirées du site mais conservées. « Republier » les remet en ligne.</p>
+                <div class="messages-list" id="unpublishedNewsList"></div>
+            </div>
         </div>
         
 		<!-- Onglet Statistiques -->
@@ -3773,9 +3783,41 @@
         
         async function updateStatus(id, status) {
             await supabaseClient.from('news_submissions').update({ status }).eq('id', id);
-            showToast(status === 'approved' ? 'Approuvé ✅' : 'Refusé');
+            const messages = { approved: 'Publiée ✅', unpublished: 'Dépubliée 📦 (gardée dans « Dépubliées »)', pending: 'Remise en attente' };
+            showToast(messages[status] || 'Mis à jour');
             loadPropositions();
             loadPublishedArticles();
+        }
+        
+        // Infos dépubliées (statut 'unpublished') : invisibles sur le site,
+        // absentes des Propositions, mais conservées pour pouvoir les republier.
+        async function loadUnpublishedArticles() {
+            const section = document.getElementById('unpublishedNewsSection');
+            const container = document.getElementById('unpublishedNewsList');
+            if (!section || !container) return;
+            try {
+                const { data, error } = await supabaseClient.from('news_submissions').select('*').eq('status', 'unpublished').order('created_at', { ascending: false });
+                if (error) throw error;
+                document.getElementById('countUnpublishedNews').textContent = data.length;
+                section.style.display = data.length > 0 ? 'block' : 'none';
+                container.innerHTML = data.map(a => `
+                    <div class="article-card unpublished">
+                        <div class="article-content">
+                            <div style="margin-bottom:0.5rem;"><span class="proposition-type ${motCle(a.type)}">${getTypeLabel(a.type)}</span></div>
+                            <div class="article-title">${escapeHtml(a.title)}</div>
+                            <div class="article-excerpt">${escapeHtml(a.content)}</div>
+                            <div class="article-meta"><span>${formatDate(a.created_at)}</span><span>👁️ ${a.views || 0} vues</span><span>${escapeHtml(a.author || 'Actu & Média')}</span></div>
+                            <div class="message-actions" style="margin-top:1rem;">
+                                <button class="action-btn" style="background:rgba(16,185,129,0.2);color:#10b981;" onclick="updateStatus(${a.id},'approved')"><span class="material-icons">unarchive</span>Republier</button>
+                                <button class="action-btn delete" onclick="deleteProp(${a.id})"><span class="material-icons">delete</span>Suppr</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                section.style.display = 'block';
+                container.innerHTML = '<div class="empty-state"><p>❌ Erreur de chargement des infos dépubliées</p></div>';
+            }
         }
         
         async function deleteProp(id) {
@@ -3949,6 +3991,7 @@
 		
         // === PUBLIÉES ===
         async function loadPublishedArticles() {
+            loadUnpublishedArticles();
             const container = document.getElementById('publishedList');
             container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Chargement...</p></div>';
             try {
@@ -3973,7 +4016,7 @@
                             <div class="message-actions" style="margin-top:1rem;">
                                 <button class="action-btn ${a.pinned ? 'pinned' : ''}" style="background:${a.pinned ? 'rgba(245,158,11,0.3)' : 'rgba(99,102,241,0.2)'};color:${a.pinned ? '#f59e0b' : '#818cf8'};" onclick="togglePin(${a.id}, ${a.pinned ? 'true' : 'false'})"><span class="material-icons">${a.pinned ? 'push_pin' : 'push_pin'}</span>${a.pinned ? 'Désépingler' : 'Épingler'}</button>
                                 <button class="action-btn" style="background:rgba(16,185,129,0.2);color:#10b981;" onclick="openEditModal(${a.id})"><span class="material-icons">edit</span>Modifier</button>
-                                <button class="action-btn" style="background:rgba(245,158,11,0.2);color:#f59e0b;" onclick="updateStatus(${a.id},'pending')"><span class="material-icons">undo</span>Dépublier</button>
+                                <button class="action-btn" style="background:rgba(245,158,11,0.2);color:#f59e0b;" onclick="updateStatus(${a.id},'unpublished')"><span class="material-icons">archive</span>Dépublier</button>
                                 <button class="action-btn delete" onclick="deleteProp(${a.id})"><span class="material-icons">delete</span>Suppr</button>
                             </div>
                         </div>
